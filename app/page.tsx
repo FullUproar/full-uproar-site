@@ -1,11 +1,11 @@
-// Custom E-Commerce Site Boilerplate for Full Uproar
-// Tech: Next.js + TailwindCSS + Snipcart
+import { prisma } from "@/lib/prisma";
+import ProductGrid from "./components/ProductGrid";
 
-// 1. Pages: Home, Product, About (optional), Contact (optional)
-// 2. Sections: Hero, Product Grid, Reviews, Newsletter Signup, Footer
-// 3. Snipcart integration for simple, secure cart/checkout
+export default async function Home() {
+  const products = await prisma.product.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
 
-export default function Home() {
   return (
     <main className="bg-black text-white font-sans">
 
@@ -35,20 +35,7 @@ export default function Home() {
       {/* Product Grid */}
       <section id="shop" className="py-16 px-6">
         <h3 className="text-4xl text-center mb-10 font-bold">SHOP MASCOT MERCH</h3>
-        <div className="bg-gray-100 p-6 rounded-xl text-center shadow-md max-w-sm mx-auto">
-          <div className="w-full h-64 relative overflow-hidden mb-4">
-            <img
-              src="/fugly_shirt.jpg"
-              alt="Fugly Mascot Tee"
-              className="absolute inset-0 h-full w-full object-contain"
-            />
-          </div>
-          <h4 className="text-2xl font-bold mb-2">Fugly Mascot Tee</h4>
-          <p className="mb-2">$20.00</p>
-          <button className="bg-black text-white px-4 py-2 rounded font-bold">
-            Add to Cart
-          </button>
-        </div>
+        <ProductGrid products={products}/>
       </section>
 
       {/* Reviews */}

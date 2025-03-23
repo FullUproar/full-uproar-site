@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// NOTE: Hardcoded URL used for dev due to .env loading issues on Windows
+// When deploying or fixing env loading, replace with:
+// url = env("DATABASE_URL")
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://3cp90ww8666ynadoat0h:pscale_pw_pp54GiIqfhpoUpfzAbe5ko1EACD4VYqDb2f5hAVWZVP@aws.connect.psdb.cloud/full-uproar-db?sslaccept=strict"
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String  @unique
+  priceCents  Int
+  imageUrl    String
+  stock       Int
+  createdAt   DateTime @default(now())
+}

@@ -1,0 +1,7 @@
+main-2025-03-23-q7muqd
+3cp90ww8666ynadoat0h
+pscale_pw_pp54GiIqfhpoUpfzAbe5ko1EACD4VYqDb2f5hAVWZVP
+
+
+
+set DATABASE_URL="mysql://3cp90ww8666ynadoat0h:pscale_pw_pp54GiIqfhpoUpfzAbe5ko1EACD4VYqDb2f5hAVWZVP@aws.connect.psdb.cloud/full-uproar-db?sslaccept=strict" && npx prisma db push
