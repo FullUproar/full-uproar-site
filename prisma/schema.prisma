@@ -2,13 +2,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// NOTE: Hardcoded URL used for dev due to .env loading issues on Windows
-// When deploying or fixing env loading, replace with:
-// url = env("DATABASE_URL")
-
 datasource db {
-  provider = "mysql"
-  url      = "mysql://3cp90ww8666ynadoat0h:pscale_pw_pp54GiIqfhpoUpfzAbe5ko1EACD4VYqDb2f5hAVWZVP@aws.connect.psdb.cloud/full-uproar-db?sslaccept=strict"
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Product {
@@ -18,5 +14,45 @@ model Product {
   priceCents  Int
   imageUrl    String
   stock       Int
+  createdAt   DateTime @default(now())
+}
+
+model Game {
+  id          Int     @id @default(autoincrement())
+  title       String
+  tagline     String?
+  description String
+  priceCents  Int
+  players     String
+  timeToPlay  String
+  ageRating   String
+  imageUrl    String?
+  isBundle    Boolean @default(false)
+  isPreorder  Boolean @default(true)
+  featured    Boolean @default(false)
+  bundleInfo  String?
+  createdAt   DateTime @default(now())
+}
+
+model Comic {
+  id          Int      @id @default(autoincrement())
+  title       String
+  episode     String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+model NewsPost {
+  id          Int      @id @default(autoincrement())
+  title       String
+  excerpt     String
+  content     String?
+  createdAt   DateTime @default(now())
+}
+
+model EmailSubscriber {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
   createdAt   DateTime @default(now())
 }

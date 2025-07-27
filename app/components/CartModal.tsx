@@ -2,9 +2,11 @@
 
 import { useCartStore } from '@/lib/cartStore';
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function CartModal() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { items, removeFromCart, clearCart } = useCartStore();
 
   const total = items.reduce(
@@ -12,34 +14,26 @@ export default function CartModal() {
     0
   );
 
-  // Lock background scroll while modal is open
   useEffect(() => {
-    if (open) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
-  }, [open]);
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <>
       {/* Floating Cart Button */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-black text-white px-6 py-3 rounded-full shadow-lg font-bold"
+        className="fixed bottom-6 right-6 z-[9999] bg-orange-500 hover:bg-orange-600 text-gray-900 px-6 py-3 rounded-full shadow-lg font-black transition transform hover:scale-105"
       >
-        🛒 Cart ({items.length})
+        🛒 CART ({items.length})
       </button>
 
-      {/* Backdrop + Modal */}
-      {open && (
-        <>
-          {/* Backdrop */}
-          <div
-            onClick={() => setOpen(false)}
-            className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
-          />
-
-          {/* Modal */}
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-            <div className="bg-white w-full max-w-lg mx-auto rounded-xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+      {open &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
               <button
                 onClick={() => setOpen(false)}
                 className="absolute top-4 right-4 text-xl font-bold"
@@ -97,10 +91,9 @@ export default function CartModal() {
                 </>
               )}
             </div>
-          </div>
-        </>
-      )}
-
+          </div>,
+          document.body
+        )}
     </>
   );
 }
