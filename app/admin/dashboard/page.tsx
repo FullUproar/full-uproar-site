@@ -356,9 +356,9 @@ export default function AdminDashboard() {
               </div>
             )}
           </td>
-          <td style={styles.td} style={{ fontWeight: 'bold' }}>{item.title}</td>
+          <td style={{ ...styles.td, fontWeight: 'bold' }}>{item.title}</td>
           <td style={styles.td}>{item.episode}</td>
-          <td style={styles.td} style={{ fontSize: '0.875rem', color: '#6b7280' }}>{item.description}</td>
+          <td style={{ ...styles.td, fontSize: '0.875rem', color: '#6b7280' }}>{item.description}</td>
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
           </td>
@@ -368,9 +368,9 @@ export default function AdminDashboard() {
     
     return (
       <tr key={item.id}>
-        <td style={styles.td} style={{ fontWeight: 'bold' }}>{item.title}</td>
-        <td style={styles.td} style={{ fontSize: '0.875rem', color: '#6b7280' }}>{item.excerpt}</td>
-        <td style={styles.td} style={{ fontSize: '0.875rem' }}>{new Date(item.createdAt).toLocaleDateString()}</td>
+        <td style={{ ...styles.td, fontWeight: 'bold' }}>{item.title}</td>
+        <td style={{ ...styles.td, fontSize: '0.875rem', color: '#6b7280' }}>{item.excerpt}</td>
+        <td style={{ ...styles.td, fontSize: '0.875rem' }}>{new Date(item.createdAt).toLocaleDateString()}</td>
         <td style={styles.td}>
           <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
         </td>
