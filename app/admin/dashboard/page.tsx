@@ -224,7 +224,7 @@ export default function AdminDashboard() {
       });
 
       if (response.ok) {
-        setMessage(`✅ ${activeTab.slice(0, -1)} deleted successfully!`);
+        setMessage(`✅ ${getSingularForm(activeTab)} deleted successfully!`);
         
         // Refresh data
         if (activeTab === 'games') fetchGames();
@@ -234,7 +234,7 @@ export default function AdminDashboard() {
         
         setTimeout(() => setMessage(''), 3000);
       } else {
-        setMessage(`❌ Error deleting ${activeTab.slice(0, -1)}`);
+        setMessage(`❌ Error deleting ${getSingularForm(activeTab)}`);
       }
     } catch (error) {
       setMessage(`❌ Error deleting ${activeTab.slice(0, -1)}`);
@@ -273,7 +273,7 @@ export default function AdminDashboard() {
       });
 
       if (response.ok) {
-        setMessage(`✅ ${activeTab.slice(0, -1)} ${editMode === 'create' ? 'created' : 'updated'} successfully!`);
+        setMessage(`✅ ${getSingularForm(activeTab)} ${editMode === 'create' ? 'created' : 'updated'} successfully!`);
         
         // Refresh data
         if (activeTab === 'games') fetchGames();
@@ -283,7 +283,7 @@ export default function AdminDashboard() {
         
         setTimeout(closeModal, 1000);
       } else {
-        setMessage(`❌ Error ${editMode === 'create' ? 'creating' : 'updating'} ${activeTab.slice(0, -1)}`);
+        setMessage(`❌ Error ${editMode === 'create' ? 'creating' : 'updating'} ${getSingularForm(activeTab)}`);
       }
     } catch (error) {
       setMessage(`❌ Error ${editMode === 'create' ? 'creating' : 'updating'} ${activeTab.slice(0, -1)}`);
@@ -332,11 +332,11 @@ export default function AdminDashboard() {
     },
     modal: {
       background: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-      width: '100%', maxWidth: '600px', maxHeight: '90vh', overflow: 'auto'
+      width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' as const
     },
     modalHeader: { padding: '1.5rem', borderBottom: '1px solid #e5e7eb' },
     modalTitle: { fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937' },
-    modalBody: { padding: '1.5rem' },
+    modalBody: { padding: '1.5rem', flex: 1, overflow: 'auto' },
     modalFooter: { padding: '1.5rem', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'flex-end', gap: '1rem' },
     
     // Form
@@ -367,6 +367,14 @@ export default function AdminDashboard() {
     if (activeTab === 'comics') return comics;
     if (activeTab === 'news') return news;
     return artwork;
+  };
+
+  const getSingularForm = (plural: string) => {
+    if (plural === 'games') return 'game';
+    if (plural === 'comics') return 'comic';
+    if (plural === 'news') return 'news post';
+    if (plural === 'artwork') return 'artwork';
+    return plural;
   };
 
   const renderTableHeaders = () => {
@@ -702,7 +710,7 @@ export default function AdminDashboard() {
               ))}
             </div>
             <button onClick={openCreateModal} style={styles.createButton}>
-              + Create New {activeTab.slice(0, -1)}
+              + Create New {getSingularForm(activeTab)}
             </button>
           </div>
         </div>
@@ -725,7 +733,7 @@ export default function AdminDashboard() {
             <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div style={styles.modalHeader}>
                 <h2 style={styles.modalTitle}>
-                  {editMode === 'create' ? 'Create New' : 'Edit'} {activeTab.slice(0, -1)}
+                  {editMode === 'create' ? 'Create New' : 'Edit'} {getSingularForm(activeTab)}
                 </h2>
               </div>
               
@@ -739,7 +747,7 @@ export default function AdminDashboard() {
               <div style={styles.modalFooter}>
                 <button type="button" onClick={closeModal} style={styles.secondaryButton}>Cancel</button>
                 <button type="submit" onClick={handleSubmit} style={styles.primaryButton}>
-                  {editMode === 'create' ? 'Create' : 'Update'} {activeTab.slice(0, -1)}
+                  {editMode === 'create' ? 'Create' : 'Update'} {getSingularForm(activeTab)}
                 </button>
               </div>
             </div>
