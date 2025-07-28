@@ -1,12 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getImageForSize } from '@/lib/imageUtils';
 
 interface Artwork {
   id: number;
   name: string;
   description?: string;
   imageUrl: string;
+  thumbnailUrl?: string;
+  smallUrl?: string;
+  mediumUrl?: string;
+  largeUrl?: string;
   category: string;
   tags?: string;
 }
@@ -14,6 +19,7 @@ interface Artwork {
 interface ArtworkDisplayProps {
   category?: string;
   tags?: string[];
+  size?: 'thumbnail' | 'small' | 'medium' | 'large' | 'original';
   className?: string;
   style?: React.CSSProperties;
   fallbackText?: string;
@@ -22,7 +28,8 @@ interface ArtworkDisplayProps {
 
 export default function ArtworkDisplay({ 
   category, 
-  tags, 
+  tags,
+  size = 'medium',
   className = '', 
   style = {}, 
   fallbackText = 'FUGLY',
@@ -89,10 +96,11 @@ export default function ArtworkDisplay({
 
   if (maxItems === 1) {
     const art = artwork[0];
+    const imageUrl = getImageForSize(art, size);
     return (
       <div className={className} style={style}>
         <img 
-          src={art.imageUrl} 
+          src={imageUrl} 
           alt={art.name} 
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           title={art.description || art.name}
@@ -104,16 +112,19 @@ export default function ArtworkDisplay({
   // Multiple items - return a grid or carousel
   return (
     <div className={className} style={{ ...style, display: 'grid', gap: '1rem' }}>
-      {artwork.map(art => (
-        <div key={art.id}>
-          <img 
-            src={art.imageUrl} 
-            alt={art.name} 
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            title={art.description || art.name}
-          />
-        </div>
-      ))}
+      {artwork.map(art => {
+        const imageUrl = getImageForSize(art, size);
+        return (
+          <div key={art.id}>
+            <img 
+              src={imageUrl} 
+              alt={art.name} 
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              title={art.description || art.name}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

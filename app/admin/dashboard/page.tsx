@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import ImageUpload from '../../components/ImageUpload';
+import ArtworkImageUpload from '../../components/ArtworkImageUpload';
+import { ImageSizes } from '@/lib/imageUtils';
 import DeploymentInfo from '../../components/DeploymentInfo';
 
 interface Game {
@@ -42,6 +44,10 @@ interface Artwork {
   name: string;
   description?: string;
   imageUrl: string;
+  thumbnailUrl?: string;
+  smallUrl?: string;
+  mediumUrl?: string;
+  largeUrl?: string;
   category: string;
   tags?: string;
 }
@@ -73,7 +79,7 @@ export default function AdminDashboard() {
     title: '', excerpt: '', content: ''
   });
   const [artworkForm, setArtworkForm] = useState({
-    name: '', description: '', imageUrl: '', category: '', tags: ''
+    name: '', description: '', imageUrl: '', thumbnailUrl: '', smallUrl: '', mediumUrl: '', largeUrl: '', category: '', tags: ''
   });
 
   // Basic admin check
@@ -140,7 +146,7 @@ export default function AdminDashboard() {
     });
     setComicForm({ title: '', episode: '', description: '', imageUrl: '' });
     setNewsForm({ title: '', excerpt: '', content: '' });
-    setArtworkForm({ name: '', description: '', imageUrl: '', category: '', tags: '' });
+    setArtworkForm({ name: '', description: '', imageUrl: '', thumbnailUrl: '', smallUrl: '', mediumUrl: '', largeUrl: '', category: '', tags: '' });
   };
 
   const openEditModal = (item: any) => {
@@ -180,6 +186,10 @@ export default function AdminDashboard() {
         name: item.name || '',
         description: item.description || '',
         imageUrl: item.imageUrl || '',
+        thumbnailUrl: item.thumbnailUrl || '',
+        smallUrl: item.smallUrl || '',
+        mediumUrl: item.mediumUrl || '',
+        largeUrl: item.largeUrl || '',
         category: item.category || '',
         tags: item.tags || ''
       });
@@ -466,7 +476,7 @@ export default function AdminDashboard() {
         <tr key={item.id}>
           <td style={styles.td}>
             {item.imageUrl ? (
-              <img src={item.imageUrl} alt={item.name} style={styles.imagePreview} />
+              <img src={item.thumbnailUrl || item.imageUrl} alt={item.name} style={styles.imagePreview} />
             ) : (
               <div style={{ ...styles.imagePreview, background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem' }}>
                 No image
@@ -611,8 +621,24 @@ export default function AdminDashboard() {
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Artwork Image</label>
-            <ImageUpload onImageUploaded={(imageUrl) => setArtworkForm({ ...artworkForm, imageUrl })} currentImageUrl={artworkForm.imageUrl} />
-            <input type="text" value={artworkForm.imageUrl} onChange={(e) => setArtworkForm({ ...artworkForm, imageUrl: e.target.value })} style={{...styles.input, marginTop: '0.5rem'}} placeholder="Or enter image URL manually" />
+            <ArtworkImageUpload 
+              onImageSizesGenerated={(imageSizes) => setArtworkForm({ 
+                ...artworkForm, 
+                imageUrl: imageSizes.original,
+                thumbnailUrl: imageSizes.thumbnail,
+                smallUrl: imageSizes.small,
+                mediumUrl: imageSizes.medium,
+                largeUrl: imageSizes.large
+              })} 
+              currentImageUrl={artworkForm.imageUrl} 
+            />
+            <input 
+              type="text" 
+              value={artworkForm.imageUrl} 
+              onChange={(e) => setArtworkForm({ ...artworkForm, imageUrl: e.target.value })} 
+              style={{...styles.input, marginTop: '0.5rem'}} 
+              placeholder="Or enter original image URL manually" 
+            />
           </div>
         </div>
       );

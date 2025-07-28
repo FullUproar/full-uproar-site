@@ -61,7 +61,11 @@ model Artwork {
   id          Int      @id @default(autoincrement())
   name        String
   description String?
-  imageUrl    String   @db.Text
+  imageUrl    String   @db.Text // Original full-size image
+  thumbnailUrl String? @db.Text // 100x100 for admin tables
+  smallUrl    String?  @db.Text // 300x300 for cards
+  mediumUrl   String?  @db.Text // 600x600 for sections
+  largeUrl    String?  @db.Text // 1200x1200 for hero/backgrounds
   category    String   // 'background', 'character', 'logo', 'decoration', etc.
   tags        String?  // comma-separated tags
   createdAt   DateTime @default(now())
