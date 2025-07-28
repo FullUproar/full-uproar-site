@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import ImageUpload from '../../components/ImageUpload';
+import DeploymentInfo from '../../components/DeploymentInfo';
 
 interface Game {
   id: number;
@@ -556,6 +557,9 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+      
+      {/* Deployment info for admins */}
+      <DeploymentInfo isVisible={true} />
     </div>
   );
 }

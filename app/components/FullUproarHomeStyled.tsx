@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Package, ArrowRight, Menu, X, Heart, Share2, Play, Zap, Skull } from 'lucide-react';
 import { useUser, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
+import DeploymentInfo from './DeploymentInfo';
 
 interface Game {
   id: number;
@@ -657,6 +658,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
           <p style={{ color: '#6b7280', marginTop: '2rem', fontWeight: 600 }}>© 2024 Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.</p>
         </div>
       </footer>
+      
+      {/* Deployment info for logged-in users */}
+      <DeploymentInfo isVisible={!!user} />
     </div>
   );
 }
