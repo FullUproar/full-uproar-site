@@ -1,51 +1,52 @@
-import { prisma } from "@/lib/prisma";
 import FullUproarHomeStyled from "./components/FullUproarHomeStyled";
 
-export default async function Home() {
-  let games = [];
-  let comics = [];
-  let news = [];
-
+// Use the same API approach that works in admin panel
+async function fetchGameData() {
   try {
-    console.log('Starting database queries...');
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : process.env.NODE_ENV === 'production' 
+        ? 'https://full-uproar-site-two.vercel.app'
+        : 'http://localhost:3000';
     
-    // Test database connection first
-    const gameCount = await prisma.game.count();
-    console.log('Game count from database:', gameCount);
+    console.log('Fetching from baseUrl:', baseUrl);
     
-    // Simple, direct database queries
-    games = await prisma.game.findMany({
-      orderBy: { createdAt: 'desc' }
-    });
-    console.log('Raw games from database:', games.length, games);
-    
-    comics = await prisma.comic.findMany({
-      orderBy: { createdAt: 'desc' }
-    });
-    news = await prisma.newsPost.findMany({
-      orderBy: { createdAt: 'desc' }
+    const [gamesRes, comicsRes, newsRes] = await Promise.all([
+      fetch(`${baseUrl}/api/games`, { 
+        cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' }
+      }),
+      fetch(`${baseUrl}/api/comics`, { 
+        cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' }
+      }),
+      fetch(`${baseUrl}/api/news`, { 
+        cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' }
+      })
+    ]);
+
+    console.log('API responses:', {
+      games: gamesRes.status,
+      comics: comicsRes.status,
+      news: newsRes.status
     });
 
-    // Convert dates to strings to avoid serialization issues
-    games = games.map(game => ({
-      ...game,
-      createdAt: game.createdAt.toISOString()
-    }));
-    comics = comics.map(comic => ({
-      ...comic,
-      createdAt: comic.createdAt.toISOString()
-    }));
-    news = news.map(post => ({
-      ...post,
-      createdAt: post.createdAt.toISOString()
-    }));
+    const games = gamesRes.ok ? await gamesRes.json() : [];
+    const comics = comicsRes.ok ? await comicsRes.json() : [];
+    const news = newsRes.ok ? await newsRes.json() : [];
 
-    console.log('Server: Formatted games:', games.length);
+    console.log('Fetched via API - Games:', games.length, games);
+    
+    return { games, comics, news };
   } catch (error) {
-    console.error('Database error:', error);
-    console.error('Error details:', error.message);
-    // Return empty arrays on error
+    console.error('API fetch error:', error);
+    return { games: [], comics: [], news: [] };
   }
+}
+
+export default async function Home() {
+  const { games, comics, news } = await fetchGameData();
 
   return <FullUproarHomeStyled games={games} comics={comics} news={news} />;
 }
