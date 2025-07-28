@@ -33,12 +33,13 @@ export default function FuglyChaosMode() {
 
   // Enable chaos mode after 3 clicks on Fugly logo or randomly
   useEffect(() => {
-    // Fetch artwork to debug
+    // Fetch artwork marked for chaos mode
     fetch('/api/artwork')
       .then(res => res.json())
       .then(data => {
-        console.log('Available artwork:', data);
-        setDebugArtwork(data);
+        const chaosArtwork = data.filter((art: any) => art.chaosMode === true);
+        console.log('Chaos mode artwork:', chaosArtwork.length, 'items');
+        setDebugArtwork(chaosArtwork);
       });
 
     // Random chance to enable chaos on page load (10%)
@@ -159,6 +160,48 @@ export default function FuglyChaosMode() {
         animation: 'pulse 2s infinite'
       }}>
         {3 - clickCount} more clicks to unleash chaos... 😈
+      </div>
+    );
+  }
+
+  // Check if we have chaos artwork
+  if (chaosEnabled && debugArtwork.length === 0) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        background: 'rgba(249, 115, 22, 0.9)',
+        color: '#111827',
+        padding: '2rem',
+        borderRadius: '1rem',
+        fontWeight: 'bold',
+        zIndex: 1000,
+        textAlign: 'center' as const,
+        maxWidth: '400px'
+      }}>
+        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🎭 CHAOS MODE NEEDS FUEL! 🎭</div>
+        <div style={{ marginBottom: '1rem' }}>
+          No artwork marked for chaos mode yet!
+        </div>
+        <div style={{ fontSize: '0.875rem' }}>
+          Go to Admin → Artwork and check "Use in Chaos Mode" on some images.
+        </div>
+        <button 
+          onClick={() => setChaosEnabled(false)}
+          style={{
+            marginTop: '1rem',
+            background: '#111827',
+            color: '#f97316',
+            padding: '0.5rem 1rem',
+            borderRadius: '0.5rem',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          Got it!
+        </button>
       </div>
     );
   }

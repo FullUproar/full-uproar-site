@@ -48,6 +48,7 @@ interface Artwork {
   largeUrl?: string;
   category: string;
   tags?: string;
+  chaosMode?: boolean;
 }
 
 type EditMode = 'create' | 'edit' | null;
@@ -77,7 +78,7 @@ export default function AdminDashboard() {
     title: '', excerpt: '', content: ''
   });
   const [artworkForm, setArtworkForm] = useState({
-    name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: ''
+    name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: '', chaosMode: false
   });
 
   // Basic admin check
@@ -144,7 +145,7 @@ export default function AdminDashboard() {
     });
     setComicForm({ title: '', episode: '', description: '', imageUrl: '' });
     setNewsForm({ title: '', excerpt: '', content: '' });
-    setArtworkForm({ name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: '' });
+    setArtworkForm({ name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: '', chaosMode: false });
   };
 
   const openEditModal = (item: any) => {
@@ -187,7 +188,8 @@ export default function AdminDashboard() {
         thumbnailUrl: item.thumbnailUrl || '',
         largeUrl: item.largeUrl || '',
         category: item.category || '',
-        tags: item.tags || ''
+        tags: item.tags || '',
+        chaosMode: item.chaosMode || false
       });
     }
   };
@@ -404,6 +406,7 @@ export default function AdminDashboard() {
           <th style={styles.th}>Name</th>
           <th style={styles.th}>Category</th>
           <th style={styles.th}>Tags</th>
+          <th style={styles.th}>Chaos</th>
           <th style={styles.th}>Actions</th>
         </tr>
       );
@@ -490,6 +493,17 @@ export default function AdminDashboard() {
           <td style={{ ...styles.td, fontWeight: 'bold' }}>{item.name}</td>
           <td style={styles.td}>{item.category}</td>
           <td style={{ ...styles.td, fontSize: '0.875rem', color: '#6b7280' }}>{item.tags || 'No tags'}</td>
+          <td style={styles.td}>
+            {item.chaosMode ? (
+              <span style={{ background: '#10b981', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                ✓ ON
+              </span>
+            ) : (
+              <span style={{ background: '#6b7280', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '50px', fontSize: '0.75rem' }}>
+                OFF
+              </span>
+            )}
+          </td>
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
             <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
@@ -641,6 +655,19 @@ export default function AdminDashboard() {
               style={{...styles.input, marginTop: '0.5rem'}} 
               placeholder="Or enter original image URL manually" 
             />
+          </div>
+          <div style={styles.checkboxGroup}>
+            <label style={styles.checkboxLabel}>
+              <input 
+                type="checkbox" 
+                checked={artworkForm.chaosMode} 
+                onChange={(e) => setArtworkForm({ ...artworkForm, chaosMode: e.target.checked })} 
+              />
+              <span style={{ fontWeight: 'bold', color: '#f97316' }}>Use in Chaos Mode</span>
+              <span style={{ marginLeft: '0.5rem', fontSize: '0.875rem', color: '#6b7280' }}>
+                (Appears randomly when chaos mode is activated)
+              </span>
+            </label>
           </div>
         </div>
       );
