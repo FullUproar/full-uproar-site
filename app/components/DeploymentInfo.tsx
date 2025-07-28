@@ -31,7 +31,8 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
         const now = new Date();
         const diffMs = now.getTime() - deployTime.getTime();
         
-        const minutes = Math.floor(diffMs / (1000 * 60));
+        const seconds = Math.floor(diffMs / 1000);
+        const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
         const days = Math.floor(hours / 24);
 
@@ -41,7 +42,9 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
         } else if (hours > 0) {
           timeAgo = `${hours}h ${minutes % 60}m ago`;
         } else if (minutes > 0) {
-          timeAgo = `${minutes}m ago`;
+          timeAgo = `${minutes}m ${seconds % 60}s ago`;
+        } else if (seconds > 0) {
+          timeAgo = `${seconds}s ago`;
         } else {
           timeAgo = 'Just now';
         }
@@ -50,7 +53,7 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
       };
 
       updateTimeAgo();
-      const interval = setInterval(updateTimeAgo, 60000); // Update every minute
+      const interval = setInterval(updateTimeAgo, 10000); // Update every 10 seconds
       return () => clearInterval(interval);
     }
   }, [deploymentData?.deployedAt]);
