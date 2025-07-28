@@ -16,6 +16,7 @@ export default function FuglyChaosMode() {
   const [chaosEnabled, setChaosEnabled] = useState(false);
   const [characters, setCharacters] = useState<ChaosCharacter[]>([]);
   const [clickCount, setClickCount] = useState(0);
+  const [debugArtwork, setDebugArtwork] = useState<any[]>([]);
 
   // Chaos animations
   const animations = [
@@ -31,6 +32,14 @@ export default function FuglyChaosMode() {
 
   // Enable chaos mode after 3 clicks on Fugly logo or randomly
   useEffect(() => {
+    // Fetch artwork to debug
+    fetch('/api/artwork')
+      .then(res => res.json())
+      .then(data => {
+        console.log('Available artwork:', data);
+        setDebugArtwork(data);
+      });
+
     // Random chance to enable chaos on page load (10%)
     if (Math.random() < 0.1) {
       setTimeout(() => setChaosEnabled(true), 5000);
@@ -69,24 +78,24 @@ export default function FuglyChaosMode() {
 
       switch (side) {
         case 0: // top
-          x = Math.random() * 100;
-          y = -10;
+          x = 10 + Math.random() * 80; // 10-90% to avoid edges
+          y = -20;
           break;
         case 1: // right
-          x = 110;
-          y = Math.random() * 100;
+          x = 100;
+          y = 10 + Math.random() * 80;
           break;
         case 2: // bottom
-          x = Math.random() * 100;
-          y = 110;
+          x = 10 + Math.random() * 80;
+          y = 100;
           break;
         case 3: // left
-          x = -10;
-          y = Math.random() * 100;
+          x = -20;
+          y = 10 + Math.random() * 80;
           break;
         default:
-          x = 0;
-          y = 0;
+          x = 50;
+          y = 50;
       }
 
       const newCharacter: ChaosCharacter = {
@@ -171,24 +180,17 @@ export default function FuglyChaosMode() {
             animation: `${char.animation} 5s ease-in-out`
           }}
         >
-          <div style={{
-            width: '100%',
-            height: '100%',
-            background: '#f97316',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '3rem',
-            border: '4px solid #111827'
-          }}>
-            <ArtworkDisplay 
-              category="character" 
-              size="medium"
-              style={{ width: '80%', height: '80%' }}
-              fallbackText="👹"
-            />
-          </div>
+          <ArtworkDisplay 
+            size="medium"
+            style={{ 
+              width: '100%', 
+              height: '100%',
+              borderRadius: '20%',
+              overflow: 'hidden'
+            }}
+            fallbackText="FUGLY"
+            maxItems={1}
+          />
         </div>
       ))}
 
