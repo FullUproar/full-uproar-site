@@ -8,6 +8,7 @@ import DeploymentInfo from './DeploymentInfo';
 import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
 import FuglyPointing from './FuglyPointing';
+import FooterLogo from './FooterLogo';
 
 interface Game {
   id: number;
@@ -376,7 +377,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
         <div style={styles.navContainer}>
           <div style={styles.navFlex}>
             <div style={styles.logo}>
-              <FuglyLogo size={60} />
+              <FuglyLogo size={75} />
               <div>
                 <span style={styles.logoText}>FULL UPROAR</span>
                 <div style={styles.logoSubtext}>Fugly Approved Games™</div>
@@ -469,7 +470,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                     SIGN ME UP <Zap style={{ height: '1rem', width: '1rem' }} />
                   </button>
                 </form>
-                <FuglyPointing size={60} style={{ marginLeft: '0.5rem' }} />
+                <FuglyPointing size={150} style={{ marginLeft: '0.5rem' }} />
               </div>
               <p style={{ fontSize: '0.875rem', color: '#fdba74', marginTop: '0.5rem', fontWeight: 600 }}>
                 🎁 Get exclusive pre-order bonuses and Fugly's seal of approval!
@@ -683,7 +684,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       {/* Footer placeholder */}
       <footer style={{ background: '#000', color: 'white', padding: '3rem 0', textAlign: 'center' as const }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
-          <FuglyLogo size={80} style={{ margin: '0 auto 1.5rem auto' }} />
+          <FooterLogo size={80} style={{ margin: '0 auto 1.5rem auto' }} />
           <p style={{ color: '#9ca3af', fontWeight: 600 }}>Professionally ruining game nights since day one</p>
           <p style={{ color: '#6b7280', marginTop: '2rem', fontWeight: 600 }}>© 2025 Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.</p>
         </div>
