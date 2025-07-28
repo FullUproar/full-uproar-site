@@ -1,0 +1,264 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import ArtworkDisplay from './ArtworkDisplay';
+
+interface ChaosCharacter {
+  id: string;
+  position: { x: number; y: number };
+  animation: string;
+  size: number;
+  rotation: number;
+  flipX: boolean;
+}
+
+export default function FuglyChaosMode() {
+  const [chaosEnabled, setChaosEnabled] = useState(false);
+  const [characters, setCharacters] = useState<ChaosCharacter[]>([]);
+  const [clickCount, setClickCount] = useState(0);
+
+  // Chaos animations
+  const animations = [
+    'peekFromBottom',
+    'peekFromSide',
+    'floatAround',
+    'spinAndVanish',
+    'slideAcross',
+    'bounceIn',
+    'zigzag',
+    'popUp'
+  ];
+
+  // Enable chaos mode after 3 clicks on Fugly logo or randomly
+  useEffect(() => {
+    // Random chance to enable chaos on page load (10%)
+    if (Math.random() < 0.1) {
+      setTimeout(() => setChaosEnabled(true), 5000);
+    }
+
+    // Listen for logo clicks
+    const handleLogoClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-fugly-logo]')) {
+        setClickCount(prev => {
+          const newCount = prev + 1;
+          if (newCount >= 3) {
+            setChaosEnabled(true);
+            return 0;
+          }
+          return newCount;
+        });
+      }
+    };
+
+    document.addEventListener('click', handleLogoClick);
+    return () => document.removeEventListener('click', handleLogoClick);
+  }, []);
+
+  // Spawn random characters when chaos is enabled
+  useEffect(() => {
+    if (!chaosEnabled) return;
+
+    const spawnCharacter = () => {
+      const id = Math.random().toString(36).substr(2, 9);
+      const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+      let x, y;
+
+      switch (side) {
+        case 0: // top
+          x = Math.random() * 100;
+          y = -10;
+          break;
+        case 1: // right
+          x = 110;
+          y = Math.random() * 100;
+          break;
+        case 2: // bottom
+          x = Math.random() * 100;
+          y = 110;
+          break;
+        case 3: // left
+          x = -10;
+          y = Math.random() * 100;
+          break;
+        default:
+          x = 0;
+          y = 0;
+      }
+
+      const newCharacter: ChaosCharacter = {
+        id,
+        position: { x, y },
+        animation: animations[Math.floor(Math.random() * animations.length)],
+        size: 80 + Math.random() * 120, // 80-200px
+        rotation: Math.random() * 360,
+        flipX: Math.random() > 0.5
+      };
+
+      setCharacters(prev => [...prev, newCharacter]);
+
+      // Remove character after animation
+      setTimeout(() => {
+        setCharacters(prev => prev.filter(char => char.id !== id));
+      }, 8000);
+    };
+
+    // Initial spawn
+    spawnCharacter();
+
+    // Spawn new characters periodically
+    const interval = setInterval(() => {
+      if (Math.random() < 0.3) { // 30% chance every 3 seconds
+        spawnCharacter();
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [chaosEnabled]);
+
+  if (!chaosEnabled && clickCount > 0) {
+    // Show hint after first click
+    return (
+      <div style={{
+        position: 'fixed',
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: '#f97316',
+        color: '#111827',
+        padding: '0.5rem 1rem',
+        borderRadius: '50px',
+        fontWeight: 'bold',
+        fontSize: '0.875rem',
+        zIndex: 100,
+        animation: 'pulse 2s infinite'
+      }}>
+        {3 - clickCount} more clicks to unleash chaos... 😈
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {characters.map(char => (
+        <div
+          key={char.id}
+          style={{
+            position: 'fixed',
+            left: `${char.position.x}%`,
+            top: `${char.position.y}%`,
+            width: `${char.size}px`,
+            height: `${char.size}px`,
+            transform: `rotate(${char.rotation}deg) scaleX(${char.flipX ? -1 : 1})`,
+            zIndex: 999,
+            pointerEvents: 'none',
+            animation: `${char.animation} 8s ease-in-out`
+          }}
+        >
+          <ArtworkDisplay 
+            category="character" 
+            tags={["fugly", "chaos"]} 
+            size="medium"
+            style={{ width: '100%', height: '100%' }}
+            fallbackText="👹"
+          />
+        </div>
+      ))}
+
+      {chaosEnabled && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: 'rgba(249, 115, 22, 0.9)',
+          color: '#111827',
+          padding: '0.75rem 1.5rem',
+          borderRadius: '0.5rem',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          zIndex: 1000,
+          transform: 'rotate(-5deg)',
+          animation: 'wobble 2s infinite'
+        }}
+        onClick={() => setChaosEnabled(false)}
+        >
+          CHAOS MODE ACTIVE! 🔥
+          <br />
+          <span style={{ fontSize: '0.75rem' }}>Click to restore order (boring)</span>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes peekFromBottom {
+          0% { transform: translateY(100%) rotate(0deg); opacity: 0; }
+          20% { transform: translateY(0) rotate(-10deg); opacity: 1; }
+          80% { transform: translateY(0) rotate(10deg); opacity: 1; }
+          100% { transform: translateY(100%) rotate(0deg); opacity: 0; }
+        }
+
+        @keyframes peekFromSide {
+          0% { transform: translateX(-100%) rotate(0deg); opacity: 0; }
+          20% { transform: translateX(0) rotate(-20deg); opacity: 1; }
+          80% { transform: translateX(0) rotate(20deg); opacity: 1; }
+          100% { transform: translateX(200%) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes floatAround {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(50px, -30px) rotate(90deg); }
+          50% { transform: translate(-30px, 50px) rotate(180deg); }
+          75% { transform: translate(30px, 30px) rotate(270deg); }
+          100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        @keyframes spinAndVanish {
+          0% { transform: scale(0) rotate(0deg); opacity: 0; }
+          50% { transform: scale(1.2) rotate(720deg); opacity: 1; }
+          100% { transform: scale(0) rotate(1440deg); opacity: 0; }
+        }
+
+        @keyframes slideAcross {
+          0% { transform: translateX(-200%); }
+          50% { transform: translateX(50%); }
+          100% { transform: translateX(300%); }
+        }
+
+        @keyframes bounceIn {
+          0% { transform: scale(0) translateY(-100%); }
+          50% { transform: scale(1.1) translateY(0); }
+          60% { transform: scale(0.9) translateY(-20%); }
+          70% { transform: scale(1.05) translateY(0); }
+          80% { transform: scale(0.95) translateY(-10%); }
+          90% { transform: scale(1) translateY(0); }
+          100% { transform: scale(0) translateY(100%); }
+        }
+
+        @keyframes zigzag {
+          0% { transform: translate(0, 0); }
+          20% { transform: translate(100px, 50px); }
+          40% { transform: translate(-50px, 100px); }
+          60% { transform: translate(150px, 150px); }
+          80% { transform: translate(-100px, 200px); }
+          100% { transform: translate(200px, 300px); opacity: 0; }
+        }
+
+        @keyframes popUp {
+          0% { transform: scale(0) rotate(0deg); opacity: 0; }
+          10% { transform: scale(1.5) rotate(10deg); opacity: 1; }
+          90% { transform: scale(1.5) rotate(-10deg); opacity: 1; }
+          100% { transform: scale(0) rotate(0deg); opacity: 0; }
+        }
+
+        @keyframes wobble {
+          0%, 100% { transform: rotate(-5deg); }
+          50% { transform: rotate(5deg); }
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+          50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+        }
+      `}</style>
+    </>
+  );
+}

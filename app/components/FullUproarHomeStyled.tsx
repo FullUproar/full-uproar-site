@@ -5,6 +5,7 @@ import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Pack
 import { useUser, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import DeploymentInfo from './DeploymentInfo';
+import FuglyChaosMode from './FuglyChaosMode';
 
 interface Game {
   id: number;
@@ -372,7 +373,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       <nav style={styles.nav}>
         <div style={styles.navContainer}>
           <div style={styles.navFlex}>
-            <div style={styles.logo}>
+            <div style={styles.logo} data-fugly-logo>
               <div style={styles.logoCircle}>FU</div>
               <div>
                 <span style={styles.logoText}>FULL UPROAR</span>
@@ -693,6 +694,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       
       {/* Deployment info for logged-in users */}
       <DeploymentInfo isVisible={!!user} />
+
+      {/* Chaos Mode! */}
+      <FuglyChaosMode />
 
       <style jsx>{`
         @keyframes chaosShake {
