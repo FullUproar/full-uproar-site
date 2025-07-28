@@ -41,17 +41,20 @@ export default function FuglyLogo({
   const containerStyle: React.CSSProperties = {
     width: `${size}px`,
     height: `${size}px`,
-    background: '#f97316',
-    borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    cursor: onClick ? 'pointer' : 'default',
+    ...style
+  };
+
+  const fallbackStyle: React.CSSProperties = {
+    ...containerStyle,
+    background: '#f97316',
+    borderRadius: '50%',
     fontSize: `${size * 0.5}px`,
     fontWeight: 900,
     color: '#111827',
-    cursor: onClick ? 'pointer' : 'default',
-    overflow: 'hidden',
-    ...style
   };
 
   if (logoUrl) {
@@ -63,16 +66,16 @@ export default function FuglyLogo({
           style={{
             width: '100%',
             height: '100%',
-            objectFit: 'cover'
+            objectFit: 'contain'
           }}
         />
       </div>
     );
   }
 
-  // Fallback to text if no logo found
+  // Fallback to text with orange circle if no logo found
   return (
-    <div style={containerStyle} onClick={onClick} data-fugly-logo>
+    <div style={fallbackStyle} onClick={onClick} data-fugly-logo>
       {fallbackText}
     </div>
   );
