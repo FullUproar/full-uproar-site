@@ -53,6 +53,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
   const [activeGame, setActiveGame] = useState(0);
   const [currentComic, setCurrentComic] = useState(0);
 
+  // Debug log
+  console.log('FullUproarHomeStyled received games:', games.length, games);
+
   const handleAddToCart = (game: Game) => {
     addToCart({
       id: game.id,

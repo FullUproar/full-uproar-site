@@ -15,6 +15,9 @@ export default async function Home() {
     })
   ]);
 
+  // Debug log
+  console.log('Games found:', games.length, games);
+
   // Convert dates to strings for client component
   const formattedNews = news.map(post => ({
     ...post,
