@@ -41,3 +41,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create game' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json({ error: 'Game ID is required' }, { status: 400 });
+    }
+    
+    await prisma.game.delete({
+      where: { id: parseInt(id) }
+    });
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting game:', error);
+    return NextResponse.json({ error: 'Failed to delete game' }, { status: 500 });
+  }
+}

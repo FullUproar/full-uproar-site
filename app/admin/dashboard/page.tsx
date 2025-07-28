@@ -159,6 +159,42 @@ export default function AdminDashboard() {
     setMessage('');
   };
 
+  const handleDelete = async (item: any) => {
+    if (!confirm(`Are you sure you want to delete "${item.title}"?`)) {
+      return;
+    }
+
+    try {
+      let endpoint = '';
+      if (activeTab === 'games') {
+        endpoint = `/api/games?id=${item.id}`;
+      } else if (activeTab === 'comics') {
+        endpoint = `/api/comics?id=${item.id}`;
+      } else if (activeTab === 'news') {
+        endpoint = `/api/news?id=${item.id}`;
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setMessage(`✅ ${activeTab.slice(0, -1)} deleted successfully!`);
+        
+        // Refresh data
+        if (activeTab === 'games') fetchGames();
+        else if (activeTab === 'comics') fetchComics();
+        else if (activeTab === 'news') fetchNews();
+        
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage(`❌ Error deleting ${activeTab.slice(0, -1)}`);
+      }
+    } catch (error) {
+      setMessage(`❌ Error deleting ${activeTab.slice(0, -1)}`);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage('');
@@ -264,6 +300,7 @@ export default function AdminDashboard() {
     primaryButton: { background: '#f97316', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' },
     secondaryButton: { background: '#6b7280', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' },
     editButton: { background: '#3b82f6', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.375rem', fontSize: '0.875rem', border: 'none', cursor: 'pointer' },
+    deleteButton: { background: '#ef4444', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.375rem', fontSize: '0.875rem', border: 'none', cursor: 'pointer', marginLeft: '0.5rem' },
     
     // Message
     message: { background: '#dbeafe', border: '1px solid #93c5fd', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1rem' },
@@ -340,6 +377,7 @@ export default function AdminDashboard() {
           </td>
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
+            <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
           </td>
         </tr>
       );
@@ -362,6 +400,7 @@ export default function AdminDashboard() {
           <td style={{ ...styles.td, fontSize: '0.875rem', color: '#6b7280' }}>{item.description}</td>
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
+            <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
           </td>
         </tr>
       );
