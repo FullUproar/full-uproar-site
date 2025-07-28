@@ -10,6 +10,7 @@ interface ChaosCharacter {
   size: number;
   rotation: number;
   flipX: boolean;
+  artworkIndex?: number;
 }
 
 export default function FuglyChaosMode() {
@@ -78,20 +79,20 @@ export default function FuglyChaosMode() {
 
       switch (side) {
         case 0: // top
-          x = 10 + Math.random() * 80; // 10-90% to avoid edges
-          y = -20;
+          x = 20 + Math.random() * 60; // 20-80% to stay more centered
+          y = -10;
           break;
         case 1: // right
-          x = 100;
-          y = 10 + Math.random() * 80;
+          x = 90;
+          y = 20 + Math.random() * 60;
           break;
         case 2: // bottom
-          x = 10 + Math.random() * 80;
-          y = 100;
+          x = 20 + Math.random() * 60;
+          y = 90;
           break;
         case 3: // left
-          x = -20;
-          y = 10 + Math.random() * 80;
+          x = -10;
+          y = 20 + Math.random() * 60;
           break;
         default:
           x = 50;
@@ -104,7 +105,8 @@ export default function FuglyChaosMode() {
         animation: animations[Math.floor(Math.random() * animations.length)],
         size: 100 + Math.random() * 200, // 100-300px
         rotation: Math.random() * 360,
-        flipX: Math.random() > 0.5
+        flipX: Math.random() > 0.5,
+        artworkIndex: debugArtwork.length > 0 ? Math.floor(Math.random() * debugArtwork.length) : undefined
       };
 
       setCharacters(prev => [...prev, newCharacter]);
@@ -180,17 +182,31 @@ export default function FuglyChaosMode() {
             animation: `${char.animation} 5s ease-in-out`
           }}
         >
-          <ArtworkDisplay 
-            size="medium"
-            style={{ 
-              width: '100%', 
+          {char.artworkIndex !== undefined && debugArtwork[char.artworkIndex] ? (
+            <img 
+              src={debugArtwork[char.artworkIndex].imageUrl || debugArtwork[char.artworkIndex].largeUrl}
+              alt="Fugly"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                borderRadius: '20%'
+              }}
+            />
+          ) : (
+            <div style={{
+              width: '100%',
               height: '100%',
-              borderRadius: '20%',
-              overflow: 'hidden'
-            }}
-            fallbackText="FUGLY"
-            maxItems={1}
-          />
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '3rem',
+              fontWeight: 'bold',
+              color: '#f97316'
+            }}>
+              FUGLY
+            </div>
+          )}
         </div>
       ))}
 
@@ -219,17 +235,17 @@ export default function FuglyChaosMode() {
 
       <style jsx>{`
         @keyframes peekFromBottom {
-          0% { transform: translateY(100%) rotate(0deg); opacity: 0; }
-          20% { transform: translateY(0) rotate(-10deg); opacity: 1; }
-          80% { transform: translateY(0) rotate(10deg); opacity: 1; }
-          100% { transform: translateY(100%) rotate(0deg); opacity: 0; }
+          0% { transform: translateY(50%) rotate(0deg); opacity: 0; }
+          20% { transform: translateY(-50%) rotate(-10deg); opacity: 1; }
+          80% { transform: translateY(-50%) rotate(10deg); opacity: 1; }
+          100% { transform: translateY(50%) rotate(0deg); opacity: 0; }
         }
 
         @keyframes peekFromSide {
-          0% { transform: translateX(-100%) rotate(0deg); opacity: 0; }
+          0% { transform: translateX(-50%) rotate(0deg); opacity: 0; }
           20% { transform: translateX(0) rotate(-20deg); opacity: 1; }
           80% { transform: translateX(0) rotate(20deg); opacity: 1; }
-          100% { transform: translateX(200%) rotate(360deg); opacity: 0; }
+          100% { transform: translateX(100%) rotate(360deg); opacity: 0; }
         }
 
         @keyframes floatAround {
