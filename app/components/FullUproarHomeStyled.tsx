@@ -422,7 +422,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       <section style={styles.heroSection}>
         <div style={styles.heroContainer}>
           <div style={styles.textCenter}>
-            <div style={styles.badge}>EXTRA SKETCHY SINCE 2024</div>
+            <div style={styles.badge}>FRESHLY UNHINGED</div>
 
             <h1 style={styles.heroTitle}>
               <div style={styles.orangeText}>GAME MODIFIERS</div>
@@ -654,8 +654,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
               <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>Games Inc.</div>
             </div>
           </div>
-          <p style={{ color: '#9ca3af', fontWeight: 600 }}>Making game night weird since 2024</p>
-          <p style={{ color: '#6b7280', marginTop: '2rem', fontWeight: 600 }}>© 2024 Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.</p>
+          <p style={{ color: '#9ca3af', fontWeight: 600 }}>Professionally ruining game nights since day one</p>
+          <p style={{ color: '#6b7280', marginTop: '2rem', fontWeight: 600 }}>© 2025 Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.</p>
         </div>
       </footer>
       
