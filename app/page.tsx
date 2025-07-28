@@ -1,52 +1,61 @@
+import { prisma } from "@/lib/prisma";
 import FullUproarHomeStyled from "./components/FullUproarHomeStyled";
 
-// Use the same API approach that works in admin panel
-async function fetchGameData() {
+export default async function Home() {
+  console.log('Starting Home page render...');
+  
+  let games = [];
+  let comics = [];
+  let news = [];
+
   try {
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : process.env.NODE_ENV === 'production' 
-        ? 'https://full-uproar-site-two.vercel.app'
-        : 'http://localhost:3000';
+    console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
     
-    console.log('Fetching from baseUrl:', baseUrl);
-    
-    const [gamesRes, comicsRes, newsRes] = await Promise.all([
-      fetch(`${baseUrl}/api/games`, { 
-        cache: 'no-store',
-        headers: { 'Content-Type': 'application/json' }
+    // Direct database queries (bypassing auth middleware)
+    const [gamesData, comicsData, newsData] = await Promise.all([
+      prisma.game.findMany({
+        orderBy: { createdAt: 'desc' }
       }),
-      fetch(`${baseUrl}/api/comics`, { 
-        cache: 'no-store',
-        headers: { 'Content-Type': 'application/json' }
+      prisma.comic.findMany({
+        orderBy: { createdAt: 'desc' }
       }),
-      fetch(`${baseUrl}/api/news`, { 
-        cache: 'no-store',
-        headers: { 'Content-Type': 'application/json' }
+      prisma.newsPost.findMany({
+        orderBy: { createdAt: 'desc' }
       })
     ]);
 
-    console.log('API responses:', {
-      games: gamesRes.status,
-      comics: comicsRes.status,
-      news: newsRes.status
+    console.log('Raw database results:', {
+      games: gamesData.length,
+      comics: comicsData.length,
+      news: newsData.length
     });
 
-    const games = gamesRes.ok ? await gamesRes.json() : [];
-    const comics = comicsRes.ok ? await comicsRes.json() : [];
-    const news = newsRes.ok ? await newsRes.json() : [];
-
-    console.log('Fetched via API - Games:', games.length, games);
+    // Convert dates to strings for client component serialization
+    games = gamesData.map(game => ({
+      ...game,
+      createdAt: game.createdAt.toISOString()
+    }));
     
-    return { games, comics, news };
-  } catch (error) {
-    console.error('API fetch error:', error);
-    return { games: [], comics: [], news: [] };
-  }
-}
+    comics = comicsData.map(comic => ({
+      ...comic,
+      createdAt: comic.createdAt.toISOString()
+    }));
+    
+    news = newsData.map(post => ({
+      ...post,
+      createdAt: post.createdAt.toISOString()
+    }));
 
-export default async function Home() {
-  const { games, comics, news } = await fetchGameData();
+    console.log('Final data for component:', {
+      games: games.length,
+      comics: comics.length,
+      news: news.length
+    });
+
+  } catch (error) {
+    console.error('Database error:', error);
+    console.error('Error stack:', error.stack);
+  }
 
   return <FullUproarHomeStyled games={games} comics={comics} news={news} />;
 }
