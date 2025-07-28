@@ -54,7 +54,9 @@ export default async function Home() {
 
   } catch (error) {
     console.error('Database error:', error);
-    console.error('Error stack:', error.stack);
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack);
+    }
   }
 
   return <FullUproarHomeStyled games={games} comics={comics} news={news} />;
