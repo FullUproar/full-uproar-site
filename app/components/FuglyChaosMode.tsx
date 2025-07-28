@@ -93,28 +93,39 @@ export default function FuglyChaosMode() {
         id,
         position: { x, y },
         animation: animations[Math.floor(Math.random() * animations.length)],
-        size: 80 + Math.random() * 120, // 80-200px
+        size: 100 + Math.random() * 200, // 100-300px
         rotation: Math.random() * 360,
         flipX: Math.random() > 0.5
       };
 
       setCharacters(prev => [...prev, newCharacter]);
 
-      // Remove character after animation
+      // Remove character after animation (reduced from 8s to 5s)
       setTimeout(() => {
         setCharacters(prev => prev.filter(char => char.id !== id));
-      }, 8000);
+      }, 5000);
     };
 
-    // Initial spawn
+    // Initial spawn burst - spawn 3 characters immediately
     spawnCharacter();
+    setTimeout(() => spawnCharacter(), 500);
+    setTimeout(() => spawnCharacter(), 1000);
 
-    // Spawn new characters periodically
+    // Spawn new characters much more frequently
     const interval = setInterval(() => {
-      if (Math.random() < 0.3) { // 30% chance every 3 seconds
-        spawnCharacter();
+      // Always spawn at least one
+      spawnCharacter();
+      
+      // 50% chance to spawn a second one
+      if (Math.random() < 0.5) {
+        setTimeout(() => spawnCharacter(), 200);
       }
-    }, 3000);
+      
+      // 25% chance to spawn a third one
+      if (Math.random() < 0.25) {
+        setTimeout(() => spawnCharacter(), 400);
+      }
+    }, 1500); // Every 1.5 seconds instead of 3
 
     return () => clearInterval(interval);
   }, [chaosEnabled]);
@@ -157,7 +168,7 @@ export default function FuglyChaosMode() {
             transform: `rotate(${char.rotation}deg) scaleX(${char.flipX ? -1 : 1})`,
             zIndex: 999,
             pointerEvents: 'none',
-            animation: `${char.animation} 8s ease-in-out`
+            animation: `${char.animation} 5s ease-in-out`
           }}
         >
           <div style={{
