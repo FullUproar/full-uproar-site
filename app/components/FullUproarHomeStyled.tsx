@@ -533,9 +533,23 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                       justifyContent: 'center',
                       color: '#f97316',
                       fontSize: '4rem',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
+                      overflow: 'hidden'
                     }}>
-                      FUGLY
+                      {featuredGame.imageUrl && featuredGame.imageUrl.trim() !== '' ? (
+                        <img 
+                          src={featuredGame.imageUrl} 
+                          alt={featuredGame.title}
+                          style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            objectFit: 'cover', 
+                            borderRadius: '1rem' 
+                          }} 
+                        />
+                      ) : (
+                        'FUGLY'
+                      )}
                     </div>
                     <div style={{
                       position: 'absolute',
