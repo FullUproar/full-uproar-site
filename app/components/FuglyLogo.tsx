@@ -22,8 +22,14 @@ export default function FuglyLogo({
     fetch('/api/artwork')
       .then(res => res.json())
       .then(data => {
-        // Find the first logo artwork
-        const logo = data.find((art: any) => art.category === 'logo');
+        // Look for specific fugly1 logo first, then fall back to any logo
+        const fuglyLogo = data.find((art: any) => 
+          art.name.toLowerCase() === 'fugly1' || 
+          art.name.toLowerCase().includes('fugly1')
+        );
+        
+        const logo = fuglyLogo || data.find((art: any) => art.category === 'logo');
+        
         if (logo) {
           // Use thumbnail for small sizes, medium for larger
           setLogoUrl(size <= 50 ? (logo.thumbnailUrl || logo.imageUrl) : logo.imageUrl);
