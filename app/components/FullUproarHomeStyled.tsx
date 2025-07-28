@@ -53,6 +53,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeGame, setActiveGame] = useState(0);
   const [currentComic, setCurrentComic] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [cardRotation, setCardRotation] = useState(1);
 
   // Debug log
   console.log('FullUproarHomeStyled received games:', games.length, games);
@@ -97,11 +99,21 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
   // Filter featured games only
   const featuredGames = games.filter(game => game.featured);
 
-  // Auto-rotate featured games
+  // Auto-rotate featured games with chaotic transitions
   useEffect(() => {
     if (featuredGames.length > 0) {
       const interval = setInterval(() => {
-        setActiveGame((prev) => (prev + 1) % featuredGames.length);
+        // Start transition animation
+        setIsTransitioning(true);
+        
+        // After shake animation, change game and rotation
+        setTimeout(() => {
+          setActiveGame((prev) => (prev + 1) % featuredGames.length);
+          // Random rotation between -5 and 5 degrees, but never 0
+          const rotations = [-5, -3, -2, 2, 3, 5];
+          setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
+          setIsTransitioning(false);
+        }, 300);
       }, 5000);
       return () => clearInterval(interval);
     }
@@ -275,8 +287,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       maxWidth: '64rem',
       margin: '0 auto',
       border: '4px solid #f97316',
-      transform: 'rotate(1deg)',
-      transition: 'transform 0.3s'
+      transform: `rotate(${cardRotation}deg)`,
+      transition: 'transform 0.3s',
+      animation: isTransitioning ? 'chaosShake 0.3s ease-in-out' : 'none'
     },
     gamesSection: {
       padding: '5rem 0',
@@ -559,9 +572,11 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                       color: '#111827',
                       padding: '1rem',
                       borderRadius: '50px',
-                      transform: 'rotate(12deg)',
+                      transform: `rotate(${isTransitioning ? -12 : 12}deg)`,
                       fontWeight: 'bold',
-                      fontSize: '0.875rem'
+                      fontSize: '0.875rem',
+                      transition: 'transform 0.3s',
+                      animation: isTransitioning ? 'tagWobble 0.3s ease-in-out' : 'none'
                     }}>
                       Fugly Tested!
                     </div>
@@ -678,6 +693,28 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       
       {/* Deployment info for logged-in users */}
       <DeploymentInfo isVisible={!!user} />
+
+      <style jsx>{`
+        @keyframes chaosShake {
+          0%, 100% { transform: rotate(${cardRotation}deg) translateX(0); }
+          10% { transform: rotate(${cardRotation + 3}deg) translateX(-2px); }
+          20% { transform: rotate(${cardRotation - 3}deg) translateX(2px); }
+          30% { transform: rotate(${cardRotation + 2}deg) translateX(-4px); }
+          40% { transform: rotate(${cardRotation - 2}deg) translateX(4px); }
+          50% { transform: rotate(${cardRotation + 4}deg) translateX(-2px); }
+          60% { transform: rotate(${cardRotation - 4}deg) translateX(2px); }
+          70% { transform: rotate(${cardRotation + 1}deg) translateX(-1px); }
+          80% { transform: rotate(${cardRotation - 1}deg) translateX(1px); }
+          90% { transform: rotate(${cardRotation + 2}deg) translateX(0); }
+        }
+
+        @keyframes tagWobble {
+          0%, 100% { transform: rotate(12deg) scale(1); }
+          25% { transform: rotate(-20deg) scale(1.1); }
+          50% { transform: rotate(25deg) scale(0.9); }
+          75% { transform: rotate(-15deg) scale(1.05); }
+        }
+      `}</style>
     </div>
   );
 }
