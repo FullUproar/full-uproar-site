@@ -530,9 +530,15 @@ export default function AdminDashboard() {
             <h1 style={styles.headerTitle}>FUGLY'S DATABASE CHAOS CENTER</h1>
             <p style={styles.headerSubtitle}>Browse, edit, and create mayhem - {user.firstName}</p>
           </div>
-          <a href="/" style={{ color: 'white', textDecoration: 'none', background: 'rgba(255,255,255,0.2)', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold' }}>
+          <button 
+            onClick={() => {
+              sessionStorage.setItem('fugly-auth', 'true');
+              window.location.href = '/';
+            }}
+            style={{ color: 'white', textDecoration: 'none', background: 'rgba(255,255,255,0.2)', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
+          >
             ← Back to Store
-          </a>
+          </button>
         </div>
       </div>
 
