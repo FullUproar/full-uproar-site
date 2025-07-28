@@ -19,39 +19,74 @@ export const IMAGE_QUALITY = {
 
 export async function resizeImage(file: File, maxSize: number, quality: number = 0.8): Promise<string> {
   return new Promise((resolve, reject) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-
-    img.onload = () => {
-      // Calculate new dimensions while maintaining aspect ratio
-      let { width, height } = img;
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const img = new Image();
       
-      if (width > height) {
-        if (width > maxSize) {
-          height = (height * maxSize) / width;
-          width = maxSize;
+      img.onload = () => {
+        // Calculate new dimensions while maintaining aspect ratio
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
         }
-      } else {
-        if (height > maxSize) {
-          width = (width * maxSize) / height;
-          height = maxSize;
+
+        // Create canvas with proper settings
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d', { 
+          alpha: true,
+          willReadFrequently: true 
+        });
+        
+        if (!ctx) {
+          reject(new Error('Failed to get canvas context'));
+          return;
         }
-      }
 
-      canvas.width = width;
-      canvas.height = height;
+        // For PNG files, ensure transparency is preserved
+        if (file.type === 'image/png' || file.type === 'image/webp') {
+          // Don't fill with any background - keep it transparent
+          ctx.clearRect(0, 0, width, height);
+        } else {
+          // For non-transparent formats, fill with white background
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, width, height);
+        }
 
-      // Draw and resize image
-      ctx?.drawImage(img, 0, 0, width, height);
+        // Draw the image
+        ctx.drawImage(img, 0, 0, width, height);
 
-      // Convert to base64
-      const resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
-      resolve(resizedDataUrl);
+        // Convert to base64 - preserve format for PNG/WebP
+        let resizedDataUrl: string;
+        if (file.type === 'image/png') {
+          resizedDataUrl = canvas.toDataURL('image/png');
+        } else if (file.type === 'image/webp') {
+          resizedDataUrl = canvas.toDataURL('image/webp', quality);
+        } else {
+          resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+        
+        resolve(resizedDataUrl);
+      };
+
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = e.target?.result as string;
     };
-
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = URL.createObjectURL(file);
+    
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
   });
 }
 
