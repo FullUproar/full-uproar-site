@@ -7,6 +7,7 @@ import { useCartStore } from '@/lib/cartStore';
 import DeploymentInfo from './DeploymentInfo';
 import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
+import FuglyPointing from './FuglyPointing';
 
 interface Game {
   id: number;
@@ -455,18 +456,21 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
             
             {/* Email Capture */}
             <div style={styles.emailForm}>
-              <form onSubmit={handleEmailSubmit} style={styles.emailContainer}>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Join Fugly's chaos crew"
-                  style={styles.emailInput}
-                />
-                <button type="submit" style={styles.emailButton}>
-                  SIGN ME UP <Zap style={{ height: '1rem', width: '1rem' }} />
-                </button>
-              </form>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
+                <form onSubmit={handleEmailSubmit} style={styles.emailContainer}>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Join Fugly's chaos crew"
+                    style={styles.emailInput}
+                  />
+                  <button type="submit" style={styles.emailButton}>
+                    SIGN ME UP <Zap style={{ height: '1rem', width: '1rem' }} />
+                  </button>
+                </form>
+                <FuglyPointing size={60} style={{ marginLeft: '0.5rem' }} />
+              </div>
               <p style={{ fontSize: '0.875rem', color: '#fdba74', marginTop: '0.5rem', fontWeight: 600 }}>
                 🎁 Get exclusive pre-order bonuses and Fugly's seal of approval!
               </p>
@@ -679,13 +683,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       {/* Footer placeholder */}
       <footer style={{ background: '#000', color: 'white', padding: '3rem 0', textAlign: 'center' as const }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-            <FuglyLogo size={50} />
-            <div>
-              <span style={{ fontWeight: 900, fontSize: '1.25rem', color: '#f97316' }}>FULL UPROAR</span>
-              <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>Games Inc.</div>
-            </div>
-          </div>
+          <FuglyLogo size={80} style={{ margin: '0 auto 1.5rem auto' }} />
           <p style={{ color: '#9ca3af', fontWeight: 600 }}>Professionally ruining game nights since day one</p>
           <p style={{ color: '#6b7280', marginTop: '2rem', fontWeight: 600 }}>© 2025 Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.</p>
         </div>
