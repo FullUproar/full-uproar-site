@@ -13,16 +13,33 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
     deployedAt: string;
     timeAgo: string;
   } | null>(null);
+  const [hasNewDeployment, setHasNewDeployment] = useState(false);
+  const [initialSha, setInitialSha] = useState<string | null>(null);
 
   useEffect(() => {
     if (isVisible) {
-      // Fetch deployment info from our API
-      fetch('/api/deployment-info')
-        .then(res => res.json())
-        .then(data => setDeploymentData(data))
-        .catch(console.error);
+      const fetchDeploymentInfo = () => {
+        fetch('/api/deployment-info')
+          .then(res => res.json())
+          .then(data => {
+            if (initialSha === null) {
+              setInitialSha(data.sha);
+            } else if (data.sha !== initialSha && data.sha !== deploymentData?.sha) {
+              setHasNewDeployment(true);
+            }
+            setDeploymentData(data);
+          })
+          .catch(console.error);
+      };
+
+      // Initial fetch
+      fetchDeploymentInfo();
+
+      // Refresh every 15 seconds
+      const refreshInterval = setInterval(fetchDeploymentInfo, 15000);
+      return () => clearInterval(refreshInterval);
     }
-  }, [isVisible]);
+  }, [isVisible, initialSha, deploymentData?.sha]);
 
   useEffect(() => {
     if (deploymentData?.deployedAt) {
@@ -53,7 +70,7 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
       };
 
       updateTimeAgo();
-      const interval = setInterval(updateTimeAgo, 10000); // Update every 10 seconds
+      const interval = setInterval(updateTimeAgo, 1000); // Update every second
       return () => clearInterval(interval);
     }
   }, [deploymentData?.deployedAt]);
@@ -80,15 +97,37 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
           width: '8px',
           height: '8px',
           borderRadius: '50%',
-          background: '#10b981'
+          background: hasNewDeployment ? '#ef4444' : '#10b981',
+          animation: hasNewDeployment ? 'pulse 1s infinite' : 'none'
         }} />
-        <span style={{ color: '#f97316', fontWeight: 'bold' }}>LIVE</span>
+        <span style={{ color: '#f97316', fontWeight: 'bold' }}>
+          {hasNewDeployment ? 'NEW DEPLOYMENT' : 'LIVE'}
+        </span>
       </div>
       <div style={{ color: '#d1d5db' }}>
         <div>Branch: <span style={{ color: '#fbbf24' }}>{deploymentData.branch}</span></div>
         <div>Commit: <span style={{ color: '#60a5fa' }}>{deploymentData.sha}</span></div>
         <div>Deployed: <span style={{ color: '#34d399' }}>{deploymentData.timeAgo}</span></div>
+        {hasNewDeployment && (
+          <div style={{ 
+            marginTop: '0.5rem', 
+            padding: '0.25rem 0.5rem', 
+            background: '#ef4444', 
+            color: 'white', 
+            borderRadius: '0.25rem',
+            fontSize: '0.65rem',
+            fontWeight: 'bold'
+          }}>
+            ⚠️ Refresh page to see updates
+          </div>
+        )}
       </div>
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}</style>
     </div>
   );
 }
