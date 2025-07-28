@@ -10,6 +10,14 @@ export async function GET() {
     return NextResponse.json(games);
   } catch (error) {
     console.error('Error fetching games:', error);
+    // Return more detailed error in development
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        error: 'Failed to fetch games', 
+        details: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      }, { status: 500 });
+    }
     return NextResponse.json({ error: 'Failed to fetch games' }, { status: 500 });
   }
 }
