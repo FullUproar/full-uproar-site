@@ -15,6 +15,7 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
   } | null>(null);
   const [hasNewDeployment, setHasNewDeployment] = useState(false);
   const [initialSha, setInitialSha] = useState<string | null>(null);
+  const [deploymentTimes, setDeploymentTimes] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (isVisible) {
@@ -27,7 +28,20 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
             } else if (data.sha !== initialSha && data.sha !== deploymentData?.sha) {
               setHasNewDeployment(true);
             }
-            setDeploymentData(data);
+            
+            // Store deployment time for this SHA if we haven't seen it before
+            if (!deploymentTimes[data.sha]) {
+              setDeploymentTimes(prev => ({
+                ...prev,
+                [data.sha]: data.deployedAt
+              }));
+            }
+            
+            // Use stored deployment time for this SHA
+            setDeploymentData({
+              ...data,
+              deployedAt: deploymentTimes[data.sha] || data.deployedAt
+            });
           })
           .catch(console.error);
       };
@@ -39,7 +53,7 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
       const refreshInterval = setInterval(fetchDeploymentInfo, 15000);
       return () => clearInterval(refreshInterval);
     }
-  }, [isVisible, initialSha, deploymentData?.sha]);
+  }, [isVisible, initialSha, deploymentData?.sha, deploymentTimes]);
 
   useEffect(() => {
     if (deploymentData?.deployedAt) {
