@@ -334,10 +334,10 @@ export default function AdminDashboard() {
       background: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
       width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' as const
     },
-    modalHeader: { padding: '1.5rem', borderBottom: '1px solid #e5e7eb' },
+    modalHeader: { padding: '1.5rem', borderBottom: '1px solid #e5e7eb', flexShrink: 0 },
     modalTitle: { fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937' },
-    modalBody: { padding: '1.5rem', flex: 1, overflow: 'auto' },
-    modalFooter: { padding: '1.5rem', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'flex-end', gap: '1rem' },
+    modalBody: { padding: '1.5rem', flex: 1, overflow: 'auto', minHeight: 0 },
+    modalFooter: { padding: '1.5rem', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'flex-end', gap: '1rem', flexShrink: 0 },
     
     // Form
     form: { display: 'flex', flexDirection: 'column' as const, gap: '1rem' },
@@ -730,7 +730,7 @@ export default function AdminDashboard() {
         {/* Edit/Create Modal */}
         {editMode && (
           <div style={styles.modalOverlay} onClick={closeModal}>
-            <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <form onSubmit={handleSubmit} style={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div style={styles.modalHeader}>
                 <h2 style={styles.modalTitle}>
                   {editMode === 'create' ? 'Create New' : 'Edit'} {getSingularForm(activeTab)}
@@ -739,18 +739,16 @@ export default function AdminDashboard() {
               
               <div style={styles.modalBody}>
                 {message && <div style={styles.message}>{message}</div>}
-                <form onSubmit={handleSubmit}>
-                  {renderForm()}
-                </form>
+                {renderForm()}
               </div>
               
               <div style={styles.modalFooter}>
                 <button type="button" onClick={closeModal} style={styles.secondaryButton}>Cancel</button>
-                <button type="submit" onClick={handleSubmit} style={styles.primaryButton}>
+                <button type="submit" style={styles.primaryButton}>
                   {editMode === 'create' ? 'Create' : 'Update'} {getSingularForm(activeTab)}
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         )}
       </div>
