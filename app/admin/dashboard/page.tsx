@@ -51,6 +51,31 @@ interface Artwork {
   chaosMode?: boolean;
 }
 
+interface Merch {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  category: string;
+  priceCents: number;
+  imageUrl?: string;
+  sizes?: string;
+  featured: boolean;
+  totalStock?: number;
+  inventory?: any[];
+}
+
+interface Order {
+  id: string;
+  customerEmail: string;
+  customerName: string;
+  status: string;
+  totalCents: number;
+  trackingNumber?: string;
+  createdAt: string;
+  items: any[];
+}
+
 type EditMode = 'create' | 'edit' | null;
 
 export default function AdminDashboard() {
@@ -60,16 +85,21 @@ export default function AdminDashboard() {
   const [comics, setComics] = useState<Comic[]>([]);
   const [news, setNews] = useState<NewsPost[]>([]);
   const [artwork, setArtwork] = useState<Artwork[]>([]);
+  const [merch, setMerch] = useState<Merch[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [message, setMessage] = useState('');
   
   // Modal states
   const [editMode, setEditMode] = useState<EditMode>(null);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [inventoryModalOpen, setInventoryModalOpen] = useState(false);
+  const [inventoryItem, setInventoryItem] = useState<any>(null);
+  const [inventoryData, setInventoryData] = useState<any[]>([]);
 
   // Form states
   const [gameForm, setGameForm] = useState({
     title: '', tagline: '', description: '', priceCents: '', players: '', timeToPlay: '', 
-    ageRating: '', imageUrl: '', isBundle: false, isPreorder: true, featured: false, bundleInfo: ''
+    ageRating: '', imageUrl: '', isBundle: false, isPreorder: true, featured: false, bundleInfo: '', stock: ''
   });
   const [comicForm, setComicForm] = useState({
     title: '', episode: '', description: '', imageUrl: ''
@@ -79,6 +109,9 @@ export default function AdminDashboard() {
   });
   const [artworkForm, setArtworkForm] = useState({
     name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: '', chaosMode: false
+  });
+  const [merchForm, setMerchForm] = useState({
+    name: '', slug: '', description: '', category: 'apparel', priceCents: '', imageUrl: '', sizes: '["S", "M", "L", "XL"]', featured: false
   });
 
   // Basic admin check
@@ -93,6 +126,8 @@ export default function AdminDashboard() {
     fetchComics();
     fetchNews();
     fetchArtwork();
+    fetchMerch();
+    fetchOrders();
   }, []);
 
   const fetchGames = async () => {
@@ -135,17 +170,38 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchMerch = async () => {
+    try {
+      const response = await fetch('/api/merch');
+      const data = await response.json();
+      setMerch(data);
+    } catch (error) {
+      console.error('Error fetching merch:', error);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch('/api/orders');
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
   const openCreateModal = () => {
     setEditMode('create');
     setEditingItem(null);
     // Reset forms
     setGameForm({
       title: '', tagline: '', description: '', priceCents: '', players: '', timeToPlay: '', 
-      ageRating: '', imageUrl: '', isBundle: false, isPreorder: true, featured: false, bundleInfo: ''
+      ageRating: '', imageUrl: '', isBundle: false, isPreorder: true, featured: false, bundleInfo: '', stock: ''
     });
     setComicForm({ title: '', episode: '', description: '', imageUrl: '' });
     setNewsForm({ title: '', excerpt: '', content: '' });
     setArtworkForm({ name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: '', chaosMode: false });
+    setMerchForm({ name: '', slug: '', description: '', category: 'apparel', priceCents: '', imageUrl: '', sizes: '["S", "M", "L", "XL"]', featured: false });
   };
 
   const openEditModal = (item: any) => {
@@ -165,7 +221,8 @@ export default function AdminDashboard() {
         isBundle: item.isBundle || false,
         isPreorder: item.isPreorder || false,
         featured: item.featured || false,
-        bundleInfo: item.bundleInfo || ''
+        bundleInfo: item.bundleInfo || '',
+        stock: item.stock !== undefined ? item.stock.toString() : '0'
       });
     } else if (activeTab === 'comics') {
       setComicForm({
@@ -191,6 +248,17 @@ export default function AdminDashboard() {
         tags: item.tags || '',
         chaosMode: item.chaosMode || false
       });
+    } else if (activeTab === 'merch') {
+      setMerchForm({
+        name: item.name || '',
+        slug: item.slug || '',
+        description: item.description || '',
+        category: item.category || 'apparel',
+        priceCents: item.priceCents ? (item.priceCents / 100).toString() : '',
+        imageUrl: item.imageUrl || '',
+        sizes: item.sizes || '[]',
+        featured: item.featured || false
+      });
     }
   };
 
@@ -198,6 +266,54 @@ export default function AdminDashboard() {
     setEditMode(null);
     setEditingItem(null);
     setMessage('');
+  };
+
+  const openInventoryModal = async (item: any) => {
+    setInventoryItem(item);
+    setInventoryModalOpen(true);
+    
+    // Fetch inventory data for this merch item
+    try {
+      const response = await fetch(`/api/inventory?merchId=${item.id}`);
+      const data = await response.json();
+      setInventoryData(data);
+    } catch (error) {
+      console.error('Error fetching inventory:', error);
+    }
+  };
+
+  const closeInventoryModal = () => {
+    setInventoryModalOpen(false);
+    setInventoryItem(null);
+    setInventoryData([]);
+  };
+
+  const updateInventory = async (inventoryId: number, merchId: number, size: string | null, newQuantity: number) => {
+    try {
+      const response = await fetch('/api/inventory', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          merchId,
+          size,
+          quantity: newQuantity
+        })
+      });
+
+      if (response.ok) {
+        // Refresh inventory data
+        const refreshResponse = await fetch(`/api/inventory?merchId=${merchId}`);
+        const data = await refreshResponse.json();
+        setInventoryData(data);
+        
+        // Also refresh merch data to update total stock
+        fetchMerch();
+      } else {
+        console.error('Failed to update inventory');
+      }
+    } catch (error) {
+      console.error('Error updating inventory:', error);
+    }
   };
 
   const handleDelete = async (item: any) => {
@@ -215,6 +331,8 @@ export default function AdminDashboard() {
         endpoint = `/api/news?id=${item.id}`;
       } else if (activeTab === 'artwork') {
         endpoint = `/api/artwork?id=${item.id}`;
+      } else if (activeTab === 'merch') {
+        endpoint = `/api/merch?id=${item.id}`;
       }
 
       const response = await fetch(endpoint, {
@@ -229,6 +347,7 @@ export default function AdminDashboard() {
         else if (activeTab === 'comics') fetchComics();
         else if (activeTab === 'news') fetchNews();
         else if (activeTab === 'artwork') fetchArtwork();
+        else if (activeTab === 'merch') fetchMerch();
         
         setTimeout(() => setMessage(''), 3000);
       } else {
@@ -249,7 +368,11 @@ export default function AdminDashboard() {
       
       if (activeTab === 'games') {
         endpoint = '/api/games';
-        body = { ...gameForm, priceCents: Math.round(parseFloat(gameForm.priceCents) * 100) };
+        body = { 
+          ...gameForm, 
+          priceCents: Math.round(parseFloat(gameForm.priceCents) * 100),
+          stock: parseInt(gameForm.stock) || 0
+        };
       } else if (activeTab === 'comics') {
         endpoint = '/api/comics';
         body = comicForm;
@@ -259,10 +382,40 @@ export default function AdminDashboard() {
       } else if (activeTab === 'artwork') {
         endpoint = '/api/artwork';
         body = artworkForm;
+      } else if (activeTab === 'merch') {
+        endpoint = '/api/merch';
+        body = { 
+          ...merchForm, 
+          priceCents: Math.round(parseFloat(merchForm.priceCents) * 100),
+          slug: merchForm.slug || merchForm.name.toLowerCase().replace(/\s+/g, '-')
+        };
       }
 
       const method = editMode === 'create' ? 'POST' : 'PUT';
       const url = editMode === 'edit' ? `${endpoint}?id=${editingItem.id}` : endpoint;
+      
+      // Special handling for orders - only update status
+      if (activeTab === 'orders' && editMode === 'edit') {
+        const orderBody = {
+          status: editingItem.status,
+          trackingNumber: editingItem.trackingNumber,
+          statusNote: `Status updated to ${editingItem.status}`
+        };
+        const response = await fetch(`/api/orders?id=${editingItem.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderBody)
+        });
+        
+        if (response.ok) {
+          setMessage(`✅ Order updated successfully!`);
+          fetchOrders();
+          setTimeout(closeModal, 1000);
+        } else {
+          setMessage(`❌ Error updating order`);
+        }
+        return;
+      }
       
       const response = await fetch(url, {
         method: method,
@@ -278,6 +431,7 @@ export default function AdminDashboard() {
         else if (activeTab === 'comics') fetchComics();
         else if (activeTab === 'news') fetchNews();
         else if (activeTab === 'artwork') fetchArtwork();
+        else if (activeTab === 'merch') fetchMerch();
         
         setTimeout(closeModal, 1000);
       } else {
@@ -364,7 +518,10 @@ export default function AdminDashboard() {
     if (activeTab === 'games') return games;
     if (activeTab === 'comics') return comics;
     if (activeTab === 'news') return news;
-    return artwork;
+    if (activeTab === 'artwork') return artwork;
+    if (activeTab === 'merch') return merch;
+    if (activeTab === 'orders') return orders;
+    return [];
   };
 
   const getSingularForm = (plural: string) => {
@@ -372,6 +529,8 @@ export default function AdminDashboard() {
     if (plural === 'comics') return 'comic';
     if (plural === 'news') return 'news post';
     if (plural === 'artwork') return 'artwork';
+    if (plural === 'merch') return 'merch item';
+    if (plural === 'orders') return 'order';
     return plural;
   };
 
@@ -382,6 +541,7 @@ export default function AdminDashboard() {
           <th style={styles.th}>Image</th>
           <th style={styles.th}>Title</th>
           <th style={styles.th}>Price</th>
+          <th style={styles.th}>Stock</th>
           <th style={styles.th}>Players</th>
           <th style={styles.th}>Status</th>
           <th style={styles.th}>Actions</th>
@@ -407,6 +567,31 @@ export default function AdminDashboard() {
           <th style={styles.th}>Category</th>
           <th style={styles.th}>Tags</th>
           <th style={styles.th}>Chaos</th>
+          <th style={styles.th}>Actions</th>
+        </tr>
+      );
+    }
+    if (activeTab === 'merch') {
+      return (
+        <tr>
+          <th style={styles.th}>Image</th>
+          <th style={styles.th}>Name</th>
+          <th style={styles.th}>Category</th>
+          <th style={styles.th}>Price</th>
+          <th style={styles.th}>Stock</th>
+          <th style={styles.th}>Featured</th>
+          <th style={styles.th}>Actions</th>
+        </tr>
+      );
+    }
+    if (activeTab === 'orders') {
+      return (
+        <tr>
+          <th style={styles.th}>Order ID</th>
+          <th style={styles.th}>Customer</th>
+          <th style={styles.th}>Total</th>
+          <th style={styles.th}>Status</th>
+          <th style={styles.th}>Date</th>
           <th style={styles.th}>Actions</th>
         </tr>
       );
@@ -439,6 +624,18 @@ export default function AdminDashboard() {
             <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>{item.tagline}</div>
           </td>
           <td style={styles.td}>${(item.priceCents / 100).toFixed(2)}</td>
+          <td style={styles.td}>
+            <span style={{ 
+              background: item.stock > 0 ? '#dcfce7' : '#fee2e2', 
+              color: item.stock > 0 ? '#15803d' : '#dc2626', 
+              padding: '0.25rem 0.75rem', 
+              borderRadius: '0.25rem', 
+              fontSize: '0.875rem', 
+              fontWeight: 'bold' 
+            }}>
+              {item.stock || 0}
+            </span>
+          </td>
           <td style={styles.td}>{item.players}</td>
           <td style={styles.td}>
             <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
@@ -512,6 +709,86 @@ export default function AdminDashboard() {
       );
     }
     
+    if (activeTab === 'merch') {
+      return (
+        <tr key={item.id}>
+          <td style={styles.td}>
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt={item.name} style={styles.imagePreview} />
+            ) : (
+              <div style={{ ...styles.imagePreview, background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem' }}>
+                No image
+              </div>
+            )}
+          </td>
+          <td style={styles.td}>
+            <div style={{ fontWeight: 'bold' }}>{item.name}</div>
+            <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{item.slug}</div>
+          </td>
+          <td style={styles.td}>{item.category}</td>
+          <td style={{ ...styles.td, fontWeight: 'bold', color: '#f97316' }}>${(item.priceCents / 100).toFixed(2)}</td>
+          <td style={styles.td}>
+            <span style={{ 
+              background: item.totalStock > 0 ? '#dcfce7' : '#fee2e2', 
+              color: item.totalStock > 0 ? '#15803d' : '#dc2626', 
+              padding: '0.25rem 0.75rem', 
+              borderRadius: '0.25rem', 
+              fontSize: '0.875rem', 
+              fontWeight: 'bold' 
+            }}>
+              {item.totalStock || 0}
+            </span>
+          </td>
+          <td style={styles.td}>
+            {item.featured ? (
+              <span style={{ background: '#fbbf24', color: '#78350f', padding: '0.25rem 0.75rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                ⭐ Featured
+              </span>
+            ) : (
+              <span style={{ background: '#e5e7eb', color: '#6b7280', padding: '0.25rem 0.75rem', borderRadius: '50px', fontSize: '0.75rem' }}>
+                Standard
+              </span>
+            )}
+          </td>
+          <td style={styles.td}>
+            <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
+            <button onClick={() => openInventoryModal(item)} style={{ ...styles.editButton, background: '#10b981' }}>Inventory</button>
+            <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
+          </td>
+        </tr>
+      );
+    }
+    
+    if (activeTab === 'orders') {
+      return (
+        <tr key={item.id}>
+          <td style={{ ...styles.td, fontFamily: 'monospace', fontSize: '0.875rem' }}>{item.id.slice(0, 8)}...</td>
+          <td style={styles.td}>
+            <div style={{ fontWeight: 'bold' }}>{item.customerName}</div>
+            <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{item.customerEmail}</div>
+          </td>
+          <td style={{ ...styles.td, fontWeight: 'bold', color: '#059669' }}>${(item.totalCents / 100).toFixed(2)}</td>
+          <td style={styles.td}>
+            <span style={{ 
+              background: item.status === 'pending' ? '#fef3c7' : item.status === 'shipped' ? '#dbeafe' : item.status === 'delivered' ? '#dcfce7' : '#fee2e2',
+              color: item.status === 'pending' ? '#92400e' : item.status === 'shipped' ? '#1e40af' : item.status === 'delivered' ? '#15803d' : '#dc2626',
+              padding: '0.25rem 0.75rem', 
+              borderRadius: '0.25rem', 
+              fontSize: '0.875rem', 
+              fontWeight: 'bold',
+              textTransform: 'uppercase' as const
+            }}>
+              {item.status}
+            </span>
+          </td>
+          <td style={{ ...styles.td, fontSize: '0.875rem' }}>{new Date(item.createdAt).toLocaleDateString()}</td>
+          <td style={styles.td}>
+            <button onClick={() => openEditModal(item)} style={styles.editButton}>View</button>
+          </td>
+        </tr>
+      );
+    }
+    
     return (
       <tr key={item.id}>
         <td style={{ ...styles.td, fontWeight: 'bold' }}>{item.title}</td>
@@ -546,8 +823,18 @@ export default function AdminDashboard() {
               <input type="number" step="0.01" value={gameForm.priceCents} onChange={(e) => setGameForm({ ...gameForm, priceCents: e.target.value })} style={styles.input} required />
             </div>
             <div style={styles.formGroup}>
+              <label style={styles.label}>Stock</label>
+              <input type="number" value={gameForm.stock} onChange={(e) => setGameForm({ ...gameForm, stock: e.target.value })} style={styles.input} required />
+            </div>
+          </div>
+          <div style={styles.gridTwo}>
+            <div style={styles.formGroup}>
               <label style={styles.label}>Players</label>
               <input type="text" value={gameForm.players} onChange={(e) => setGameForm({ ...gameForm, players: e.target.value })} style={styles.input} required />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Age Rating</label>
+              <input type="text" value={gameForm.ageRating} onChange={(e) => setGameForm({ ...gameForm, ageRating: e.target.value })} style={styles.input} required />
             </div>
           </div>
           <div style={styles.gridTwo}>
@@ -673,6 +960,129 @@ export default function AdminDashboard() {
       );
     }
     
+    if (activeTab === 'merch') {
+      return (
+        <div style={styles.form}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Name</label>
+            <input type="text" value={merchForm.name} onChange={(e) => setMerchForm({ ...merchForm, name: e.target.value })} style={styles.input} required />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Slug (URL-friendly name)</label>
+            <input type="text" value={merchForm.slug} onChange={(e) => setMerchForm({ ...merchForm, slug: e.target.value })} style={styles.input} placeholder="auto-generated from name" />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Description</label>
+            <textarea value={merchForm.description} onChange={(e) => setMerchForm({ ...merchForm, description: e.target.value })} style={styles.textarea} required />
+          </div>
+          <div style={styles.gridTwo}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Category</label>
+              <select value={merchForm.category} onChange={(e) => setMerchForm({ ...merchForm, category: e.target.value })} style={styles.input} required>
+                <option value="apparel">Apparel</option>
+                <option value="accessories">Accessories</option>
+                <option value="collectibles">Collectibles</option>
+                <option value="stickers">Stickers</option>
+                <option value="prints">Prints</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Price ($)</label>
+              <input type="number" step="0.01" value={merchForm.priceCents} onChange={(e) => setMerchForm({ ...merchForm, priceCents: e.target.value })} style={styles.input} required />
+            </div>
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Sizes (JSON array - leave empty for non-sized items)</label>
+            <input type="text" value={merchForm.sizes} onChange={(e) => setMerchForm({ ...merchForm, sizes: e.target.value })} style={styles.input} placeholder='["S", "M", "L", "XL"]' />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Product Image</label>
+            <ImageUpload onImageUploaded={(imageUrl) => setMerchForm({ ...merchForm, imageUrl })} currentImageUrl={merchForm.imageUrl} />
+            <input type="text" value={merchForm.imageUrl} onChange={(e) => setMerchForm({ ...merchForm, imageUrl: e.target.value })} style={{...styles.input, marginTop: '0.5rem'}} placeholder="Or enter image URL manually" />
+          </div>
+          <div style={styles.checkboxGroup}>
+            <label style={styles.checkboxLabel}>
+              <input type="checkbox" checked={merchForm.featured} onChange={(e) => setMerchForm({ ...merchForm, featured: e.target.checked })} />
+              <span style={{ fontWeight: 'bold', color: '#f97316' }}>Featured Product</span>
+              <span style={{ marginLeft: '0.5rem', fontSize: '0.875rem', color: '#6b7280' }}>
+                (Shows prominently on the home page)
+              </span>
+            </label>
+          </div>
+        </div>
+      );
+    }
+    
+    if (activeTab === 'orders') {
+      return (
+        <div style={styles.form}>
+          <div style={{ padding: '1rem', background: '#fef3c7', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+            <p style={{ color: '#92400e', fontWeight: 'bold' }}>Order Management</p>
+            <p style={{ color: '#78350f', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+              You can view order details and update order status. Inventory will be automatically adjusted when status changes.
+            </p>
+          </div>
+          {editingItem && (
+            <>
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Order ID</label>
+                  <input type="text" value={editingItem.id} disabled style={{...styles.input, background: '#f3f4f6'}} />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Status</label>
+                  <select value={editingItem.status} onChange={(e) => setEditingItem({...editingItem, status: e.target.value})} style={styles.input}>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Customer</label>
+                <div style={{ padding: '0.75rem', background: '#f9fafb', borderRadius: '0.375rem' }}>
+                  <div style={{ fontWeight: 'bold' }}>{editingItem.customerName}</div>
+                  <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>{editingItem.customerEmail}</div>
+                </div>
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Shipping Address</label>
+                <div style={{ padding: '0.75rem', background: '#f9fafb', borderRadius: '0.375rem', whiteSpace: 'pre-wrap' }}>
+                  {editingItem.shippingAddress}
+                </div>
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Tracking Number</label>
+                <input type="text" value={editingItem.trackingNumber || ''} onChange={(e) => setEditingItem({...editingItem, trackingNumber: e.target.value})} style={styles.input} placeholder="Enter tracking number when shipped" />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Order Items</label>
+                <div style={{ background: '#f9fafb', borderRadius: '0.375rem', padding: '1rem' }}>
+                  {editingItem.items?.map((item: any, index: number) => (
+                    <div key={index} style={{ marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: index < editingItem.items.length - 1 ? '1px solid #e5e7eb' : 'none' }}>
+                      <div style={{ fontWeight: 'bold' }}>{item.game?.title || item.merch?.name} {item.merchSize ? `(${item.merchSize})` : ''}</div>
+                      <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                        Qty: {item.quantity} × ${(item.priceCents / 100).toFixed(2)} = ${((item.quantity * item.priceCents) / 100).toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
+                  <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid #e5e7eb' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                      <span>Total:</span>
+                      <span style={{ color: '#059669' }}>${(editingItem.totalCents / 100).toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      );
+    }
+    
     return (
       <div style={styles.form}>
         <div style={styles.formGroup}>
@@ -718,6 +1128,8 @@ export default function AdminDashboard() {
             <div style={styles.tabList}>
               {[
                 { key: 'games', label: 'Games', count: games.length },
+                { key: 'merch', label: 'Merch', count: merch.length },
+                { key: 'orders', label: 'Orders', count: orders.length },
                 { key: 'comics', label: 'Comics', count: comics.length },
                 { key: 'news', label: 'News', count: news.length },
                 { key: 'artwork', label: 'Artwork', count: artwork.length }
@@ -730,9 +1142,11 @@ export default function AdminDashboard() {
                 </button>
               ))}
             </div>
-            <button onClick={openCreateModal} style={styles.createButton}>
-              + Create New {getSingularForm(activeTab)}
-            </button>
+            {activeTab !== 'orders' && (
+              <button onClick={openCreateModal} style={styles.createButton}>
+                + Create New {getSingularForm(activeTab)}
+              </button>
+            )}
           </div>
         </div>
 
@@ -771,6 +1185,124 @@ export default function AdminDashboard() {
                 {renderForm()}
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Inventory Modal */}
+        {inventoryModalOpen && inventoryItem && (
+          <div style={styles.modalOverlay} onClick={closeInventoryModal}>
+            <div style={{ ...styles.modal, maxWidth: '800px' }} onClick={(e) => e.stopPropagation()}>
+              <div style={styles.modalHeader}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h2 style={styles.modalTitle}>
+                    Inventory Management: {inventoryItem.name}
+                  </h2>
+                  <button type="button" onClick={closeInventoryModal} style={{...styles.secondaryButton, padding: '0.5rem 1rem'}}>Close</button>
+                </div>
+              </div>
+              
+              <div style={styles.modalBody}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>
+                    Manage stock levels for each size/variant. Changes are saved automatically.
+                  </p>
+                </div>
+                
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
+                      <th style={{ ...styles.th, textAlign: 'left' }}>Size/Variant</th>
+                      <th style={{ ...styles.th, textAlign: 'center' }}>Current Stock</th>
+                      <th style={{ ...styles.th, textAlign: 'center' }}>Reserved</th>
+                      <th style={{ ...styles.th, textAlign: 'center' }}>Available</th>
+                      <th style={{ ...styles.th, textAlign: 'center' }}>Update Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inventoryData.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                          No inventory records found. Create the merch item first.
+                        </td>
+                      </tr>
+                    ) : (
+                      inventoryData.map((inv: any) => (
+                        <tr key={inv.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                          <td style={{ ...styles.td, fontWeight: 'bold' }}>
+                            {inv.size || 'One Size'}
+                          </td>
+                          <td style={{ ...styles.td, textAlign: 'center' }}>
+                            {inv.quantity}
+                          </td>
+                          <td style={{ ...styles.td, textAlign: 'center' }}>
+                            {inv.reserved}
+                          </td>
+                          <td style={{ ...styles.td, textAlign: 'center' }}>
+                            <span style={{ 
+                              fontWeight: 'bold',
+                              color: (inv.quantity - inv.reserved) > 0 ? '#059669' : '#dc2626'
+                            }}>
+                              {inv.quantity - inv.reserved}
+                            </span>
+                          </td>
+                          <td style={{ ...styles.td, textAlign: 'center' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
+                              <button 
+                                onClick={() => updateInventory(inv.id, inventoryItem.id, inv.size, Math.max(0, inv.quantity - 1))}
+                                style={{ 
+                                  ...styles.secondaryButton, 
+                                  padding: '0.25rem 0.5rem',
+                                  fontSize: '1.25rem',
+                                  lineHeight: 1
+                                }}
+                              >
+                                -
+                              </button>
+                              <input 
+                                type="number" 
+                                value={inv.quantity}
+                                onChange={(e) => {
+                                  const newValue = parseInt(e.target.value) || 0;
+                                  if (newValue >= 0) {
+                                    updateInventory(inv.id, inventoryItem.id, inv.size, newValue);
+                                  }
+                                }}
+                                style={{ 
+                                  ...styles.input, 
+                                  width: '80px', 
+                                  textAlign: 'center',
+                                  margin: 0
+                                }}
+                              />
+                              <button 
+                                onClick={() => updateInventory(inv.id, inventoryItem.id, inv.size, inv.quantity + 1)}
+                                style={{ 
+                                  ...styles.primaryButton, 
+                                  padding: '0.25rem 0.5rem',
+                                  fontSize: '1.25rem',
+                                  lineHeight: 1
+                                }}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+                
+                <div style={{ marginTop: '2rem', padding: '1rem', background: '#fef3c7', borderRadius: '0.5rem' }}>
+                  <p style={{ color: '#92400e', fontSize: '0.875rem', fontWeight: 'bold' }}>
+                    Note: Reserved stock is automatically managed when orders are placed or cancelled.
+                  </p>
+                  <p style={{ color: '#78350f', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                    Available stock = Current stock - Reserved stock
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
