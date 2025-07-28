@@ -4,9 +4,9 @@ import FullUproarHomeStyled from "./components/FullUproarHomeStyled";
 export default async function Home() {
   console.log('Starting Home page render...');
   
-  let games = [];
-  let comics = [];
-  let news = [];
+  let games: any[] = [];
+  let comics: any[] = [];
+  let news: any[] = [];
 
   try {
     console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
