@@ -32,24 +32,34 @@ export async function PUT(request: NextRequest) {
     }
     
     // Update inventory for a specific merch item and size
-    const inventory = await prisma.inventory.upsert({
+    // First try to find existing inventory
+    const existingInventory = await prisma.inventory.findFirst({
       where: {
-        merchId_size: {
-          merchId: body.merchId,
-          size: body.size || null
-        }
-      },
-      update: {
-        quantity: body.quantity
-      },
-      create: {
         merchId: body.merchId,
-        size: body.size || null,
-        quantity: body.quantity
+        size: body.size || null
       }
     });
-    
-    return NextResponse.json(inventory);
+
+    if (existingInventory) {
+      // Update existing
+      const inventory = await prisma.inventory.update({
+        where: { id: existingInventory.id },
+        data: {
+          quantity: body.quantity
+        }
+      });
+      return NextResponse.json(inventory);
+    } else {
+      // Create new
+      const inventory = await prisma.inventory.create({
+        data: {
+          merchId: body.merchId,
+          size: body.size || null,
+          quantity: body.quantity
+        }
+      });
+      return NextResponse.json(inventory);
+    }
   } catch (error) {
     console.error('Error updating inventory:', error);
     return NextResponse.json({ error: 'Failed to update inventory' }, { status: 500 });
@@ -68,22 +78,32 @@ export async function POST(request: NextRequest) {
     const results = await Promise.all(
       body.updates.map(async (update: any) => {
         try {
-          return await prisma.inventory.upsert({
+          // First try to find existing inventory
+          const existingInventory = await prisma.inventory.findFirst({
             where: {
-              merchId_size: {
-                merchId: update.merchId,
-                size: update.size || null
-              }
-            },
-            update: {
-              quantity: update.quantity
-            },
-            create: {
               merchId: update.merchId,
-              size: update.size || null,
-              quantity: update.quantity
+              size: update.size || null
             }
           });
+
+          if (existingInventory) {
+            // Update existing
+            return await prisma.inventory.update({
+              where: { id: existingInventory.id },
+              data: {
+                quantity: update.quantity
+              }
+            });
+          } else {
+            // Create new
+            return await prisma.inventory.create({
+              data: {
+                merchId: update.merchId,
+                size: update.size || null,
+                quantity: update.quantity
+              }
+            });
+          }
         } catch (err) {
           console.error('Error updating inventory item:', err);
           return { error: true, merchId: update.merchId, size: update.size };

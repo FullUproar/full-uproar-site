@@ -73,12 +73,10 @@ export async function POST(request: NextRequest) {
           priceCents: game.priceCents
         });
       } else if (item.itemType === 'merch') {
-        const inventory = await prisma.inventory.findUnique({
+        const inventory = await prisma.inventory.findFirst({
           where: {
-            merchId_size: {
-              merchId: item.merchId,
-              size: item.merchSize || null
-            }
+            merchId: item.merchId,
+            size: item.merchSize || null
           },
           include: { merch: true }
         });
@@ -148,12 +146,10 @@ export async function POST(request: NextRequest) {
     // Reserve inventory for merch items
     for (const item of body.items) {
       if (item.itemType === 'merch') {
-        await prisma.inventory.update({
+        await prisma.inventory.updateMany({
           where: {
-            merchId_size: {
-              merchId: item.merchId,
-              size: item.merchSize || null
-            }
+            merchId: item.merchId,
+            size: item.merchSize || null
           },
           data: {
             reserved: {
@@ -218,12 +214,10 @@ export async function PUT(request: NextRequest) {
     if (body.status === 'cancelled') {
       const merchItems = order.items.filter(item => item.itemType === 'merch');
       for (const item of merchItems) {
-        await prisma.inventory.update({
+        await prisma.inventory.updateMany({
           where: {
-            merchId_size: {
-              merchId: item.merchId!,
-              size: item.merchSize || null
-            }
+            merchId: item.merchId!,
+            size: item.merchSize || null
           },
           data: {
             reserved: {
@@ -251,12 +245,10 @@ export async function PUT(request: NextRequest) {
     if (body.status === 'shipped') {
       const merchItems = order.items.filter(item => item.itemType === 'merch');
       for (const item of merchItems) {
-        await prisma.inventory.update({
+        await prisma.inventory.updateMany({
           where: {
-            merchId_size: {
-              merchId: item.merchId!,
-              size: item.merchSize || null
-            }
+            merchId: item.merchId!,
+            size: item.merchSize || null
           },
           data: {
             quantity: {
