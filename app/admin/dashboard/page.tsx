@@ -126,7 +126,7 @@ export default function AdminDashboard() {
         title: item.title || '',
         tagline: item.tagline || '',
         description: item.description || '',
-        priceCents: item.priceCents?.toString() || '',
+        priceCents: item.priceCents ? (item.priceCents / 100).toString() : '',
         players: item.players || '',
         timeToPlay: item.timeToPlay || '',
         ageRating: item.ageRating || '',
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
       
       if (activeTab === 'games') {
         endpoint = '/api/games';
-        body = { ...gameForm, priceCents: parseInt(gameForm.priceCents) };
+        body = { ...gameForm, priceCents: Math.round(parseFloat(gameForm.priceCents) * 100) };
       } else if (activeTab === 'comics') {
         endpoint = '/api/comics';
         body = comicForm;
@@ -396,8 +396,8 @@ export default function AdminDashboard() {
           </div>
           <div style={styles.gridTwo}>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Price (cents)</label>
-              <input type="number" value={gameForm.priceCents} onChange={(e) => setGameForm({ ...gameForm, priceCents: e.target.value })} style={styles.input} required />
+              <label style={styles.label}>Price ($)</label>
+              <input type="number" step="0.01" value={gameForm.priceCents} onChange={(e) => setGameForm({ ...gameForm, priceCents: e.target.value })} style={styles.input} required />
             </div>
             <div style={styles.formGroup}>
               <label style={styles.label}>Players</label>
@@ -482,8 +482,15 @@ export default function AdminDashboard() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.headerTitle}>FUGLY'S DATABASE CHAOS CENTER</h1>
-        <p style={styles.headerSubtitle}>Browse, edit, and create mayhem - {user.firstName}</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={styles.headerTitle}>FUGLY'S DATABASE CHAOS CENTER</h1>
+            <p style={styles.headerSubtitle}>Browse, edit, and create mayhem - {user.firstName}</p>
+          </div>
+          <a href="/" style={{ color: 'white', textDecoration: 'none', background: 'rgba(255,255,255,0.2)', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold' }}>
+            ← Back to Store
+          </a>
+        </div>
       </div>
 
       <div style={styles.main}>
