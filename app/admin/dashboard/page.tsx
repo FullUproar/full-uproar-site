@@ -45,8 +45,6 @@ interface Artwork {
   description?: string;
   imageUrl: string;
   thumbnailUrl?: string;
-  smallUrl?: string;
-  mediumUrl?: string;
   largeUrl?: string;
   category: string;
   tags?: string;
@@ -79,7 +77,7 @@ export default function AdminDashboard() {
     title: '', excerpt: '', content: ''
   });
   const [artworkForm, setArtworkForm] = useState({
-    name: '', description: '', imageUrl: '', thumbnailUrl: '', smallUrl: '', mediumUrl: '', largeUrl: '', category: '', tags: ''
+    name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: ''
   });
 
   // Basic admin check
@@ -146,7 +144,7 @@ export default function AdminDashboard() {
     });
     setComicForm({ title: '', episode: '', description: '', imageUrl: '' });
     setNewsForm({ title: '', excerpt: '', content: '' });
-    setArtworkForm({ name: '', description: '', imageUrl: '', thumbnailUrl: '', smallUrl: '', mediumUrl: '', largeUrl: '', category: '', tags: '' });
+    setArtworkForm({ name: '', description: '', imageUrl: '', thumbnailUrl: '', largeUrl: '', category: '', tags: '' });
   };
 
   const openEditModal = (item: any) => {
@@ -187,8 +185,6 @@ export default function AdminDashboard() {
         description: item.description || '',
         imageUrl: item.imageUrl || '',
         thumbnailUrl: item.thumbnailUrl || '',
-        smallUrl: item.smallUrl || '',
-        mediumUrl: item.mediumUrl || '',
         largeUrl: item.largeUrl || '',
         category: item.category || '',
         tags: item.tags || ''
@@ -632,10 +628,8 @@ export default function AdminDashboard() {
             <ArtworkImageUpload 
               onImageSizesGenerated={(imageSizes) => setArtworkForm({ 
                 ...artworkForm, 
-                imageUrl: imageSizes.original,
+                imageUrl: imageSizes.medium,
                 thumbnailUrl: imageSizes.thumbnail,
-                smallUrl: imageSizes.small,
-                mediumUrl: imageSizes.medium,
                 largeUrl: imageSizes.large
               })} 
               currentImageUrl={artworkForm.imageUrl} 

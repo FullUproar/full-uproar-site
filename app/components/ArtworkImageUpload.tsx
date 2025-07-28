@@ -36,16 +36,13 @@ export default function ArtworkImageUpload({ onImageSizesGenerated, currentImage
       setUploadProgress('Generating thumbnail (100x100)...');
       await new Promise(resolve => setTimeout(resolve, 100)); // Allow UI update
 
-      setUploadProgress('Generating small size (300x300)...');
-      await new Promise(resolve => setTimeout(resolve, 100));
-
       setUploadProgress('Generating medium size (600x600)...');
       await new Promise(resolve => setTimeout(resolve, 100));
 
       setUploadProgress('Generating large size (1200x1200)...');
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      setUploadProgress('Processing all sizes...');
+      setUploadProgress('Compressing images...');
       const imageSizes = await generateImageSizes(file);
 
       setUploadProgress('Complete!');
@@ -173,8 +170,7 @@ export default function ArtworkImageUpload({ onImageSizesGenerated, currentImage
           <div style={styles.helpText}>
             Upload any size image - we'll automatically generate:<br />
             • Thumbnail (100x100) for admin tables<br />
-            • Small (300x300) for cards<br />
-            • Medium (600x600) for sections<br />
+            • Medium (600x600) for general display<br />
             • Large (1200x1200) for backgrounds<br />
             Max 10MB • JPG, PNG, GIF, WebP
           </div>

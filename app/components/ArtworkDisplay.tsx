@@ -9,8 +9,6 @@ interface Artwork {
   description?: string;
   imageUrl: string;
   thumbnailUrl?: string;
-  smallUrl?: string;
-  mediumUrl?: string;
   largeUrl?: string;
   category: string;
   tags?: string;

@@ -1,16 +1,20 @@
 export interface ImageSizes {
-  original: string;
   thumbnail: string;  // 100x100
-  small: string;      // 300x300
-  medium: string;     // 600x600
+  medium: string;     // 600x600 - main display size
   large: string;      // 1200x1200
 }
 
 export const IMAGE_SIZES = {
   thumbnail: 100,
-  small: 300,
   medium: 600,
   large: 1200
+} as const;
+
+// More aggressive compression to reduce payload size
+export const IMAGE_QUALITY = {
+  thumbnail: 0.6,  // Small, can be lower quality
+  medium: 0.7,     // Main display, balanced
+  large: 0.75      // Hero images, decent quality
 } as const;
 
 export async function resizeImage(file: File, maxSize: number, quality: number = 0.8): Promise<string> {
@@ -52,24 +56,14 @@ export async function resizeImage(file: File, maxSize: number, quality: number =
 }
 
 export async function generateImageSizes(file: File): Promise<ImageSizes> {
-  const original = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target?.result as string);
-    reader.onerror = () => reject(new Error('Failed to read file'));
-    reader.readAsDataURL(file);
-  });
-
-  const [thumbnail, small, medium, large] = await Promise.all([
-    resizeImage(file, IMAGE_SIZES.thumbnail, 0.9),
-    resizeImage(file, IMAGE_SIZES.small, 0.85),
-    resizeImage(file, IMAGE_SIZES.medium, 0.8),
-    resizeImage(file, IMAGE_SIZES.large, 0.75)
+  const [thumbnail, medium, large] = await Promise.all([
+    resizeImage(file, IMAGE_SIZES.thumbnail, IMAGE_QUALITY.thumbnail),
+    resizeImage(file, IMAGE_SIZES.medium, IMAGE_QUALITY.medium),
+    resizeImage(file, IMAGE_SIZES.large, IMAGE_QUALITY.large)
   ]);
 
   return {
-    original,
     thumbnail,
-    small,
     medium,
     large
   };
@@ -78,14 +72,13 @@ export async function generateImageSizes(file: File): Promise<ImageSizes> {
 export function getImageForSize(artwork: any, size: 'thumbnail' | 'small' | 'medium' | 'large' | 'original'): string {
   switch (size) {
     case 'thumbnail':
-      return artwork.thumbnailUrl || artwork.smallUrl || artwork.imageUrl;
+      return artwork.thumbnailUrl || artwork.imageUrl;
     case 'small':
-      return artwork.smallUrl || artwork.mediumUrl || artwork.imageUrl;
     case 'medium':
-      return artwork.mediumUrl || artwork.largeUrl || artwork.imageUrl;
+    case 'original':
+      return artwork.imageUrl; // medium is our default
     case 'large':
       return artwork.largeUrl || artwork.imageUrl;
-    case 'original':
     default:
       return artwork.imageUrl;
   }

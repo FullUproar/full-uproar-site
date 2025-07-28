@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, description, imageUrl, thumbnailUrl, smallUrl, mediumUrl, largeUrl, category, tags } = body;
+    const { name, description, imageUrl, thumbnailUrl, largeUrl, category, tags } = body;
 
     const artwork = await prisma.artwork.create({
       data: {
@@ -26,8 +26,6 @@ export async function POST(request: NextRequest) {
         description,
         imageUrl,
         thumbnailUrl,
-        smallUrl,
-        mediumUrl,
         largeUrl,
         category,
         tags
@@ -51,7 +49,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, description, imageUrl, thumbnailUrl, smallUrl, mediumUrl, largeUrl, category, tags } = body;
+    const { name, description, imageUrl, thumbnailUrl, largeUrl, category, tags } = body;
 
     const artwork = await prisma.artwork.update({
       where: { id: parseInt(id) },
@@ -60,8 +58,6 @@ export async function PUT(request: NextRequest) {
         description,
         imageUrl,
         thumbnailUrl,
-        smallUrl,
-        mediumUrl,
         largeUrl,
         category,
         tags
