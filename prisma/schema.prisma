@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -17,6 +17,22 @@ model Product {
   createdAt   DateTime @default(now())
 }
 
+model Merch {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String
+  category    String   // 'apparel', 'accessories', 'collectibles', 'stickers', etc.
+  priceCents  Int
+  imageUrl    String?
+  sizes       String?  // JSON array for apparel sizes like ["S", "M", "L", "XL"]
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  inventory   Inventory[]
+  orderItems  OrderItem[]
+}
+
 model Game {
   id          Int     @id @default(autoincrement())
   title       String
@@ -26,12 +42,15 @@ model Game {
   players     String
   timeToPlay  String
   ageRating   String
-  imageUrl    String? @db.Text
+  imageUrl    String?
   isBundle    Boolean @default(false)
   isPreorder  Boolean @default(true)
   featured    Boolean @default(false)
   bundleInfo  String?
+  stock       Int     @default(0)
   createdAt   DateTime @default(now())
+  
+  orderItems  OrderItem[]
 }
 
 model Comic {
@@ -39,7 +58,7 @@ model Comic {
   title       String
   episode     String
   description String?
-  imageUrl    String? @db.Text
+  imageUrl    String?
   createdAt   DateTime @default(now())
 }
 
@@ -61,11 +80,67 @@ model Artwork {
   id          Int      @id @default(autoincrement())
   name        String
   description String?
-  imageUrl    String   @db.Text // Medium size (600x600) - main display
-  thumbnailUrl String? @db.Text // 100x100 for admin tables
-  largeUrl    String?  @db.Text // 1200x1200 for hero/backgrounds
+  imageUrl    String   // Medium size (600x600) - main display
+  thumbnailUrl String? // 100x100 for admin tables
+  largeUrl    String?  // 1200x1200 for hero/backgrounds
   category    String   // 'background', 'character', 'logo', 'decoration', etc.
   tags        String?  // comma-separated tags
   chaosMode   Boolean  @default(false) // Use in chaos mode animations
   createdAt   DateTime @default(now())
+}
+
+model Inventory {
+  id          Int      @id @default(autoincrement())
+  merchId     Int
+  size        String?  // For sized items like apparel
+  quantity    Int      @default(0)
+  reserved    Int      @default(0) // Reserved for pending orders
+  
+  merch       Merch    @relation(fields: [merchId], references: [id])
+  
+  @@unique([merchId, size])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  customerEmail   String
+  customerName    String
+  shippingAddress String
+  billingAddress  String?
+  status          String      @default("pending") // pending, processing, shipped, delivered, cancelled
+  totalCents      Int
+  shippingCents   Int         @default(0)
+  taxCents        Int         @default(0)
+  trackingNumber  String?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  items           OrderItem[]
+  statusHistory   OrderStatusHistory[]
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     String
+  itemType    String   // 'game' or 'merch'
+  gameId      Int?
+  merchId     Int?
+  merchSize   String?  // For sized merch items
+  quantity    Int
+  priceCents  Int      // Price at time of order
+  
+  order       Order    @relation(fields: [orderId], references: [id])
+  game        Game?    @relation(fields: [gameId], references: [id])
+  merch       Merch?   @relation(fields: [merchId], references: [id])
+}
+
+model OrderStatusHistory {
+  id          Int      @id @default(autoincrement())
+  orderId     String
+  status      String
+  note        String?
+  createdAt   DateTime @default(now())
+  
+  order       Order    @relation(fields: [orderId], references: [id])
 }

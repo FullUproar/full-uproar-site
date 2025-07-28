@@ -29,9 +29,10 @@ export async function POST(request: NextRequest) {
         ageRating: body.ageRating,
         imageUrl: body.imageUrl,
         isBundle: body.isBundle || false,
-        isPreorder: body.isPreorder || true,
+        isPreorder: body.isPreorder !== undefined ? body.isPreorder : true,
         featured: body.featured || false,
-        bundleInfo: body.bundleInfo
+        bundleInfo: body.bundleInfo,
+        stock: body.stock || 0
       }
     });
     
@@ -65,9 +66,10 @@ export async function PUT(request: NextRequest) {
         ageRating: body.ageRating,
         imageUrl: body.imageUrl,
         isBundle: body.isBundle || false,
-        isPreorder: body.isPreorder || true,
+        isPreorder: body.isPreorder !== undefined ? body.isPreorder : true,
         featured: body.featured || false,
-        bundleInfo: body.bundleInfo
+        bundleInfo: body.bundleInfo,
+        stock: body.stock !== undefined ? body.stock : undefined
       }
     });
     
