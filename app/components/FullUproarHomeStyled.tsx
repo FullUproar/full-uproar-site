@@ -543,7 +543,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                           style={{ 
                             width: '100%', 
                             height: '100%', 
-                            objectFit: 'cover', 
+                            objectFit: 'contain', 
                             borderRadius: '1rem' 
                           }} 
                         />
@@ -595,7 +595,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
               >
                 <div style={styles.gameImage}>
                   {game.imageUrl && game.imageUrl.trim() !== '' ? (
-                    <img src={game.imageUrl} alt={game.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.5rem' }} />
+                    <img src={game.imageUrl} alt={game.title} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '0.5rem', background: '#f3f4f6' }} />
                   ) : (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', background: '#f3f4f6', color: '#6b7280', fontWeight: 'bold', fontSize: '1.5rem' }}>
                       🎮
