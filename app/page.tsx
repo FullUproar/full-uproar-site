@@ -7,10 +7,18 @@ export default async function Home() {
   let news = [];
 
   try {
+    console.log('Starting database queries...');
+    
+    // Test database connection first
+    const gameCount = await prisma.game.count();
+    console.log('Game count from database:', gameCount);
+    
     // Simple, direct database queries
     games = await prisma.game.findMany({
       orderBy: { createdAt: 'desc' }
     });
+    console.log('Raw games from database:', games.length, games);
+    
     comics = await prisma.comic.findMany({
       orderBy: { createdAt: 'desc' }
     });
@@ -32,9 +40,10 @@ export default async function Home() {
       createdAt: post.createdAt.toISOString()
     }));
 
-    console.log('Server: Found games:', games.length);
+    console.log('Server: Formatted games:', games.length);
   } catch (error) {
     console.error('Database error:', error);
+    console.error('Error details:', error.message);
     // Return empty arrays on error
   }
 
