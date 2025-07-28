@@ -59,7 +59,10 @@ export default function FuglyChaosMode() {
   useEffect(() => {
     if (!chaosEnabled) return;
 
+    console.log('Chaos mode enabled! Starting character spawning...');
+
     const spawnCharacter = () => {
+      console.log('Spawning new character...');
       const id = Math.random().toString(36).substr(2, 9);
       const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
       let x, y;
@@ -138,6 +141,8 @@ export default function FuglyChaosMode() {
     );
   }
 
+  console.log('Current characters:', characters.length, characters);
+
   return (
     <>
       {characters.map(char => (
@@ -155,13 +160,24 @@ export default function FuglyChaosMode() {
             animation: `${char.animation} 8s ease-in-out`
           }}
         >
-          <ArtworkDisplay 
-            category="character" 
-            tags={["fugly", "chaos"]} 
-            size="medium"
-            style={{ width: '100%', height: '100%' }}
-            fallbackText="👹"
-          />
+          <div style={{
+            width: '100%',
+            height: '100%',
+            background: '#f97316',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '3rem',
+            border: '4px solid #111827'
+          }}>
+            <ArtworkDisplay 
+              category="character" 
+              size="medium"
+              style={{ width: '80%', height: '80%' }}
+              fallbackText="👹"
+            />
+          </div>
         </div>
       ))}
 
