@@ -55,6 +55,13 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
 
   // Debug log
   console.log('FullUproarHomeStyled received games:', games.length, games);
+  
+  // Show alert for debugging on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('Client side debug - games:', games.length, games);
+    }
+  }, [games]);
 
   const handleAddToCart = (game: Game) => {
     addToCart({
@@ -555,6 +562,11 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
           <p style={styles.sectionSubtitle}>Games that make Fugly purr with evil delight</p>
           
           <div style={styles.gameGrid}>
+            {games.length === 0 && (
+              <div style={{ padding: '2rem', textAlign: 'center', color: '#f97316', fontSize: '1.5rem' }}>
+                No games found! Debug: games.length = {games.length}
+              </div>
+            )}
             {games.map((game, index) => (
               <div 
                 key={game.id} 
