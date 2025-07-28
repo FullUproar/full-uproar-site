@@ -25,9 +25,9 @@ export default function ImageUpload({ onImageUploaded, currentImageUrl, classNam
       return;
     }
 
-    // Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('File size must be less than 5MB');
+    // Validate file size (1MB for better performance with base64)
+    if (file.size > 1 * 1024 * 1024) {
+      setError('File size must be less than 1MB for best performance');
       return;
     }
 
@@ -40,31 +40,26 @@ export default function ImageUpload({ onImageUploaded, currentImageUrl, classNam
     };
     reader.readAsDataURL(file);
 
-    // Upload file
+    // Convert to base64 data URL (works on Vercel without file storage)
     setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        onImageUploaded(result.imageUrl);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        onImageUploaded(dataUrl);
         setError(null);
-      } else {
-        setError(result.error || 'Upload failed');
+        setIsUploading(false);
+      };
+      reader.onerror = () => {
+        setError('Failed to process image. Please try again.');
         setPreview(currentImageUrl || null);
-      }
+        setIsUploading(false);
+      };
+      reader.readAsDataURL(file);
     } catch (error) {
       console.error('Upload error:', error);
       setError('Upload failed. Please try again.');
       setPreview(currentImageUrl || null);
-    } finally {
       setIsUploading(false);
     }
   };
@@ -156,7 +151,7 @@ export default function ImageUpload({ onImageUploaded, currentImageUrl, classNam
             <p style={styles.uploadText}>
               Click to upload an image
               <br />
-              <span style={{ fontSize: '0.75rem' }}>JPEG, PNG, GIF, WebP • Max 5MB</span>
+              <span style={{ fontSize: '0.75rem' }}>JPEG, PNG, GIF, WebP • Max 1MB for best performance</span>
             </p>
           </div>
         )}

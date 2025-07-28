@@ -26,7 +26,7 @@ model Game {
   players     String
   timeToPlay  String
   ageRating   String
-  imageUrl    String?
+  imageUrl    String? @db.Text
   isBundle    Boolean @default(false)
   isPreorder  Boolean @default(true)
   featured    Boolean @default(false)
@@ -39,7 +39,7 @@ model Comic {
   title       String
   episode     String
   description String?
-  imageUrl    String?
+  imageUrl    String? @db.Text
   createdAt   DateTime @default(now())
 }
 
