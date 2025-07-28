@@ -6,6 +6,7 @@ import { useUser, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } 
 import { useCartStore } from '@/lib/cartStore';
 import DeploymentInfo from './DeploymentInfo';
 import FuglyChaosMode from './FuglyChaosMode';
+import FuglyLogo from './FuglyLogo';
 
 interface Game {
   id: number;
@@ -373,8 +374,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       <nav style={styles.nav}>
         <div style={styles.navContainer}>
           <div style={styles.navFlex}>
-            <div style={styles.logo} data-fugly-logo>
-              <div style={styles.logoCircle}>FU</div>
+            <div style={styles.logo}>
+              <FuglyLogo size={48} />
               <div>
                 <span style={styles.logoText}>FULL UPROAR</span>
                 <div style={styles.logoSubtext}>Fugly Approved Games™</div>
@@ -679,9 +680,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       <footer style={{ background: '#000', color: 'white', padding: '3rem 0', textAlign: 'center' as const }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-            <div style={{ width: '2.5rem', height: '2.5rem', background: '#f97316', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 900, color: '#111827' }}>
-              FU
-            </div>
+            <FuglyLogo size={40} />
             <div>
               <span style={{ fontWeight: 900, fontSize: '1.25rem', color: '#f97316' }}>FULL UPROAR</span>
               <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>Games Inc.</div>
