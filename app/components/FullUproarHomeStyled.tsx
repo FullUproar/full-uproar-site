@@ -248,7 +248,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       fontWeight: 'bold'
     },
     emailForm: {
-      maxWidth: '28rem',
+      maxWidth: '46.5rem',
       margin: '0 auto 2rem auto'
     },
     emailContainer: {
