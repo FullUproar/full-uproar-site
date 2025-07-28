@@ -94,17 +94,20 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
     }
   };
 
+  // Filter featured games only
+  const featuredGames = games.filter(game => game.featured);
+
   // Auto-rotate featured games
   useEffect(() => {
-    if (games.length > 0) {
+    if (featuredGames.length > 0) {
       const interval = setInterval(() => {
-        setActiveGame((prev) => (prev + 1) % games.length);
+        setActiveGame((prev) => (prev + 1) % featuredGames.length);
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [games.length]);
+  }, [featuredGames.length]);
 
-  const featuredGame = games[activeGame];
+  const featuredGame = featuredGames[activeGame];
 
   const styles = {
     container: {
