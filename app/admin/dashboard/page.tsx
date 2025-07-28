@@ -37,6 +37,15 @@ interface NewsPost {
   content?: string;
 }
 
+interface Artwork {
+  id: number;
+  name: string;
+  description?: string;
+  imageUrl: string;
+  category: string;
+  tags?: string;
+}
+
 type EditMode = 'create' | 'edit' | null;
 
 export default function AdminDashboard() {
@@ -45,6 +54,7 @@ export default function AdminDashboard() {
   const [games, setGames] = useState<Game[]>([]);
   const [comics, setComics] = useState<Comic[]>([]);
   const [news, setNews] = useState<NewsPost[]>([]);
+  const [artwork, setArtwork] = useState<Artwork[]>([]);
   const [message, setMessage] = useState('');
   
   // Modal states
@@ -62,6 +72,9 @@ export default function AdminDashboard() {
   const [newsForm, setNewsForm] = useState({
     title: '', excerpt: '', content: ''
   });
+  const [artworkForm, setArtworkForm] = useState({
+    name: '', description: '', imageUrl: '', category: '', tags: ''
+  });
 
   // Basic admin check
   useEffect(() => {
@@ -74,6 +87,7 @@ export default function AdminDashboard() {
     fetchGames();
     fetchComics();
     fetchNews();
+    fetchArtwork();
   }, []);
 
   const fetchGames = async () => {
@@ -106,6 +120,16 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchArtwork = async () => {
+    try {
+      const response = await fetch('/api/artwork');
+      const data = await response.json();
+      setArtwork(data);
+    } catch (error) {
+      console.error('Error fetching artwork:', error);
+    }
+  };
+
   const openCreateModal = () => {
     setEditMode('create');
     setEditingItem(null);
@@ -116,6 +140,7 @@ export default function AdminDashboard() {
     });
     setComicForm({ title: '', episode: '', description: '', imageUrl: '' });
     setNewsForm({ title: '', excerpt: '', content: '' });
+    setArtworkForm({ name: '', description: '', imageUrl: '', category: '', tags: '' });
   };
 
   const openEditModal = (item: any) => {
@@ -150,6 +175,14 @@ export default function AdminDashboard() {
         excerpt: item.excerpt || '',
         content: item.content || ''
       });
+    } else if (activeTab === 'artwork') {
+      setArtworkForm({
+        name: item.name || '',
+        description: item.description || '',
+        imageUrl: item.imageUrl || '',
+        category: item.category || '',
+        tags: item.tags || ''
+      });
     }
   };
 
@@ -172,6 +205,8 @@ export default function AdminDashboard() {
         endpoint = `/api/comics?id=${item.id}`;
       } else if (activeTab === 'news') {
         endpoint = `/api/news?id=${item.id}`;
+      } else if (activeTab === 'artwork') {
+        endpoint = `/api/artwork?id=${item.id}`;
       }
 
       const response = await fetch(endpoint, {
@@ -185,6 +220,7 @@ export default function AdminDashboard() {
         if (activeTab === 'games') fetchGames();
         else if (activeTab === 'comics') fetchComics();
         else if (activeTab === 'news') fetchNews();
+        else if (activeTab === 'artwork') fetchArtwork();
         
         setTimeout(() => setMessage(''), 3000);
       } else {
@@ -212,6 +248,9 @@ export default function AdminDashboard() {
       } else if (activeTab === 'news') {
         endpoint = '/api/news';
         body = newsForm;
+      } else if (activeTab === 'artwork') {
+        endpoint = '/api/artwork';
+        body = artworkForm;
       }
 
       const method = editMode === 'create' ? 'POST' : 'PUT';
@@ -230,6 +269,7 @@ export default function AdminDashboard() {
         if (activeTab === 'games') fetchGames();
         else if (activeTab === 'comics') fetchComics();
         else if (activeTab === 'news') fetchNews();
+        else if (activeTab === 'artwork') fetchArtwork();
         
         setTimeout(closeModal, 1000);
       } else {
@@ -315,7 +355,8 @@ export default function AdminDashboard() {
   const getCurrentData = () => {
     if (activeTab === 'games') return games;
     if (activeTab === 'comics') return comics;
-    return news;
+    if (activeTab === 'news') return news;
+    return artwork;
   };
 
   const renderTableHeaders = () => {
@@ -338,6 +379,17 @@ export default function AdminDashboard() {
           <th style={styles.th}>Title</th>
           <th style={styles.th}>Episode</th>
           <th style={styles.th}>Description</th>
+          <th style={styles.th}>Actions</th>
+        </tr>
+      );
+    }
+    if (activeTab === 'artwork') {
+      return (
+        <tr>
+          <th style={styles.th}>Image</th>
+          <th style={styles.th}>Name</th>
+          <th style={styles.th}>Category</th>
+          <th style={styles.th}>Tags</th>
           <th style={styles.th}>Actions</th>
         </tr>
       );
@@ -401,6 +453,29 @@ export default function AdminDashboard() {
           <td style={{ ...styles.td, fontWeight: 'bold' }}>{item.title}</td>
           <td style={styles.td}>{item.episode}</td>
           <td style={{ ...styles.td, fontSize: '0.875rem', color: '#6b7280' }}>{item.description}</td>
+          <td style={styles.td}>
+            <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
+            <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
+          </td>
+        </tr>
+      );
+    }
+    
+    if (activeTab === 'artwork') {
+      return (
+        <tr key={item.id}>
+          <td style={styles.td}>
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt={item.name} style={styles.imagePreview} />
+            ) : (
+              <div style={{ ...styles.imagePreview, background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem' }}>
+                No image
+              </div>
+            )}
+          </td>
+          <td style={{ ...styles.td, fontWeight: 'bold' }}>{item.name}</td>
+          <td style={styles.td}>{item.category}</td>
+          <td style={{ ...styles.td, fontSize: '0.875rem', color: '#6b7280' }}>{item.tags || 'No tags'}</td>
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
             <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
@@ -504,6 +579,45 @@ export default function AdminDashboard() {
       );
     }
     
+    if (activeTab === 'artwork') {
+      return (
+        <div style={styles.form}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Name</label>
+            <input type="text" value={artworkForm.name} onChange={(e) => setArtworkForm({ ...artworkForm, name: e.target.value })} style={styles.input} required />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Description</label>
+            <textarea value={artworkForm.description} onChange={(e) => setArtworkForm({ ...artworkForm, description: e.target.value })} style={styles.textarea} />
+          </div>
+          <div style={styles.gridTwo}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Category</label>
+              <select value={artworkForm.category} onChange={(e) => setArtworkForm({ ...artworkForm, category: e.target.value })} style={styles.input} required>
+                <option value="">Select category...</option>
+                <option value="character">Character Art</option>
+                <option value="background">Background</option>
+                <option value="logo">Logo/Branding</option>
+                <option value="decoration">Decoration</option>
+                <option value="icon">Icon</option>
+                <option value="banner">Banner</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Tags (comma-separated)</label>
+              <input type="text" value={artworkForm.tags} onChange={(e) => setArtworkForm({ ...artworkForm, tags: e.target.value })} style={styles.input} placeholder="fugly, chaos, orange" />
+            </div>
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Artwork Image</label>
+            <ImageUpload onImageUploaded={(imageUrl) => setArtworkForm({ ...artworkForm, imageUrl })} currentImageUrl={artworkForm.imageUrl} />
+            <input type="text" value={artworkForm.imageUrl} onChange={(e) => setArtworkForm({ ...artworkForm, imageUrl: e.target.value })} style={{...styles.input, marginTop: '0.5rem'}} placeholder="Or enter image URL manually" />
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <div style={styles.form}>
         <div style={styles.formGroup}>
@@ -550,7 +664,8 @@ export default function AdminDashboard() {
               {[
                 { key: 'games', label: 'Games', count: games.length },
                 { key: 'comics', label: 'Comics', count: comics.length },
-                { key: 'news', label: 'News', count: news.length }
+                { key: 'news', label: 'News', count: news.length },
+                { key: 'artwork', label: 'Artwork', count: artwork.length }
               ].map(tab => (
                 <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
                   ...styles.tab,

@@ -56,3 +56,13 @@ model EmailSubscriber {
   email       String   @unique
   createdAt   DateTime @default(now())
 }
+
+model Artwork {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  imageUrl    String   @db.Text
+  category    String   // 'background', 'character', 'logo', 'decoration', etc.
+  tags        String?  // comma-separated tags
+  createdAt   DateTime @default(now())
+}
