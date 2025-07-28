@@ -42,6 +42,42 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function PUT(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json({ error: 'Game ID is required' }, { status: 400 });
+    }
+    
+    const body = await request.json();
+    
+    const game = await prisma.game.update({
+      where: { id: parseInt(id) },
+      data: {
+        title: body.title,
+        tagline: body.tagline,
+        description: body.description,
+        priceCents: body.priceCents,
+        players: body.players,
+        timeToPlay: body.timeToPlay,
+        ageRating: body.ageRating,
+        imageUrl: body.imageUrl,
+        isBundle: body.isBundle || false,
+        isPreorder: body.isPreorder || true,
+        featured: body.featured || false,
+        bundleInfo: body.bundleInfo
+      }
+    });
+    
+    return NextResponse.json(game);
+  } catch (error) {
+    console.error('Error updating game:', error);
+    return NextResponse.json({ error: 'Failed to update game' }, { status: 500 });
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

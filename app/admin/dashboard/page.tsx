@@ -214,8 +214,11 @@ export default function AdminDashboard() {
         body = newsForm;
       }
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
+      const method = editMode === 'create' ? 'POST' : 'PUT';
+      const url = editMode === 'edit' ? `${endpoint}?id=${editingItem.id}` : endpoint;
+      
+      const response = await fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });

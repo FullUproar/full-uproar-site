@@ -32,3 +32,50 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create news post' }, { status: 500 });
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json({ error: 'News post ID is required' }, { status: 400 });
+    }
+    
+    const body = await request.json();
+    
+    const newsPost = await prisma.newsPost.update({
+      where: { id: parseInt(id) },
+      data: {
+        title: body.title,
+        excerpt: body.excerpt,
+        content: body.content
+      }
+    });
+    
+    return NextResponse.json(newsPost);
+  } catch (error) {
+    console.error('Error updating news post:', error);
+    return NextResponse.json({ error: 'Failed to update news post' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json({ error: 'News post ID is required' }, { status: 400 });
+    }
+    
+    await prisma.newsPost.delete({
+      where: { id: parseInt(id) }
+    });
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting news post:', error);
+    return NextResponse.json({ error: 'Failed to delete news post' }, { status: 500 });
+  }
+}
