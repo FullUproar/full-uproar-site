@@ -5,18 +5,25 @@ import { prisma } from '@/lib/prisma';
 // Only run this once in production after setting up your database
 export async function GET(request: Request) {
   try {
-    // Check if we're in production and have the right auth
+    // Basic info doesn't require auth
     const { searchParams } = new URL(request.url);
     const secret = searchParams.get('secret');
-    
-    if (process.env.NODE_ENV === 'production' && secret !== process.env.INIT_SECRET) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const showDetails = secret === process.env.INIT_SECRET;
     
     // Test database connection
-    const result = await prisma.$queryRaw`SELECT 1`;
+    await prisma.$queryRaw`SELECT 1`;
     
-    // Get database info
+    // Basic response for unauthorized requests
+    if (!showDetails) {
+      return NextResponse.json({
+        status: 'Database connection successful',
+        provider: process.env.DATABASE_URL?.startsWith('postgres') ? 'PostgreSQL' : 'Other',
+        message: 'To see table details, add ?secret=YOUR_SECRET to the URL',
+        tables: 'Hidden - requires authentication'
+      });
+    }
+    
+    // Get database info (only with proper auth)
     const tables = await prisma.$queryRaw`
       SELECT table_name 
       FROM information_schema.tables 
