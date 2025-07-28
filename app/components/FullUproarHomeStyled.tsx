@@ -19,7 +19,7 @@ interface Game {
   isPreorder: boolean;
   featured: boolean;
   bundleInfo: string | null;
-  createdAt: Date;
+  createdAt: string;
 }
 
 interface Comic {
@@ -28,7 +28,7 @@ interface Comic {
   episode: string;
   description: string | null;
   imageUrl: string | null;
-  createdAt: Date;
+  createdAt: string;
 }
 
 interface NewsPost {

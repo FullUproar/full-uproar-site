@@ -18,11 +18,21 @@ export default async function Home() {
   // Debug log
   console.log('Games found:', games.length, games);
 
-  // Convert dates to strings for client component
+  // Convert dates to strings for all components to avoid serialization issues
+  const formattedGames = games.map(game => ({
+    ...game,
+    createdAt: game.createdAt.toISOString()
+  }));
+
+  const formattedComics = comics.map(comic => ({
+    ...comic,
+    createdAt: comic.createdAt.toISOString()
+  }));
+
   const formattedNews = news.map(post => ({
     ...post,
     createdAt: post.createdAt.toISOString()
   }));
 
-  return <FullUproarHomeStyled games={games} comics={comics} news={formattedNews} />;
+  return <FullUproarHomeStyled games={formattedGames} comics={formattedComics} news={formattedNews} />;
 }

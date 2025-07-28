@@ -17,7 +17,8 @@
       "Bash(ssh-keygen:*)",
       "Bash(cat:*)",
       "Bash(git remote set-url:*)",
-      "Bash(DATABASE_URL=\"postgres://6803da8f128670f8cffa9795d5686b98f6a63fe1050f83ad498d8529faaf5235:sk_Bk9J3LcdOe0vsJ0b2-GDS@db.prisma.io:5432/?sslmode=require\" npx prisma db push)"
+      "Bash(DATABASE_URL=\"postgres://6803da8f128670f8cffa9795d5686b98f6a63fe1050f83ad498d8529faaf5235:sk_Bk9J3LcdOe0vsJ0b2-GDS@db.prisma.io:5432/?sslmode=require\" npx prisma db push)",
+      "WebFetch(domain:full-uproar-site-pnwmi0pe2-full-uproar-games.vercel.app)"
     ],
     "deny": []
   }
