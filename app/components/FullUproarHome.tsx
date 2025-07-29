@@ -59,7 +59,8 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
       name: game.title,
       slug: game.title.toLowerCase().replace(/\s+/g, '-'),
       priceCents: game.priceCents,
-      imageUrl: game.imageUrl || '/placeholder-game.jpg'
+      imageUrl: game.imageUrl || '/placeholder-game.jpg',
+      type: 'game'
     });
   };
 
