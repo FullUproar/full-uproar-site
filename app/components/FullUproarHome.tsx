@@ -8,6 +8,7 @@ import { useCartStore } from '@/lib/cartStore';
 interface Game {
   id: number;
   title: string;
+  slug: string;
   tagline: string | null;
   description: string;
   priceCents: number;
@@ -57,7 +58,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
     addToCart({
       id: game.id,
       name: game.title,
-      slug: game.title.toLowerCase().replace(/\s+/g, '-'),
+      slug: game.slug,
       priceCents: game.priceCents,
       imageUrl: game.imageUrl || '/placeholder-game.jpg',
       type: 'game'

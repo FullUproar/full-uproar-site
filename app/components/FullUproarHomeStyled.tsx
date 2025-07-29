@@ -14,6 +14,7 @@ import MerchSection from './MerchSection';
 interface Game {
   id: number;
   title: string;
+  slug: string;
   tagline: string | null;
   description: string;
   priceCents: number;
