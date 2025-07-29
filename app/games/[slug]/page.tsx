@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import GameProductClient from './GameProductClient';
 
 interface GamePageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getGame(slug: string) {
@@ -61,7 +61,8 @@ async function getSimilarGames(currentGame: any) {
 }
 
 export default async function GamePage({ params }: GamePageProps) {
-  const game = await getGame(params.slug);
+  const { slug } = await params;
+  const game = await getGame(slug);
   const similarGames = await getSimilarGames(game);
 
   return (

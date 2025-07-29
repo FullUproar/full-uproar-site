@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import MerchProductClient from './MerchProductClient';
 
 interface MerchPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getMerch(slug: string) {
@@ -63,7 +63,8 @@ async function getSimilarMerch(currentMerch: any) {
 }
 
 export default async function MerchPage({ params }: MerchPageProps) {
-  const merch = await getMerch(params.slug);
+  const { slug } = await params;
+  const merch = await getMerch(slug);
   const similarMerch = await getSimilarMerch(merch);
 
   return (
