@@ -14,10 +14,7 @@ export async function POST(request: Request) {
     // Get all games without slugs
     const games = await prisma.game.findMany({
       where: {
-        OR: [
-          { slug: null },
-          { slug: '' }
-        ]
+        slug: ''
       }
     });
     
@@ -44,10 +41,7 @@ export async function POST(request: Request) {
     // Also update merch slugs if needed
     const merchItems = await prisma.merch.findMany({
       where: {
-        OR: [
-          { slug: null },
-          { slug: '' }
-        ]
+        slug: ''
       }
     });
     
