@@ -120,6 +120,67 @@ export async function POST(request: Request) {
       results.push(`Game stock column error: ${e}`);
     }
     
+    // Add slug and tags to Game
+    try {
+      await prisma.$executeRaw`
+        ALTER TABLE "Game" ADD COLUMN IF NOT EXISTS "slug" TEXT
+      `;
+      await prisma.$executeRaw`
+        ALTER TABLE "Game" ADD COLUMN IF NOT EXISTS "tags" TEXT
+      `;
+      results.push('Game slug and tags columns added');
+    } catch (e) {
+      results.push(`Game columns error: ${e}`);
+    }
+    
+    // Add tags to Merch
+    try {
+      await prisma.$executeRaw`
+        ALTER TABLE "Merch" ADD COLUMN IF NOT EXISTS "tags" TEXT
+      `;
+      results.push('Merch tags column added');
+    } catch (e) {
+      results.push(`Merch tags error: ${e}`);
+    }
+    
+    // Create GameImage table
+    try {
+      await prisma.$executeRaw`
+        CREATE TABLE IF NOT EXISTS "GameImage" (
+          "id" SERIAL PRIMARY KEY,
+          "gameId" INTEGER NOT NULL,
+          "imageUrl" TEXT NOT NULL,
+          "alt" TEXT,
+          "isPrimary" BOOLEAN DEFAULT false NOT NULL,
+          "sortOrder" INTEGER DEFAULT 0 NOT NULL,
+          "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          CONSTRAINT "GameImage_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "Game"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        )
+      `;
+      results.push('GameImage table created');
+    } catch (e) {
+      results.push(`GameImage table error: ${e}`);
+    }
+    
+    // Create MerchImage table
+    try {
+      await prisma.$executeRaw`
+        CREATE TABLE IF NOT EXISTS "MerchImage" (
+          "id" SERIAL PRIMARY KEY,
+          "merchId" INTEGER NOT NULL,
+          "imageUrl" TEXT NOT NULL,
+          "alt" TEXT,
+          "isPrimary" BOOLEAN DEFAULT false NOT NULL,
+          "sortOrder" INTEGER DEFAULT 0 NOT NULL,
+          "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          CONSTRAINT "MerchImage_merchId_fkey" FOREIGN KEY ("merchId") REFERENCES "Merch"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        )
+      `;
+      results.push('MerchImage table created');
+    } catch (e) {
+      results.push(`MerchImage table error: ${e}`);
+    }
+    
     return NextResponse.json({
       success: true,
       results,

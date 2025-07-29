@@ -9,6 +9,7 @@ import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
 import FuglyPointing from './FuglyPointing';
 import FooterLogo from './FooterLogo';
+import MerchSection from './MerchSection';
 
 interface Game {
   id: number;
@@ -44,15 +45,28 @@ interface NewsPost {
   createdAt: string;
 }
 
+interface Merch {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  category: string;
+  priceCents: number;
+  imageUrl: string | null;
+  sizes: string | null;
+  featured: boolean;
+}
+
 interface FullUproarHomeProps {
   games: Game[];
   comics: Comic[];
   news: NewsPost[];
+  merch: Merch[];
 }
 
-export default function FullUproarHomeStyled({ games, comics, news }: FullUproarHomeProps) {
+export default function FullUproarHomeStyled({ games, comics, news, merch }: FullUproarHomeProps) {
   const { user } = useUser();
-  const { items, addToCart } = useCartStore();
+  const { items, addToCart, toggleCart, getTotalItems } = useCartStore();
   const [email, setEmail] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeGame, setActiveGame] = useState(0);
@@ -76,7 +90,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       name: game.title,
       slug: game.title.toLowerCase().replace(/\s+/g, '-'),
       priceCents: game.priceCents,
-      imageUrl: game.imageUrl || '/placeholder-game.jpg'
+      imageUrl: game.imageUrl || '/placeholder-game.jpg',
+      type: 'game'
     });
   };
 
@@ -386,6 +401,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
             
             <div style={styles.navLinks}>
               <a href="#games" style={styles.navLink}>GAMES</a>
+              <a href="#merch" style={styles.navLink}>MERCH</a>
+              <a href="/track-order" style={styles.navLink}>TRACK</a>
               <a href="#comics" style={styles.navLink}>COMICS</a>
               <a href="#news" style={styles.navLink}>CHAOS</a>
               <a href="#community" style={styles.navLink}>CULT</a>
@@ -411,9 +428,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                 <UserButton />
               </SignedIn>
               
-              <button style={styles.cartButton}>
+              <button onClick={toggleCart} style={styles.cartButton}>
                 <ShoppingCart style={{ height: '1.25rem', width: '1.25rem', color: '#fdba74' }} />
-                {items.length > 0 && (
+                {getTotalItems() > 0 && (
                   <span style={{
                     position: 'absolute',
                     top: '-0.25rem',
@@ -429,7 +446,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                     justifyContent: 'center',
                     fontWeight: 'bold'
                   }}>
-                    {items.length}
+                    {getTotalItems()}
                   </span>
                 )}
               </button>
@@ -535,8 +552,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                     
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <span style={styles.gamePrice}>${(featuredGame.priceCents / 100).toFixed(2)}</span>
-                      <button 
-                        onClick={() => handleAddToCart(featuredGame)}
+                      <a 
+                        href={`/games/${featuredGame.slug || featuredGame.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                         style={{
                           background: '#f97316',
                           color: '#111827',
@@ -550,11 +567,12 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                           gap: '0.5rem',
                           boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                           border: 'none',
-                          cursor: 'pointer'
+                          cursor: 'pointer',
+                          textDecoration: 'none'
                         }}
                       >
                         THROW MONEY AT FUGLY <ArrowRight style={{ height: '1.25rem', width: '1.25rem' }} />
-                      </button>
+                      </a>
                     </div>
                   </div>
                   
@@ -651,12 +669,16 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={styles.gamePrice}>${(game.priceCents / 100).toFixed(2)}</span>
-                  <button 
-                    onClick={() => handleAddToCart(game)}
-                    style={styles.buyButton}
+                  <a 
+                    href={`/games/${game.slug || game.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+                    style={{
+                      ...styles.buyButton,
+                      textDecoration: 'none',
+                      display: 'inline-block'
+                    }}
                   >
-                    WANT IT
-                  </button>
+                    VIEW CHAOS
+                  </a>
                 </div>
                 
                 {game.isPreorder && !game.isBundle && (
@@ -696,6 +718,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
           </div>
         </div>
       </section>
+
+      {/* Merch Section */}
+      <MerchSection merchItems={merch} />
 
       {/* Footer placeholder */}
       <footer style={{ background: '#000', color: 'white', padding: '3rem 0', textAlign: 'center' as const }}>

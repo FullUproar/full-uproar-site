@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type CartItem = {
   id: number;
@@ -7,32 +8,82 @@ export type CartItem = {
   priceCents: number;
   imageUrl: string;
   quantity: number;
+  type: 'game' | 'merch';
+  size?: string; // For merch items with sizes
+  category?: string; // For merch items
 };
 
 type CartState = {
   items: CartItem[];
+  isOpen: boolean;
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, quantity: number, size?: string) => void;
+  removeFromCart: (id: number, size?: string) => void;
   clearCart: () => void;
+  toggleCart: () => void;
+  getTotalItems: () => number;
+  getTotalPrice: () => number;
 };
 
-export const useCartStore = create<CartState>((set) => ({
-  items: [],
-  addToCart: (item) =>
-    set((state) => {
-      const existing = state.items.find((i) => i.id === item.id);
-      if (existing) {
-        return {
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      isOpen: false,
+      
+      addToCart: (item) =>
+        set((state) => {
+          // For merch with sizes, we need to check both id and size
+          const existing = state.items.find((i) => 
+            i.id === item.id && i.type === item.type && 
+            (item.type === 'merch' ? i.size === item.size : true)
+          );
+          
+          if (existing) {
+            return {
+              items: state.items.map((i) =>
+                i.id === item.id && i.type === item.type && 
+                (item.type === 'merch' ? i.size === item.size : true)
+                  ? { ...i, quantity: i.quantity + 1 }
+                  : i
+              ),
+            };
+          }
+          return { items: [...state.items, { ...item, quantity: 1 }] };
+        }),
+        
+      updateQuantity: (id, quantity, size) =>
+        set((state) => ({
           items: state.items.map((i) =>
-            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+            i.id === id && (size ? i.size === size : true)
+              ? { ...i, quantity: Math.max(0, quantity) }
+              : i
+          ).filter(i => i.quantity > 0),
+        })),
+        
+      removeFromCart: (id, size) =>
+        set((state) => ({
+          items: state.items.filter((i) => 
+            !(i.id === id && (size ? i.size === size : true))
           ),
-        };
-      }
-      return { items: [...state.items, { ...item, quantity: 1 }] };
+        })),
+        
+      clearCart: () => set({ items: [] }),
+      
+      toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+      
+      getTotalItems: () => {
+        const { items } = get();
+        return items.reduce((total, item) => total + item.quantity, 0);
+      },
+      
+      getTotalPrice: () => {
+        const { items } = get();
+        return items.reduce((total, item) => total + (item.priceCents * item.quantity), 0);
+      },
     }),
-  removeFromCart: (id) =>
-    set((state) => ({
-      items: state.items.filter((i) => i.id !== id),
-    })),
-  clearCart: () => set({ items: [] }),
-}));
+    {
+      name: 'fugly-cart',
+    }
+  )
+);

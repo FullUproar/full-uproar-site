@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS "Product" (
 CREATE TABLE IF NOT EXISTS "Game" (
   "id" SERIAL PRIMARY KEY,
   "title" TEXT NOT NULL,
+  "slug" TEXT UNIQUE NOT NULL,
   "tagline" TEXT,
   "description" TEXT NOT NULL,
   "priceCents" INTEGER NOT NULL,
@@ -28,6 +29,7 @@ CREATE TABLE IF NOT EXISTS "Game" (
   "featured" BOOLEAN DEFAULT false NOT NULL,
   "bundleInfo" TEXT,
   "stock" INTEGER DEFAULT 0 NOT NULL,
+  "tags" TEXT,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -82,6 +84,7 @@ CREATE TABLE IF NOT EXISTS "Merch" (
   "imageUrl" TEXT,
   "sizes" TEXT,
   "featured" BOOLEAN DEFAULT false NOT NULL,
+  "tags" TEXT,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -145,3 +148,31 @@ CREATE INDEX IF NOT EXISTS "Order_customerEmail_idx" ON "Order"("customerEmail")
 CREATE INDEX IF NOT EXISTS "Order_status_idx" ON "Order"("status");
 CREATE INDEX IF NOT EXISTS "OrderItem_orderId_idx" ON "OrderItem"("orderId");
 CREATE INDEX IF NOT EXISTS "OrderStatusHistory_orderId_idx" ON "OrderStatusHistory"("orderId");
+
+-- GameImage table
+CREATE TABLE IF NOT EXISTS "GameImage" (
+  "id" SERIAL PRIMARY KEY,
+  "gameId" INTEGER NOT NULL,
+  "imageUrl" TEXT NOT NULL,
+  "alt" TEXT,
+  "isPrimary" BOOLEAN DEFAULT false NOT NULL,
+  "sortOrder" INTEGER DEFAULT 0 NOT NULL,
+  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  CONSTRAINT "GameImage_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "Game"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- MerchImage table
+CREATE TABLE IF NOT EXISTS "MerchImage" (
+  "id" SERIAL PRIMARY KEY,
+  "merchId" INTEGER NOT NULL,
+  "imageUrl" TEXT NOT NULL,
+  "alt" TEXT,
+  "isPrimary" BOOLEAN DEFAULT false NOT NULL,
+  "sortOrder" INTEGER DEFAULT 0 NOT NULL,
+  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  CONSTRAINT "MerchImage_merchId_fkey" FOREIGN KEY ("merchId") REFERENCES "Merch"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Create indexes for image tables
+CREATE INDEX IF NOT EXISTS "GameImage_gameId_idx" ON "GameImage"("gameId");
+CREATE INDEX IF NOT EXISTS "MerchImage_merchId_idx" ON "MerchImage"("merchId");

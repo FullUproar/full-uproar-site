@@ -26,9 +26,17 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
+    // Generate slug from title
+    const slug = body.title.toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+    
     const game = await prisma.game.create({
       data: {
         title: body.title,
+        slug: slug,
         tagline: body.tagline,
         description: body.description,
         priceCents: body.priceCents,
@@ -40,7 +48,8 @@ export async function POST(request: NextRequest) {
         isPreorder: body.isPreorder !== undefined ? body.isPreorder : true,
         featured: body.featured || false,
         bundleInfo: body.bundleInfo,
-        stock: body.stock || 0
+        stock: body.stock || 0,
+        tags: body.tags ? JSON.stringify(body.tags) : null
       }
     });
     
