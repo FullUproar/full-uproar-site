@@ -109,7 +109,7 @@ export class PrintifyClient {
     return this.request('/shops.json');
   }
 
-  async getProducts(limit = 100, page = 1) {
+  async getProducts(limit = 50, page = 1) {
     return this.request(`/shops/${this.shopId}/products.json?limit=${limit}&page=${page}`);
   }
 

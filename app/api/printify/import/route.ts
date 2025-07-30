@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     } else {
       // Get all products (paginated)
-      const response = await client.getProducts(100, 1);
+      const response = await client.getProducts(50, 1);
       productsToImport = response.data || [];
     }
     
@@ -156,7 +156,7 @@ export async function GET() {
     const client = new PrintifyClient();
     await client.initialize();
     
-    const response = await client.getProducts(100, 1);
+    const response = await client.getProducts(50, 1);
     const products = response.data || [];
     
     // Return simplified product list for preview
