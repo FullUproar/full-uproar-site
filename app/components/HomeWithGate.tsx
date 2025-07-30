@@ -6,10 +6,10 @@ import FullUproarHomeStyled from './FullUproarHomeStyled';
 
 export default function HomeWithGate() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [games, setGames] = useState([]);
-  const [comics, setComics] = useState([]);
-  const [news, setNews] = useState([]);
-  const [merch, setMerch] = useState([]);
+  const [games, setGames] = useState<any[]>([]);
+  const [comics, setComics] = useState<any[]>([]);
+  const [news, setNews] = useState<any[]>([]);
+  const [merch, setMerch] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Check if already authenticated on load
