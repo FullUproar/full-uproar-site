@@ -3,11 +3,15 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
+    console.log('Fetching games from database...');
     const games = await prisma.game.findMany({
       orderBy: { createdAt: 'desc' }
     });
     
-    return NextResponse.json(games);
+    console.log(`Found ${games.length} games`);
+    
+    // Ensure we always return an array
+    return NextResponse.json(games || []);
   } catch (error) {
     console.error('Error fetching games:', error);
     // Return more detailed error in development
