@@ -25,7 +25,8 @@
       "Bash(dir:*)",
       "Bash(taskkill:*)",
       "Bash(grep:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
