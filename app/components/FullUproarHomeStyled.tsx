@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Users, ArrowRight, Zap, Skull } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Zap, Skull, Pause } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import DeploymentInfo from './DeploymentInfo';
@@ -77,6 +77,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [cardRotation, setCardRotation] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [countdown, setCountdown] = useState(7);
 
   // Detect mobile screen
   useEffect(() => {
@@ -133,25 +135,32 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
 
   // Games are already filtered as featured from the API
 
-  // Auto-rotate featured games with chaotic transitions
+  // Auto-rotate featured games with chaotic transitions (pause on hover)
   useEffect(() => {
-    if (games.length > 0) {
+    if (games.length > 0 && !isPaused) {
       const interval = setInterval(() => {
-        // Start transition animation
-        setIsTransitioning(true);
-        
-        // After shake animation, change game and rotation
-        setTimeout(() => {
-          setActiveGame((prev) => (prev + 1) % games.length);
-          // Random rotation between -5 and 5 degrees, but never 0
-          const rotations = [-5, -3, -2, 2, 3, 5];
-          setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
-          setIsTransitioning(false);
-        }, 300);
-      }, 5000);
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            // Start transition animation
+            setIsTransitioning(true);
+            
+            // After shake animation, change game and rotation
+            setTimeout(() => {
+              setActiveGame((current) => (current + 1) % games.length);
+              // Random rotation between -5 and 5 degrees, but never 0
+              const rotations = [-5, -3, -2, 2, 3, 5];
+              setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
+              setIsTransitioning(false);
+            }, 300);
+            
+            return 7;
+          }
+          return prev - 1;
+        });
+      }, 1000);
       return () => clearInterval(interval);
     }
-  }, [games.length]);
+  }, [games.length, isPaused]);
 
   const featuredGame = games[activeGame];
 
@@ -472,11 +481,14 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
 
             {/* Featured Game */}
             {featuredGame && (
-              <div style={{
-                ...styles.featuredCard,
-                padding: isMobile ? '1.5rem' : '2rem',
-                transform: isMobile ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`
-              }}>
+              <div 
+                style={{
+                  ...styles.featuredCard,
+                  padding: isMobile ? '1.5rem' : '2rem',
+                  transform: isMobile ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`
+                }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}>
                 <div style={{ 
                   display: 'grid', 
                   gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
@@ -596,6 +608,53 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                       Fugly Tested!
                     </div>
                   </div>
+                </div>
+                
+                {/* Game selector dots with countdown */}
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {games.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setActiveGame(index);
+                          setCountdown(7);
+                        }}
+                        style={{
+                          width: index === activeGame ? '2rem' : '0.75rem',
+                          height: '0.75rem',
+                          borderRadius: '50px',
+                          border: 'none',
+                          background: index === activeGame ? '#f97316' : '#6b7280',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s'
+                        }}
+                      />
+                    ))}
+                  </div>
+                  {isPaused ? (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      color: '#fdba74',
+                      background: '#374151',
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '50px'
+                    }}>
+                      <Pause style={{ width: '1rem', height: '1rem' }} />
+                      <span style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>PAUSED</span>
+                    </div>
+                  ) : (
+                    <div style={{
+                      color: '#fdba74',
+                      background: '#374151',
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '50px'
+                    }}>
+                      <span style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>CHAOS IN {countdown}...</span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
