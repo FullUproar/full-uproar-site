@@ -80,7 +80,13 @@ export default function FuglyChaosMode() {
 
   // Spawn random characters when chaos is enabled
   useEffect(() => {
-    if (!chaosEnabled || debugArtwork.length === 0) return;
+    if (!chaosEnabled) return;
+    
+    // Don't spawn anything if there's no artwork
+    if (debugArtwork.length === 0) {
+      console.log('Chaos enabled but no artwork available');
+      return;
+    }
 
     console.log('Chaos mode enabled! Starting character spawning...');
 
@@ -219,6 +225,9 @@ export default function FuglyChaosMode() {
   }
 
   console.log('Current characters:', characters.length, characters);
+
+  // Don't render anything if chaos is not enabled
+  if (!chaosEnabled) return null;
 
   return (
     <>
