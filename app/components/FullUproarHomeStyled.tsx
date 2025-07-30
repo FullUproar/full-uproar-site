@@ -61,6 +61,19 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
   const [currentComic, setCurrentComic] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [cardRotation, setCardRotation] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile screen
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Debug log
   console.log('FullUproarHomeStyled received games:', games.length, games);
@@ -318,8 +331,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
     },
     gameGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: '2rem',
+      gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+      gap: isMobile ? '1.5rem' : '2rem',
       maxWidth: '80rem',
       margin: '0 auto',
       padding: '0 1rem'
@@ -380,14 +393,34 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
         <div style={styles.navContainer}>
           <div style={styles.navFlex}>
             <div style={styles.logo}>
-              <FuglyLogo size={75} />
+              <FuglyLogo size={isMobile ? 50 : 75} />
               <div>
-                <span style={styles.logoText}>FULL UPROAR</span>
-                <div style={styles.logoSubtext}>Fugly Approved Games™</div>
+                <span style={{...styles.logoText, fontSize: isMobile ? '1.25rem' : '1.5rem'}}>FULL UPROAR</span>
+                <div style={{...styles.logoSubtext, fontSize: isMobile ? '0.625rem' : '0.75rem'}}>Fugly Approved Games™</div>
               </div>
             </div>
             
-            <div style={styles.navLinks}>
+            {/* Mobile menu button */}
+            {isMobile && (
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0.5rem',
+                  color: '#f97316'
+                }}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            )}
+            
+            {/* Desktop nav links */}
+            <div style={{
+              ...styles.navLinks,
+              display: isMobile ? 'none' : 'flex'
+            }}>
               <a href="#games" style={styles.navLink}>GAMES</a>
               <a href="#merch" style={styles.navLink}>MERCH</a>
               <a href="/track-order" style={styles.navLink}>TRACK</a>
@@ -441,6 +474,72 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
             </div>
           </div>
         </div>
+        
+        {/* Mobile menu dropdown */}
+        {isMobile && isMenuOpen && (
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            background: 'rgba(17, 24, 39, 0.95)',
+            borderBottom: '4px solid #f97316',
+            padding: '1rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+            zIndex: 50
+          }}>
+            <a href="#games" style={{...styles.navLink, display: 'block', padding: '0.5rem'}} onClick={() => setIsMenuOpen(false)}>GAMES</a>
+            <a href="#merch" style={{...styles.navLink, display: 'block', padding: '0.5rem'}} onClick={() => setIsMenuOpen(false)}>MERCH</a>
+            <a href="/track-order" style={{...styles.navLink, display: 'block', padding: '0.5rem'}} onClick={() => setIsMenuOpen(false)}>TRACK</a>
+            <a href="#comics" style={{...styles.navLink, display: 'block', padding: '0.5rem'}} onClick={() => setIsMenuOpen(false)}>COMICS</a>
+            <a href="#news" style={{...styles.navLink, display: 'block', padding: '0.5rem'}} onClick={() => setIsMenuOpen(false)}>CHAOS</a>
+            <a href="#community" style={{...styles.navLink, display: 'block', padding: '0.5rem'}} onClick={() => setIsMenuOpen(false)}>CULT</a>
+            
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button style={{
+                  background: '#f97316',
+                  color: '#111827',
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  fontWeight: 'bold',
+                  border: 'none',
+                  cursor: 'pointer',
+                  width: '100%'
+                }}>
+                  SIGN IN
+                </button>
+              </SignInButton>
+            </SignedOut>
+            
+            <SignedIn>
+              <a href="/admin/dashboard" style={{...styles.navLink, display: 'block', padding: '0.5rem'}} onClick={() => setIsMenuOpen(false)}>ADMIN</a>
+              <div style={{ padding: '0.5rem' }}>
+                <UserButton />
+              </div>
+            </SignedIn>
+            
+            <button onClick={() => { toggleCart(); setIsMenuOpen(false); }} style={{
+              background: 'rgba(249, 115, 22, 0.2)',
+              color: '#fdba74',
+              padding: '0.75rem',
+              borderRadius: '0.5rem',
+              fontWeight: 'bold',
+              border: '2px solid #f97316',
+              cursor: 'pointer',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem'
+            }}>
+              <ShoppingCart size={20} />
+              CART {getTotalItems() > 0 && `(${getTotalItems()})`}
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
@@ -449,15 +548,22 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
           <div style={styles.textCenter}>
             <div style={styles.badge}>FRESHLY UNHINGED</div>
 
-            <h1 style={styles.heroTitle}>
+            <h1 style={{
+              ...styles.heroTitle,
+              fontSize: isMobile ? '2.5rem' : '4rem'
+            }}>
               <div style={styles.orangeText}>GAME MODIFIERS</div>
               <div style={styles.lightOrangeText}>SO CHAOTIC</div>
               <div style={styles.gradientText}>FUGLY APPROVES</div>
             </h1>
             
-            <p style={styles.heroSubtitle}>
+            <p style={{
+              ...styles.heroSubtitle,
+              fontSize: isMobile ? '1rem' : '1.25rem',
+              padding: isMobile ? '0 1rem' : '0'
+            }}>
               Turn ANY game night into a beautiful disaster with our chaos-inducing card decks.
-              <br /><span style={{ fontSize: '1rem', marginTop: '0.5rem', color: '#fdba74' }}>Warning: Friendships may not survive. Worth it.</span>
+              <br /><span style={{ fontSize: isMobile ? '0.875rem' : '1rem', marginTop: '0.5rem', color: '#fdba74' }}>Warning: Friendships may not survive. Worth it.</span>
             </p>
             
             {/* Email Capture */}
@@ -491,18 +597,29 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                   🎁 Get exclusive pre-order bonuses and Fugly's seal of approval!
                 </p>
               </div>
-              <FuglyPointing size={180} style={{ 
-                position: 'absolute', 
-                right: '-20px', 
-                top: '50%', 
-                transform: 'translateY(-75%)'
-              }} />
+              {!isMobile && (
+                <FuglyPointing size={180} style={{ 
+                  position: 'absolute', 
+                  right: '-20px', 
+                  top: '50%', 
+                  transform: 'translateY(-75%)'
+                }} />
+              )}
             </div>
 
             {/* Featured Game */}
             {featuredGame && (
-              <div style={styles.featuredCard}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'center' }}>
+              <div style={{
+                ...styles.featuredCard,
+                padding: isMobile ? '1.5rem' : '2rem',
+                transform: isMobile ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`
+              }}>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
+                  gap: isMobile ? '1.5rem' : '2rem', 
+                  alignItems: 'center' 
+                }}>
                   <div style={{ textAlign: 'left' }}>
                     <span style={{
                       background: '#ef4444',
@@ -516,7 +633,13 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                     }}>
                       PRE-ORDER MADNESS
                     </span>
-                    <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginTop: '1rem', marginBottom: '1rem', color: '#fdba74' }}>
+                    <h2 style={{ 
+                      fontSize: isMobile ? '1.75rem' : '2.5rem', 
+                      fontWeight: 900, 
+                      marginTop: '1rem', 
+                      marginBottom: '1rem', 
+                      color: '#fdba74' 
+                    }}>
                       {featuredGame.title}
                     </h2>
                     <p style={{ color: '#fde68a', marginBottom: '1.5rem', fontSize: '1.125rem' }}>
