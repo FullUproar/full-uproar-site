@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     await client.initialize();
     
     // Get all products or specific ones
-    let productsToImport = [];
+    let productsToImport: PrintifyProduct[] = [];
     
     if (productIds && productIds.length > 0) {
       // Import specific products
