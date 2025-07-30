@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, Package, Truck, Mail, ArrowRight, Copy } from 'lucide-react';
 import FuglyLogo from '@/app/components/FuglyLogo';
@@ -27,7 +27,7 @@ interface OrderDetails {
   createdAt: string;
 }
 
-export default function OrderConfirmationPage() {
+function OrderConfirmationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
@@ -294,5 +294,22 @@ export default function OrderConfirmationPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function OrderConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-600 flex items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto mb-4 animate-bounce">
+            <FuglyLogo size={100} />
+          </div>
+          <p className="text-2xl font-black text-orange-500">Loading...</p>
+        </div>
+      </div>
+    }>
+      <OrderConfirmationContent />
+    </Suspense>
   );
 }
