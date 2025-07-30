@@ -45,7 +45,7 @@ export async function GET() {
       tables.Order = await prisma.order.count().then(() => true).catch(() => false);
       tables.Artwork = await prisma.artwork.count().then(() => true).catch(() => false);
       tables.Comic = await prisma.comic.count().then(() => true).catch(() => false);
-      tables.News = await prisma.news.count().then(() => true).catch(() => false);
+      tables.NewsPost = await prisma.newsPost.count().then(() => true).catch(() => false);
       
       diagnostics.tables = tables;
       diagnostics.solution = 'Run database initialization: POST /api/init-db?secret=emergency-init-2024';
