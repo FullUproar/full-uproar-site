@@ -13,74 +13,53 @@ export async function POST(request: Request) {
     
     const results = [];
     
-    // First, let's check what columns exist in the Game table
+    // Add slug column to Game table
     try {
-      const games = await prisma.game.findMany({ take: 1 });
-      const gameColumns = games.length > 0 ? Object.keys(games[0]) : [];
-      results.push(`Current Game columns: ${gameColumns.join(', ')}`);
+      await prisma.$executeRaw`ALTER TABLE "Game" ADD COLUMN IF NOT EXISTS "slug" TEXT`;
+      results.push('Added/verified slug column in Game table');
       
-      // Check if slug column is missing
-      if (!gameColumns.includes('slug')) {
-        try {
-          // Add slug column
-          await prisma.$executeRaw`ALTER TABLE "Game" ADD COLUMN "slug" TEXT`;
-          results.push('Added slug column to Game table');
-          
-          // Update existing games with slugs
-          const allGames = await prisma.game.findMany();
-          for (const game of allGames) {
-            const slug = game.title.toLowerCase()
-              .replace(/[^a-z0-9\s-]/g, '')
-              .replace(/\s+/g, '-')
-              .replace(/-+/g, '-')
-              .trim();
-            
-            await prisma.$executeRaw`
-              UPDATE "Game" 
-              SET "slug" = ${slug}
-              WHERE "id" = ${game.id}
-            `;
-          }
-          results.push(`Generated slugs for ${allGames.length} games`);
-        } catch (e) {
-          results.push(`Failed to add slug column: ${e}`);
-        }
-      } else {
-        results.push('Game.slug column already exists');
+      // Update existing games with slugs
+      const gamesWithoutSlug = await prisma.$queryRawUnsafe<any[]>(`
+        SELECT id, title FROM "Game" WHERE slug IS NULL OR slug = ''
+      `);
+      
+      for (const game of gamesWithoutSlug) {
+        const slug = game.title.toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .trim();
+        
+        await prisma.$executeRaw`
+          UPDATE "Game" 
+          SET "slug" = ${slug}
+          WHERE "id" = ${game.id}
+        `;
       }
       
-      // Check if tags column is missing
-      if (!gameColumns.includes('tags')) {
-        try {
-          await prisma.$executeRaw`ALTER TABLE "Game" ADD COLUMN "tags" TEXT`;
-          results.push('Added tags column to Game table');
-        } catch (e) {
-          results.push(`Failed to add tags column: ${e}`);
-        }
+      if (gamesWithoutSlug.length > 0) {
+        results.push(`Generated slugs for ${gamesWithoutSlug.length} games`);
       } else {
-        results.push('Game.tags column already exists');
+        results.push('All games already have slugs');
       }
     } catch (e) {
-      results.push(`Game table check error: ${e}`);
+      results.push(`Game slug error: ${e}`);
     }
     
-    // Check Merch table for tags
+    // Add tags column to Game table
     try {
-      const merch = await prisma.merch.findMany({ take: 1 });
-      const merchColumns = merch.length > 0 ? Object.keys(merch[0]) : [];
-      
-      if (!merchColumns.includes('tags')) {
-        try {
-          await prisma.$executeRaw`ALTER TABLE "Merch" ADD COLUMN "tags" TEXT`;
-          results.push('Added tags column to Merch table');
-        } catch (e) {
-          results.push(`Failed to add Merch tags: ${e}`);
-        }
-      } else {
-        results.push('Merch.tags column already exists');
-      }
+      await prisma.$executeRaw`ALTER TABLE "Game" ADD COLUMN IF NOT EXISTS "tags" TEXT`;
+      results.push('Added/verified tags column in Game table');
     } catch (e) {
-      results.push(`Merch table check error: ${e}`);
+      results.push(`Game tags error: ${e}`);
+    }
+    
+    // Add tags column to Merch table
+    try {
+      await prisma.$executeRaw`ALTER TABLE "Merch" ADD COLUMN IF NOT EXISTS "tags" TEXT`;
+      results.push('Added/verified tags column in Merch table');
+    } catch (e) {
+      results.push(`Merch tags error: ${e}`);
     }
     
     // Check for GameImage table
@@ -91,13 +70,13 @@ export async function POST(request: Request) {
       try {
         await prisma.$executeRaw`
           CREATE TABLE "GameImage" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "id" SERIAL PRIMARY KEY,
             "gameId" INTEGER NOT NULL,
             "imageUrl" TEXT NOT NULL,
             "alt" TEXT,
             "isPrimary" BOOLEAN NOT NULL DEFAULT false,
             "sortOrder" INTEGER NOT NULL DEFAULT 0,
-            "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
             CONSTRAINT "GameImage_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "Game" ("id") ON DELETE CASCADE ON UPDATE CASCADE
           )
         `;
@@ -115,13 +94,13 @@ export async function POST(request: Request) {
       try {
         await prisma.$executeRaw`
           CREATE TABLE "MerchImage" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "id" SERIAL PRIMARY KEY,
             "merchId" INTEGER NOT NULL,
             "imageUrl" TEXT NOT NULL,
             "alt" TEXT,
             "isPrimary" BOOLEAN NOT NULL DEFAULT false,
             "sortOrder" INTEGER NOT NULL DEFAULT 0,
-            "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
             CONSTRAINT "MerchImage_merchId_fkey" FOREIGN KEY ("merchId") REFERENCES "Merch" ("id") ON DELETE CASCADE ON UPDATE CASCADE
           )
         `;
