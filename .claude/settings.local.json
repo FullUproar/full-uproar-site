@@ -27,7 +27,8 @@
       "Bash(grep:*)",
       "Bash(cp:*)",
       "Bash(mv:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(npx playwright:*)"
     ],
     "deny": []
   }
