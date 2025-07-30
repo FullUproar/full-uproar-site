@@ -1,13 +1,15 @@
 import { prisma } from '@/lib/prisma';
 
+export interface PrintifyProductImage {
+  src: string;
+  variant_ids: number[];
+}
+
 export interface PrintifyProduct {
   id: string;
   title: string;
   description: string;
-  images: Array<{
-    src: string;
-    variant_ids: number[];
-  }>;
+  images: PrintifyProductImage[];
   variants: Array<{
     id: number;
     title: string;

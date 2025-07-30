@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { PrintifyClient } from '@/lib/printify/client';
+import { PrintifyClient, PrintifyProduct, PrintifyProductImage } from '@/lib/printify/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
             
             // Add new images
             await Promise.all(
-              product.images.slice(0, 5).map((img, index) => // Limit to 5 images
+              product.images.slice(0, 5).map((img: PrintifyProductImage, index: number) => // Limit to 5 images
                 prisma.merchImage.create({
                   data: {
                     merchId: existing.id,
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
           // Add images
           if (product.images && product.images.length > 0) {
             await Promise.all(
-              product.images.slice(0, 5).map((img, index) =>
+              product.images.slice(0, 5).map((img: any, index: number) =>
                 prisma.merchImage.create({
                   data: {
                     merchId: newMerch.id,
