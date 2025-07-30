@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import PasswordGate from './PasswordGate';
-import FullUproarHome from './FullUproarHome';
+import FullUproarHomeStyled from './FullUproarHomeStyled';
 
 export default function HomeWithGate() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -96,5 +96,5 @@ export default function HomeWithGate() {
     return <PasswordGate onCorrectPassword={handleCorrectPassword} />;
   }
 
-  return <FullUproarHome games={games} comics={comics} news={news} />;
+  return <FullUproarHomeStyled games={games} comics={comics} news={news} merch={merch} />;
 }
