@@ -310,14 +310,13 @@ export default function CultPage() {
             position: 'absolute',
             top: '-20px',
             left: '50%',
-            transform: 'translateX(-50%)',
+            transform: 'translateX(-50%) rotate(3deg)',
             background: 'linear-gradient(45deg, #a855f7, #f97316)',
             color: '#111827',
             padding: '0.5rem 2rem',
             borderRadius: '50px',
             fontWeight: 900,
-            fontSize: '1.25rem',
-            transform: 'translateX(-50%) rotate(3deg)'
+            fontSize: '1.25rem'
           }}>
             CULT BENEFITS
           </div>
