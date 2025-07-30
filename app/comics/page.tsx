@@ -1,11 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import FuglyLogo from '../components/FuglyLogo';
-import { Menu, X, ShoppingCart, ArrowLeft } from 'lucide-react';
-import { useCartStore } from '@/lib/cartStore';
-import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
+import Navigation from '../components/Navigation';
 
 interface Comic {
   id: number;
@@ -17,13 +13,10 @@ interface Comic {
 }
 
 export default function ComicsPage() {
-  const router = useRouter();
-  const { getTotalItems, toggleCart } = useCartStore();
   const [comics, setComics] = useState<Comic[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedComic, setSelectedComic] = useState<Comic | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -72,8 +65,7 @@ export default function ComicsPage() {
 
   return (
     <div style={styles.container}>
-      {/* Navigation */}
-      <nav style={styles.nav}>
+      <Navigation />
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: isMobile ? '3.5rem' : '4rem' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>

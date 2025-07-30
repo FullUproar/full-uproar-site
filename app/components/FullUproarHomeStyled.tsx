@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Package, ArrowRight, Menu, X, Heart, Share2, Play, Zap, Skull } from 'lucide-react';
-import { useUser, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { Calendar, Users, ArrowRight, Zap, Skull } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import DeploymentInfo from './DeploymentInfo';
 import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
 import FuglyPointing from './FuglyPointing';
 import FooterLogo from './FooterLogo';
+import Navigation from './Navigation';
 
 interface Game {
   id: number;
@@ -54,9 +55,8 @@ interface FullUproarHomeProps {
 
 export default function FullUproarHomeStyled({ games, comics, news }: FullUproarHomeProps) {
   const { user } = useUser();
-  const { items, addToCart, toggleCart, getTotalItems } = useCartStore();
+  const { addToCart } = useCartStore();
   const [email, setEmail] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeGame, setActiveGame] = useState(0);
   const [currentComic, setCurrentComic] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -389,12 +389,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
 
   return (
     <div style={styles.container}>
-      {/* Navigation */}
-      <nav style={styles.nav}>
-        <div style={styles.navContainer}>
-          <div style={styles.navFlex}>
-            <div style={styles.logo}>
-              <FuglyLogo size={isMobile ? 50 : 75} />
+      <Navigation />
               <div>
                 <span style={{...styles.logoText, fontSize: isMobile ? '1.25rem' : '1.5rem'}}>FULL UPROAR</span>
                 <div style={{...styles.logoSubtext, fontSize: isMobile ? '0.625rem' : '0.75rem'}}>Fugly Approved Games™</div>
@@ -539,8 +534,6 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
               CART {getTotalItems() > 0 && `(${getTotalItems()})`}
             </button>
           </div>
-        )}
-      </nav>
 
       {/* Hero Section */}
       <section style={styles.heroSection}>
