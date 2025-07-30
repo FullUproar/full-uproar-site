@@ -81,6 +81,8 @@ type EditMode = 'create' | 'edit' | null;
 export default function AdminDashboard() {
   const { user, isLoaded } = useUser();
   const [activeTab, setActiveTab] = useState('games');
+  const [printifySettings, setPrintifySettings] = useState<any>({});
+  const [printifyProducts, setPrintifyProducts] = useState<any[]>([]);
   const [games, setGames] = useState<Game[]>([]);
   const [comics, setComics] = useState<Comic[]>([]);
   const [news, setNews] = useState<NewsPost[]>([]);
@@ -133,6 +135,7 @@ export default function AdminDashboard() {
     fetchArtwork();
     fetchMerch();
     fetchOrders();
+    fetchPrintifySettings();
   }, []);
 
   // Close dropdown when clicking outside
@@ -240,6 +243,35 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error fetching orders:', error);
       setOrders([]);
+    }
+  };
+  
+  const fetchPrintifySettings = async () => {
+    try {
+      const response = await fetch('/api/printify/settings');
+      const data = await response.json();
+      if (response.ok) {
+        setPrintifySettings(data);
+      }
+    } catch (error) {
+      console.error('Error fetching Printify settings:', error);
+    }
+  };
+  
+  const fetchPrintifyProducts = async () => {
+    try {
+      setMessage('Loading Printify products...');
+      const response = await fetch('/api/printify/import');
+      const data = await response.json();
+      if (response.ok) {
+        setPrintifyProducts(data.products || []);
+        setMessage('');
+      } else {
+        setMessage('❌ Failed to load Printify products');
+      }
+    } catch (error) {
+      console.error('Error fetching Printify products:', error);
+      setMessage('❌ Error loading Printify products');
     }
   };
 
@@ -1173,6 +1205,43 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
+              
+              {/* Printify Fulfillment */}
+              {editingItem.items?.some((item: any) => item.merch?.isPrintify) && (
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Printify Fulfillment</label>
+                  <div style={{ background: '#f3e8ff', borderRadius: '0.375rem', padding: '1rem' }}>
+                    <p style={{ marginBottom: '1rem', color: '#7c3aed' }}>
+                      This order contains Print-on-Demand items from Printify.
+                    </p>
+                    <button
+                      onClick={async () => {
+                        try {
+                          setMessage('Sending order to Printify...');
+                          const response = await fetch('/api/printify/fulfill', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ orderId: editingItem.id })
+                          });
+                          const data = await response.json();
+                          if (response.ok) {
+                            setMessage(`✅ Order sent to Printify! Order ID: ${data.printifyOrderId}`);
+                            // Update order status
+                            setEditingItem({ ...editingItem, status: 'processing' });
+                          } else {
+                            setMessage(`❌ Error: ${data.error}`);
+                          }
+                        } catch (error) {
+                          setMessage('❌ Failed to send to Printify');
+                        }
+                      }}
+                      style={{ ...styles.primaryButton, background: '#7c3aed' }}
+                    >
+                      📦 Fulfill with Printify
+                    </button>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -1366,6 +1435,24 @@ export default function AdminDashboard() {
                     >
                       📦 Migrate Game Inventory
                     </button>
+                    <button
+                      onClick={() => runDbTool('/api/migrate-printify', 'POST')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#ec4899',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#fce7f3'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🎨 Enable Printify Integration
+                    </button>
                     <hr style={{ margin: '0.5rem 0', border: '1px solid #e5e7eb' }} />
                     <button
                       onClick={() => {
@@ -1496,7 +1583,8 @@ export default function AdminDashboard() {
                 { key: 'orders', label: 'Orders', count: orders.length },
                 { key: 'comics', label: 'Comics', count: comics.length },
                 { key: 'news', label: 'News', count: news.length },
-                { key: 'artwork', label: 'Artwork', count: artwork.length }
+                { key: 'artwork', label: 'Artwork', count: artwork.length },
+                { key: 'printify', label: 'Printify', count: 0 }
               ].map(tab => (
                 <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
                   ...styles.tab,
@@ -1506,7 +1594,7 @@ export default function AdminDashboard() {
                 </button>
               ))}
             </div>
-            {activeTab !== 'orders' && (
+            {activeTab !== 'orders' && activeTab !== 'printify' && (
               <button onClick={openCreateModal} style={styles.createButton}>
                 + Create New {getSingularForm(activeTab)}
               </button>
@@ -1514,17 +1602,188 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Data Table */}
-        <div style={styles.tableContainer}>
-          <table style={styles.table}>
-            <thead>
-              {renderTableHeaders()}
-            </thead>
-            <tbody>
-              {getCurrentData().map(renderTableRow)}
-            </tbody>
-          </table>
-        </div>
+        {/* Data Table or Printify UI */}
+        {activeTab === 'printify' ? (
+          <div style={styles.tableContainer}>
+            <div style={{ padding: '2rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Printify Integration</h2>
+              
+              {/* Settings Section */}
+              <div style={{ background: '#f9fafb', padding: '1.5rem', borderRadius: '0.5rem', marginBottom: '2rem' }}>
+                <h3 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Settings</h3>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  <div>
+                    <label style={styles.label}>API Key</label>
+                    <input
+                      type="text"
+                      value={printifySettings.printify_api_key || ''}
+                      onChange={(e) => setPrintifySettings({ ...printifySettings, printify_api_key: e.target.value })}
+                      placeholder="Enter your Printify API key"
+                      style={styles.input}
+                    />
+                    <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                      Get your API key from Printify → Settings → API
+                    </p>
+                  </div>
+                  <div>
+                    <label style={styles.label}>Shop ID</label>
+                    <input
+                      type="text"
+                      value={printifySettings.printify_shop_id || ''}
+                      onChange={(e) => setPrintifySettings({ ...printifySettings, printify_shop_id: e.target.value })}
+                      placeholder="Enter your Printify Shop ID"
+                      style={styles.input}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={printifySettings.printify_enabled === 'true'}
+                        onChange={(e) => setPrintifySettings({ ...printifySettings, printify_enabled: String(e.target.checked) })}
+                      />
+                      <span style={{ fontWeight: 'bold' }}>Enable Printify Integration</span>
+                    </label>
+                    <button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch('/api/printify/settings', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(printifySettings)
+                          });
+                          if (response.ok) {
+                            setMessage('✅ Settings saved successfully!');
+                            setTimeout(() => setMessage(''), 3000);
+                          } else {
+                            setMessage('❌ Error saving settings');
+                          }
+                        } catch (error) {
+                          setMessage('❌ Error saving settings');
+                        }
+                      }}
+                      style={styles.primaryButton}
+                    >
+                      Save Settings
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Import Products Section */}
+              <div style={{ background: '#f9fafb', padding: '1.5rem', borderRadius: '0.5rem', marginBottom: '2rem' }}>
+                <h3 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Import Products</h3>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
+                  <button
+                    onClick={fetchPrintifyProducts}
+                    style={{ ...styles.primaryButton, background: '#8b5cf6' }}
+                  >
+                    Load Available Products
+                  </button>
+                  <button
+                    onClick={async () => {
+                      try {
+                        setMessage('Importing all products...');
+                        const response = await fetch('/api/printify/import', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({})
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                          setMessage(`✅ ${data.message}`);
+                          fetchMerch(); // Refresh merch list
+                        } else {
+                          setMessage('❌ Import failed');
+                        }
+                      } catch (error) {
+                        setMessage('❌ Import error');
+                      }
+                    }}
+                    style={{ ...styles.primaryButton, background: '#10b981' }}
+                  >
+                    Import All Products
+                  </button>
+                </div>
+                
+                {/* Product List */}
+                {printifyProducts.length > 0 && (
+                  <div style={{ maxHeight: '400px', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: '0.375rem' }}>
+                    {printifyProducts.map((product) => (
+                      <div key={product.id} style={{ 
+                        padding: '1rem', 
+                        borderBottom: '1px solid #e5e7eb',
+                        display: 'flex',
+                        gap: '1rem',
+                        alignItems: 'center'
+                      }}>
+                        {product.imageUrl && (
+                          <img 
+                            src={product.imageUrl} 
+                            alt={product.title}
+                            style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '0.375rem' }}
+                          />
+                        )}
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 'bold' }}>{product.title}</div>
+                          <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                            {product.variantCount} variants • ID: {product.id}
+                          </div>
+                        </div>
+                        <button
+                          onClick={async () => {
+                            try {
+                              setMessage(`Importing ${product.title}...`);
+                              const response = await fetch('/api/printify/import', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ productIds: [product.id] })
+                              });
+                              const data = await response.json();
+                              if (response.ok) {
+                                setMessage(`✅ Imported ${product.title}`);
+                                fetchMerch();
+                              } else {
+                                setMessage('❌ Import failed');
+                              }
+                            } catch (error) {
+                              setMessage('❌ Import error');
+                            }
+                          }}
+                          style={{ ...styles.editButton, background: '#10b981' }}
+                        >
+                          Import
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Info Section */}
+              <div style={{ background: '#fef3c7', padding: '1.5rem', borderRadius: '0.5rem' }}>
+                <h3 style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#92400e' }}>How It Works</h3>
+                <ul style={{ marginLeft: '1.5rem', color: '#78350f', lineHeight: 1.6 }}>
+                  <li>Import products from Printify to your store catalog</li>
+                  <li>Products marked as Printify will have unlimited inventory (POD)</li>
+                  <li>When orders are placed, you can manually fulfill them through Printify</li>
+                  <li>Track order status and shipping information</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={styles.tableContainer}>
+            <table style={styles.table}>
+              <thead>
+                {renderTableHeaders()}
+              </thead>
+              <tbody>
+                {getCurrentData().map(renderTableRow)}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Edit/Create Modal */}
         {editMode && (

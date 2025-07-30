@@ -30,6 +30,13 @@ model Merch {
   tags        String?  // JSON array of tags for searching
   createdAt   DateTime @default(now())
   
+  // Printify integration fields
+  printifyId  String?  // Printify product ID
+  blueprintId Int?     // Printify blueprint ID (product type)
+  printProviderId Int? // Printify print provider ID
+  variantMapping String? // JSON mapping of our sizes to Printify variant IDs
+  isPrintify  Boolean  @default(false) // Whether this is a POD product
+  
   inventory   Inventory[]
   orderItems  OrderItem[]
   images      MerchImage[]
@@ -158,6 +165,14 @@ model OrderStatusHistory {
   createdAt   DateTime @default(now())
   
   order       Order    @relation(fields: [orderId], references: [id])
+}
+
+model Settings {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String   @db.Text // Use Text for potentially long values
+  description String?
+  updatedAt   DateTime @updatedAt
 }
 
 model GameImage {

@@ -87,12 +87,14 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: `Merch item not found` }, { status: 400 });
         }
         
-        // Check stock
-        const availableStock = inventory.quantity - inventory.reserved;
-        if (availableStock < item.quantity) {
-          return NextResponse.json({ 
-            error: `Insufficient stock for ${inventory.merch.name}${item.merchSize ? ` (${item.merchSize})` : ''}. Available: ${availableStock}` 
-          }, { status: 400 });
+        // Check stock (skip for Printify POD items)
+        if (!inventory.merch.isPrintify) {
+          const availableStock = inventory.quantity - inventory.reserved;
+          if (availableStock < item.quantity) {
+            return NextResponse.json({ 
+              error: `Insufficient stock for ${inventory.merch.name}${item.merchSize ? ` (${item.merchSize})` : ''}. Available: ${availableStock}` 
+            }, { status: 400 });
+          }
         }
         
         subtotalCents += inventory.merch.priceCents * item.quantity;
@@ -145,20 +147,26 @@ export async function POST(request: NextRequest) {
       }
     });
     
-    // Reserve inventory for merch items
+    // Reserve inventory for merch items (skip Printify POD items)
     for (const item of body.items) {
       if (item.itemType === 'merch') {
-        await prisma.inventory.updateMany({
-          where: {
-            merchId: item.merchId,
-            size: item.merchSize || null
-          },
-          data: {
-            reserved: {
-              increment: item.quantity
-            }
-          }
+        const merch = await prisma.merch.findUnique({
+          where: { id: item.merchId }
         });
+        
+        if (!merch?.isPrintify) {
+          await prisma.inventory.updateMany({
+            where: {
+              merchId: item.merchId,
+              size: item.merchSize || null
+            },
+            data: {
+              reserved: {
+                increment: item.quantity
+              }
+            }
+          });
+        }
       } else if (item.itemType === 'game') {
         // Reduce game stock
         await prisma.game.update({
