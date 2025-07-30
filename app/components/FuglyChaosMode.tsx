@@ -42,10 +42,7 @@ export default function FuglyChaosMode() {
         setDebugArtwork(chaosArtwork);
       });
 
-    // Random chance to enable chaos on page load (10%)
-    if (Math.random() < 0.1) {
-      setTimeout(() => setChaosEnabled(true), 5000);
-    }
+    // Removed auto-trigger - now ONLY activates with 3 clicks on Fugly logo
 
     // Listen for logo clicks
     const handleLogoClick = (e: MouseEvent) => {
@@ -68,7 +65,7 @@ export default function FuglyChaosMode() {
 
   // Spawn random characters when chaos is enabled
   useEffect(() => {
-    if (!chaosEnabled) return;
+    if (!chaosEnabled || debugArtwork.length === 0) return;
 
     console.log('Chaos mode enabled! Starting character spawning...');
 
@@ -140,7 +137,7 @@ export default function FuglyChaosMode() {
     }, 1500); // Every 1.5 seconds instead of 3
 
     return () => clearInterval(interval);
-  }, [chaosEnabled]);
+  }, [chaosEnabled, debugArtwork]);
 
   if (!chaosEnabled && clickCount > 0) {
     // Show hint after first click
