@@ -251,8 +251,10 @@ export default function AdminDashboard() {
   
   const fetchPrintifySettings = async () => {
     try {
+      console.log('Fetching Printify settings...');
       const response = await fetch('/api/printify/settings');
       const data = await response.json();
+      console.log('Printify settings received:', data);
       if (response.ok) {
         setPrintifySettings(data);
       }
@@ -1648,6 +1650,14 @@ export default function AdminDashboard() {
             <div style={{ padding: '2rem' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Printify Integration</h2>
               
+              {/* Test button */}
+              <button 
+                onClick={() => alert('Test button works!')} 
+                style={{ marginBottom: '1rem', padding: '0.5rem 1rem', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '0.25rem', cursor: 'pointer' }}
+              >
+                Test Button (Click Me)
+              </button>
+              
               {/* Settings Section */}
               <div style={{ background: '#f9fafb', padding: '1.5rem', borderRadius: '0.5rem', marginBottom: '2rem' }}>
                 <h3 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Settings</h3>
@@ -1685,22 +1695,35 @@ export default function AdminDashboard() {
                       <span style={{ fontWeight: 'bold' }}>Enable Printify Integration</span>
                     </label>
                     <button
-                      onClick={async () => {
-                        try {
-                          const response = await fetch('/api/printify/settings', {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(printifySettings)
-                          });
-                          if (response.ok) {
-                            setMessage('✅ Settings saved successfully!');
-                            setTimeout(() => setMessage(''), 3000);
-                          } else {
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Save button clicked!');
+                        console.log('Current settings:', printifySettings);
+                        
+                        const saveSettings = async () => {
+                          try {
+                            setMessage('Saving...');
+                            const response = await fetch('/api/printify/settings', {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify(printifySettings)
+                            });
+                            console.log('Response:', response);
+                            if (response.ok) {
+                              setMessage('✅ Settings saved successfully!');
+                              setTimeout(() => setMessage(''), 3000);
+                            } else {
+                              setMessage('❌ Error saving settings');
+                            }
+                          } catch (error) {
+                            console.error('Save error:', error);
                             setMessage('❌ Error saving settings');
                           }
-                        } catch (error) {
-                          setMessage('❌ Error saving settings');
-                        }
+                        };
+                        
+                        saveSettings();
                       }}
                       style={{ background: '#f97316', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
                     >
@@ -1718,27 +1741,40 @@ export default function AdminDashboard() {
                 </p>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
                   <button
-                    onClick={async () => {
-                      try {
-                        setMessage('🔄 Importing all products from Printify... This may take a moment.');
-                        const response = await fetch('/api/printify/import', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ importAll: true })
-                        });
-                        const data = await response.json();
-                        if (response.ok) {
-                          setMessage(`✅ ${data.message}`);
-                          setTimeout(() => {
-                            fetchMerch(); // Refresh merch list
-                            setMessage('');
-                          }, 2000);
-                        } else {
-                          setMessage(`❌ Import failed: ${data.details || data.error || 'Unknown error'}`);
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('Import button clicked!');
+                      
+                      const importProducts = async () => {
+                        try {
+                          setMessage('🔄 Importing all products from Printify... This may take a moment.');
+                          console.log('Starting import...');
+                          const response = await fetch('/api/printify/import', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ importAll: true })
+                          });
+                          console.log('Import response:', response);
+                          const data = await response.json();
+                          console.log('Import data:', data);
+                          if (response.ok) {
+                            setMessage(`✅ ${data.message}`);
+                            setTimeout(() => {
+                              fetchMerch(); // Refresh merch list
+                              setMessage('');
+                            }, 2000);
+                          } else {
+                            setMessage(`❌ Import failed: ${data.details || data.error || 'Unknown error'}`);
+                          }
+                        } catch (error) {
+                          console.error('Import error:', error);
+                          setMessage('❌ Import error: ' + error);
                         }
-                      } catch (error) {
-                        setMessage('❌ Import error: ' + error);
-                      }
+                      };
+                      
+                      importProducts();
                     }}
                     style={{ background: '#10b981', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', fontSize: '1rem' }}
                   >
