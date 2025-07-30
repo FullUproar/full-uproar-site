@@ -27,10 +27,11 @@ export default function ProductGrid({ products }: { products: any[] }) {
               onClick={() =>
                 addToCart({
                   id: product.id,
-                  name: product.name,
+                  name: product.name || product.title,
                   slug: product.slug,
                   priceCents: product.priceCents,
                   imageUrl: product.imageUrl,
+                  type: product.title ? 'game' : 'merch',
                 })
               }
               className="bg-black text-white px-4 py-2 rounded font-bold"
