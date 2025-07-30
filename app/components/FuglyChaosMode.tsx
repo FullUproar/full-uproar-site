@@ -35,11 +35,26 @@ export default function FuglyChaosMode() {
   useEffect(() => {
     // Fetch artwork marked for chaos mode
     fetch('/api/artwork')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          console.error('Failed to fetch artwork for chaos mode');
+          return [];
+        }
+        return res.json();
+      })
       .then(data => {
-        const chaosArtwork = data.filter((art: any) => art.chaosMode === true);
-        console.log('Chaos mode artwork:', chaosArtwork.length, 'items');
-        setDebugArtwork(chaosArtwork);
+        if (Array.isArray(data)) {
+          const chaosArtwork = data.filter((art: any) => art.chaosMode === true);
+          console.log('Chaos mode artwork:', chaosArtwork.length, 'items');
+          setDebugArtwork(chaosArtwork);
+        } else {
+          console.error('Invalid artwork data:', data);
+          setDebugArtwork([]);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching chaos mode artwork:', error);
+        setDebugArtwork([]);
       });
 
     // Removed auto-trigger - now ONLY activates with 3 clicks on Fugly logo

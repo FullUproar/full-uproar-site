@@ -40,18 +40,30 @@ export default function HomeWithGate() {
       if (gamesRes.ok) {
         const gamesData = await gamesRes.json();
         setGames(Array.isArray(gamesData) ? gamesData : []);
+      } else {
+        console.error('Failed to fetch games:', await gamesRes.text());
+        setGames([]);
       }
       if (comicsRes.ok) {
         const comicsData = await comicsRes.json();
         setComics(Array.isArray(comicsData) ? comicsData : []);
+      } else {
+        console.error('Failed to fetch comics:', await comicsRes.text());
+        setComics([]);
       }
       if (newsRes.ok) {
         const newsData = await newsRes.json();
         setNews(Array.isArray(newsData) ? newsData : []);
+      } else {
+        console.error('Failed to fetch news:', await newsRes.text());
+        setNews([]);
       }
       if (merchRes.ok) {
         const merchData = await merchRes.json();
         setMerch(Array.isArray(merchData) ? merchData : []);
+      } else {
+        console.error('Failed to fetch merch:', await merchRes.text());
+        setMerch([]);
       }
     } catch (error) {
       console.error('Error loading data:', error);

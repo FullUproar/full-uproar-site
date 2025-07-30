@@ -134,9 +134,15 @@ export default function AdminDashboard() {
     try {
       const response = await fetch('/api/games');
       const data = await response.json();
-      setGames(data);
+      if (response.ok && Array.isArray(data)) {
+        setGames(data);
+      } else {
+        console.error('Error fetching games:', data);
+        setGames([]);
+      }
     } catch (error) {
       console.error('Error fetching games:', error);
+      setGames([]);
     }
   };
 
@@ -144,9 +150,15 @@ export default function AdminDashboard() {
     try {
       const response = await fetch('/api/comics');
       const data = await response.json();
-      setComics(data);
+      if (response.ok && Array.isArray(data)) {
+        setComics(data);
+      } else {
+        console.error('Error fetching comics:', data);
+        setComics([]);
+      }
     } catch (error) {
       console.error('Error fetching comics:', error);
+      setComics([]);
     }
   };
 
@@ -154,9 +166,15 @@ export default function AdminDashboard() {
     try {
       const response = await fetch('/api/news');
       const data = await response.json();
-      setNews(data);
+      if (response.ok && Array.isArray(data)) {
+        setNews(data);
+      } else {
+        console.error('Error fetching news:', data);
+        setNews([]);
+      }
     } catch (error) {
       console.error('Error fetching news:', error);
+      setNews([]);
     }
   };
 
@@ -164,9 +182,15 @@ export default function AdminDashboard() {
     try {
       const response = await fetch('/api/artwork');
       const data = await response.json();
-      setArtwork(data);
+      if (response.ok && Array.isArray(data)) {
+        setArtwork(data);
+      } else {
+        console.error('Error fetching artwork:', data);
+        setArtwork([]);
+      }
     } catch (error) {
       console.error('Error fetching artwork:', error);
+      setArtwork([]);
     }
   };
 
@@ -174,9 +198,15 @@ export default function AdminDashboard() {
     try {
       const response = await fetch('/api/merch');
       const data = await response.json();
-      setMerch(data);
+      if (response.ok && Array.isArray(data)) {
+        setMerch(data);
+      } else {
+        console.error('Error fetching merch:', data);
+        setMerch([]);
+      }
     } catch (error) {
       console.error('Error fetching merch:', error);
+      setMerch([]);
     }
   };
 
@@ -184,9 +214,15 @@ export default function AdminDashboard() {
     try {
       const response = await fetch('/api/orders');
       const data = await response.json();
-      setOrders(data);
+      if (response.ok && Array.isArray(data)) {
+        setOrders(data);
+      } else {
+        console.error('Error fetching orders:', data);
+        setOrders([]);
+      }
     } catch (error) {
       console.error('Error fetching orders:', error);
+      setOrders([]);
     }
   };
 
