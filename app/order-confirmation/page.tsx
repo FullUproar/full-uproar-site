@@ -70,7 +70,9 @@ export default function OrderConfirmationPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-600 flex items-center justify-center">
         <div className="text-center">
-          <FuglyLogo size={100} className="mx-auto mb-4 animate-bounce" />
+          <div className="mx-auto mb-4 animate-bounce">
+            <FuglyLogo size={100} />
+          </div>
           <p className="text-2xl font-black text-orange-500">Loading your chaos...</p>
         </div>
       </div>
