@@ -713,6 +713,7 @@ export default function AdminDashboard() {
           </td>
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
+            <button onClick={() => window.open(`/admin/manage-images/game/${item.id}`, '_blank')} style={{ ...styles.editButton, background: '#8b5cf6' }}>Images</button>
             <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
           </td>
         </tr>
@@ -819,6 +820,7 @@ export default function AdminDashboard() {
           </td>
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
+            <button onClick={() => window.open(`/admin/manage-images/merch/${item.id}`, '_blank')} style={{ ...styles.editButton, background: '#8b5cf6' }}>Images</button>
             <button onClick={() => openInventoryModal(item)} style={{ ...styles.editButton, background: '#10b981' }}>Inventory</button>
             <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
           </td>

@@ -58,6 +58,40 @@ export async function POST(
   }
 }
 
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const gameId = parseInt(id);
+    const body = await request.json();
+    const { imageId, ...updateData } = body;
+    
+    if (!imageId) {
+      return NextResponse.json({ error: 'Image ID is required' }, { status: 400 });
+    }
+    
+    // If setting as primary, unset other primary images
+    if (updateData.isPrimary) {
+      await prisma.gameImage.updateMany({
+        where: { gameId, isPrimary: true, NOT: { id: parseInt(imageId) } },
+        data: { isPrimary: false }
+      });
+    }
+    
+    const image = await prisma.gameImage.update({
+      where: { id: parseInt(imageId) },
+      data: updateData
+    });
+    
+    return NextResponse.json(image);
+  } catch (error) {
+    console.error('Error updating game image:', error);
+    return NextResponse.json({ error: 'Failed to update image' }, { status: 500 });
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
