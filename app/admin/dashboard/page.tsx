@@ -1814,6 +1814,36 @@ export default function AdminDashboard() {
                   >
                     {importing ? '⏳ Importing...' : '🔄 Import All Products from Printify'}
                   </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        setMessage('🔍 Debugging Printify connection...');
+                        const response = await fetch('/api/printify/debug');
+                        const data = await response.json();
+                        console.log('Debug info:', data);
+                        setMessage('📋 Debug info logged to console');
+                        
+                        // Show debug info in alert for easy viewing
+                        alert(JSON.stringify(data, null, 2));
+                      } catch (error) {
+                        console.error('Debug error:', error);
+                        setMessage('❌ Debug error: ' + error);
+                      }
+                    }}
+                    style={{ 
+                      background: '#6366f1', 
+                      color: 'white', 
+                      padding: '0.75rem 1.5rem', 
+                      borderRadius: '0.5rem', 
+                      fontWeight: 'bold', 
+                      border: 'none', 
+                      cursor: 'pointer', 
+                      fontSize: '0.875rem' 
+                    }}
+                  >
+                    🔍 Debug Connection
+                  </button>
                 </div>
                 
                 {/* Product List */}
