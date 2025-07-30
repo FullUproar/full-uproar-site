@@ -70,7 +70,16 @@ export async function GET(request: NextRequest) {
     
     for (const order of orders) {
       for (const item of order.items) {
-        const key = `${item.productType}-${item.productId}`;
+        // Determine product type and ID based on the schema
+        let key: string;
+        if (item.gameId) {
+          key = `game-${item.gameId}`;
+        } else if (item.merchId) {
+          key = `merch-${item.merchId}`;
+        } else {
+          continue; // Skip if neither gameId nor merchId is set
+        }
+        
         const current = productRevenue.get(key) || { revenue: 0, quantity: 0 };
         productRevenue.set(key, {
           revenue: current.revenue + item.priceCents * item.quantity,

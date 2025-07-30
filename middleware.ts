@@ -35,9 +35,8 @@ export default async function middleware(request: NextRequest) {
   }
 
   // Apply Clerk authentication
-  const authResponse = await clerkMiddleware()(request);
-  
-  return authResponse || NextResponse.next();
+  const authMiddleware = clerkMiddleware();
+  return authMiddleware(request, {} as any);
 }
 
 export const config = {
