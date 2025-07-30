@@ -3,6 +3,7 @@ import { Game, CreateGameRequest, UpdateGameRequest } from '@/lib/types';
 import { prisma } from '@/lib/prisma';
 import { generateSlug } from '@/lib/utils/validation';
 import { ConflictError } from '@/lib/utils/errors';
+import { cache, CacheKeys, CacheDurations } from '@/lib/cache';
 
 class GameService extends BaseService<Game, CreateGameRequest, UpdateGameRequest> {
   constructor() {
@@ -89,29 +90,40 @@ class GameService extends BaseService<Game, CreateGameRequest, UpdateGameRequest
       updateData.tags = tags ? JSON.stringify(tags) : null;
     }
     
-    return super.update(id, updateData, {
+    const result = await super.update(id, updateData, {
       images: true,
       inventory: true
     });
+
+    // Invalidate cache
+    await cache.invalidateGame(id);
+
+    return result;
   }
 
   /**
    * Find featured games
    */
   async findFeatured(limit: number = 10): Promise<Game[]> {
-    return this.findMany({
-      where: { featured: true },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      include: {
-        images: {
-          orderBy: [
-            { isPrimary: 'desc' },
-            { sortOrder: 'asc' }
-          ]
-        }
-      }
-    });
+    return cache.remember(
+      `${CacheKeys.FEATURED_GAMES}:${limit}`,
+      async () => {
+        return this.findMany({
+          where: { featured: true },
+          orderBy: { createdAt: 'desc' },
+          take: limit,
+          include: {
+            images: {
+              orderBy: [
+                { isPrimary: 'desc' },
+                { sortOrder: 'asc' }
+              ]
+            }
+          }
+        });
+      },
+      CacheDurations.MEDIUM
+    );
   }
 
   /**

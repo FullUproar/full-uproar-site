@@ -23,6 +23,8 @@
     "@clerk/nextjs": "^6.12.8",
     "@prisma/client": "^6.5.0",
     "@types/multer": "^2.0.0",
+    "@upstash/ratelimit": "^2.0.6",
+    "@upstash/redis": "^1.35.2",
     "dotenv": "^16.4.7",
     "lucide-react": "^0.526.0",
     "multer": "^2.0.2",

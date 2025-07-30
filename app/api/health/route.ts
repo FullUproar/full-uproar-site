@@ -1,73 +1,179 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { config } from '@/lib/config';
 
-export async function GET() {
-  const diagnostics: any = {
-    status: 'checking',
-    environment: process.env.NODE_ENV,
-    databaseUrl: process.env.DATABASE_URL ? 
-      (process.env.DATABASE_URL.includes('file:') ? 'SQLite' : 'PostgreSQL') : 
-      'Not configured',
-    timestamp: new Date().toISOString()
+interface HealthCheck {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  timestamp: string;
+  version: string;
+  environment: string;
+  services: {
+    database: {
+      status: 'up' | 'down';
+      responseTime?: number;
+      error?: string;
+    };
+    redis?: {
+      status: 'up' | 'down';
+      responseTime?: number;
+      error?: string;
+    };
+    printify?: {
+      status: 'up' | 'down';
+      responseTime?: number;
+      error?: string;
+    };
   };
+  system: {
+    uptime: number;
+    memory: {
+      used: number;
+      total: number;
+      percentage: number;
+    };
+  };
+}
 
+async function checkDatabase(): Promise<HealthCheck['services']['database']> {
+  const start = Date.now();
   try {
-    // Test basic database connection
-    await prisma.$connect();
-    diagnostics.connection = 'success';
+    // Simple query to check database connection
+    await prisma.$queryRaw`SELECT 1`;
+    return {
+      status: 'up',
+      responseTime: Date.now() - start,
+    };
+  } catch (error) {
+    return {
+      status: 'down',
+      responseTime: Date.now() - start,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
 
-    // Try to check tables
-    try {
-      const gameCount = await prisma.game.count();
-      const merchCount = await prisma.merch.count();
-      const orderCount = await prisma.order.count();
-      const artworkCount = await prisma.artwork.count().catch(() => 0);
-      
-      diagnostics.status = 'healthy';
-      diagnostics.database = 'connected';
-      diagnostics.counts = {
-        games: gameCount,
-        merch: merchCount,
-        orders: orderCount,
-        artwork: artworkCount
+async function checkRedis(): Promise<HealthCheck['services']['redis']> {
+  // Only check if Redis is configured
+  if (!process.env.UPSTASH_REDIS_REST_URL) {
+    return undefined;
+  }
+
+  const start = Date.now();
+  try {
+    const response = await fetch(process.env.UPSTASH_REDIS_REST_URL + '/ping', {
+      headers: {
+        Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+      },
+    });
+
+    if (response.ok) {
+      return {
+        status: 'up',
+        responseTime: Date.now() - start,
       };
-      
-      return NextResponse.json(diagnostics);
-    } catch (tableError) {
-      diagnostics.status = 'unhealthy';
-      diagnostics.database = 'connected but missing tables';
-      diagnostics.error = tableError instanceof Error ? tableError.message : String(tableError);
-      
-      // Check which tables exist
-      const tables: any = {};
-      tables.Game = await prisma.game.count().then(() => true).catch(() => false);
-      tables.Merch = await prisma.merch.count().then(() => true).catch(() => false);
-      tables.Order = await prisma.order.count().then(() => true).catch(() => false);
-      tables.Artwork = await prisma.artwork.count().then(() => true).catch(() => false);
-      tables.Comic = await prisma.comic.count().then(() => true).catch(() => false);
-      tables.NewsPost = await prisma.newsPost.count().then(() => true).catch(() => false);
-      
-      diagnostics.tables = tables;
-      diagnostics.solution = 'Run database initialization: POST /api/init-db?secret=emergency-init-2024';
-      
-      return NextResponse.json(diagnostics, { status: 503 });
+    } else {
+      return {
+        status: 'down',
+        responseTime: Date.now() - start,
+        error: `HTTP ${response.status}`,
+      };
     }
   } catch (error) {
-    diagnostics.status = 'unhealthy';
-    diagnostics.database = 'connection failed';
-    diagnostics.error = error instanceof Error ? error.message : String(error);
-    
-    // Provide helpful error messages
-    if (diagnostics.error.includes('P1001')) {
-      diagnostics.solution = 'Database server is not reachable. Check DATABASE_URL environment variable.';
-    } else if (diagnostics.error.includes('P1002')) {
-      diagnostics.solution = 'Database server reached but timed out. Check network/firewall settings.';
-    } else if (diagnostics.error.includes('P1003')) {
-      diagnostics.solution = 'Database does not exist. Create the database first.';
-    } else if (diagnostics.error.includes('file:')) {
-      diagnostics.solution = 'SQLite database file issue. Ensure the file path is correct and writable.';
-    }
-    
-    return NextResponse.json(diagnostics, { status: 503 });
+    return {
+      status: 'down',
+      responseTime: Date.now() - start,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
+}
+
+async function checkPrintify(): Promise<HealthCheck['services']['printify']> {
+  if (!config.get('services').printify.enabled) {
+    return undefined;
+  }
+
+  const start = Date.now();
+  try {
+    const response = await fetch('https://api.printify.com/v1/shops.json', {
+      headers: {
+        Authorization: `Bearer ${process.env.PRINTIFY_API_KEY}`,
+      },
+    });
+
+    if (response.ok) {
+      return {
+        status: 'up',
+        responseTime: Date.now() - start,
+      };
+    } else {
+      return {
+        status: 'down',
+        responseTime: Date.now() - start,
+        error: `HTTP ${response.status}`,
+      };
+    }
+  } catch (error) {
+    return {
+      status: 'down',
+      responseTime: Date.now() - start,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
+
+export async function GET(request: NextRequest) {
+  // Basic health check - just return OK
+  const isBasic = request.nextUrl.searchParams.get('basic') === 'true';
+  
+  if (isBasic) {
+    return NextResponse.json({ status: 'ok' }, { status: 200 });
+  }
+
+  // Detailed health check
+  const [database, redis, printify] = await Promise.all([
+    checkDatabase(),
+    checkRedis(),
+    checkPrintify(),
+  ]);
+
+  const memoryUsage = process.memoryUsage();
+  const totalMemory = memoryUsage.heapTotal;
+  const usedMemory = memoryUsage.heapUsed;
+
+  const health: HealthCheck = {
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    version: process.env.npm_package_version || '0.1.0',
+    environment: config.get('app').env,
+    services: {
+      database,
+      ...(redis && { redis }),
+      ...(printify && { printify }),
+    },
+    system: {
+      uptime: process.uptime(),
+      memory: {
+        used: Math.round(usedMemory / 1024 / 1024), // MB
+        total: Math.round(totalMemory / 1024 / 1024), // MB
+        percentage: Math.round((usedMemory / totalMemory) * 100),
+      },
+    },
+  };
+
+  // Determine overall status
+  const serviceStatuses = Object.values(health.services).filter(Boolean);
+  const downServices = serviceStatuses.filter(s => s.status === 'down');
+  
+  if (downServices.length > 0) {
+    health.status = downServices.includes(health.services.database) ? 'unhealthy' : 'degraded';
+  }
+
+  const statusCode = health.status === 'healthy' ? 200 : health.status === 'degraded' ? 200 : 503;
+
+  return NextResponse.json(health, { 
+    status: statusCode,
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    }
+  });
 }
