@@ -95,6 +95,11 @@ export default function AdminDashboard() {
   const [inventoryModalOpen, setInventoryModalOpen] = useState(false);
   const [inventoryItem, setInventoryItem] = useState<any>(null);
   const [inventoryData, setInventoryData] = useState<any[]>([]);
+  
+  // Database tools states
+  const [showDbTools, setShowDbTools] = useState(false);
+  const [dbToolsResult, setDbToolsResult] = useState<any>(null);
+  const [dbToolsLoading, setDbToolsLoading] = useState(false);
 
   // Form states
   const [gameForm, setGameForm] = useState({
@@ -129,6 +134,18 @@ export default function AdminDashboard() {
     fetchMerch();
     fetchOrders();
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (showDbTools && !(e.target as HTMLElement).closest('[data-db-tools-menu]')) {
+        setShowDbTools(false);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showDbTools]);
 
   const fetchGames = async () => {
     try {
@@ -224,6 +241,20 @@ export default function AdminDashboard() {
       console.error('Error fetching orders:', error);
       setOrders([]);
     }
+  };
+
+  // Database tool functions
+  const runDbTool = async (endpoint: string, method: string = 'GET') => {
+    setDbToolsLoading(true);
+    setDbToolsResult(null);
+    try {
+      const response = await fetch(endpoint, { method });
+      const data = await response.json();
+      setDbToolsResult(data);
+    } catch (error) {
+      setDbToolsResult({ error: error instanceof Error ? error.message : 'Tool execution failed' });
+    }
+    setDbToolsLoading(false);
   };
 
   const openCreateModal = () => {
@@ -1145,19 +1176,251 @@ export default function AdminDashboard() {
             <h1 style={styles.headerTitle}>FUGLY'S DATABASE CHAOS CENTER</h1>
             <p style={styles.headerSubtitle}>Browse, edit, and create mayhem - {user.firstName}</p>
           </div>
-          <button 
-            onClick={() => {
-              sessionStorage.setItem('fugly-auth', 'true');
-              window.location.href = '/';
-            }}
-            style={{ color: 'white', textDecoration: 'none', background: 'rgba(255,255,255,0.2)', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
-          >
-            ← Back to Store
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            {/* Database Tools Menu */}
+            <div style={{ position: 'relative' }} data-db-tools-menu>
+              <button 
+                onClick={() => setShowDbTools(!showDbTools)}
+                style={{ 
+                  color: 'white', 
+                  background: 'rgba(255,255,255,0.2)', 
+                  padding: '0.75rem 1rem', 
+                  borderRadius: '0.5rem', 
+                  fontWeight: 'bold', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                <span style={{ fontSize: '1.5rem' }}>☰</span> DB Tools
+              </button>
+              
+              {showDbTools && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: 0,
+                  marginTop: '0.5rem',
+                  background: 'white',
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+                  minWidth: '250px',
+                  zIndex: 100
+                }}>
+                  <div style={{ padding: '0.5rem 0' }}>
+                    <button
+                      onClick={() => runDbTool('/api/health')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🏥 Health Check
+                    </button>
+                    <button
+                      onClick={() => runDbTool('/api/debug-db')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🔍 Debug Database
+                    </button>
+                    <hr style={{ margin: '0.5rem 0', border: '1px solid #e5e7eb' }} />
+                    <button
+                      onClick={() => runDbTool('/api/migrate-missing-fields?secret=emergency-init-2024', 'POST')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#f97316',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#fef3c7'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🔧 Migrate Missing Fields
+                    </button>
+                    <button
+                      onClick={() => runDbTool('/api/init-db?secret=emergency-init-2024', 'POST')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#3b82f6',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#dbeafe'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🗄️ Initialize Database
+                    </button>
+                    <button
+                      onClick={() => runDbTool('/api/seed-data?secret=seed-2024', 'POST')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#10b981',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#d1fae5'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🌱 Seed Sample Data
+                    </button>
+                    <hr style={{ margin: '0.5rem 0', border: '1px solid #e5e7eb' }} />
+                    <button
+                      onClick={() => {
+                        setShowDbTools(false);
+                        window.open('/migrate', '_blank');
+                      }}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#6b7280',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🚀 Advanced Migration Tool
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <button 
+              onClick={() => {
+                sessionStorage.setItem('fugly-auth', 'true');
+                window.location.href = '/';
+              }}
+              style={{ color: 'white', textDecoration: 'none', background: 'rgba(255,255,255,0.2)', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
+            >
+              ← Back to Store
+            </button>
+          </div>
         </div>
       </div>
 
       <div style={styles.main}>
+        {/* Database Tools Result */}
+        {(dbToolsResult || dbToolsLoading) && (
+          <div style={{
+            background: dbToolsResult?.error ? '#fee2e2' : '#dcfce7',
+            border: `1px solid ${dbToolsResult?.error ? '#fecaca' : '#bbf7d0'}`,
+            borderRadius: '0.5rem',
+            padding: '1rem',
+            marginBottom: '1rem',
+            position: 'relative'
+          }}>
+            <button
+              onClick={() => {
+                setDbToolsResult(null);
+                setDbToolsLoading(false);
+              }}
+              style={{
+                position: 'absolute',
+                top: '0.5rem',
+                right: '0.5rem',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                color: '#6b7280'
+              }}
+            >
+              ×
+            </button>
+            {dbToolsLoading ? (
+              <div style={{ textAlign: 'center', padding: '1rem' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>⏳</div>
+                <div>Running database tool...</div>
+              </div>
+            ) : (
+              <>
+                <h3 style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  {dbToolsResult?.error ? '❌ Error' : '✅ Success'}
+                </h3>
+                <pre style={{ 
+                  whiteSpace: 'pre-wrap', 
+                  fontSize: '0.875rem',
+                  fontFamily: 'monospace',
+                  maxHeight: '400px',
+                  overflow: 'auto',
+                  background: 'rgba(0, 0, 0, 0.05)',
+                  padding: '0.5rem',
+                  borderRadius: '0.25rem'
+                }}>
+                  {JSON.stringify(dbToolsResult, null, 2)}
+                </pre>
+                {dbToolsResult?.success && (
+                  <button
+                    onClick={() => {
+                      fetchGames();
+                      fetchMerch();
+                      fetchComics();
+                      fetchNews();
+                      fetchArtwork();
+                      fetchOrders();
+                    }}
+                    style={{
+                      marginTop: '1rem',
+                      background: '#f97316',
+                      color: 'white',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.25rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    🔄 Refresh All Data
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        )}
+        
         {/* Navigation */}
         <div style={styles.tabContainer}>
           <div style={styles.tabNav}>
