@@ -164,7 +164,8 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      height: '4rem'
+      height: isMobile ? '3.5rem' : '4rem',
+      overflow: 'hidden'
     },
     logo: {
       display: 'flex',
@@ -400,27 +401,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
               </div>
             </div>
             
-            {/* Mobile menu button */}
-            {isMobile && (
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '0.5rem',
-                  color: '#f97316'
-                }}
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            )}
-            
-            {/* Desktop nav links */}
-            <div style={{
-              ...styles.navLinks,
-              display: isMobile ? 'none' : 'flex'
-            }}>
+            {/* Desktop nav links - hidden on mobile */}
+            {!isMobile && (
+              <div style={styles.navLinks}>
               <a href="#games" style={styles.navLink}>GAMES</a>
               <a href="#merch" style={styles.navLink}>MERCH</a>
               <a href="/track-order" style={styles.navLink}>TRACK</a>
@@ -471,7 +454,24 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                   </span>
                 )}
               </button>
-            </div>
+              </div>
+            )}
+            
+            {/* Mobile menu button */}
+            {isMobile && (
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0.5rem',
+                  color: '#f97316'
+                }}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            )}
           </div>
         </div>
         

@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Reset body margins and set background */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #111827;
+  overflow-x: hidden;
+}
+
+/* Embossed page wrapper effect */
+#__next {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #111827, #1f2937, #ea580c);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+    inset 2px 0 4px rgba(0, 0, 0, 0.5),
+    inset -2px 0 4px rgba(0, 0, 0, 0.5);
+}
+
 /* Full Uproar custom styles */
 @keyframes animate-spin-slow {
   from {
