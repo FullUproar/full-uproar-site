@@ -9,7 +9,6 @@ import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
 import FuglyPointing from './FuglyPointing';
 import FooterLogo from './FooterLogo';
-import MerchSection from './MerchSection';
 
 interface Game {
   id: number;
@@ -46,26 +45,14 @@ interface NewsPost {
   createdAt: string;
 }
 
-interface Merch {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  category: string;
-  priceCents: number;
-  imageUrl: string | null;
-  sizes: string | null;
-  featured: boolean;
-}
 
 interface FullUproarHomeProps {
   games: Game[];
   comics: Comic[];
   news: NewsPost[];
-  merch: Merch[];
 }
 
-export default function FullUproarHomeStyled({ games, comics, news, merch }: FullUproarHomeProps) {
+export default function FullUproarHomeStyled({ games, comics, news }: FullUproarHomeProps) {
   const { user } = useUser();
   const { items, addToCart, toggleCart, getTotalItems } = useCartStore();
   const [email, setEmail] = useState('');
@@ -720,8 +707,6 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
         </div>
       </section>
 
-      {/* Merch Section */}
-      <MerchSection merchItems={merch} />
 
       {/* Footer placeholder */}
       <footer style={{ background: '#000', color: 'white', padding: '3rem 0', textAlign: 'center' as const }}>
