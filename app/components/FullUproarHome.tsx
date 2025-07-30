@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Package, ArrowRight, Menu, X, Heart, Share2, Play, Zap, Skull } from 'lucide-react';
+import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Package, ArrowRight, Menu, X, Heart, Share2, Play, Zap, Skull, Pause } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 
@@ -53,6 +53,8 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeGame, setActiveGame] = useState(0);
   const [currentComic, setCurrentComic] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [countdown, setCountdown] = useState(7);
 
   const handleAddToCart = (game: Game) => {
     addToCart({
@@ -85,15 +87,21 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
     }
   };
 
-  // Auto-rotate featured games
+  // Auto-rotate featured games (pause on hover)
   useEffect(() => {
-    if (games.length > 0) {
+    if (games.length > 0 && !isPaused) {
       const interval = setInterval(() => {
-        setActiveGame((prev) => (prev + 1) % games.length);
-      }, 5000);
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            setActiveGame((current) => (current + 1) % games.length);
+            return 7;
+          }
+          return prev - 1;
+        });
+      }, 1000);
       return () => clearInterval(interval);
     }
-  }, [games.length]);
+  }, [games.length, isPaused]);
 
   const featuredGame = games[activeGame];
 
@@ -195,7 +203,10 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
 
             {/* Featured Game Showcase */}
             {featuredGame && (
-              <div className="bg-gray-800 rounded-3xl shadow-2xl p-8 max-w-4xl mx-auto border-4 border-orange-500 transform hover:rotate-1 transition-transform">
+              <div 
+                className="bg-gray-800 rounded-3xl shadow-2xl p-8 max-w-4xl mx-auto border-4 border-orange-500 transform hover:rotate-1 transition-transform"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}>
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div className="text-left">
                     <span className="bg-red-500 text-white px-4 py-1 rounded-full text-sm font-black inline-block -rotate-3">
@@ -240,17 +251,32 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
                   </div>
                 </div>
                 
-                {/* Game selector dots */}
-                <div className="flex justify-center gap-2 mt-8">
-                  {games.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setActiveGame(index)}
-                      className={`h-3 w-3 rounded-full transition-all ${
-                        index === activeGame ? 'bg-orange-500 w-8' : 'bg-gray-600'
-                      }`}
-                    />
-                  ))}
+                {/* Game selector dots with countdown */}
+                <div className="flex justify-center items-center gap-4 mt-8">
+                  <div className="flex gap-2">
+                    {games.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setActiveGame(index);
+                          setCountdown(7);
+                        }}
+                        className={`h-3 w-3 rounded-full transition-all ${
+                          index === activeGame ? 'bg-orange-500 w-8' : 'bg-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  {isPaused ? (
+                    <div className="flex items-center gap-2 text-orange-300 bg-gray-700 px-3 py-1 rounded-full">
+                      <Pause className="h-4 w-4" />
+                      <span className="text-sm font-bold">PAUSED</span>
+                    </div>
+                  ) : (
+                    <div className="text-orange-300 bg-gray-700 px-3 py-1 rounded-full">
+                      <span className="text-sm font-bold">CHAOS IN {countdown}...</span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
