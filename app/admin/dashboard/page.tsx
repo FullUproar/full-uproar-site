@@ -93,6 +93,8 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [message, setMessage] = useState('');
   const [showPrintifyProducts, setShowPrintifyProducts] = useState(true);
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [importing, setImporting] = useState(false);
   
   // Modal states
   const [editMode, setEditMode] = useState<EditMode>(null);
@@ -1650,13 +1652,17 @@ export default function AdminDashboard() {
             <div style={{ padding: '2rem' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Printify Integration</h2>
               
-              {/* Test button */}
-              <button 
-                onClick={() => alert('Test button works!')} 
-                style={{ marginBottom: '1rem', padding: '0.5rem 1rem', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '0.25rem', cursor: 'pointer' }}
-              >
-                Test Button (Click Me)
-              </button>
+              {message && (
+                <div style={{ 
+                  padding: '1rem', 
+                  marginBottom: '1rem', 
+                  borderRadius: '0.5rem',
+                  background: message.includes('✅') ? '#d1fae5' : message.includes('🔄') ? '#dbeafe' : '#fee2e2',
+                  color: message.includes('✅') ? '#065f46' : message.includes('🔄') ? '#1e40af' : '#991b1b'
+                }}>
+                  {message}
+                </div>
+              )}
               
               {/* Settings Section */}
               <div style={{ background: '#f9fafb', padding: '1.5rem', borderRadius: '0.5rem', marginBottom: '2rem' }}>
@@ -1704,6 +1710,7 @@ export default function AdminDashboard() {
                         
                         const saveSettings = async () => {
                           try {
+                            setSavingSettings(true);
                             setMessage('Saving...');
                             const response = await fetch('/api/printify/settings', {
                               method: 'PUT',
@@ -1720,14 +1727,25 @@ export default function AdminDashboard() {
                           } catch (error) {
                             console.error('Save error:', error);
                             setMessage('❌ Error saving settings');
+                          } finally {
+                            setSavingSettings(false);
                           }
                         };
                         
                         saveSettings();
                       }}
-                      style={{ background: '#f97316', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
+                      style={{ 
+                        background: savingSettings ? '#9ca3af' : '#f97316', 
+                        color: 'white', 
+                        padding: '0.75rem 1.5rem', 
+                        borderRadius: '0.5rem', 
+                        fontWeight: 'bold', 
+                        border: 'none', 
+                        cursor: savingSettings ? 'not-allowed' : 'pointer' 
+                      }}
+                      disabled={savingSettings}
                     >
-                      Save Settings
+                      {savingSettings ? 'Saving...' : 'Save Settings'}
                     </button>
                   </div>
                 </div>
@@ -1749,6 +1767,7 @@ export default function AdminDashboard() {
                       
                       const importProducts = async () => {
                         try {
+                          setImporting(true);
                           setMessage('🔄 Importing all products from Printify... This may take a moment.');
                           console.log('Starting import...');
                           const response = await fetch('/api/printify/import', {
@@ -1761,24 +1780,39 @@ export default function AdminDashboard() {
                           console.log('Import data:', data);
                           if (response.ok) {
                             setMessage(`✅ ${data.message}`);
+                            // Don't clear the message immediately so user can see it
                             setTimeout(() => {
                               fetchMerch(); // Refresh merch list
+                            }, 1000);
+                            setTimeout(() => {
                               setMessage('');
-                            }, 2000);
+                            }, 5000);
                           } else {
                             setMessage(`❌ Import failed: ${data.details || data.error || 'Unknown error'}`);
                           }
                         } catch (error) {
                           console.error('Import error:', error);
                           setMessage('❌ Import error: ' + error);
+                        } finally {
+                          setImporting(false);
                         }
                       };
                       
                       importProducts();
                     }}
-                    style={{ background: '#10b981', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', fontSize: '1rem' }}
+                    style={{ 
+                      background: importing ? '#9ca3af' : '#10b981', 
+                      color: 'white', 
+                      padding: '0.75rem 2rem', 
+                      borderRadius: '0.5rem', 
+                      fontWeight: 'bold', 
+                      border: 'none', 
+                      cursor: importing ? 'not-allowed' : 'pointer', 
+                      fontSize: '1rem' 
+                    }}
+                    disabled={importing}
                   >
-                    🔄 Import All Products from Printify
+                    {importing ? '⏳ Importing...' : '🔄 Import All Products from Printify'}
                   </button>
                 </div>
                 

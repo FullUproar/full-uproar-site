@@ -10,6 +10,14 @@ export async function POST(request: NextRequest) {
     const client = new PrintifyClient();
     await client.initialize();
     
+    // First, verify we can connect and the shop exists
+    try {
+      const shops = await client.getShops();
+      console.log('Available shops:', shops);
+    } catch (error) {
+      console.error('Error fetching shops:', error);
+    }
+    
     // Get all products or specific ones
     let productsToImport: PrintifyProduct[] = [];
     
