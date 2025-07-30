@@ -19,7 +19,8 @@ export async function GET(request: NextRequest) {
             { isPrimary: 'desc' },
             { sortOrder: 'asc' }
           ]
-        }
+        },
+        inventory: true
       }
     });
     

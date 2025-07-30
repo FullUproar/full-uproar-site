@@ -335,13 +335,16 @@ export default function AdminDashboard() {
     setMessage('');
   };
 
-  const openInventoryModal = async (item: any) => {
-    setInventoryItem(item);
+  const openInventoryModal = async (item: any, type: 'game' | 'merch' = 'merch') => {
+    setInventoryItem({ ...item, itemType: type });
     setInventoryModalOpen(true);
     
-    // Fetch inventory data for this merch item
+    // Fetch inventory data
     try {
-      const response = await fetch(`/api/inventory?merchId=${item.id}`);
+      const endpoint = type === 'game' 
+        ? `/api/inventory?gameId=${item.id}`
+        : `/api/inventory?merchId=${item.id}`;
+      const response = await fetch(endpoint);
       const data = await response.json();
       setInventoryData(data);
     } catch (error) {
@@ -355,26 +358,37 @@ export default function AdminDashboard() {
     setInventoryData([]);
   };
 
-  const updateInventory = async (inventoryId: number, merchId: number, size: string | null, newQuantity: number) => {
+  const updateInventory = async (inventoryId: number, itemId: number, size: string | null, newQuantity: number, itemType: 'game' | 'merch') => {
     try {
+      const body: any = { quantity: newQuantity };
+      if (itemType === 'game') {
+        body.gameId = itemId;
+      } else {
+        body.merchId = itemId;
+        body.size = size;
+      }
+      
       const response = await fetch('/api/inventory', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          merchId,
-          size,
-          quantity: newQuantity
-        })
+        body: JSON.stringify(body)
       });
 
       if (response.ok) {
         // Refresh inventory data
-        const refreshResponse = await fetch(`/api/inventory?merchId=${merchId}`);
+        const endpoint = itemType === 'game' 
+          ? `/api/inventory?gameId=${itemId}`
+          : `/api/inventory?merchId=${itemId}`;
+        const refreshResponse = await fetch(endpoint);
         const data = await refreshResponse.json();
         setInventoryData(data);
         
-        // Also refresh merch data to update total stock
-        fetchMerch();
+        // Also refresh the appropriate data
+        if (itemType === 'game') {
+          fetchGames();
+        } else {
+          fetchMerch();
+        }
       } else {
         console.error('Failed to update inventory');
       }
@@ -714,6 +728,7 @@ export default function AdminDashboard() {
           <td style={styles.td}>
             <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
             <button onClick={() => window.open(`/admin/manage-images/game/${item.id}`, '_blank')} style={{ ...styles.editButton, background: '#8b5cf6' }}>Images</button>
+            <button onClick={() => openInventoryModal(item, 'game')} style={{ ...styles.editButton, background: '#10b981' }}>Inventory</button>
             <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>
           </td>
         </tr>
@@ -1508,7 +1523,7 @@ export default function AdminDashboard() {
               <div style={styles.modalHeader}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h2 style={styles.modalTitle}>
-                    Inventory Management: {inventoryItem.name}
+                    Inventory Management: {inventoryItem.title || inventoryItem.name}
                   </h2>
                   <button type="button" onClick={closeInventoryModal} style={{...styles.secondaryButton, padding: '0.5rem 1rem'}}>Close</button>
                 </div>
@@ -1517,14 +1532,16 @@ export default function AdminDashboard() {
               <div style={styles.modalBody}>
                 <div style={{ marginBottom: '1rem' }}>
                   <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>
-                    Manage stock levels for each size/variant. Changes are saved automatically.
+                    {inventoryItem.itemType === 'game' 
+                      ? 'Manage stock levels for this game. Changes are saved automatically.'
+                      : 'Manage stock levels for each size/variant. Changes are saved automatically.'}
                   </p>
                 </div>
                 
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
-                      <th style={{ ...styles.th, textAlign: 'left' }}>Size/Variant</th>
+                      <th style={{ ...styles.th, textAlign: 'left' }}>{inventoryItem.itemType === 'game' ? 'Product' : 'Size/Variant'}</th>
                       <th style={{ ...styles.th, textAlign: 'center' }}>Current Stock</th>
                       <th style={{ ...styles.th, textAlign: 'center' }}>Reserved</th>
                       <th style={{ ...styles.th, textAlign: 'center' }}>Available</th>
@@ -1535,14 +1552,14 @@ export default function AdminDashboard() {
                     {inventoryData.length === 0 ? (
                       <tr>
                         <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
-                          No inventory records found. Create the merch item first.
+                          No inventory records found. Create the {inventoryItem.itemType === 'game' ? 'game' : 'merch item'} first.
                         </td>
                       </tr>
                     ) : (
                       inventoryData.map((inv: any) => (
                         <tr key={inv.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                           <td style={{ ...styles.td, fontWeight: 'bold' }}>
-                            {inv.size || 'One Size'}
+                            {inventoryItem.itemType === 'game' ? inventoryItem.title : (inv.size || 'One Size')}
                           </td>
                           <td style={{ ...styles.td, textAlign: 'center' }}>
                             {inv.quantity}
@@ -1561,7 +1578,7 @@ export default function AdminDashboard() {
                           <td style={{ ...styles.td, textAlign: 'center' }}>
                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
                               <button 
-                                onClick={() => updateInventory(inv.id, inventoryItem.id, inv.size, Math.max(0, inv.quantity - 1))}
+                                onClick={() => updateInventory(inv.id, inventoryItem.id, inv.size, Math.max(0, inv.quantity - 1), inventoryItem.itemType)}
                                 style={{ 
                                   ...styles.secondaryButton, 
                                   padding: '0.25rem 0.5rem',
@@ -1577,7 +1594,7 @@ export default function AdminDashboard() {
                                 onChange={(e) => {
                                   const newValue = parseInt(e.target.value) || 0;
                                   if (newValue >= 0) {
-                                    updateInventory(inv.id, inventoryItem.id, inv.size, newValue);
+                                    updateInventory(inv.id, inventoryItem.id, inv.size, newValue, inventoryItem.itemType);
                                   }
                                 }}
                                 style={{ 
@@ -1588,7 +1605,7 @@ export default function AdminDashboard() {
                                 }}
                               />
                               <button 
-                                onClick={() => updateInventory(inv.id, inventoryItem.id, inv.size, inv.quantity + 1)}
+                                onClick={() => updateInventory(inv.id, inventoryItem.id, inv.size, inv.quantity + 1, inventoryItem.itemType)}
                                 style={{ 
                                   ...styles.primaryButton, 
                                   padding: '0.25rem 0.5rem',
