@@ -173,7 +173,9 @@ export default function TrackOrderPage() {
         {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
-            <FuglyLogo size={80} className="mx-auto mb-4 animate-spin" />
+            <div className="mx-auto mb-4 animate-spin" style={{ width: 'fit-content' }}>
+              <FuglyLogo size={80} />
+            </div>
             <p className="text-xl font-bold text-orange-500">Searching the chaos realm...</p>
           </div>
         )}
