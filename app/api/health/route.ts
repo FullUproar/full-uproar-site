@@ -37,17 +37,29 @@ interface HealthCheck {
 async function checkDatabase(): Promise<HealthCheck['services']['database']> {
   const start = Date.now();
   try {
-    // Simple query to check database connection
-    await prisma.$queryRaw`SELECT 1`;
+    // Use a simpler query that doesn't create new connections
+    await prisma.$executeRaw`SELECT 1`;
     return {
       status: 'up',
       responseTime: Date.now() - start,
     };
   } catch (error) {
+    // Don't create new connections if we're already having connection issues
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
+    // If it's a connection pool error, provide helpful context
+    if (errorMessage.includes('too many connections')) {
+      return {
+        status: 'down',
+        responseTime: Date.now() - start,
+        error: 'Database connection pool exhausted. Connections will recover automatically.',
+      };
+    }
+    
     return {
       status: 'down',
       responseTime: Date.now() - start,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: errorMessage,
     };
   }
 }

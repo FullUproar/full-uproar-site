@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { getDatabaseUrl } from '@/lib/utils/database';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -10,12 +11,14 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
     datasources: {
       db: {
-        url: process.env.DATABASE_URL,
+        url: getDatabaseUrl(),
       },
     },
   });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+// IMPORTANT: Store Prisma client in global scope in ALL environments
+// This prevents creating multiple instances in serverless
+globalForPrisma.prisma = prisma;
 
 // Ensure the client connects on first use
 export async function connectPrisma() {
