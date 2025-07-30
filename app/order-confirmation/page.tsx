@@ -222,7 +222,9 @@ export default function OrderConfirmationPage() {
 
           {/* What's Next */}
           <div className="bg-gray-800 rounded-xl p-8 border-4 border-orange-500/20 text-center">
-            <FuglyLogo size={80} className="mx-auto mb-4" />
+            <div className="mx-auto mb-4" style={{ width: 'fit-content' }}>
+              <FuglyLogo size={80} />
+            </div>
             
             <h2 className="text-2xl font-black text-orange-500 mb-4">
               What Happens Next?
