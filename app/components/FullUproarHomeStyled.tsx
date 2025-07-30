@@ -493,9 +493,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
               </div>
               <FuglyPointing size={180} style={{ 
                 position: 'absolute', 
-                right: '-60px', 
+                right: '-20px', 
                 top: '50%', 
-                transform: 'translateY(-100%)'
+                transform: 'translateY(-50%)'
               }} />
             </div>
 
