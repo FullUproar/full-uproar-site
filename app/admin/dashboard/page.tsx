@@ -1780,13 +1780,37 @@ export default function AdminDashboard() {
                           console.log('Import data:', data);
                           if (response.ok) {
                             setMessage(`✅ ${data.message}`);
+                            
+                            // Show detailed results if there were errors
+                            if (data.results && data.results.errors > 0) {
+                              console.log('Import details:', data.results.details);
+                              
+                              // Show error details in console
+                              const errors = data.results.details.filter((d: any) => d.action === 'error');
+                              if (errors.length > 0) {
+                                console.error('Import errors:', errors);
+                                
+                                // Create a summary of errors
+                                const errorSummary = errors.map((e: any) => 
+                                  `${e.title || e.id}: ${e.error}`
+                                ).join('\n');
+                                
+                                // Show first few errors in the message
+                                const firstErrors = errors.slice(0, 3).map((e: any) => 
+                                  e.error.includes('Duplicate entry') ? 'Duplicate product' : e.error.substring(0, 50)
+                                ).join(', ');
+                                
+                                setMessage(`✅ ${data.message}\n⚠️ Errors: ${firstErrors}${errors.length > 3 ? '...' : ''}`);
+                              }
+                            }
+                            
                             // Don't clear the message immediately so user can see it
                             setTimeout(() => {
                               fetchMerch(); // Refresh merch list
                             }, 1000);
                             setTimeout(() => {
                               setMessage('');
-                            }, 5000);
+                            }, 10000); // Give more time to read errors
                           } else {
                             setMessage(`❌ Import failed: ${data.details || data.error || 'Unknown error'}`);
                           }
