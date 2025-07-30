@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import FuglyLogo from '../components/FuglyLogo';
-import { Menu, X, ShoppingCart, Zap, Flame, Skull } from 'lucide-react';
+import Navigation from '../components/Navigation';
+import { Zap, Flame, Skull } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
-import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 
 interface NewsPost {
   id: number;
@@ -17,11 +16,9 @@ interface NewsPost {
 
 export default function ChaosPage() {
   const router = useRouter();
-  const { getTotalItems, toggleCart } = useCartStore();
   const [news, setNews] = useState<NewsPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [chaosLevel, setChaosLevel] = useState(1);
   const [selectedPost, setSelectedPost] = useState<NewsPost | null>(null);
 
@@ -94,68 +91,7 @@ export default function ChaosPage() {
         pointerEvents: 'none'
       }} />
 
-      {/* Navigation */}
-      <nav style={styles.nav}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: isMobile ? '3.5rem' : '4rem' }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
-              <FuglyLogo size={isMobile ? 50 : 75} />
-              <div>
-                <span style={{ fontWeight: 900, fontSize: isMobile ? '1.25rem' : '1.5rem', color: '#ef4444' }}>FULL UPROAR</span>
-                <div style={{ fontSize: isMobile ? '0.625rem' : '0.75rem', color: '#fca5a5', marginTop: '-0.25rem' }}>Chaos Central</div>
-              </div>
-            </a>
-            
-            {!isMobile && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                <a href="/" style={{ color: '#fde68a', textDecoration: 'none', fontWeight: 'bold' }}>HOME</a>
-                <a href="/games" style={{ color: '#fde68a', textDecoration: 'none', fontWeight: 'bold' }}>GAMES</a>
-                <a href="/merch" style={{ color: '#fde68a', textDecoration: 'none', fontWeight: 'bold' }}>MERCH</a>
-                <a href="/comics" style={{ color: '#fde68a', textDecoration: 'none', fontWeight: 'bold' }}>COMICS</a>
-                <a href="/cult" style={{ color: '#fde68a', textDecoration: 'none', fontWeight: 'bold' }}>CULT</a>
-                
-                <button onClick={toggleCart} style={{ background: 'transparent', border: 'none', cursor: 'pointer', position: 'relative' }}>
-                  <ShoppingCart style={{ height: '1.25rem', width: '1.25rem', color: '#fdba74' }} />
-                  {getTotalItems() > 0 && (
-                    <span style={{
-                      position: 'absolute',
-                      top: '-0.5rem',
-                      right: '-0.5rem',
-                      background: '#ef4444',
-                      color: 'white',
-                      fontSize: '0.75rem',
-                      borderRadius: '50%',
-                      height: '1.25rem',
-                      width: '1.25rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 'bold'
-                    }}>
-                      {getTotalItems()}
-                    </span>
-                  )}
-                </button>
-              </div>
-            )}
-
-            {isMobile && (
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '0.5rem',
-                  color: '#ef4444'
-                }}
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Main Content */}
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '3rem 1rem', position: 'relative' }}>
