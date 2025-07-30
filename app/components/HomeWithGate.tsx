@@ -37,10 +37,22 @@ export default function HomeWithGate() {
         fetch('/api/merch')
       ]);
 
-      if (gamesRes.ok) setGames(await gamesRes.json());
-      if (comicsRes.ok) setComics(await comicsRes.json());
-      if (newsRes.ok) setNews(await newsRes.json());
-      if (merchRes.ok) setMerch(await merchRes.json());
+      if (gamesRes.ok) {
+        const gamesData = await gamesRes.json();
+        setGames(Array.isArray(gamesData) ? gamesData : []);
+      }
+      if (comicsRes.ok) {
+        const comicsData = await comicsRes.json();
+        setComics(Array.isArray(comicsData) ? comicsData : []);
+      }
+      if (newsRes.ok) {
+        const newsData = await newsRes.json();
+        setNews(Array.isArray(newsData) ? newsData : []);
+      }
+      if (merchRes.ok) {
+        const merchData = await merchRes.json();
+        setMerch(Array.isArray(merchData) ? merchData : []);
+      }
     } catch (error) {
       console.error('Error loading data:', error);
     }
