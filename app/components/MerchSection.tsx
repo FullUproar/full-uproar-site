@@ -52,19 +52,18 @@ export default function MerchSection({ merchItems }: MerchSectionProps) {
   return (
     <section id="merch" className="py-20 bg-gradient-to-b from-gray-900 to-gray-800 relative overflow-hidden">
       {/* Background chaos elements */}
-      <div className="absolute inset-0 opacity-10">
-        {[...Array(10)].map((_, i) => (
+      <div className="absolute inset-0 opacity-5 pointer-events-none overflow-hidden">
+        {[...Array(5)].map((_, i) => (
           <div
             key={i}
             className="absolute animate-float"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 10}s`,
-              transform: `rotate(${Math.random() * 360}deg)`
+              animationDelay: `${Math.random() * 10}s`
             }}
           >
-            <Package className="h-24 w-24 text-orange-500" />
+            <Package className="h-16 w-16 text-orange-500" />
           </div>
         ))}
       </div>
