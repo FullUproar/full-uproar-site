@@ -1644,7 +1644,7 @@ export default function AdminDashboard() {
 
         {/* Data Table or Printify UI */}
         {activeTab === 'printify' ? (
-          <div style={styles.tableContainer}>
+          <div style={styles?.tableContainer || { background: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
             <div style={{ padding: '2rem' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Printify Integration</h2>
               
@@ -1653,26 +1653,26 @@ export default function AdminDashboard() {
                 <h3 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Settings</h3>
                 <div style={{ display: 'grid', gap: '1rem' }}>
                   <div>
-                    <label style={styles.label}>API Key</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>API Key</label>
                     <input
                       type="text"
                       value={printifySettings.printify_api_key || ''}
                       onChange={(e) => setPrintifySettings({ ...printifySettings, printify_api_key: e.target.value })}
                       placeholder="Enter your Printify API key"
-                      style={styles.input}
+                      style={{ width: '100%', padding: '0.5rem', borderRadius: '0.375rem', border: '1px solid #d1d5db' }}
                     />
                     <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
                       Get your API key from Printify → Settings → API
                     </p>
                   </div>
                   <div>
-                    <label style={styles.label}>Shop ID</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Shop ID</label>
                     <input
                       type="text"
                       value={printifySettings.printify_shop_id || ''}
                       onChange={(e) => setPrintifySettings({ ...printifySettings, printify_shop_id: e.target.value })}
                       placeholder="Enter your Printify Shop ID"
-                      style={styles.input}
+                      style={{ width: '100%', padding: '0.5rem', borderRadius: '0.375rem', border: '1px solid #d1d5db' }}
                     />
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -1702,7 +1702,7 @@ export default function AdminDashboard() {
                           setMessage('❌ Error saving settings');
                         }
                       }}
-                      style={styles.primaryButton}
+                      style={{ background: '#f97316', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
                     >
                       Save Settings
                     </button>
@@ -1740,7 +1740,7 @@ export default function AdminDashboard() {
                         setMessage('❌ Import error: ' + error);
                       }
                     }}
-                    style={{ ...styles.primaryButton, background: '#10b981', fontSize: '1rem', padding: '0.75rem 2rem' }}
+                    style={{ background: '#10b981', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', fontSize: '1rem' }}
                   >
                     🔄 Import All Products from Printify
                   </button>
