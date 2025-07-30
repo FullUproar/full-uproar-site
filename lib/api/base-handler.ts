@@ -24,7 +24,11 @@ type RouteHandlers = Partial<Record<HttpMethod, RouteHandler>>;
  * Create a type-safe API route handler with built-in validation, error handling, and logging
  */
 export function createApiHandler(handlers: RouteHandlers) {
-  return async function handler(
+  // Create a handler function for each HTTP method
+  const methodHandlers: Record<string, any> = {};
+  
+  // Create the base handler function
+  const baseHandler = async function(
     request: NextRequest,
     context?: { params?: any }
   ): Promise<NextResponse> {
@@ -94,6 +98,16 @@ export function createApiHandler(handlers: RouteHandlers) {
       return errorResp;
     }
   };
+  
+  // Create individual method handlers that Next.js can export
+  const methods: HttpMethod[] = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+  methods.forEach(method => {
+    if (handlers[method]) {
+      methodHandlers[method] = baseHandler;
+    }
+  });
+  
+  return methodHandlers;
 }
 
 /**

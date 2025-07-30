@@ -290,7 +290,7 @@ export abstract class BaseService<T, CreateInput, UpdateInput> {
    * Execute a transaction
    */
   async transaction<R>(
-    fn: (tx: PrismaClient) => Promise<R>
+    fn: (tx: any) => Promise<R>
   ): Promise<R> {
     const tracker = new PerformanceTracker(`${this.modelName}.transaction`);
     

@@ -84,10 +84,12 @@ class GameService extends BaseService<Game, CreateGameRequest, UpdateGameRequest
       }
     }
 
-    return super.update(id, {
-      ...gameData,
-      tags: tags ? JSON.stringify(tags) : undefined
-    }, {
+    const updateData: any = { ...gameData };
+    if (tags !== undefined) {
+      updateData.tags = tags ? JSON.stringify(tags) : null;
+    }
+    
+    return super.update(id, updateData, {
       images: true,
       inventory: true
     });

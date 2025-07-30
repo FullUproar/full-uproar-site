@@ -59,7 +59,7 @@ export class ExternalServiceError extends AppError {
 export function handleApiError(error: unknown): {
   statusCode: number;
   body: {
-    error: string;
+    message: string;
     code: string;
     details?: any;
     timestamp: string;
@@ -71,7 +71,7 @@ export function handleApiError(error: unknown): {
     return {
       statusCode: error.statusCode,
       body: {
-        error: error.message,
+        message: error.message,
         code: error.code,
         details: error.details,
         timestamp
@@ -89,7 +89,7 @@ export function handleApiError(error: unknown): {
     return {
       statusCode: 500,
       body: {
-        error: isDev ? error.message : 'Internal server error',
+        message: isDev ? error.message : 'Internal server error',
         code: 'INTERNAL_ERROR',
         details: isDev ? { stack: error.stack } : undefined,
         timestamp
@@ -103,7 +103,7 @@ export function handleApiError(error: unknown): {
   return {
     statusCode: 500,
     body: {
-      error: 'An unexpected error occurred',
+      message: 'An unexpected error occurred',
       code: 'UNKNOWN_ERROR',
       timestamp
     }

@@ -98,7 +98,7 @@ export async function validateRequest<T>(
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new ValidationError('Validation failed', {
-        errors: error.errors.map(e => ({
+        errors: error.issues.map(e => ({
           field: e.path.join('.'),
           message: e.message
         }))
@@ -120,7 +120,7 @@ export function validateQueryParams<T>(
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new ValidationError('Invalid query parameters', {
-        errors: error.errors.map(e => ({
+        errors: error.issues.map(e => ({
           field: e.path.join('.'),
           message: e.message
         }))
