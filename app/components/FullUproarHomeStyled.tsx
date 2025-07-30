@@ -317,12 +317,12 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       display: 'inline-block',
       background: '#f97316',
       color: '#111827',
-      padding: '0.5rem 1.5rem',
+      padding: '0.33rem 1rem',
       borderRadius: '50px',
       marginBottom: '1.5rem',
       transform: 'rotate(-3deg)',
       fontWeight: 900,
-      fontSize: '0.875rem'
+      fontSize: '1.17rem'
     },
     heroTitle: {
       fontSize: '4rem',
