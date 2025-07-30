@@ -491,11 +491,11 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                   🎁 Get exclusive pre-order bonuses and Fugly's seal of approval!
                 </p>
               </div>
-              <FuglyPointing size={120} style={{ 
+              <FuglyPointing size={180} style={{ 
                 position: 'absolute', 
-                right: '-40px', 
+                right: '-60px', 
                 top: '50%', 
-                transform: 'translateY(-50%)'
+                transform: 'translateY(-100%)'
               }} />
             </div>
 
