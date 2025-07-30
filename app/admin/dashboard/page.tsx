@@ -1295,6 +1295,24 @@ export default function AdminDashboard() {
                       🔧 Migrate Missing Fields
                     </button>
                     <button
+                      onClick={() => runDbTool('/api/init-game-inventory', 'POST')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#dc2626',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#fee2e2'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      🎮 Initialize Game Inventory
+                    </button>
+                    <button
                       onClick={() => runDbTool('/api/init-db?secret=emergency-init-2024', 'POST')}
                       style={{ 
                         width: '100%', 
@@ -1329,6 +1347,24 @@ export default function AdminDashboard() {
                       onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                     >
                       🌱 Seed Sample Data
+                    </button>
+                    <button
+                      onClick={() => runDbTool('/api/migrate-game-inventory?secret=migrate-game-inventory-2024', 'POST')}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.75rem 1.5rem', 
+                        textAlign: 'left', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        color: '#9333ea',
+                        fontWeight: 'bold'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f3e8ff'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      📦 Migrate Game Inventory
                     </button>
                     <hr style={{ margin: '0.5rem 0', border: '1px solid #e5e7eb' }} />
                     <button
