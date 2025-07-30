@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const featured = searchParams.get('featured');
+    
+    const where: any = {};
+    if (featured === 'true') where.featured = true;
+    
     console.log('Fetching games from database...');
     const games = await prisma.game.findMany({
+      where,
       orderBy: { createdAt: 'desc' }
     });
     

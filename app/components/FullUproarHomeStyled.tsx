@@ -47,13 +47,28 @@ interface NewsPost {
 }
 
 
+interface Merch {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  category: string;
+  priceCents: number;
+  imageUrl: string | null;
+  sizes: string | null;
+  featured: boolean;
+  totalStock: number;
+  createdAt: string;
+}
+
 interface FullUproarHomeProps {
   games: Game[];
   comics: Comic[];
   news: NewsPost[];
+  merch: Merch[];
 }
 
-export default function FullUproarHomeStyled({ games, comics, news }: FullUproarHomeProps) {
+export default function FullUproarHomeStyled({ games, comics, news, merch }: FullUproarHomeProps) {
   const { user } = useUser();
   const { addToCart } = useCartStore();
   const [email, setEmail] = useState('');
@@ -116,19 +131,18 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
     }
   };
 
-  // Filter featured games only
-  const featuredGames = games.filter(game => game.featured);
+  // Games are already filtered as featured from the API
 
   // Auto-rotate featured games with chaotic transitions
   useEffect(() => {
-    if (featuredGames.length > 0) {
+    if (games.length > 0) {
       const interval = setInterval(() => {
         // Start transition animation
         setIsTransitioning(true);
         
         // After shake animation, change game and rotation
         setTimeout(() => {
-          setActiveGame((prev) => (prev + 1) % featuredGames.length);
+          setActiveGame((prev) => (prev + 1) % games.length);
           // Random rotation between -5 and 5 degrees, but never 0
           const rotations = [-5, -3, -2, 2, 3, 5];
           setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
@@ -137,9 +151,9 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [featuredGames.length]);
+  }, [games.length]);
 
-  const featuredGame = featuredGames[activeGame];
+  const featuredGame = games[activeGame];
 
   const styles = {
     container: {
@@ -598,7 +612,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
           <div style={styles.gameGrid}>
             {games.length === 0 && (
               <div style={{ padding: '2rem', textAlign: 'center', color: '#f97316', fontSize: '1.5rem' }}>
-                No games found! Debug: games.length = {games.length}
+                No featured games found!
               </div>
             )}
             {games.map((game, index) => (
@@ -678,6 +692,83 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
           </div>
         </div>
       </section>
+
+      {/* Featured Merch Section */}
+      {merch.length > 0 && (
+        <section style={{ ...styles.gamesSection, background: 'rgba(31, 41, 55, 0.8)' }}>
+          <div>
+            <h2 style={styles.sectionTitle}>FUGLY'S SWAG SHOP</h2>
+            <p style={styles.sectionSubtitle}>Wear your chaos with pride</p>
+            
+            <div style={styles.gameGrid}>
+              {merch.map((item, index) => (
+                <div 
+                  key={item.id} 
+                  style={{
+                    ...styles.gameCard,
+                    transform: `rotate(${index % 2 === 0 ? '2' : '-2'}deg)`,
+                    border: '4px solid #8b5cf6'
+                  }}
+                >
+                  <div style={{ ...styles.gameImage, background: '#4c1d95' }}>
+                    {item.imageUrl && item.imageUrl.trim() !== '' ? (
+                      <img src={item.imageUrl} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#a78bfa', fontWeight: 'bold', fontSize: '1.5rem' }}>
+                        👕
+                      </div>
+                    )}
+                  </div>
+                  <h3 style={{ ...styles.gameTitle, color: '#c4b5fd' }}>{item.name}</h3>
+                  <p style={{ ...styles.gameTagline, color: '#ddd6fe' }}>{item.description || 'Maximum chaos, minimum effort'}</p>
+                  
+                  <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 600 }}>
+                    <span style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c4b5fd', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>
+                      {item.category.toUpperCase()}
+                    </span>
+                    {item.totalStock === 0 && (
+                      <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>
+                        SOLD OUT
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ ...styles.gamePrice, color: '#a78bfa' }}>${(item.priceCents / 100).toFixed(2)}</span>
+                    <a 
+                      href={`/merch/${item.slug}`}
+                      style={{
+                        ...styles.buyButton,
+                        background: '#8b5cf6',
+                        textDecoration: 'none',
+                        display: 'inline-block'
+                      }}
+                    >
+                      GET SWAG
+                    </a>
+                  </div>
+                  
+                  <span style={{
+                    position: 'absolute',
+                    top: '-0.75rem',
+                    left: '-0.75rem',
+                    background: '#a855f7',
+                    color: 'white',
+                    fontSize: '0.75rem',
+                    padding: '0.75rem',
+                    borderRadius: '50px',
+                    fontWeight: 900,
+                    transform: 'rotate(-12deg)'
+                  }}>
+                    HOT!
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+      
       {/* Footer placeholder */}
       <footer style={{ background: '#000', color: 'white', padding: '3rem 0', textAlign: 'center' as const }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
