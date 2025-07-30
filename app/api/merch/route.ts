@@ -7,9 +7,19 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     const featured = searchParams.get('featured');
     
+    // Check if Printify is enabled
+    const printifyEnabled = await prisma.settings.findUnique({
+      where: { key: 'printify_enabled' }
+    });
+    
     const where: any = {};
     if (category) where.category = category;
     if (featured === 'true') where.featured = true;
+    
+    // If Printify is disabled, exclude Printify products
+    if (printifyEnabled?.value !== 'true') {
+      where.isPrintify = false;
+    }
     
     const merch = await prisma.merch.findMany({
       where,

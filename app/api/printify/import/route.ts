@@ -5,7 +5,7 @@ import { PrintifyClient, PrintifyProduct, PrintifyProductImage } from '@/lib/pri
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { productIds } = body; // Optional: specific products to import
+    const { productIds, importAll = true } = body; // Default to importing all
     
     const client = new PrintifyClient();
     await client.initialize();
@@ -18,8 +18,30 @@ export async function POST(request: NextRequest) {
       productsToImport = await Promise.all(
         productIds.map((id: string) => client.getProduct(id))
       );
+    } else if (importAll) {
+      // Get ALL products using pagination
+      let page = 1;
+      let hasMore = true;
+      
+      while (hasMore) {
+        const response = await client.getProducts(50, page);
+        const products = response.data || [];
+        productsToImport = [...productsToImport, ...products];
+        
+        // Check if there are more pages
+        hasMore = products.length === 50 && productsToImport.length < (response.total || 0);
+        page++;
+        
+        // Safety limit to prevent infinite loops
+        if (page > 20) {
+          console.warn('Reached pagination limit of 20 pages');
+          break;
+        }
+      }
+      
+      console.log(`Fetched ${productsToImport.length} products from Printify`);
     } else {
-      // Get all products (paginated)
+      // Get just first page
       const response = await client.getProducts(50, 1);
       productsToImport = response.data || [];
     }

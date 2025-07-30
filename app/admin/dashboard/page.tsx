@@ -63,6 +63,8 @@ interface Merch {
   featured: boolean;
   totalStock?: number;
   inventory?: any[];
+  isPrintify?: boolean;
+  printifyId?: string;
 }
 
 interface Order {
@@ -90,6 +92,7 @@ export default function AdminDashboard() {
   const [merch, setMerch] = useState<Merch[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [message, setMessage] = useState('');
+  const [showPrintifyProducts, setShowPrintifyProducts] = useState(true);
   
   // Modal states
   const [editMode, setEditMode] = useState<EditMode>(null);
@@ -632,7 +635,10 @@ export default function AdminDashboard() {
     if (activeTab === 'comics') return comics;
     if (activeTab === 'news') return news;
     if (activeTab === 'artwork') return artwork;
-    if (activeTab === 'merch') return merch;
+    if (activeTab === 'merch') {
+      // Filter based on Printify toggle
+      return showPrintifyProducts ? merch : merch.filter(m => !m.isPrintify);
+    }
     if (activeTab === 'orders') return orders;
     return [];
   };
@@ -837,8 +843,24 @@ export default function AdminDashboard() {
             )}
           </td>
           <td style={styles.td}>
-            <div style={{ fontWeight: 'bold' }}>{item.name}</div>
-            <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{item.slug}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div>
+                <div style={{ fontWeight: 'bold' }}>{item.name}</div>
+                <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{item.slug}</div>
+              </div>
+              {item.isPrintify && (
+                <span style={{ 
+                  background: '#8b5cf6', 
+                  color: 'white', 
+                  fontSize: '0.625rem', 
+                  padding: '0.125rem 0.375rem', 
+                  borderRadius: '0.25rem',
+                  fontWeight: 'bold'
+                }}>
+                  POD
+                </span>
+              )}
+            </div>
           </td>
           <td style={styles.td}>{item.category}</td>
           <td style={{ ...styles.td, fontWeight: 'bold', color: '#f97316' }}>${(item.priceCents / 100).toFixed(2)}</td>
@@ -1602,6 +1624,24 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Toggle for Printify products in Merch tab */}
+        {activeTab === 'merch' && (
+          <div style={{ padding: '1rem 2rem', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={showPrintifyProducts}
+                onChange={(e) => setShowPrintifyProducts(e.target.checked)}
+                style={{ width: '1.25rem', height: '1.25rem', cursor: 'pointer' }}
+              />
+              <span style={{ fontWeight: 'bold', fontSize: '0.875rem' }}>Show Printify Products</span>
+              <span style={{ fontSize: '0.75rem', color: '#6b7280', marginLeft: '0.5rem' }}>
+                ({merch.filter(m => m.isPrintify).length} Printify products / {merch.filter(m => !m.isPrintify).length} regular products)
+              </span>
+            </label>
+          </div>
+        )}
+
         {/* Data Table or Printify UI */}
         {activeTab === 'printify' ? (
           <div style={styles.tableContainer}>
@@ -1673,36 +1713,36 @@ export default function AdminDashboard() {
               {/* Import Products Section */}
               <div style={{ background: '#f9fafb', padding: '1.5rem', borderRadius: '0.5rem', marginBottom: '2rem' }}>
                 <h3 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Import Products</h3>
+                <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+                  This will import all products from your Printify store. Products are automatically updated if they already exist.
+                </p>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-                  <button
-                    onClick={fetchPrintifyProducts}
-                    style={{ ...styles.primaryButton, background: '#8b5cf6' }}
-                  >
-                    Load Available Products
-                  </button>
                   <button
                     onClick={async () => {
                       try {
-                        setMessage('Importing all products...');
+                        setMessage('🔄 Importing all products from Printify... This may take a moment.');
                         const response = await fetch('/api/printify/import', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({})
+                          body: JSON.stringify({ importAll: true })
                         });
                         const data = await response.json();
                         if (response.ok) {
                           setMessage(`✅ ${data.message}`);
-                          fetchMerch(); // Refresh merch list
+                          setTimeout(() => {
+                            fetchMerch(); // Refresh merch list
+                            setMessage('');
+                          }, 2000);
                         } else {
-                          setMessage('❌ Import failed');
+                          setMessage(`❌ Import failed: ${data.details || data.error || 'Unknown error'}`);
                         }
                       } catch (error) {
-                        setMessage('❌ Import error');
+                        setMessage('❌ Import error: ' + error);
                       }
                     }}
-                    style={{ ...styles.primaryButton, background: '#10b981' }}
+                    style={{ ...styles.primaryButton, background: '#10b981', fontSize: '1rem', padding: '0.75rem 2rem' }}
                   >
-                    Import All Products
+                    🔄 Import All Products from Printify
                   </button>
                 </div>
                 
