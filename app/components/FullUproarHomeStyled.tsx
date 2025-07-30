@@ -495,7 +495,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
                 position: 'absolute', 
                 right: '-20px', 
                 top: '50%', 
-                transform: 'translateY(-50%)'
+                transform: 'translateY(-75%)'
               }} />
             </div>
 
