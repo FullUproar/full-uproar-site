@@ -915,9 +915,15 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Game Image</label>
+            <label style={styles.label}>Primary Game Image</label>
             <ImageUpload onImageUploaded={(imageUrl) => setGameForm({ ...gameForm, imageUrl })} currentImageUrl={gameForm.imageUrl} />
             <input type="text" value={gameForm.imageUrl} onChange={(e) => setGameForm({ ...gameForm, imageUrl: e.target.value })} style={{...styles.input, marginTop: '0.5rem'}} placeholder="Or enter image URL manually" />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Additional Images</label>
+            <div style={{ padding: '0.75rem', background: '#f9fafb', borderRadius: '0.375rem', fontSize: '0.875rem', color: '#6b7280' }}>
+              Additional images can be managed after creating the game using the "Manage Images" button in the games list.
+            </div>
           </div>
           <div style={styles.checkboxGroup}>
             <label style={styles.checkboxLabel}>
@@ -1064,9 +1070,15 @@ export default function AdminDashboard() {
             <input type="text" value={merchForm.sizes} onChange={(e) => setMerchForm({ ...merchForm, sizes: e.target.value })} style={styles.input} placeholder='["S", "M", "L", "XL"]' />
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Product Image</label>
+            <label style={styles.label}>Primary Product Image</label>
             <ImageUpload onImageUploaded={(imageUrl) => setMerchForm({ ...merchForm, imageUrl })} currentImageUrl={merchForm.imageUrl} />
             <input type="text" value={merchForm.imageUrl} onChange={(e) => setMerchForm({ ...merchForm, imageUrl: e.target.value })} style={{...styles.input, marginTop: '0.5rem'}} placeholder="Or enter image URL manually" />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Additional Images</label>
+            <div style={{ padding: '0.75rem', background: '#f9fafb', borderRadius: '0.375rem', fontSize: '0.875rem', color: '#6b7280' }}>
+              Additional images can be managed after creating the product using the "Manage Images" button in the merch list.
+            </div>
           </div>
           <div style={styles.checkboxGroup}>
             <label style={styles.checkboxLabel}>

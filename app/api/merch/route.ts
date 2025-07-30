@@ -15,7 +15,13 @@ export async function GET(request: NextRequest) {
       where,
       orderBy: { createdAt: 'desc' },
       include: {
-        inventory: true
+        inventory: true,
+        images: {
+          orderBy: [
+            { isPrimary: 'desc' },
+            { sortOrder: 'asc' }
+          ]
+        }
       }
     });
     
@@ -51,7 +57,18 @@ export async function POST(request: NextRequest) {
         priceCents: body.priceCents,
         imageUrl: body.imageUrl,
         sizes: sizes ? JSON.stringify(sizes) : null,
-        featured: body.featured || false
+        featured: body.featured || false,
+        images: body.additionalImages ? {
+          create: body.additionalImages.map((img: any, index: number) => ({
+            imageUrl: img.url,
+            alt: img.alt || body.name,
+            isPrimary: index === 0 && !body.imageUrl,
+            sortOrder: index
+          }))
+        } : undefined
+      },
+      include: {
+        images: true
       }
     });
     

@@ -12,7 +12,15 @@ export async function GET(request: NextRequest) {
     console.log('Fetching games from database...');
     const games = await prisma.game.findMany({
       where,
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
+      include: {
+        images: {
+          orderBy: [
+            { isPrimary: 'desc' },
+            { sortOrder: 'asc' }
+          ]
+        }
+      }
     });
     
     console.log(`Found ${games.length} games`);
@@ -60,7 +68,18 @@ export async function POST(request: NextRequest) {
         featured: body.featured || false,
         bundleInfo: body.bundleInfo,
         stock: body.stock || 0,
-        tags: body.tags ? JSON.stringify(body.tags) : null
+        tags: body.tags ? JSON.stringify(body.tags) : null,
+        images: body.additionalImages ? {
+          create: body.additionalImages.map((img: any, index: number) => ({
+            imageUrl: img.url,
+            alt: img.alt || body.title,
+            isPrimary: index === 0 && !body.imageUrl,
+            sortOrder: index
+          }))
+        } : undefined
+      },
+      include: {
+        images: true
       }
     });
     
