@@ -317,9 +317,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       display: 'inline-block',
       background: '#f97316',
       color: '#111827',
-      padding: '0.33rem 1rem',
+      padding: '0.25rem 0.75rem',
       borderRadius: '50px',
-      marginBottom: '1.5rem',
+      marginBottom: '0.75rem',
       transform: 'rotate(-3deg)',
       fontWeight: 900,
       fontSize: '1.17rem'
