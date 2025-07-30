@@ -863,6 +863,11 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           50% { transform: rotate(25deg) scale(0.9); }
           75% { transform: rotate(-15deg) scale(1.05); }
         }
+        
+        @keyframes bounce {
+          0%, 100% { transform: translateX(-50%) translateY(0); }
+          50% { transform: translateX(-50%) translateY(-10px); }
+        }
       `}</style>
     </div>
   );
