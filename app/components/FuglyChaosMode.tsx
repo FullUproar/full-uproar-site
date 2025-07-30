@@ -237,7 +237,7 @@ export default function FuglyChaosMode() {
             animation: `${char.animation} 5s ease-in-out`
           }}
         >
-          {char.artworkIndex !== undefined && debugArtwork[char.artworkIndex] ? (
+          {char.artworkIndex !== undefined && debugArtwork[char.artworkIndex] && (
             <img 
               src={debugArtwork[char.artworkIndex].imageUrl || debugArtwork[char.artworkIndex].largeUrl}
               alt="Fugly"
@@ -247,19 +247,6 @@ export default function FuglyChaosMode() {
                 objectFit: 'contain'
               }}
             />
-          ) : (
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '3rem',
-              fontWeight: 'bold',
-              color: '#f97316'
-            }}>
-              FUGLY
-            </div>
           )}
         </div>
       ))}
