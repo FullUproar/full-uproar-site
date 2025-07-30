@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Users, ArrowRight, Zap, Skull, Pause } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Gamepad2 } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import DeploymentInfo from './DeploymentInfo';
@@ -79,6 +79,69 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [isMobile, setIsMobile] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(7);
+  const [chaosPhrase, setChaosPhrase] = useState('FRESHLY UNHINGED');
+  const [phraseTransform, setPhraseTransform] = useState({ scale: 1, rotation: 0 });
+
+  // Chaos phrases pool
+  const chaosPhrases = [
+    'FRESHLY UNHINGED',
+    'WILDLY UNSTABLE',
+    'BEAUTIFULLY BROKEN',
+    'PROPERLY IMPROPER',
+    'ORGANIZED CHAOS',
+    'PERFECTLY FLAWED',
+    'GLORIOUSLY MESSY',
+    'DELIGHTFULLY DAMAGED',
+    'ELEGANTLY EXPLOSIVE',
+    'TASTEFULLY TERRIBLE',
+    'WONDERFULLY WRONG',
+    'MAJESTICALLY MAD'
+  ];
+
+  // Initialize chaos phrase with hourly persistence
+  useEffect(() => {
+    const storedData = localStorage.getItem('fuglyChaosPhraseData');
+    const now = Date.now();
+    
+    if (storedData) {
+      const { phrase, transform, timestamp } = JSON.parse(storedData);
+      // Check if an hour has passed
+      if (now - timestamp < 3600000) { // 1 hour in milliseconds
+        setChaosPhrase(phrase);
+        setPhraseTransform(transform);
+      } else {
+        // Generate new phrase after an hour
+        generateNewChaosPhrase();
+      }
+    } else {
+      // First visit - generate new phrase
+      generateNewChaosPhrase();
+    }
+  }, []);
+
+  const generateNewChaosPhrase = () => {
+    // Pick random phrase
+    const randomIndex = Math.floor(Math.random() * chaosPhrases.length);
+    const newPhrase = chaosPhrases[randomIndex];
+    
+    // Generate subtle random transform
+    const scales = [0.95, 0.98, 1, 1.02, 1.05];
+    const rotations = [-5, -3, -2, 0, 2, 3, 5];
+    const newTransform = {
+      scale: scales[Math.floor(Math.random() * scales.length)],
+      rotation: rotations[Math.floor(Math.random() * rotations.length)]
+    };
+    
+    // Store in localStorage with timestamp
+    localStorage.setItem('fuglyChaosPhraseData', JSON.stringify({
+      phrase: newPhrase,
+      transform: newTransform,
+      timestamp: Date.now()
+    }));
+    
+    setChaosPhrase(newPhrase);
+    setPhraseTransform(newTransform);
+  };
 
   // Detect mobile screen
   useEffect(() => {
@@ -418,13 +481,17 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       <section style={styles.heroSection}>
         <div style={styles.heroContainer}>
           <div style={styles.textCenter}>
-            <div style={styles.badge}>FRESHLY UNHINGED</div>
+            <div style={{
+              ...styles.badge,
+              transform: `rotate(${phraseTransform.rotation}deg) scale(${phraseTransform.scale})`,
+              transition: 'none' // No transition to make it feel like it was always this way
+            }}>{chaosPhrase}</div>
 
             <h1 style={{
               ...styles.heroTitle,
               fontSize: isMobile ? '2.5rem' : '4rem'
             }}>
-              <div style={styles.orangeText}>GAME MODIFIERS</div>
+              <div style={styles.orangeText}>GAMES AND MODS</div>
               <div style={styles.lightOrangeText}>SO CHAOTIC</div>
               <div style={styles.gradientText}>FUGLY APPROVES</div>
             </h1>
@@ -533,6 +600,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                       <div style={{ textAlign: 'center' }}>
                         <Skull style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
                         <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{featuredGame.ageRating}</span>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <Gamepad2 style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
+                        <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{(featuredGame as any).category?.toUpperCase() || 'GAME'}</span>
                       </div>
                     </div>
                     
@@ -694,10 +765,11 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 <h3 style={styles.gameTitle}>{game.title}</h3>
                 <p style={styles.gameTagline}>{game.tagline || 'Epic chaos awaits!'}</p>
                 
-                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 600 }}>
+                <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 600, flexWrap: 'wrap' }}>
                   <span style={{ background: 'rgba(249, 115, 22, 0.2)', color: '#fdba74', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>{game.players}</span>
                   <span style={{ background: 'rgba(249, 115, 22, 0.2)', color: '#fdba74', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>{game.timeToPlay}</span>
                   <span style={{ background: 'rgba(249, 115, 22, 0.2)', color: '#fdba74', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>{game.ageRating}</span>
+                  <span style={{ background: (game as any).category === 'mod' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(249, 115, 22, 0.2)', color: (game as any).category === 'mod' ? '#c7d2fe' : '#fdba74', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>{(game as any).category?.toUpperCase() || 'GAME'}</span>
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

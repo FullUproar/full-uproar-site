@@ -167,7 +167,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
             </div>
 
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
-              <span className="text-orange-500">GAME MODIFIERS</span>
+              <span className="text-orange-500">GAMES AND MODS</span>
               <br />
               <span className="text-orange-300">SO CHAOTIC</span>
               <br />

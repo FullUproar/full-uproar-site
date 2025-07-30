@@ -52,6 +52,7 @@ model Game {
   players     String
   timeToPlay  String
   ageRating   String
+  category    String  @default("game") // 'game' or 'mod'
   imageUrl    String?
   isBundle    Boolean @default(false)
   isPreorder  Boolean @default(true)

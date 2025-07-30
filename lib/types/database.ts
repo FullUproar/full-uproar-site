@@ -10,6 +10,7 @@ export interface Game {
   players: string;
   timeToPlay: string;
   ageRating: string;
+  category: string; // 'game' or 'mod'
   imageUrl: string | null;
   isBundle: boolean;
   isPreorder: boolean;
