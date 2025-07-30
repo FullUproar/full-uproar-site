@@ -543,7 +543,7 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
       </nav>
 
       {/* Hero Section */}
-      <section style={styles.heroSection}>
+      <section id="home" style={styles.heroSection}>
         <div style={styles.heroContainer}>
           <div style={styles.textCenter}>
             <div style={styles.badge}>FRESHLY UNHINGED</div>
@@ -829,6 +829,371 @@ export default function FullUproarHomeStyled({ games, comics, news }: FullUproar
           </div>
         </div>
       </section>
+
+      {/* Footer placeholder */}
+      <footer style={{
+        padding: '5rem 0',
+        background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+          <h2 style={{
+            ...styles.sectionTitle,
+            textAlign: 'center',
+            marginBottom: '3rem',
+            animation: 'glitch 2s infinite'
+          }}>
+            FUGLY'S COMIC CHAOS
+          </h2>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '2rem'
+          }}>
+            {comics.length === 0 ? (
+              <div style={{ 
+                gridColumn: '1 / -1', 
+                textAlign: 'center', 
+                padding: '4rem',
+                background: 'rgba(249, 115, 22, 0.1)',
+                borderRadius: '1rem',
+                border: '2px dashed #f97316'
+              }}>
+                <p style={{ fontSize: '2rem', color: '#f97316', fontWeight: 'bold' }}>
+                  Comics coming soon! Fugly is still drawing...
+                </p>
+              </div>
+            ) : (
+              comics.map((comic, index) => (
+                <div
+                  key={comic.id}
+                  style={{
+                    background: '#111827',
+                    borderRadius: '1rem',
+                    overflow: 'hidden',
+                    transform: `perspective(1000px) rotateY(${index % 2 === 0 ? '5' : '-5'}deg)`,
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'perspective(1000px) rotateY(0deg) scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = `perspective(1000px) rotateY(${index % 2 === 0 ? '5' : '-5'}deg)`;
+                  }}
+                >
+                  <div style={{ 
+                    height: '300px', 
+                    background: 'linear-gradient(45deg, #f97316, #ef4444)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '4rem'
+                  }}>
+                    📚
+                  </div>
+                  <div style={{ padding: '1.5rem' }}>
+                    <h3 style={{ color: '#fdba74', fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+                      {comic.title}
+                    </h3>
+                    <p style={{ color: '#fde68a', fontWeight: 'bold' }}>{comic.episode}</p>
+                    {comic.description && (
+                      <p style={{ color: '#d1d5db', marginTop: '0.5rem' }}>{comic.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Floating comic pages animation */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                width: '60px',
+                height: '80px',
+                background: 'rgba(249, 115, 22, 0.1)',
+                border: '2px solid rgba(249, 115, 22, 0.3)',
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `floatPage ${10 + Math.random() * 10}s linear infinite`,
+                animationDelay: `${Math.random() * 5}s`
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* News/Chaos Section - Glitch Effects */}
+      <section id="news" style={{
+        padding: '5rem 0',
+        background: '#111827',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem', position: 'relative' }}>
+          <h2 style={{
+            ...styles.sectionTitle,
+            textAlign: 'center',
+            marginBottom: '3rem',
+            position: 'relative'
+          }}>
+            <span style={{ animation: 'glitch 2s infinite' }}>CHAOS</span>
+            <span style={{ 
+              position: 'absolute', 
+              left: '50%', 
+              transform: 'translateX(-50%)',
+              color: '#ef4444',
+              animation: 'glitch 2s infinite reverse',
+              opacity: 0.7
+            }}>
+              CHAOS
+            </span>
+          </h2>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
+            gap: '2rem'
+          }}>
+            {news.length === 0 ? (
+              <div style={{ 
+                gridColumn: '1 / -1', 
+                textAlign: 'center', 
+                padding: '4rem',
+                background: 'rgba(239, 68, 68, 0.1)',
+                borderRadius: '1rem',
+                border: '2px solid #ef4444',
+                animation: 'pulse 2s infinite'
+              }}>
+                <p style={{ fontSize: '2rem', color: '#ef4444', fontWeight: 'bold' }}>
+                  No chaos to report... YET! 🔥
+                </p>
+              </div>
+            ) : (
+              news.map((post, index) => (
+                <div
+                  key={post.id}
+                  style={{
+                    background: 'rgba(17, 24, 39, 0.8)',
+                    border: '2px solid #ef4444',
+                    borderRadius: '0.5rem',
+                    padding: '2rem',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transform: `rotate(${index % 2 === 0 ? '-1' : '1'}deg)`,
+                    animation: `chaosShake ${3 + index}s ease-in-out infinite`
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute',
+                    top: '-50px',
+                    right: '-50px',
+                    width: '100px',
+                    height: '100px',
+                    background: 'radial-gradient(circle, #ef4444, transparent)',
+                    opacity: 0.3,
+                    animation: 'pulse 2s infinite'
+                  }} />
+                  
+                  <h3 style={{ 
+                    color: '#ef4444', 
+                    fontSize: '1.75rem', 
+                    fontWeight: 900, 
+                    marginBottom: '1rem',
+                    textTransform: 'uppercase'
+                  }}>
+                    {post.title}
+                  </h3>
+                  <p style={{ color: '#fde68a', marginBottom: '1rem' }}>{post.excerpt}</p>
+                  <button style={{
+                    background: '#ef4444',
+                    color: '#111827',
+                    padding: '0.5rem 1.5rem',
+                    borderRadius: '0.25rem',
+                    border: 'none',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transform: 'skewX(-10deg)'
+                  }}>
+                    EMBRACE CHAOS →
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Chaos particles */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                width: '4px',
+                height: '4px',
+                background: '#ef4444',
+                borderRadius: '50%',
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `chaosFloat ${5 + Math.random() * 5}s linear infinite`,
+                animationDelay: `${Math.random() * 5}s`
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Community/Cult Section - Interactive */}
+      <section id="community" style={{
+        padding: '5rem 0',
+        background: 'linear-gradient(to bottom, #1f2937, #111827)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem', textAlign: 'center' }}>
+          <h2 style={{
+            ...styles.sectionTitle,
+            marginBottom: '3rem',
+            fontSize: isMobile ? '3rem' : '4rem'
+          }}>
+            JOIN THE CULT OF FUGLY
+          </h2>
+
+          <div style={{
+            background: 'rgba(249, 115, 22, 0.1)',
+            border: '4px solid #f97316',
+            borderRadius: '2rem',
+            padding: isMobile ? '2rem' : '4rem',
+            position: 'relative',
+            transform: 'rotate(-1deg)'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#f97316',
+              color: '#111827',
+              padding: '0.5rem 2rem',
+              borderRadius: '50px',
+              fontWeight: 900,
+              fontSize: '1.25rem',
+              transform: 'translateX(-50%) rotate(3deg)'
+            }}>
+              MEMBERSHIP PERKS
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: '2rem',
+              marginTop: '2rem'
+            }}>
+              <div style={{ 
+                background: '#111827', 
+                padding: '2rem', 
+                borderRadius: '1rem',
+                transform: 'rotate(2deg)',
+                transition: 'transform 0.3s'
+              }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎭</div>
+                <h3 style={{ color: '#fdba74', fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+                  EXCLUSIVE CHAOS
+                </h3>
+                <p style={{ color: '#fde68a' }}>
+                  First access to new game modifiers that will destroy friendships
+                </p>
+              </div>
+
+              <div style={{ 
+                background: '#111827', 
+                padding: '2rem', 
+                borderRadius: '1rem',
+                transform: 'rotate(-1deg)',
+                transition: 'transform 0.3s'
+              }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔥</div>
+                <h3 style={{ color: '#fdba74', fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+                  FUGLY'S FAVOR
+                </h3>
+                <p style={{ color: '#fde68a' }}>
+                  Personal insults from Fugly himself (it's an honor)
+                </p>
+              </div>
+
+              <div style={{ 
+                background: '#111827', 
+                padding: '2rem', 
+                borderRadius: '1rem',
+                transform: 'rotate(1deg)',
+                transition: 'transform 0.3s'
+              }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👹</div>
+                <h3 style={{ color: '#fdba74', fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+                  CHAOS COUNCIL
+                </h3>
+                <p style={{ color: '#fde68a' }}>
+                  Vote on which games to ruin next
+                </p>
+              </div>
+            </div>
+
+            <button style={{
+              background: 'linear-gradient(45deg, #f97316, #ef4444)',
+              color: '#111827',
+              padding: '1rem 3rem',
+              borderRadius: '50px',
+              border: 'none',
+              fontWeight: 900,
+              fontSize: '1.25rem',
+              marginTop: '3rem',
+              cursor: 'pointer',
+              transform: 'scale(1)',
+              transition: 'all 0.3s',
+              boxShadow: '0 10px 30px rgba(249, 115, 22, 0.3)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1) rotate(-2deg)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+            >
+              PLEDGE ALLEGIANCE TO CHAOS
+            </button>
+          </div>
+        </div>
+
+        {/* Cult symbols floating */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+          {['🔥', '👹', '🎭', '💀', '⚡'].map((emoji, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                fontSize: '2rem',
+                left: `${20 + i * 15}%`,
+                top: '50%',
+                animation: `cultFloat ${10 + i * 2}s ease-in-out infinite`,
+                animationDelay: `${i * 0.5}s`,
+                opacity: 0.2
+              }}
+            >
+              {emoji}
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Footer placeholder */}
       <footer style={{ background: '#000', color: 'white', padding: '3rem 0', textAlign: 'center' as const }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>

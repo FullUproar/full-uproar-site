@@ -23,7 +23,9 @@
       "Bash(curl:*)",
       "Bash(dir dev.db)",
       "Bash(dir:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(grep:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }
