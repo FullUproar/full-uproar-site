@@ -6,6 +6,7 @@ import { ShoppingCart, Users, Clock, Heart, Share2, ChevronLeft, ChevronRight, Z
 import { useCartStore } from '@/lib/cartStore';
 import Link from 'next/link';
 import FuglyLogo from '@/app/components/FuglyLogo';
+import ProductImageGallery from '@/app/components/ProductImageGallery';
 
 interface GameImage {
   id: number;
@@ -43,29 +44,8 @@ interface GameProductClientProps {
 export default function GameProductClient({ game, similarGames }: GameProductClientProps) {
   const router = useRouter();
   const { addToCart, toggleCart } = useCartStore();
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [quantity, setQuantity] = useState(1);
-
-  // Combine main image with additional images
-  const allImages = [
-    ...(game.imageUrl ? [{ 
-      id: 0, 
-      imageUrl: game.imageUrl, 
-      alt: game.title, 
-      isPrimary: true, 
-      sortOrder: -1 
-    }] : []),
-    ...game.images
-  ];
-
-  const displayImages = allImages.length > 0 ? allImages : [{
-    id: 0,
-    imageUrl: '/placeholder-game.jpg',
-    alt: game.title,
-    isPrimary: true,
-    sortOrder: 0
-  }];
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -74,7 +54,7 @@ export default function GameProductClient({ game, similarGames }: GameProductCli
         name: game.title,
         slug: game.slug,
         priceCents: game.priceCents,
-        imageUrl: displayImages[0].imageUrl,
+        imageUrl: game.imageUrl || game.images[0]?.imageUrl || '/placeholder-game.jpg',
         type: 'game'
       });
     }
@@ -120,67 +100,28 @@ export default function GameProductClient({ game, similarGames }: GameProductCli
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
           <div>
-            <div className="relative bg-gray-800 rounded-2xl overflow-hidden border-4 border-orange-500/20 mb-4">
-              <div className="aspect-square relative">
-                <img
-                  src={displayImages[selectedImageIndex].imageUrl}
-                  alt={displayImages[selectedImageIndex].alt || game.title}
-                  className="w-full h-full object-cover"
-                />
-                
+            <div className="relative">
+              <ProductImageGallery
+                images={game.images}
+                primaryImageUrl={game.imageUrl}
+                productName={game.title}
+              />
+              
+              {/* Badges overlay */}
+              <div className="absolute top-4 left-4 right-4 flex justify-between pointer-events-none">
                 {game.isPreorder && (
-                  <div className="absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded-full font-black transform -rotate-3">
+                  <div className="bg-red-500 text-white px-4 py-2 rounded-full font-black transform -rotate-3">
                     PRE-ORDER
                   </div>
                 )}
                 
                 {game.isBundle && (
-                  <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-black transform rotate-3">
+                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-black transform rotate-3 ml-auto">
                     BUNDLE DEAL
                   </div>
                 )}
               </div>
-              
-              {/* Image navigation */}
-              {displayImages.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setSelectedImageIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </button>
-                  <button
-                    onClick={() => setSelectedImageIndex((prev) => (prev + 1) % displayImages.length)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
-                </>
-              )}
             </div>
-            
-            {/* Thumbnail Gallery */}
-            {displayImages.length > 1 && (
-              <div className="grid grid-cols-6 gap-2">
-                {displayImages.map((image, index) => (
-                  <button
-                    key={image.id}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`
-                      aspect-square bg-gray-800 rounded-lg overflow-hidden border-2 transition-all
-                      ${selectedImageIndex === index ? 'border-orange-500 scale-105' : 'border-gray-700 hover:border-orange-500/50'}
-                    `}
-                  >
-                    <img
-                      src={image.imageUrl}
-                      alt={image.alt || `${game.title} ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Product Info */}
