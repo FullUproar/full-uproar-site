@@ -14,13 +14,13 @@ export async function POST(request: NextRequest) {
     // Add category column to games table with default value
     await prisma.$executeRaw`
       ALTER TABLE "Game" 
-      ADD COLUMN IF NOT EXISTS "category" VARCHAR(10) DEFAULT 'game';
+      ADD COLUMN IF NOT EXISTS "category" VARCHAR(10) DEFAULT 'GAME';
     `;
 
     // Update any existing games without category
     await prisma.$executeRaw`
       UPDATE "Game" 
-      SET "category" = 'game' 
+      SET "category" = 'GAME' 
       WHERE "category" IS NULL;
     `;
 

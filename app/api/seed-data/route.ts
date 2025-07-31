@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { AgeRating, MerchCategory, PlayerCount, PlayTime, GameCategory } from '@prisma/client';
 
 export async function POST(request: Request) {
   try {
@@ -35,7 +36,10 @@ export async function POST(request: Request) {
         priceCents: 2499,
         players: "2-6",
         timeToPlay: "30-45 min",
-        ageRating: "13+",
+        ageRating: AgeRating.FOURTEEN_PLUS,
+        category: GameCategory.GAME,
+        playerCount: PlayerCount.TWO_TO_FOUR,
+        playTime: PlayTime.THIRTY_TO_SIXTY,
         featured: true,
         stock: 50,
         tags: JSON.stringify(["strategy", "party", "chaos"])
@@ -48,7 +52,10 @@ export async function POST(request: Request) {
         priceCents: 4999,
         players: "3-5",
         timeToPlay: "60-90 min",
-        ageRating: "16+",
+        ageRating: AgeRating.SIXTEEN_PLUS,
+        category: GameCategory.GAME,
+        playerCount: PlayerCount.TWO_TO_FOUR,
+        playTime: PlayTime.SIXTY_TO_NINETY,
         featured: true,
         stock: 30,
         tags: JSON.stringify(["adventure", "strategy", "chaos"])
@@ -61,7 +68,10 @@ export async function POST(request: Request) {
         priceCents: 1999,
         players: "Any",
         timeToPlay: "Variable",
-        ageRating: "10+",
+        ageRating: AgeRating.ELEVEN_PLUS,
+        category: GameCategory.GAME,
+        playerCount: PlayerCount.ANY,
+        playTime: PlayTime.VARIABLE,
         stock: 100,
         tags: JSON.stringify(["dice", "modifier", "chaos"])
       }
@@ -73,7 +83,7 @@ export async function POST(request: Request) {
         name: "Fugly Chaos Hoodie",
         slug: "fugly-chaos-hoodie",
         description: "Embrace the chaos in comfort with our signature Fugly hoodie. Features the iconic Fugly logo.",
-        category: "apparel",
+        category: MerchCategory.APPAREL,
         priceCents: 4999,
         sizes: JSON.stringify(["S", "M", "L", "XL", "XXL"]),
         featured: true,
@@ -83,7 +93,7 @@ export async function POST(request: Request) {
         name: "Chaos Energy Mug",
         slug: "chaos-energy-mug",
         description: "Start your day with chaos! This ceramic mug changes color when hot liquids are added.",
-        category: "accessories",
+        category: MerchCategory.ACCESSORIES,
         priceCents: 1499,
         featured: true,
         tags: JSON.stringify(["drinkware", "mug", "color-changing"])
@@ -92,7 +102,7 @@ export async function POST(request: Request) {
         name: "Fugly Sticker Pack",
         slug: "fugly-sticker-pack",
         description: "10 chaotic stickers featuring Fugly in various poses of beautiful disorder.",
-        category: "stickers",
+        category: MerchCategory.STICKERS,
         priceCents: 999,
         tags: JSON.stringify(["stickers", "fugly", "pack"])
       }
