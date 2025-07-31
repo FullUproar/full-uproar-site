@@ -225,7 +225,7 @@ export default function GameEditFormUltimate({ game }: GameEditFormUltimateProps
         ...formData, 
         additionalArtists: [...formData.additionalArtists, newArtist.trim()] 
       });
-      setNewArtist('';
+      setNewArtist('');
     }
   };
 
