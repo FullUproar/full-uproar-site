@@ -642,7 +642,7 @@ export default function GameEditFormUltimate({ game }: GameEditFormUltimateProps
                 </button>
               </div>
               <div style={styles.tagContainer}>
-                {formData.additionalDesigners.map((designer) => (
+                {formData.additionalDesigners.map((designer: string) => (
                   <div key={designer} style={styles.tag}>
                     {designer}
                     <button
@@ -681,7 +681,7 @@ export default function GameEditFormUltimate({ game }: GameEditFormUltimateProps
                 </button>
               </div>
               <div style={styles.tagContainer}>
-                {formData.additionalArtists.map((artist) => (
+                {formData.additionalArtists.map((artist: string) => (
                   <div key={artist} style={styles.tag}>
                     {artist}
                     <button
@@ -861,7 +861,7 @@ export default function GameEditFormUltimate({ game }: GameEditFormUltimateProps
               </button>
             </div>
             <div style={styles.tagContainer}>
-              {formData.tags.map((tag) => (
+              {formData.tags.map((tag: string) => (
                 <div key={tag} style={styles.tag}>
                   {tag}
                   <button
