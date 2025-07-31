@@ -8,13 +8,279 @@ datasource db {
 }
 
 model Product {
-  id          Int     @id @default(autoincrement())
-  name        String
-  slug        String  @unique
-  priceCents  Int
-  imageUrl    String
-  stock       Int
+  id         Int      @id @default(autoincrement())
+  name       String
+  slug       String   @unique
+  priceCents Int
+  imageUrl   String
+  stock      Int
+  createdAt  DateTime @default(now())
+}
+
+model Merch {
+  id               Int          @id @default(autoincrement())
+  name             String
+  slug             String       @unique
+  description      String
+  category         String
+  priceCents       Int
+  imageUrl         String?
+  sizes            String?
+  featured         Boolean      @default(false)
+  createdAt        DateTime     @default(now()) @db.Timestamp(6)
+  tags             String?
+  printifyId       String?
+  blueprintId      Int?
+  printProviderId  Int?
+  variantMapping   String?
+  isPrintify       Boolean?     @default(false)
+  isNew            Boolean?     @default(false)
+  isBestseller     Boolean?     @default(false)
+  colors           String?
+  material         String?      @db.VarChar(255)
+  careInstructions String?
+  fitDescription   String?      @db.VarChar(255)
+  weight           String?      @db.VarChar(255)
+  dimensions       String?      @db.VarChar(255)
+  updatedAt        DateTime?    @default(now()) @updatedAt
+  apparelType      String?      @db.VarChar(50)
+  fit              String?      @db.VarChar(50)
+  isLimitedEdition Boolean?     @default(false)
+  releaseDate      DateTime?    @db.Timestamp(6)
+  inventory        Inventory[]
+  images           MerchImage[]
+  reviews          Review[]
+}
+
+model Game {
+  id                  Int            @id @default(autoincrement())
+  title               String
+  tagline             String?
+  description         String
+  priceCents          Int
+  players             String
+  timeToPlay          String
+  ageRating           String         @db.VarChar(20)
+  imageUrl            String?
+  isBundle            Boolean        @default(false)
+  isPreorder          Boolean        @default(true)
+  featured            Boolean        @default(false)
+  bundleInfo          String?
+  createdAt           DateTime       @default(now())
+  stock               Int            @default(0)
+  slug                String?
+  tags                String?
+  category            String?        @default("game") @db.VarChar(10)
+  howToPlay           String?
+  components          String?
+  videoUrl            String?        @db.VarChar(255)
+  updatedAt           DateTime       @default(now()) @updatedAt
+  launchDate          DateTime?
+  isNew               Boolean?       @default(false)
+  isBestseller        Boolean?       @default(false)
+  playerCountCustom   String?        @db.VarChar(255)
+  playTimeCustom      String?        @db.VarChar(255)
+  setupTime           String?        @db.VarChar(255)
+  difficulty          String?        @db.VarChar(255)
+  designer            String?        @db.VarChar(255)
+  artist              String?        @db.VarChar(255)
+  publisher           String?        @default("Full Uproar Games") @db.VarChar(255)
+  releaseYear         Int?
+  bggUrl              String?        @db.VarChar(255)
+  playerCount         String?        @default("TWO_TO_FOUR") @db.VarChar(20)
+  playTime            String?        @default("MEDIUM") @db.VarChar(20)
+  whatsInTheBox       String?
+  leadDesigner        String?        @db.VarChar(255)
+  leadArtist          String?        @db.VarChar(255)
+  additionalDesigners String?
+  additionalArtists   String?
+  launchYear          Int?
+  launchMonth         Int?
+  launchDay           Int?
+  launchHour          Int?
+  launchMinute        Int?
+  images              GameImage[]
+  inventory           GameInventory?
+  reviews             Review[]
+}
+
+model Comic {
+  id          Int      @id @default(autoincrement())
+  title       String
+  episode     String
+  description String?
+  imageUrl    String?
   createdAt   DateTime @default(now())
+}
+
+model NewsPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  excerpt   String
+  content   String?
+  createdAt DateTime @default(now())
+}
+
+model EmailSubscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Artwork {
+  id           Int      @id @default(autoincrement())
+  name         String
+  description  String?
+  imageUrl     String
+  category     String
+  tags         String?
+  createdAt    DateTime @default(now())
+  largeUrl     String?
+  thumbnailUrl String?
+  chaosMode    Boolean  @default(false)
+}
+
+model Inventory {
+  id       Int     @id @default(autoincrement())
+  merchId  Int
+  size     String?
+  quantity Int     @default(0)
+  reserved Int     @default(0)
+  merch    Merch   @relation(fields: [merchId], references: [id])
+}
+
+model GameInventory {
+  id       Int  @id @default(autoincrement())
+  gameId   Int  @unique
+  quantity Int  @default(0)
+  reserved Int  @default(0)
+  game     Game @relation(fields: [gameId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([gameId])
+}
+
+model Order {
+  id              String               @id @default(cuid())
+  customerEmail   String
+  customerName    String
+  shippingAddress String
+  billingAddress  String?
+  status          String               @default("pending")
+  totalCents      Int
+  shippingCents   Int                  @default(0)
+  taxCents        Int                  @default(0)
+  trackingNumber  String?
+  notes           String?
+  createdAt       DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime             @default(now()) @updatedAt @db.Timestamp(6)
+  items           OrderItem[]
+  statusHistory   OrderStatusHistory[]
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  orderId    String
+  itemType   String
+  gameId     Int?
+  merchId    Int?
+  merchSize  String?
+  quantity   Int
+  priceCents Int
+  order      Order   @relation(fields: [orderId], references: [id])
+}
+
+model OrderStatusHistory {
+  id        Int      @id @default(autoincrement())
+  orderId   String
+  status    String
+  note      String?
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  order     Order    @relation(fields: [orderId], references: [id])
+}
+
+model Settings {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([key])
+}
+
+model GameImage {
+  id        Int      @id @default(autoincrement())
+  gameId    Int
+  imageUrl  String
+  alt       String?
+  isPrimary Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
+
+model MerchImage {
+  id        Int      @id @default(autoincrement())
+  merchId   Int
+  imageUrl  String
+  alt       String?
+  isPrimary Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  merch     Merch    @relation(fields: [merchId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  gameId    Int?
+  merchId   Int?
+  userId    String
+  userName  String
+  rating    Int
+  title     String
+  comment   String
+  verified  Boolean  @default(false)
+  helpful   Int      @default(0)
+  unhelpful Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  game      Game?    @relation(fields: [gameId], references: [id])
+  merch     Merch?   @relation(fields: [merchId], references: [id])
+
+  @@index([gameId])
+  @@index([merchId])
+  @@index([userId])
+}
+
+model ProductView {
+  id          Int      @id @default(autoincrement())
+  productType String
+  productId   Int
+  userId      String?
+  sessionId   String
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([productType, productId])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+model UserActivity {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  action     String
+  targetType String
+  targetId   Int
+  metadata   String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([targetType, targetId])
+  @@index([createdAt])
 }
 
 enum MerchCategory {
@@ -33,53 +299,9 @@ enum ApparelType {
   TANK_TOP
   LONG_SLEEVE
   SWEATSHIRT
+  JACKET
   HAT
   OTHER
-}
-
-model Merch {
-  id          Int            @id @default(autoincrement())
-  name        String
-  slug        String         @unique
-  description String         @db.Text
-  category    MerchCategory  @default(APPAREL)
-  apparelType ApparelType?   // Only for APPAREL category
-  priceCents  Int
-  
-  // Display settings
-  imageUrl    String?
-  featured    Boolean        @default(false)
-  isNew       Boolean        @default(false)
-  isBestseller Boolean      @default(false)
-  
-  // Product details
-  sizes       String?        // JSON array for apparel sizes like ["S", "M", "L", "XL"]
-  colors      String?        // JSON array of available colors
-  material    String?        // e.g., "100% Cotton", "50/50 Blend"
-  careInstructions String?   @db.Text
-  fitDescription String?     // e.g., "Unisex, runs true to size"
-  
-  // Additional details
-  weight      String?        // Shipping weight
-  dimensions  String?        // Product dimensions
-  
-  // SEO and search
-  tags        String?        // JSON array of tags for searching
-  
-  // Printify integration fields
-  printifyId  String?        // Printify product ID
-  blueprintId Int?           // Printify blueprint ID (product type)
-  printProviderId Int?       // Printify print provider ID
-  variantMapping String?     // JSON mapping of our sizes to Printify variant IDs
-  isPrintify  Boolean        @default(false) // Whether this is a POD product
-  
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  
-  inventory   Inventory[]
-  orderItems  OrderItem[]
-  images      MerchImage[]
-  reviews     Review[]
 }
 
 enum AgeRating {
@@ -98,275 +320,22 @@ enum GameCategory {
 }
 
 enum PlayerCount {
-  SINGLE        // 1 Player
-  TWO           // 2 Players
-  TWO_TO_FOUR   // 2-4 Players
-  TWO_TO_SIX    // 2-6 Players
-  THREE_TO_FIVE // 3-5 Players
-  THREE_TO_SIX  // 3-6 Players
-  FOUR_TO_EIGHT // 4-8 Players
-  PARTY         // 6+ Players
-  CUSTOM        // Custom range
+  SINGLE
+  TWO
+  TWO_TO_FOUR
+  TWO_TO_SIX
+  THREE_TO_FIVE
+  THREE_TO_SIX
+  FOUR_TO_EIGHT
+  PARTY
+  CUSTOM
 }
 
 enum PlayTime {
-  QUICK        // Under 30 min
-  SHORT        // 30-60 min
-  MEDIUM       // 60-90 min
-  LONG         // 90-120 min
-  EXTENDED     // 2+ hours
-  VARIABLE     // Varies
-}
-
-model Game {
-  id          Int           @id @default(autoincrement())
-  title       String
-  slug        String        @unique
-  tagline     String?
-  description String        @db.Text
-  priceCents  Int
-  
-  // Enhanced game details with enums
-  ageRating   AgeRating     @default(ALL_AGES)
-  category    GameCategory  @default(GAME)
-  playerCount PlayerCount   @default(TWO_TO_FOUR)
-  playTime    PlayTime      @default(MEDIUM)
-  
-  // Custom values for when enums don't fit
-  playerCountCustom String?  // e.g., "2-10 Players"
-  playTimeCustom    String?  // e.g., "45-75 minutes"
-  
-  // Display settings
-  imageUrl    String?
-  isBundle    Boolean      @default(false)
-  isPreorder  Boolean      @default(false)
-  featured    Boolean      @default(false)
-  isNew       Boolean      @default(false) // Show "NEW" badge
-  isBestseller Boolean    @default(false) // Show "BESTSELLER" badge
-  bundleInfo  String?      @db.Text
-  
-  // Game details
-  components  String?      @db.Text // What's in the box
-  howToPlay   String?      @db.Text // How to play instructions
-  setupTime   String?      // e.g., "5 minutes"
-  difficulty  String?      // e.g., "Easy to learn, hard to master"
-  designer    String?      // Game designer name (deprecated - use leadDesigner)
-  artist      String?      // Game artist name (deprecated - use leadArtist)
-  leadDesigner String?     // Lead game designer
-  leadArtist  String?      // Lead game artist
-  additionalDesigners String? // JSON array of additional designers
-  additionalArtists String?   // JSON array of additional artists
-  publisher   String?      @default("Full Uproar Games")
-  releaseYear Int?         // Year of release
-  videoUrl    String?      // YouTube embed URL
-  bggUrl      String?      // BoardGameGeek URL
-  
-  // Launch and availability
-  launchDate  DateTime?    // When the game launches/launched (full datetime)
-  launchYear  Int?         // Launch year (Eastern Time)
-  launchMonth Int?         // Launch month (1-12)
-  launchDay   Int?         // Launch day (1-31)
-  launchHour  Int?         // Launch hour (0-23, Eastern Time)
-  launchMinute Int?        // Launch minute (0-59)
-  
-  // Deprecated - use GameInventory instead
-  stock       Int          @default(0) // @deprecated - Use GameInventory
-  
-  // SEO and search
-  tags        String?      // JSON array of tags
-  
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  
-  orderItems  OrderItem[]
-  images      GameImage[]
-  inventory   GameInventory?
-  reviews     Review[]
-}
-
-model Comic {
-  id          Int      @id @default(autoincrement())
-  title       String
-  episode     String
-  description String?
-  imageUrl    String?
-  createdAt   DateTime @default(now())
-}
-
-model NewsPost {
-  id          Int      @id @default(autoincrement())
-  title       String
-  excerpt     String
-  content     String?
-  createdAt   DateTime @default(now())
-}
-
-model EmailSubscriber {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  createdAt   DateTime @default(now())
-}
-
-model Artwork {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  imageUrl    String   // Medium size (600x600) - main display
-  thumbnailUrl String? // 100x100 for admin tables
-  largeUrl    String?  // 1200x1200 for hero/backgrounds
-  category    String   // 'background', 'character', 'logo', 'decoration', etc.
-  tags        String?  // comma-separated tags
-  chaosMode   Boolean  @default(false) // Use in chaos mode animations
-  createdAt   DateTime @default(now())
-}
-
-model Inventory {
-  id          Int      @id @default(autoincrement())
-  merchId     Int
-  size        String?  // For sized items like apparel
-  quantity    Int      @default(0)
-  reserved    Int      @default(0) // Reserved for pending orders
-  
-  merch       Merch    @relation(fields: [merchId], references: [id])
-  
-  @@unique([merchId, size])
-}
-
-model GameInventory {
-  id          Int      @id @default(autoincrement())
-  gameId      Int      @unique
-  quantity    Int      @default(0)
-  reserved    Int      @default(0) // Reserved for pending orders
-  
-  game        Game     @relation(fields: [gameId], references: [id])
-}
-
-model Order {
-  id              String      @id @default(cuid())
-  customerEmail   String
-  customerName    String
-  shippingAddress String
-  billingAddress  String?
-  status          String      @default("pending") // pending, processing, shipped, delivered, cancelled
-  totalCents      Int
-  shippingCents   Int         @default(0)
-  taxCents        Int         @default(0)
-  trackingNumber  String?
-  notes           String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  
-  items           OrderItem[]
-  statusHistory   OrderStatusHistory[]
-}
-
-model OrderItem {
-  id          Int      @id @default(autoincrement())
-  orderId     String
-  itemType    String   // 'game' or 'merch'
-  gameId      Int?
-  merchId     Int?
-  merchSize   String?  // For sized merch items
-  quantity    Int
-  priceCents  Int      // Price at time of order
-  
-  order       Order    @relation(fields: [orderId], references: [id])
-  game        Game?    @relation(fields: [gameId], references: [id])
-  merch       Merch?   @relation(fields: [merchId], references: [id])
-}
-
-model OrderStatusHistory {
-  id          Int      @id @default(autoincrement())
-  orderId     String
-  status      String
-  note        String?
-  createdAt   DateTime @default(now())
-  
-  order       Order    @relation(fields: [orderId], references: [id])
-}
-
-model Settings {
-  id          Int      @id @default(autoincrement())
-  key         String   @unique
-  value       String   @db.Text // Use Text for potentially long values
-  description String?
-  updatedAt   DateTime @updatedAt
-}
-
-model GameImage {
-  id          Int      @id @default(autoincrement())
-  gameId      Int
-  imageUrl    String
-  alt         String?
-  isPrimary   Boolean  @default(false)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  
-  game        Game     @relation(fields: [gameId], references: [id])
-}
-
-model MerchImage {
-  id          Int      @id @default(autoincrement())
-  merchId     Int
-  imageUrl    String
-  alt         String?
-  isPrimary   Boolean  @default(false)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  
-  merch       Merch    @relation(fields: [merchId], references: [id])
-}
-
-model Review {
-  id          Int      @id @default(autoincrement())
-  gameId      Int?
-  merchId     Int?
-  userId      String   // Clerk user ID
-  userName    String
-  rating      Int      // 1-5 stars
-  title       String
-  comment     String
-  verified    Boolean  @default(false) // Verified purchase
-  helpful     Int      @default(0) // Helpful votes
-  unhelpful   Int      @default(0) // Not helpful votes
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  game        Game?    @relation(fields: [gameId], references: [id])
-  merch       Merch?   @relation(fields: [merchId], references: [id])
-  
-  @@index([gameId])
-  @@index([merchId])
-  @@index([userId])
-}
-
-model ProductView {
-  id          Int      @id @default(autoincrement())
-  productType String   // 'game' or 'merch'
-  productId   Int
-  userId      String?  // Clerk user ID (null for anonymous)
-  sessionId   String   // For anonymous tracking
-  ipAddress   String?
-  userAgent   String?
-  createdAt   DateTime @default(now())
-  
-  @@index([productType, productId])
-  @@index([userId])
-  @@index([sessionId])
-  @@index([createdAt])
-}
-
-model UserActivity {
-  id          Int      @id @default(autoincrement())
-  userId      String   // Clerk user ID
-  action      String   // 'view', 'add_to_cart', 'purchase', 'review'
-  targetType  String   // 'game', 'merch'
-  targetId    Int
-  metadata    String?  // JSON for extra data
-  createdAt   DateTime @default(now())
-  
-  @@index([userId])
-  @@index([action])
-  @@index([targetType, targetId])
-  @@index([createdAt])
+  QUICK
+  SHORT
+  MEDIUM
+  LONG
+  EXTENDED
+  VARIABLE
 }
