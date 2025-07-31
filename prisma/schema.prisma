@@ -50,6 +50,7 @@ model Merch {
   inventory        Inventory[]
   images           MerchImage[]
   reviews          Review[]
+  orderItems       OrderItem[]
 }
 
 model Game {
@@ -102,6 +103,7 @@ model Game {
   images              GameImage[]
   inventory           GameInventory?
   reviews             Review[]
+  orderItems          OrderItem[]
 }
 
 model Comic {
@@ -187,6 +189,8 @@ model OrderItem {
   quantity   Int
   priceCents Int
   order      Order   @relation(fields: [orderId], references: [id])
+  game       Game?   @relation(fields: [gameId], references: [id])
+  merch      Merch?  @relation(fields: [merchId], references: [id])
 }
 
 model OrderStatusHistory {
