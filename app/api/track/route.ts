@@ -49,14 +49,16 @@ export async function POST(request: NextRequest) {
 
     // Get current viewers count (last 5 minutes)
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    const viewersCount = await prisma.productView.count({
+    const viewers = await prisma.productView.findMany({
       where: {
         productType,
         productId: parseInt(productId),
         createdAt: { gte: fiveMinutesAgo }
       },
-      distinct: ['sessionId']
+      distinct: ['sessionId'],
+      select: { sessionId: true }
     });
+    const viewersCount = viewers.length;
 
     // Set session cookie if new
     const response = NextResponse.json({ 
@@ -99,14 +101,16 @@ export async function GET(request: NextRequest) {
 
     // Get viewers in last 5 minutes
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    const viewersCount = await prisma.productView.count({
+    const viewers = await prisma.productView.findMany({
       where: {
         productType,
         productId: parseInt(productId),
         createdAt: { gte: fiveMinutesAgo }
       },
-      distinct: ['sessionId']
+      distinct: ['sessionId'],
+      select: { sessionId: true }
     });
+    const viewersCount = viewers.length;
 
     // Get total views today
     const startOfDay = new Date();
