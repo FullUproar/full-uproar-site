@@ -38,8 +38,8 @@ export async function POST(request: Request) {
         timeToPlay: "30-45 min",
         ageRating: AgeRating.FOURTEEN_PLUS,
         category: GameCategory.GAME,
-        playerCount: PlayerCount.TWO_TO_FOUR,
-        playTime: PlayTime.THIRTY_TO_SIXTY,
+        playerCount: PlayerCount.TWO_TO_SIX,
+        playTime: PlayTime.SHORT,
         featured: true,
         stock: 50,
         tags: JSON.stringify(["strategy", "party", "chaos"])
@@ -54,8 +54,8 @@ export async function POST(request: Request) {
         timeToPlay: "60-90 min",
         ageRating: AgeRating.SIXTEEN_PLUS,
         category: GameCategory.GAME,
-        playerCount: PlayerCount.TWO_TO_FOUR,
-        playTime: PlayTime.SIXTY_TO_NINETY,
+        playerCount: PlayerCount.THREE_TO_FIVE,
+        playTime: PlayTime.MEDIUM,
         featured: true,
         stock: 30,
         tags: JSON.stringify(["adventure", "strategy", "chaos"])
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
         timeToPlay: "Variable",
         ageRating: AgeRating.ELEVEN_PLUS,
         category: GameCategory.GAME,
-        playerCount: PlayerCount.ANY,
+        playerCount: PlayerCount.CUSTOM,
         playTime: PlayTime.VARIABLE,
         stock: 100,
         tags: JSON.stringify(["dice", "modifier", "chaos"])
