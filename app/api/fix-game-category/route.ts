@@ -18,10 +18,18 @@ export async function POST(request: NextRequest) {
       OR "category" NOT IN ('GAME', 'MOD', 'EXPANSION');
     `;
     
-    // Count games by category
-    const gameCount = await prisma.game.count({ where: { category: 'GAME' } });
-    const modCount = await prisma.game.count({ where: { category: 'MOD' } });
-    const expansionCount = await prisma.game.count({ where: { category: 'EXPANSION' } });
+    // Count games by category using raw query to avoid enum type checking
+    const counts = await prisma.$queryRaw`
+      SELECT 
+        "category",
+        COUNT(*) as count
+      FROM "Game"
+      GROUP BY "category"
+    ` as any[];
+    
+    const gameCount = counts.find(c => c.category === 'GAME')?.count || 0;
+    const modCount = counts.find(c => c.category === 'MOD')?.count || 0;
+    const expansionCount = counts.find(c => c.category === 'EXPANSION')?.count || 0;
     
     return NextResponse.json({
       success: true,

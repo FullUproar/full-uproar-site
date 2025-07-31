@@ -107,14 +107,20 @@ export default function MigrationsPage() {
 
   const migrations = [
     {
+      id: 'create-enum-types',
+      title: '⚡ STEP 1: Create Enum Types',
+      description: 'Creates PostgreSQL enum types required by Prisma. Run this BEFORE anything else!',
+      endpoint: '/api/create-enum-types'
+    },
+    {
       id: 'fix-game-category',
-      title: '🔥 CRITICAL: Fix Game Categories',
-      description: 'Fixes lowercase game/mod/expansion values to uppercase GAME/MOD/EXPANSION. Run this FIRST!',
+      title: '🔥 STEP 2: Fix Game Categories',
+      description: 'Fixes lowercase game/mod/expansion values to uppercase GAME/MOD/EXPANSION.',
       endpoint: '/api/fix-game-category'
     },
     {
       id: 'migrate-add-enum-columns',
-      title: '🚨 URGENT: Add Enum Columns',
+      title: '🚨 STEP 3: Add Enum Columns',
       description: 'Adds playerCount, playTime enum columns and migrates existing data. Required for site to function properly.',
       endpoint: '/api/migrate-add-enum-columns'
     },
