@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -14,7 +14,8 @@ export async function PUT(
     }
 
     const data = await request.json();
-    const merchId = parseInt(params.id);
+    const { id } = await params;
+    const merchId = parseInt(id);
 
     const merch = await prisma.merchandise.update({
       where: { id: merchId },
@@ -30,7 +31,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -39,7 +40,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const merchId = parseInt(params.id);
+    const { id } = await params;
+    const merchId = parseInt(id);
 
     await prisma.merchandise.delete({
       where: { id: merchId }
