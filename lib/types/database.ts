@@ -18,12 +18,17 @@ export interface Game {
   bundleInfo: string | null;
   stock: number;
   tags: string | null;
+  howToPlay?: string | null;
+  components?: string | null;
+  videoUrl?: string | null;
   createdAt: Date;
+  updatedAt?: Date;
   
   // Relations
   orderItems?: OrderItem[];
   images?: GameImage[];
   inventory?: GameInventory | null;
+  reviews?: Review[];
 }
 
 export interface Merch {
@@ -190,6 +195,47 @@ export interface Settings {
 export interface EmailSubscriber {
   id: number;
   email: string;
+  createdAt: Date;
+}
+
+export interface Review {
+  id: number;
+  gameId: number | null;
+  merchId: number | null;
+  userId: string;
+  userName: string;
+  rating: number;
+  title: string;
+  comment: string;
+  verified: boolean;
+  helpful: number;
+  unhelpful: number;
+  createdAt: Date;
+  updatedAt: Date;
+  
+  // Relations
+  game?: Game;
+  merch?: Merch;
+}
+
+export interface ProductView {
+  id: number;
+  productType: string;
+  productId: number;
+  userId: string | null;
+  sessionId: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: Date;
+}
+
+export interface UserActivity {
+  id: number;
+  userId: string;
+  action: string;
+  targetType: string;
+  targetId: number;
+  metadata: string | null;
   createdAt: Date;
 }
 

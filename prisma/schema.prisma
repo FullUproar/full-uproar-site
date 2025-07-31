@@ -40,6 +40,7 @@ model Merch {
   inventory   Inventory[]
   orderItems  OrderItem[]
   images      MerchImage[]
+  reviews     Review[]
 }
 
 model Game {
@@ -60,11 +61,19 @@ model Game {
   bundleInfo  String?
   stock       Int     @default(0) // Deprecated - use GameInventory instead
   tags        String? // JSON array of tags for searching
+  
+  // New fields for tabbed content
+  howToPlay   String? @db.Text // Markdown content for How to Play tab
+  components  String? @db.Text // What's in the box
+  videoUrl    String? // YouTube embed URL
+  
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   
   orderItems  OrderItem[]
   images      GameImage[]
   inventory   GameInventory?
+  reviews     Review[]
 }
 
 model Comic {
@@ -198,4 +207,58 @@ model MerchImage {
   createdAt   DateTime @default(now())
   
   merch       Merch    @relation(fields: [merchId], references: [id])
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  gameId      Int?
+  merchId     Int?
+  userId      String   // Clerk user ID
+  userName    String
+  rating      Int      // 1-5 stars
+  title       String
+  comment     String
+  verified    Boolean  @default(false) // Verified purchase
+  helpful     Int      @default(0) // Helpful votes
+  unhelpful   Int      @default(0) // Not helpful votes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  game        Game?    @relation(fields: [gameId], references: [id])
+  merch       Merch?   @relation(fields: [merchId], references: [id])
+  
+  @@index([gameId])
+  @@index([merchId])
+  @@index([userId])
+}
+
+model ProductView {
+  id          Int      @id @default(autoincrement())
+  productType String   // 'game' or 'merch'
+  productId   Int
+  userId      String?  // Clerk user ID (null for anonymous)
+  sessionId   String   // For anonymous tracking
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
+  @@index([productType, productId])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+model UserActivity {
+  id          Int      @id @default(autoincrement())
+  userId      String   // Clerk user ID
+  action      String   // 'view', 'add_to_cart', 'purchase', 'review'
+  targetType  String   // 'game', 'merch'
+  targetId    Int
+  metadata    String?  // JSON for extra data
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([targetType, targetId])
+  @@index([createdAt])
 }
