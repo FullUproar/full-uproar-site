@@ -204,11 +204,25 @@ export class PrintifyClient {
       ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length)
       : 0;
 
+    // Map blueprint_id to category
+    let category = 'APPAREL';
+    if (product.blueprint_id >= 1 && product.blueprint_id <= 50) {
+      category = 'APPAREL';
+    } else if (product.blueprint_id >= 51 && product.blueprint_id <= 100) {
+      category = 'ACCESSORIES';
+    } else if (product.blueprint_id >= 101 && product.blueprint_id <= 150) {
+      category = 'HOME_DECOR';
+    } else if (product.blueprint_id >= 151 && product.blueprint_id <= 200) {
+      category = 'DRINKWARE';
+    } else if (product.blueprint_id >= 201) {
+      category = 'OTHER';
+    }
+
     return {
       name: product.title,
       slug: `${product.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}-${product.id}`,
       description: product.description || product.title,
-      category: 'APPAREL', // You might want to map this based on blueprint
+      category: category,
       priceCents: averagePrice,
       imageUrl: primaryImage,
       sizes: JSON.stringify(sizes),
