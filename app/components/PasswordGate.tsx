@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Skull, Eye, EyeOff } from 'lucide-react';
+import { Skull, Eye, EyeOff, Gamepad2 } from 'lucide-react';
 
 interface PasswordGateProps {
   onCorrectPassword: () => void;
@@ -36,46 +36,56 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
   const styles = {
     container: {
       minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)',
+      background: 'linear-gradient(to bottom right, #111827, #1f2937)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '2rem'
+      padding: '1rem'
     },
     card: {
-      background: 'rgba(255, 255, 255, 0.95)',
+      background: 'rgba(30, 41, 59, 0.95)',
+      backdropFilter: 'blur(10px)',
       borderRadius: '1rem',
-      padding: '3rem',
-      maxWidth: '500px',
+      padding: 'clamp(1.5rem, 5vw, 3rem)',
+      maxWidth: '450px',
       width: '100%',
       textAlign: 'center' as const,
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-      border: '3px solid #f97316'
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+      border: '2px solid rgba(249, 115, 22, 0.5)'
+    },
+    logoContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '0.75rem',
+      marginBottom: '1.5rem'
     },
     logo: {
-      width: '4rem',
-      height: '4rem',
-      background: '#f97316',
+      width: 'clamp(3rem, 8vw, 4rem)',
+      height: 'clamp(3rem, 8vw, 4rem)',
+      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      margin: '0 auto 1.5rem auto',
-      fontSize: '1.5rem',
+      fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
       fontWeight: 900,
-      color: '#111827'
+      color: 'white',
+      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.4)'
     },
     title: {
-      fontSize: '2.5rem',
+      fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
       fontWeight: 900,
-      color: '#111827',
-      marginBottom: '1rem'
+      color: '#fdba74',
+      marginBottom: '0.5rem',
+      textShadow: '0 2px 8px rgba(249, 115, 22, 0.3)'
     },
     subtitle: {
-      fontSize: '1.125rem',
-      color: '#6b7280',
+      fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
+      color: '#e2e8f0',
       marginBottom: '2rem',
-      lineHeight: '1.6'
+      lineHeight: '1.6',
+      opacity: 0.9
     },
     form: {
       display: 'flex',
@@ -83,77 +93,92 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
       gap: '1rem'
     },
     inputContainer: {
-      position: 'relative' as const
+      position: 'relative' as const,
+      width: '100%'
     },
     input: {
       width: '100%',
-      padding: '1rem 3rem 1rem 1rem',
-      border: `2px solid ${isWrong ? '#ef4444' : '#d1d5db'}`,
+      padding: 'clamp(0.75rem, 2vw, 1rem)',
+      paddingRight: '3rem',
+      border: `2px solid ${isWrong ? '#ef4444' : 'rgba(249, 115, 22, 0.3)'}`,
       borderRadius: '0.5rem',
-      fontSize: '1rem',
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
       outline: 'none',
-      transition: 'border-color 0.3s',
-      background: isWrong ? '#fee2e2' : 'white'
+      transition: 'all 0.3s',
+      background: isWrong ? 'rgba(239, 68, 68, 0.1)' : 'rgba(17, 24, 39, 0.8)',
+      color: '#f3f4f6',
+      boxSizing: 'border-box' as const
     },
     eyeButton: {
       position: 'absolute' as const,
-      right: '1rem',
+      right: '0.75rem',
       top: '50%',
       transform: 'translateY(-50%)',
       background: 'none',
       border: 'none',
       cursor: 'pointer',
-      color: '#6b7280'
+      color: '#fdba74',
+      padding: '0.25rem',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     button: {
-      background: '#f97316',
+      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
       color: 'white',
-      padding: '1rem 2rem',
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem)',
       borderRadius: '0.5rem',
       border: 'none',
-      fontSize: '1.125rem',
+      fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
       fontWeight: 'bold',
       cursor: 'pointer',
-      transition: 'background 0.3s',
+      transition: 'all 0.3s',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '0.5rem'
+      gap: '0.5rem',
+      width: '100%',
+      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)'
     },
     errorMessage: {
-      color: '#ef4444',
-      fontSize: '0.875rem',
+      color: '#fca5a5',
+      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
       fontWeight: 600,
-      marginTop: '0.5rem',
-      animation: isWrong ? 'shake 0.5s' : undefined
+      marginTop: '0.75rem',
+      animation: isWrong ? 'shake 0.5s' : undefined,
+      padding: '0 1rem'
     },
     hint: {
-      color: '#6b7280',
-      fontSize: '0.75rem',
+      color: '#94a3b8',
+      fontSize: 'clamp(0.625rem, 1.5vw, 0.75rem)',
       fontStyle: 'italic',
-      marginTop: '1rem'
+      marginTop: '1.5rem',
+      opacity: 0.8
+    },
+    gameIcon: {
+      color: '#fdba74',
+      filter: 'drop-shadow(0 2px 4px rgba(249, 115, 22, 0.3))'
     }
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <div style={styles.logo}>
-          FU
+        <div style={styles.logoContainer}>
+          <div style={styles.logo}>
+            FU
+          </div>
+          <Gamepad2 size={32} style={styles.gameIcon} />
         </div>
         
         <h1 style={styles.title}>
-          🚫 HALT! 🚫
+          Welcome to Full Uproar
         </h1>
         
         <p style={styles.subtitle}>
-          This is Fugly's secret lair! No unauthorized humans allowed.
+          This is Fugly's secret gaming lair!
           <br />
-          <strong>Official Fugly Business Only!</strong>
-          <br />
-          <span style={{ fontSize: '0.875rem', color: '#f97316' }}>
-            (Seriously, Fugly will judge you if you don't have the password)
-          </span>
+          <strong style={{ color: '#fdba74' }}>Early Access Only</strong>
         </p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -162,22 +187,50 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter the secret Fugly password..."
-              style={styles.input}
+              placeholder="Enter access code..."
+              style={{
+                ...styles.input,
+                ':focus': {
+                  borderColor: '#f97316',
+                  boxShadow: '0 0 0 3px rgba(249, 115, 22, 0.1)'
+                }
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#f97316';
+                e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)';
+              }}
+              onBlur={(e) => {
+                if (!isWrong) {
+                  e.target.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+                  e.target.style.boxShadow = 'none';
+                }
+              }}
               autoFocus
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               style={styles.eyeButton}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
           
-          <button type="submit" style={styles.button}>
+          <button 
+            type="submit" 
+            style={styles.button}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(249, 115, 22, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(249, 115, 22, 0.3)';
+            }}
+          >
             <Skull size={20} />
-            Enter Fugly's Domain
+            Enter the Arena
           </button>
         </form>
 
@@ -188,7 +241,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
         )}
 
         <div style={styles.hint}>
-          Psst... if you're supposed to be here, you know the magic word! 🎭
+          Psst... if you're supposed to be here, you know the magic word! 🎮
         </div>
       </div>
 
@@ -197,6 +250,12 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
           0%, 100% { transform: translateX(0); }
           25% { transform: translateX(-5px); }
           75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 640px) {
+          input {
+            font-size: 16px !important; /* Prevents zoom on iOS */
+          }
         }
       `}</style>
     </div>

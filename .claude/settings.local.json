@@ -30,7 +30,13 @@
       "Bash(rm:*)",
       "Bash(npx playwright:*)",
       "Bash(git revert:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh api:*)",
+      "Bash(gh repo list:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh issue view:*)"
     ],
     "deny": []
   }
