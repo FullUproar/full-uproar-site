@@ -198,7 +198,7 @@ export default function GameEditFormUltimate({ game }: GameEditFormUltimateProps
   const removeTag = (tagToRemove: string) => {
     setFormData({ 
       ...formData, 
-      tags: formData.tags.filter(tag => tag !== tagToRemove) 
+      tags: formData.tags.filter((tag: string) => tag !== tagToRemove) 
     });
   };
 
@@ -215,7 +215,7 @@ export default function GameEditFormUltimate({ game }: GameEditFormUltimateProps
   const removeDesigner = (designer: string) => {
     setFormData({ 
       ...formData, 
-      additionalDesigners: formData.additionalDesigners.filter(d => d !== designer) 
+      additionalDesigners: formData.additionalDesigners.filter((d: string) => d !== designer) 
     });
   };
 
@@ -232,7 +232,7 @@ export default function GameEditFormUltimate({ game }: GameEditFormUltimateProps
   const removeArtist = (artist: string) => {
     setFormData({ 
       ...formData, 
-      additionalArtists: formData.additionalArtists.filter(a => a !== artist) 
+      additionalArtists: formData.additionalArtists.filter((a: string) => a !== artist) 
     });
   };
 
