@@ -107,6 +107,12 @@ export default function MigrationsPage() {
 
   const migrations = [
     {
+      id: 'migrate-add-enum-columns',
+      title: '🚨 URGENT: Add Enum Columns',
+      description: 'Adds playerCount, playTime enum columns and migrates existing data. Required for site to function properly.',
+      endpoint: '/api/migrate-add-enum-columns'
+    },
+    {
       id: 'migrate-launch-date',
       title: 'Add Launch Date Field',
       description: 'Adds launchDate field to Game table for pre-order and release tracking.',
