@@ -466,7 +466,7 @@ export default function AdminDashboard() {
 
         {/* Deployment Info */}
         <div style={{ marginTop: '40px' }}>
-          <DeploymentInfo />
+          <DeploymentInfo isVisible={true} />
         </div>
       </div>
     </div>
