@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { MerchCategory } from '@prisma/client';
 
 export interface PrintifyProductImage {
   src: string;
@@ -205,17 +206,21 @@ export class PrintifyClient {
       : 0;
 
     // Map blueprint_id to category
-    let category = 'APPAREL';
+    let category: MerchCategory = MerchCategory.APPAREL;
     if (product.blueprint_id >= 1 && product.blueprint_id <= 50) {
-      category = 'APPAREL';
+      category = MerchCategory.APPAREL;
     } else if (product.blueprint_id >= 51 && product.blueprint_id <= 100) {
-      category = 'ACCESSORIES';
+      category = MerchCategory.ACCESSORIES;
     } else if (product.blueprint_id >= 101 && product.blueprint_id <= 150) {
-      category = 'HOME_DECOR';
+      category = MerchCategory.HOME_GOODS;
     } else if (product.blueprint_id >= 151 && product.blueprint_id <= 200) {
-      category = 'DRINKWARE';
-    } else if (product.blueprint_id >= 201) {
-      category = 'OTHER';
+      category = MerchCategory.COLLECTIBLES;
+    } else if (product.blueprint_id >= 201 && product.blueprint_id <= 250) {
+      category = MerchCategory.STICKERS;
+    } else if (product.blueprint_id >= 251 && product.blueprint_id <= 300) {
+      category = MerchCategory.PRINTS;
+    } else {
+      category = MerchCategory.OTHER;
     }
 
     return {
