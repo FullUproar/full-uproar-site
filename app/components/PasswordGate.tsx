@@ -188,13 +188,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter access code..."
-              style={{
-                ...styles.input,
-                ':focus': {
-                  borderColor: '#f97316',
-                  boxShadow: '0 0 0 3px rgba(249, 115, 22, 0.1)'
-                }
-              }}
+              style={styles.input}
               onFocus={(e) => {
                 e.target.style.borderColor = '#f97316';
                 e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)';
