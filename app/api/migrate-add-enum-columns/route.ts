@@ -196,9 +196,12 @@ export async function POST(request: NextRequest) {
       results.push(`Merch category update error: ${error}`);
     }
 
-    // Count results
-    const gameCount = await prisma.game.count();
-    const merchCount = await prisma.merch.count();
+    // Count results using raw query
+    const gameCountResult = await prisma.$queryRaw`SELECT COUNT(*)::INTEGER as count FROM "Game"` as any[];
+    const merchCountResult = await prisma.$queryRaw`SELECT COUNT(*)::INTEGER as count FROM "Merch"` as any[];
+    
+    const gameCount = Number(gameCountResult[0]?.count || 0);
+    const merchCount = Number(merchCountResult[0]?.count || 0);
 
     return NextResponse.json({
       success: true,

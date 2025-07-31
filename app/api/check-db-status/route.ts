@@ -13,9 +13,12 @@ export async function GET() {
     
     const hasNewColumns = result.length === 2;
     
-    // Count games
-    const gameCount = await prisma.game.count();
-    const merchCount = await prisma.merch.count();
+    // Count games using raw query
+    const gameCountResult = await prisma.$queryRaw`SELECT COUNT(*)::INTEGER as count FROM "Game"` as any[];
+    const merchCountResult = await prisma.$queryRaw`SELECT COUNT(*)::INTEGER as count FROM "Merch"` as any[];
+    
+    const gameCount = Number(gameCountResult[0]?.count || 0);
+    const merchCount = Number(merchCountResult[0]?.count || 0);
     
     return NextResponse.json({
       hasNewColumns,

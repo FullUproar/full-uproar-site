@@ -22,14 +22,14 @@ export async function POST(request: NextRequest) {
     const counts = await prisma.$queryRaw`
       SELECT 
         "category",
-        COUNT(*) as count
+        COUNT(*)::INTEGER as count
       FROM "Game"
       GROUP BY "category"
     ` as any[];
     
-    const gameCount = counts.find(c => c.category === 'GAME')?.count || 0;
-    const modCount = counts.find(c => c.category === 'MOD')?.count || 0;
-    const expansionCount = counts.find(c => c.category === 'EXPANSION')?.count || 0;
+    const gameCount = Number(counts.find(c => c.category === 'GAME')?.count || 0);
+    const modCount = Number(counts.find(c => c.category === 'MOD')?.count || 0);
+    const expansionCount = Number(counts.find(c => c.category === 'EXPANSION')?.count || 0);
     
     return NextResponse.json({
       success: true,
