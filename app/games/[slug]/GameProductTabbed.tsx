@@ -14,6 +14,47 @@ import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Tooltip from '@/app/components/Tooltip';
 import ReviewForm from '@/app/components/ReviewForm';
+import { PlayerCount, PlayTime, AgeRating } from '@prisma/client';
+
+// Helper functions to format enum values for display
+const formatPlayerCount = (playerCount: PlayerCount): string => {
+  const mapping: Record<PlayerCount, string> = {
+    [PlayerCount.SINGLE]: '1 Player',
+    [PlayerCount.TWO]: '2 Players',
+    [PlayerCount.TWO_TO_FOUR]: '2-4 Players',
+    [PlayerCount.TWO_TO_SIX]: '2-6 Players',
+    [PlayerCount.THREE_TO_FIVE]: '3-5 Players',
+    [PlayerCount.THREE_TO_SIX]: '3-6 Players',
+    [PlayerCount.FOUR_TO_EIGHT]: '4-8 Players',
+    [PlayerCount.PARTY]: '6+ Players',
+    [PlayerCount.CUSTOM]: 'Variable'
+  };
+  return mapping[playerCount] || 'Unknown';
+};
+
+const formatPlayTime = (playTime: PlayTime): string => {
+  const mapping: Record<PlayTime, string> = {
+    [PlayTime.QUICK]: 'Under 30 min',
+    [PlayTime.SHORT]: '30-60 min',
+    [PlayTime.MEDIUM]: '60-90 min',
+    [PlayTime.LONG]: '90-120 min',
+    [PlayTime.EXTENDED]: '2+ hours',
+    [PlayTime.VARIABLE]: 'Variable'
+  };
+  return mapping[playTime] || 'Unknown';
+};
+
+const formatAgeRating = (ageRating: AgeRating): string => {
+  const mapping: Record<AgeRating, string> = {
+    [AgeRating.ALL_AGES]: 'All Ages',
+    [AgeRating.ELEVEN_PLUS]: '11+',
+    [AgeRating.FOURTEEN_PLUS]: '14+',
+    [AgeRating.SIXTEEN_PLUS]: '16+',
+    [AgeRating.EIGHTEEN_PLUS]: '18+',
+    [AgeRating.TWENTYONE_PLUS]: '21+'
+  };
+  return mapping[ageRating] || 'Unknown';
+};
 
 interface GameImage {
   id: number;
@@ -43,9 +84,9 @@ interface Game {
   tagline: string | null;
   description: string;
   priceCents: number;
-  players: string;
-  timeToPlay: string;
-  ageRating: string;
+  playerCount: PlayerCount;
+  playTime: PlayTime;
+  ageRating: AgeRating;
   category?: string;
   imageUrl: string | null;
   isBundle: boolean;
@@ -557,15 +598,15 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Players:</span>
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{game.players}</span>
+                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{formatPlayerCount(game.playerCount)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Play Time:</span>
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{game.timeToPlay}</span>
+                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{formatPlayTime(game.playTime)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Age Rating:</span>
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{game.ageRating}</span>
+                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{formatAgeRating(game.ageRating)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Category:</span>
@@ -641,7 +682,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                       <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fdba74', marginBottom: '8px' }}>
                         Gather Your Victims
                       </h4>
-                      <p>Round up {game.players} of your favorite chaos agents. Make sure they're ready for friendship-ending fun!</p>
+                      <p>Round up {formatPlayerCount(game.playerCount)} of your favorite chaos agents. Make sure they're ready for friendship-ending fun!</p>
                     </div>
                   </div>
 
