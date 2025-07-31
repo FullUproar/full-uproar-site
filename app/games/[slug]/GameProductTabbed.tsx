@@ -13,6 +13,7 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Tooltip from '@/app/components/Tooltip';
+import ReviewForm from '@/app/components/ReviewForm';
 
 interface GameImage {
   id: number;
@@ -677,9 +678,9 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
               <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fdba74' }}>
                 Customer Reviews
               </h3>
-              {user && (
+              {user ? (
                 <button
-                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  onClick={() => setShowReviewForm(true)}
                   style={{
                     background: '#f97316',
                     color: '#111827',
@@ -687,11 +688,39 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                     borderRadius: '8px',
                     border: 'none',
                     fontWeight: 'bold',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s'
                   }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 >
                   Write a Review
                 </button>
+              ) : (
+                <Link 
+                  href="/sign-in"
+                  style={{
+                    background: 'rgba(249, 115, 22, 0.2)',
+                    color: '#fdba74',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    border: '2px solid #f97316',
+                    fontWeight: 'bold',
+                    textDecoration: 'none',
+                    display: 'inline-block',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => { 
+                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.3)';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => { 
+                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  Sign in to Review
+                </Link>
               )}
             </div>
 
@@ -805,6 +834,27 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       default:
         return null;
     }
+  };
+
+  const handleReviewSubmit = (newReview: Review) => {
+    // Add the new review to the beginning of the list
+    setReviews([newReview, ...reviews]);
+    
+    // Update review stats
+    const newTotal = reviewStats.total + 1;
+    const newAverage = ((reviewStats.averageRating * reviewStats.total) + newReview.rating) / newTotal;
+    
+    setReviewStats({
+      ...reviewStats,
+      total: newTotal,
+      averageRating: newAverage,
+      distribution: {
+        ...reviewStats.distribution,
+        [newReview.rating]: (reviewStats.distribution[newReview.rating] || 0) + 1
+      }
+    });
+    
+    setShowReviewForm(false);
   };
 
   return (
@@ -1157,6 +1207,16 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
           )}
         </div>
       </div>
+
+      {/* Review Form Modal */}
+      {showReviewForm && (
+        <ReviewForm
+          productId={game.id}
+          productType="game"
+          onClose={() => setShowReviewForm(false)}
+          onSubmit={handleReviewSubmit}
+        />
+      )}
 
       <style jsx>{`
         @keyframes pulse {
