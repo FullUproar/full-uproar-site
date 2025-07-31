@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({
       available: !existing,
-      message: existing ? `This slug is already used by "${existing.title || existing.name}"` : 'Slug is available'
+      message: existing ? `This slug is already used by "${type === 'game' ? (existing as any).title : (existing as any).name}"` : 'Slug is available'
     });
   } catch (error) {
     console.error('Slug validation error:', error);
