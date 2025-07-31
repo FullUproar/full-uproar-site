@@ -12,6 +12,7 @@ import { useCartStore } from '@/lib/cartStore';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
+import Tooltip from '@/app/components/Tooltip';
 
 interface GameImage {
   id: number;
@@ -936,62 +937,98 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                 <div style={styles.quantitySection}>
                   <label style={styles.quantityLabel}>Quantity:</label>
                   <div style={styles.quantitySelector}>
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      style={styles.quantityButton}
-                      disabled={quantity <= 1}
-                    >
-                      <Minus style={{ width: '16px', height: '16px' }} />
-                    </button>
+                    <Tooltip text="Minimum quantity is 1" position="top">
+                      <button
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        style={{
+                          ...styles.quantityButton,
+                          opacity: quantity <= 1 ? 0.5 : 1
+                        }}
+                        disabled={quantity <= 1}
+                      >
+                        <Minus style={{ width: '16px', height: '16px' }} />
+                      </button>
+                    </Tooltip>
                     <span style={styles.quantityValue}>{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(Math.min(game.stock || 99, quantity + 1))}
-                      style={styles.quantityButton}
-                      disabled={quantity >= (game.stock || 99)}
+                    <Tooltip 
+                      text={quantity >= game.stock ? `Only ${game.stock} in stock!` : "Maximum quantity reached"} 
+                      position="top"
                     >
-                      <Plus style={{ width: '16px', height: '16px' }} />
-                    </button>
+                      <button
+                        onClick={() => setQuantity(Math.min(game.stock || 99, quantity + 1))}
+                        style={{
+                          ...styles.quantityButton,
+                          opacity: quantity >= (game.stock || 99) ? 0.5 : 1
+                        }}
+                        disabled={quantity >= (game.stock || 99)}
+                      >
+                        <Plus style={{ width: '16px', height: '16px' }} />
+                      </button>
+                    </Tooltip>
                   </div>
                 </div>
 
                 <div style={styles.actionButtons}>
-                  <button
-                    onClick={handleAddToCart}
-                    disabled={game.stock === 0}
-                    style={{
-                      ...styles.addToCartButton,
-                      opacity: game.stock === 0 ? 0.5 : 1,
-                      cursor: game.stock === 0 ? 'not-allowed' : 'pointer'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                  >
-                    {isInCart ? (
-                      <>
-                        <Check style={{ width: '20px', height: '20px' }} />
-                        Added to Cart!
-                      </>
-                    ) : (
-                      <>
+                  {game.stock === 0 ? (
+                    <Tooltip text="This item is currently out of stock" position="top">
+                      <button
+                        disabled={true}
+                        style={{
+                          ...styles.addToCartButton,
+                          opacity: 0.5,
+                          cursor: 'not-allowed',
+                          width: '100%'
+                        }}
+                      >
                         <ShoppingCart style={{ width: '20px', height: '20px' }} />
-                        Add to Chaos Cart
-                      </>
-                    )}
-                  </button>
+                        Out of Stock
+                      </button>
+                    </Tooltip>
+                  ) : (
+                    <button
+                      onClick={handleAddToCart}
+                      style={styles.addToCartButton}
+                      onMouseEnter={(e) => { if (game.stock > 0) e.currentTarget.style.transform = 'scale(1.05)' }}
+                      onMouseLeave={(e) => { if (game.stock > 0) e.currentTarget.style.transform = 'scale(1)' }}
+                    >
+                      {isInCart ? (
+                        <>
+                          <Check style={{ width: '20px', height: '20px' }} />
+                          Added to Cart!
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart style={{ width: '20px', height: '20px' }} />
+                          Add to Chaos Cart
+                        </>
+                      )}
+                    </button>
+                  )}
                   
-                  <button
-                    onClick={handleBuyNow}
-                    disabled={game.stock === 0}
-                    style={{
-                      ...styles.buyNowButton,
-                      opacity: game.stock === 0 ? 0.5 : 1,
-                      cursor: game.stock === 0 ? 'not-allowed' : 'pointer'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                  >
-                    Buy It Now!
-                  </button>
+                  {game.stock === 0 ? (
+                    <Tooltip text="This item is currently out of stock" position="bottom">
+                      <button
+                        disabled={true}
+                        style={{
+                          ...styles.buyNowButton,
+                          opacity: 0.5,
+                          cursor: 'not-allowed',
+                          width: '100%'
+                        }}
+                      >
+                        Buy It Now!
+                      </button>
+                    </Tooltip>
+                  ) : (
+                    <button
+                      onClick={handleBuyNow}
+                      style={styles.buyNowButton}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                      Buy It Now!
+                    </button>
+                  )}
                 </div>
 
                 <div style={{ marginTop: '24px', padding: '16px', background: 'rgba(249, 115, 22, 0.1)', borderRadius: '8px', border: '1px solid rgba(249, 115, 22, 0.2)' }}>
