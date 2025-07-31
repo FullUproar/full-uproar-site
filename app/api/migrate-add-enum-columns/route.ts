@@ -67,6 +67,23 @@ export async function POST(request: NextRequest) {
       results.push(`Game detail columns may already exist: ${error}`);
     }
 
+    // Fix game category enum values
+    try {
+      await prisma.$executeRaw`
+        UPDATE "Game" 
+        SET "category" = CASE
+          WHEN LOWER("category") = 'game' THEN 'GAME'
+          WHEN LOWER("category") = 'mod' THEN 'MOD'
+          WHEN LOWER("category") = 'expansion' THEN 'EXPANSION'
+          ELSE 'GAME'
+        END
+        WHERE "category" NOT IN ('GAME', 'MOD', 'EXPANSION');
+      `;
+      results.push('Fixed game category enum values');
+    } catch (error) {
+      results.push(`Game category update error: ${error}`);
+    }
+
     // Update ageRating column type if needed
     try {
       await prisma.$executeRaw`

@@ -107,6 +107,12 @@ export default function MigrationsPage() {
 
   const migrations = [
     {
+      id: 'fix-game-category',
+      title: '🔥 CRITICAL: Fix Game Categories',
+      description: 'Fixes lowercase game/mod/expansion values to uppercase GAME/MOD/EXPANSION. Run this FIRST!',
+      endpoint: '/api/fix-game-category'
+    },
+    {
       id: 'migrate-add-enum-columns',
       title: '🚨 URGENT: Add Enum Columns',
       description: 'Adds playerCount, playTime enum columns and migrates existing data. Required for site to function properly.',
