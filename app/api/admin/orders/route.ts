@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const orders = await prisma.Order.findMany({
+    const orders = await prisma.order.findMany({
       include: {
         items: {
           include: {
