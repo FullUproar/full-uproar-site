@@ -10,12 +10,7 @@ export async function GET(
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
-        items: {
-          include: {
-            game: true,
-            merch: true
-          }
-        },
+        items: true,
         statusHistory: {
           orderBy: { createdAt: 'desc' }
         }
