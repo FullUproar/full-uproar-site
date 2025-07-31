@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Save, X, Plus } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import ImageUpload from '../../components/ImageUpload';
-import { ImageSizes } from '@/lib/imageUtils';
 
 interface GameEditFormProps {
   game?: any;
@@ -483,9 +482,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
           <h2 style={adminStyles.sectionTitle}>Image</h2>
           <ImageUpload
             currentImageUrl={formData.imageUrl}
-            onImageUpload={(url) => setFormData({ ...formData, imageUrl: url })}
-            type="game"
-            sizes={ImageSizes.game}
+            onImageUploaded={(url) => setFormData({ ...formData, imageUrl: url })}
           />
         </div>
 
