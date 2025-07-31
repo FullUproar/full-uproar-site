@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const orders = await prisma.order.findMany({
       include: {
         items: true,
-        shippingAddress: true
+        statusHistory: true
       },
       orderBy: {
         createdAt: 'desc'
