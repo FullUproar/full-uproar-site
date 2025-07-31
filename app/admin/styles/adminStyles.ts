@@ -57,6 +57,13 @@ export const adminStyles = {
     borderCollapse: 'collapse' as const,
   },
   tableHeader: {
+    padding: '16px',
+    textAlign: 'left' as const,
+    fontWeight: '600',
+    color: '#fdba74',
+    fontSize: '14px',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em',
     background: 'rgba(249, 115, 22, 0.1)',
     borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
   },
@@ -204,15 +211,6 @@ export const adminStyles = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  tableHeader: {
-    padding: '16px',
-    textAlign: 'left' as const,
-    fontWeight: '600',
-    color: '#fdba74',
-    fontSize: '14px',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.05em',
   },
   // Hover effects
   hoverEffects: {
