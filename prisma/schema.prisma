@@ -150,15 +150,24 @@ model Game {
   howToPlay   String?      @db.Text // How to play instructions
   setupTime   String?      // e.g., "5 minutes"
   difficulty  String?      // e.g., "Easy to learn, hard to master"
-  designer    String?      // Game designer name
-  artist      String?      // Game artist name
+  designer    String?      // Game designer name (deprecated - use leadDesigner)
+  artist      String?      // Game artist name (deprecated - use leadArtist)
+  leadDesigner String?     // Lead game designer
+  leadArtist  String?      // Lead game artist
+  additionalDesigners String? // JSON array of additional designers
+  additionalArtists String?   // JSON array of additional artists
   publisher   String?      @default("Full Uproar Games")
   releaseYear Int?         // Year of release
   videoUrl    String?      // YouTube embed URL
   bggUrl      String?      // BoardGameGeek URL
   
   // Launch and availability
-  launchDate  DateTime?    // When the game launches/launched
+  launchDate  DateTime?    // When the game launches/launched (full datetime)
+  launchYear  Int?         // Launch year (Eastern Time)
+  launchMonth Int?         // Launch month (1-12)
+  launchDay   Int?         // Launch day (1-31)
+  launchHour  Int?         // Launch hour (0-23, Eastern Time)
+  launchMinute Int?        // Launch minute (0-59)
   
   // Deprecated - use GameInventory instead
   stock       Int          @default(0) // @deprecated - Use GameInventory

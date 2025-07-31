@@ -163,6 +163,12 @@ export default function MigrationsPage() {
       title: 'Add Missing Fields',
       description: 'Adds any missing optional fields with default values.',
       endpoint: '/api/migrate-missing-fields'
+    },
+    {
+      id: 'migrate-enhanced-credits',
+      title: 'Enhanced Credits & Launch Date',
+      description: 'Adds lead/additional designer/artist fields and granular launch date fields with Eastern Time support.',
+      endpoint: '/api/migrate-enhanced-credits'
     }
   ];
 
