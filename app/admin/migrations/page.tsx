@@ -1,9 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function MigrationsPage() {
+  const [completedMigrations, setCompletedMigrations] = useState<string[]>([]);
+  const [showCompleted, setShowCompleted] = useState(false);
+
+  useEffect(() => {
+    // Load completed migrations from localStorage
+    const saved = localStorage.getItem('completedMigrations');
+    if (saved) {
+      setCompletedMigrations(JSON.parse(saved));
+    }
+  }, []);
   const styles = {
     container: {
       minHeight: '100vh',
@@ -168,20 +178,81 @@ export default function MigrationsPage() {
           <p style={styles.subtitle}>
             Run these migrations to update your database schema and data
           </p>
+          <button
+            onClick={() => setShowCompleted(!showCompleted)}
+            style={{
+              marginTop: '16px',
+              padding: '8px 16px',
+              background: 'rgba(249, 115, 22, 0.2)',
+              border: '2px solid rgba(249, 115, 22, 0.5)',
+              borderRadius: '8px',
+              color: '#fdba74',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+            }}
+          >
+            {showCompleted ? 'Hide' : 'Show'} Completed Migrations
+          </button>
         </div>
 
         <div style={styles.migrationGrid}>
-          {migrations.map(migration => (
-            <MigrationCard key={migration.id} migration={migration} styles={styles} />
-          ))}
+          {(() => {
+            const filteredMigrations = migrations.filter(
+              migration => showCompleted || !completedMigrations.includes(migration.id)
+            );
+            
+            if (filteredMigrations.length === 0) {
+              return (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '60px',
+                  background: 'rgba(30, 41, 59, 0.8)',
+                  border: '2px solid rgba(249, 115, 22, 0.3)',
+                  borderRadius: '12px',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <h3 style={{ color: '#fdba74', fontSize: '24px', marginBottom: '16px' }}>
+                    ✅ All Migrations Complete!
+                  </h3>
+                  <p style={{ color: '#e2e8f0', fontSize: '16px' }}>
+                    Your database is up to date. No pending migrations.
+                  </p>
+                </div>
+              );
+            }
+            
+            return filteredMigrations.map(migration => (
+              <MigrationCard 
+                key={migration.id} 
+                migration={migration} 
+                styles={styles}
+                isCompleted={completedMigrations.includes(migration.id)}
+                onComplete={(id) => {
+                  const updated = [...completedMigrations, id];
+                  setCompletedMigrations(updated);
+                  localStorage.setItem('completedMigrations', JSON.stringify(updated));
+                }}
+              />
+            ));
+          })()}
         </div>
       </div>
     </div>
   );
 }
 
-function MigrationCard({ migration, styles }: any) {
-  const [status, setStatus] = useState<'idle' | 'running' | 'success' | 'error'>('idle');
+function MigrationCard({ migration, styles, isCompleted, onComplete }: any) {
+  const [status, setStatus] = useState<'idle' | 'running' | 'success' | 'error'>(
+    isCompleted ? 'success' : 'idle'
+  );
   const [result, setResult] = useState<any>(null);
 
   const runMigration = async () => {
@@ -199,6 +270,7 @@ function MigrationCard({ migration, styles }: any) {
       if (response.ok && data.success) {
         setStatus('success');
         setResult(data);
+        onComplete(migration.id);
       } else {
         setStatus('error');
         setResult(data);
