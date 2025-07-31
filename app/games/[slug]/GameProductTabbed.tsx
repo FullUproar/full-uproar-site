@@ -887,10 +887,10 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                   style={styles.mainImage}
                 />
                 
-                {viewersCount > 0 && (
+                {viewersCount > 1 && (
                   <div style={styles.viewingIndicator}>
                     <Eye style={{ width: '16px', height: '16px' }} />
-                    {viewersCount} {viewersCount === 1 ? 'person' : 'people'} viewing
+                    {viewersCount - 1} {viewersCount - 1 === 1 ? 'other person' : 'others'} viewing
                   </div>
                 )}
 
