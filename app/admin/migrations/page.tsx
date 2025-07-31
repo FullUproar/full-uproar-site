@@ -235,7 +235,7 @@ export default function MigrationsPage() {
                 migration={migration} 
                 styles={styles}
                 isCompleted={completedMigrations.includes(migration.id)}
-                onComplete={(id) => {
+                onComplete={(id: string) => {
                   const updated = [...completedMigrations, id];
                   setCompletedMigrations(updated);
                   localStorage.setItem('completedMigrations', JSON.stringify(updated));
