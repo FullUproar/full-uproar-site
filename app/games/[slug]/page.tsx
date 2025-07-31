@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import GameProductClientEnhanced from './GameProductClientEnhanced';
+import GameProductProfessional from './GameProductProfessional';
 
 interface GamePageProps {
   params: Promise<{ slug: string }>;
@@ -66,7 +66,7 @@ export default async function GamePage({ params }: GamePageProps) {
   const similarGames = await getSimilarGames(game);
 
   return (
-    <GameProductClientEnhanced 
+    <GameProductProfessional 
       game={game} 
       similarGames={similarGames}
     />
