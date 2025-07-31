@@ -26,6 +26,7 @@ interface Game {
   howToPlay: string | null;
   components: string | null;
   videoUrl: string | null;
+  launchDate: string | null;
 }
 
 interface GameEditFormProps {
@@ -52,7 +53,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
     stock: game.stock,
     howToPlay: game.howToPlay || '',
     components: game.components || '',
-    videoUrl: game.videoUrl || ''
+    videoUrl: game.videoUrl || '',
+    launchDate: game.launchDate ? new Date(game.launchDate).toISOString().split('T')[0] : ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -426,7 +428,25 @@ export default function GameEditForm({ game }: GameEditFormProps) {
 
       {/* Options */}
       <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>Options</h2>
+        <h2 style={styles.sectionTitle}>Options & Launch</h2>
+        
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Launch Date</label>
+          <input
+            type="date"
+            value={formData.launchDate}
+            onChange={(e) => setFormData({ ...formData, launchDate: e.target.value })}
+            style={styles.input}
+            onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+          />
+          <span style={styles.helpText}>Set a launch date for pre-orders or to show "New" badges</span>
+        </div>
+        
+        <div style={{ marginTop: '24px' }}>
+          <h3 style={{ ...styles.label, marginBottom: '16px' }}>Display Options</h3>
+        </div>
+        
         <div style={styles.checkbox}>
           <input
             type="checkbox"

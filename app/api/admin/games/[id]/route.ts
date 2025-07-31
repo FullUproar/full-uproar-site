@@ -55,6 +55,11 @@ export async function PATCH(
     // Remove fields that shouldn't be updated directly
     const { id: _, createdAt, updatedAt, orderItems, images, inventory, reviews, ...updateData } = body;
 
+    // Convert launchDate string to DateTime if provided
+    if (updateData.launchDate) {
+      updateData.launchDate = new Date(updateData.launchDate);
+    }
+
     const updatedGame = await prisma.game.update({
       where: { id: gameId },
       data: updateData

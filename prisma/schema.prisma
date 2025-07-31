@@ -67,6 +67,9 @@ model Game {
   components  String? @db.Text // What's in the box
   videoUrl    String? // YouTube embed URL
   
+  // Launch date for pre-orders and new releases
+  launchDate  DateTime? // When the game launches/launched
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   

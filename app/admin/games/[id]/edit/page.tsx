@@ -33,6 +33,12 @@ export default async function EditGamePage({ params }: EditGamePageProps) {
 
   const game = await getGame(gameId);
 
+  // Convert Date to string for the form
+  const gameForForm = {
+    ...game,
+    launchDate: game.launchDate ? game.launchDate.toISOString() : null
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -40,7 +46,7 @@ export default async function EditGamePage({ params }: EditGamePageProps) {
           Edit Game: {game.title}
         </h1>
         
-        <GameEditForm game={game} />
+        <GameEditForm game={gameForForm} />
       </div>
     </div>
   );
