@@ -1483,7 +1483,7 @@ export default function AdminDashboard() {
                     <button
                       onClick={() => {
                         setShowDbTools(false);
-                        window.open('/migrate', '_blank');
+                        window.location.href = '/admin/migrations';
                       }}
                       style={{ 
                         width: '100%', 

@@ -51,6 +51,8 @@ interface Game {
   isBundle: boolean;
   isPreorder: boolean;
   featured: boolean;
+  isNew?: boolean;
+  isBestseller?: boolean;
   bundleInfo: string | null;
   stock: number;
   tags: string | null;
@@ -901,9 +903,14 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                       PRE-ORDER
                     </div>
                   )}
-                  {game.featured && (
+                  {game.isBestseller && (
                     <div style={{ background: '#f97316', color: 'white', padding: '6px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: 'bold', transform: 'rotate(2deg)' }}>
                       BESTSELLER
+                    </div>
+                  )}
+                  {game.isNew && (
+                    <div style={{ background: '#10b981', color: 'white', padding: '6px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: 'bold', transform: 'rotate(-2deg)' }}>
+                      NEW
                     </div>
                   )}
                 </div>

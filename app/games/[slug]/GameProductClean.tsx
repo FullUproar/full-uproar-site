@@ -36,6 +36,8 @@ interface Game {
   isBundle: boolean;
   isPreorder: boolean;
   featured: boolean;
+  isNew?: boolean;
+  isBestseller?: boolean;
   bundleInfo: string | null;
   stock: number;
   tags: string | null;
@@ -588,8 +590,11 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
                   {game.isPreorder && (
                     <div style={styles.badge}>PRE-ORDER</div>
                   )}
-                  {game.featured && (
+                  {game.isBestseller && (
                     <div style={styles.bestsellerBadge}>BESTSELLER</div>
+                  )}
+                  {game.isNew && (
+                    <div style={{ ...styles.badge, background: '#10b981', transform: 'rotate(-2deg)' }}>NEW</div>
                   )}
                 </div>
               </div>

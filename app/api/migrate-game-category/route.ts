@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
     `;
 
     // Count games and mods
-    const gameCount = await prisma.game.count({ where: { category: 'game' } });
-    const modCount = await prisma.game.count({ where: { category: 'mod' } });
+    const gameCount = await prisma.game.count({ where: { category: 'GAME' } });
+    const modCount = await prisma.game.count({ where: { category: 'MOD' } });
 
     return NextResponse.json({
       success: true,

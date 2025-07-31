@@ -17,25 +17,64 @@ model Product {
   createdAt   DateTime @default(now())
 }
 
+enum MerchCategory {
+  APPAREL
+  ACCESSORIES
+  HOME_GOODS
+  COLLECTIBLES
+  STICKERS
+  PRINTS
+  OTHER
+}
+
+enum ApparelType {
+  T_SHIRT
+  HOODIE
+  TANK_TOP
+  LONG_SLEEVE
+  SWEATSHIRT
+  HAT
+  OTHER
+}
+
 model Merch {
-  id          Int      @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
-  slug        String   @unique
-  description String
-  category    String   // 'apparel', 'accessories', 'collectibles', 'stickers', etc.
+  slug        String         @unique
+  description String         @db.Text
+  category    MerchCategory  @default(APPAREL)
+  apparelType ApparelType?   // Only for APPAREL category
   priceCents  Int
+  
+  // Display settings
   imageUrl    String?
-  sizes       String?  // JSON array for apparel sizes like ["S", "M", "L", "XL"]
-  featured    Boolean  @default(false)
-  tags        String?  // JSON array of tags for searching
-  createdAt   DateTime @default(now())
+  featured    Boolean        @default(false)
+  isNew       Boolean        @default(false)
+  isBestseller Boolean      @default(false)
+  
+  // Product details
+  sizes       String?        // JSON array for apparel sizes like ["S", "M", "L", "XL"]
+  colors      String?        // JSON array of available colors
+  material    String?        // e.g., "100% Cotton", "50/50 Blend"
+  careInstructions String?   @db.Text
+  fitDescription String?     // e.g., "Unisex, runs true to size"
+  
+  // Additional details
+  weight      String?        // Shipping weight
+  dimensions  String?        // Product dimensions
+  
+  // SEO and search
+  tags        String?        // JSON array of tags for searching
   
   // Printify integration fields
-  printifyId  String?  // Printify product ID
-  blueprintId Int?     // Printify blueprint ID (product type)
-  printProviderId Int? // Printify print provider ID
-  variantMapping String? // JSON mapping of our sizes to Printify variant IDs
-  isPrintify  Boolean  @default(false) // Whether this is a POD product
+  printifyId  String?        // Printify product ID
+  blueprintId Int?           // Printify blueprint ID (product type)
+  printProviderId Int?       // Printify print provider ID
+  variantMapping String?     // JSON mapping of our sizes to Printify variant IDs
+  isPrintify  Boolean        @default(false) // Whether this is a POD product
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   
   inventory   Inventory[]
   orderItems  OrderItem[]
@@ -43,35 +82,92 @@ model Merch {
   reviews     Review[]
 }
 
+enum AgeRating {
+  ALL_AGES
+  ELEVEN_PLUS
+  FOURTEEN_PLUS
+  SIXTEEN_PLUS
+  EIGHTEEN_PLUS
+  TWENTYONE_PLUS
+}
+
+enum GameCategory {
+  GAME
+  MOD
+  EXPANSION
+}
+
+enum PlayerCount {
+  SINGLE        // 1 Player
+  TWO           // 2 Players
+  TWO_TO_FOUR   // 2-4 Players
+  TWO_TO_SIX    // 2-6 Players
+  THREE_TO_FIVE // 3-5 Players
+  THREE_TO_SIX  // 3-6 Players
+  FOUR_TO_EIGHT // 4-8 Players
+  PARTY         // 6+ Players
+  CUSTOM        // Custom range
+}
+
+enum PlayTime {
+  QUICK        // Under 30 min
+  SHORT        // 30-60 min
+  MEDIUM       // 60-90 min
+  LONG         // 90-120 min
+  EXTENDED     // 2+ hours
+  VARIABLE     // Varies
+}
+
 model Game {
-  id          Int     @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   title       String
-  slug        String  @unique
+  slug        String        @unique
   tagline     String?
-  description String
+  description String        @db.Text
   priceCents  Int
-  players     String
-  timeToPlay  String
-  ageRating   String
-  category    String  @default("game") // 'game' or 'mod'
+  
+  // Enhanced game details with enums
+  ageRating   AgeRating     @default(ALL_AGES)
+  category    GameCategory  @default(GAME)
+  playerCount PlayerCount   @default(TWO_TO_FOUR)
+  playTime    PlayTime      @default(MEDIUM)
+  
+  // Custom values for when enums don't fit
+  playerCountCustom String?  // e.g., "2-10 Players"
+  playTimeCustom    String?  // e.g., "45-75 minutes"
+  
+  // Display settings
   imageUrl    String?
-  isBundle    Boolean @default(false)
-  isPreorder  Boolean @default(true)
-  featured    Boolean @default(false)
-  bundleInfo  String?
-  stock       Int     @default(0) // Deprecated - use GameInventory instead
-  tags        String? // JSON array of tags for searching
+  isBundle    Boolean      @default(false)
+  isPreorder  Boolean      @default(false)
+  featured    Boolean      @default(false)
+  isNew       Boolean      @default(false) // Show "NEW" badge
+  isBestseller Boolean    @default(false) // Show "BESTSELLER" badge
+  bundleInfo  String?      @db.Text
   
-  // New fields for tabbed content
-  howToPlay   String? @db.Text // Markdown content for How to Play tab
-  components  String? @db.Text // What's in the box
-  videoUrl    String? // YouTube embed URL
+  // Game details
+  components  String?      @db.Text // What's in the box
+  howToPlay   String?      @db.Text // How to play instructions
+  setupTime   String?      // e.g., "5 minutes"
+  difficulty  String?      // e.g., "Easy to learn, hard to master"
+  designer    String?      // Game designer name
+  artist      String?      // Game artist name
+  publisher   String?      @default("Full Uproar Games")
+  releaseYear Int?         // Year of release
+  videoUrl    String?      // YouTube embed URL
+  bggUrl      String?      // BoardGameGeek URL
   
-  // Launch date for pre-orders and new releases
-  launchDate  DateTime? // When the game launches/launched
+  // Launch and availability
+  launchDate  DateTime?    // When the game launches/launched
   
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  // Deprecated - use GameInventory instead
+  stock       Int          @default(0) // @deprecated - Use GameInventory
+  
+  // SEO and search
+  tags        String?      // JSON array of tags
+  
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   
   orderItems  OrderItem[]
   images      GameImage[]

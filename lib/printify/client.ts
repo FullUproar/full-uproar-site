@@ -208,7 +208,7 @@ export class PrintifyClient {
       name: product.title,
       slug: `${product.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}-${product.id}`,
       description: product.description || product.title,
-      category: 'apparel', // You might want to map this based on blueprint
+      category: 'APPAREL', // You might want to map this based on blueprint
       priceCents: averagePrice,
       imageUrl: primaryImage,
       sizes: JSON.stringify(sizes),

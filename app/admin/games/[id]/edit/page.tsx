@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import GameEditForm from './GameEditForm';
+import GameEditFormEnhanced from './GameEditFormEnhanced';
 
 interface EditGamePageProps {
   params: Promise<{ id: string }>;
@@ -46,7 +46,7 @@ export default async function EditGamePage({ params }: EditGamePageProps) {
           Edit Game: {game.title}
         </h1>
         
-        <GameEditForm game={gameForForm} />
+        <GameEditFormEnhanced game={gameForForm as any} />
       </div>
     </div>
   );
