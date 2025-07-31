@@ -82,11 +82,24 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     distribution: {} as Record<number, number>
   });
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const allImages = [
     ...(game.imageUrl ? [{ imageUrl: game.imageUrl, alt: game.title, isPrimary: true }] : []),
     ...game.images
   ].filter(img => img.imageUrl);
+
+  // Track window size for responsive layout
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Track product view
   useEffect(() => {
@@ -204,22 +217,19 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)'
     },
     mainSection: {
-      padding: '40px 0'
+      padding: isMobile ? '20px 0' : '40px 0'
     },
     mainContainer: {
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '0 16px'
+      padding: isMobile ? '0 12px' : '0 16px'
     },
     topSection: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '40px',
-      marginBottom: '40px',
-      '@media (max-width: 1024px)': {
-        gridTemplateColumns: '1fr',
-        gap: '24px'
-      }
+      display: isMobile ? 'flex' : 'grid',
+      flexDirection: isMobile ? 'column' as const : undefined,
+      gridTemplateColumns: isMobile ? undefined : '1fr 1fr',
+      gap: isMobile ? '24px' : '40px',
+      marginBottom: isMobile ? '24px' : '40px'
     },
     // Left side - Images
     imageSection: {
@@ -237,7 +247,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     },
     mainImage: {
       width: '100%',
-      height: '500px',
+      height: isMobile ? '300px' : '500px',
       objectFit: 'contain' as const,
       display: 'block'
     },
@@ -259,7 +269,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     },
     thumbnailGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(6, 1fr)',
+      gridTemplateColumns: isMobile ? 'repeat(4, 1fr)' : 'repeat(6, 1fr)',
       gap: '8px'
     },
     thumbnail: {
@@ -293,14 +303,14 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       border: '1px solid rgba(249, 115, 22, 0.2)'
     },
     title: {
-      fontSize: '36px',
+      fontSize: isMobile ? '28px' : '36px',
       fontWeight: '900',
       color: '#fdba74',
       marginBottom: '8px',
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
     },
     tagline: {
-      fontSize: '20px',
+      fontSize: isMobile ? '16px' : '20px',
       color: '#fde68a',
       marginBottom: '16px',
       fontWeight: '600'
@@ -308,7 +318,8 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     ratingContainer: {
       display: 'flex',
       alignItems: 'center',
-      gap: '12px'
+      gap: '12px',
+      flexWrap: isMobile ? 'wrap' as const : 'nowrap' as const
     },
     categoryBadge: {
       display: 'inline-block',
@@ -332,12 +343,12 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       background: 'rgba(30, 41, 59, 0.8)',
       border: '3px solid #f97316',
       borderRadius: '16px',
-      padding: '24px',
+      padding: isMobile ? '20px' : '24px',
       backdropFilter: 'blur(10px)',
       boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
     },
     priceDisplay: {
-      fontSize: '42px',
+      fontSize: isMobile ? '32px' : '42px',
       fontWeight: '900',
       color: '#f97316',
       marginBottom: '8px',
@@ -428,19 +439,21 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     },
     tabNavigation: {
       display: 'flex',
-      borderBottom: '2px solid rgba(249, 115, 22, 0.2)'
+      borderBottom: '2px solid rgba(249, 115, 22, 0.2)',
+      overflowX: isMobile ? 'auto' as const : 'visible' as const
     },
     tabButton: {
-      flex: 1,
-      padding: '20px',
+      flex: isMobile ? '0 0 auto' : 1,
+      padding: isMobile ? '16px 20px' : '20px',
       background: 'transparent',
       border: 'none',
       color: '#94a3b8',
-      fontSize: '16px',
+      fontSize: isMobile ? '14px' : '16px',
       fontWeight: '700',
       cursor: 'pointer',
       transition: 'all 0.2s',
-      position: 'relative' as const
+      position: 'relative' as const,
+      whiteSpace: isMobile ? 'nowrap' as const : 'normal' as const
     },
     tabButtonActive: {
       color: '#fdba74',
@@ -533,7 +546,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
               {game.description}
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? '16px' : '24px', marginBottom: '32px' }}>
               <div style={{ background: 'rgba(17, 24, 39, 0.5)', borderRadius: '12px', padding: '20px' }}>
                 <h4 style={{ fontSize: '18px', fontWeight: 'bold', color: '#fdba74', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Gamepad2 style={{ width: '20px', height: '20px' }} />
@@ -1161,7 +1174,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                 More Chaos You'll Love
               </h2>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(220px, 1fr))', gap: isMobile ? '12px' : '20px' }}>
                 {similarGames.slice(0, 6).map((similarGame) => (
                   <Link
                     key={similarGame.id}

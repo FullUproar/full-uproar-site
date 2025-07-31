@@ -768,7 +768,7 @@ export default function AdminDashboard() {
             </div>
           </td>
           <td style={styles.td}>
-            <button onClick={() => openEditModal(item)} style={styles.editButton}>Edit</button>
+            <button onClick={() => window.open(`/admin/games/${item.id}/edit`, '_blank')} style={styles.editButton}>Edit</button>
             <button onClick={() => window.open(`/admin/manage-images/game/${item.id}`, '_blank')} style={{ ...styles.editButton, background: '#8b5cf6' }}>Images</button>
             <button onClick={() => openInventoryModal(item, 'game')} style={{ ...styles.editButton, background: '#10b981' }}>Inventory</button>
             <button onClick={() => handleDelete(item)} style={styles.deleteButton}>Delete</button>

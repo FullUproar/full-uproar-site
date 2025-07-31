@@ -53,11 +53,24 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isInCart, setIsInCart] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const allImages = [
     ...(game.imageUrl ? [{ imageUrl: game.imageUrl, alt: game.title, isPrimary: true }] : []),
     ...game.images
   ].filter(img => img.imageUrl);
+
+  // Track window size for responsive layout
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -128,21 +141,18 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     },
     mainSection: {
       background: 'transparent',
-      padding: '40px 0'
+      padding: isMobile ? '20px 0' : '40px 0'
     },
     mainContainer: {
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '0 16px'
+      padding: isMobile ? '0 12px' : '0 16px'
     },
     gridLayout: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr 380px',
-      gap: '40px',
-      '@media (max-width: 1024px)': {
-        gridTemplateColumns: '1fr',
-        gap: '24px'
-      }
+      display: isMobile ? 'flex' : 'grid',
+      flexDirection: isMobile ? 'column' as const : undefined,
+      gridTemplateColumns: isMobile ? undefined : '1fr 1fr 380px',
+      gap: isMobile ? '24px' : '40px'
     },
     // Image Gallery Styles
     imageSection: {
@@ -159,7 +169,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     },
     mainImage: {
       width: '100%',
-      height: '500px',
+      height: isMobile ? '300px' : '500px',
       objectFit: 'contain' as const,
       display: 'block'
     },
@@ -190,7 +200,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     },
     thumbnailGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(6, 1fr)',
+      gridTemplateColumns: isMobile ? 'repeat(4, 1fr)' : 'repeat(6, 1fr)',
       gap: '8px'
     },
     thumbnail: {
@@ -214,13 +224,13 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       color: '#e5e5e5'
     },
     title: {
-      fontSize: '32px',
+      fontSize: isMobile ? '24px' : '32px',
       fontWeight: 'bold',
       color: '#fdba74',
       marginBottom: '8px'
     },
     tagline: {
-      fontSize: '18px',
+      fontSize: isMobile ? '16px' : '18px',
       color: '#fde68a',
       marginBottom: '16px'
     },
@@ -275,7 +285,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       color: '#999'
     },
     price: {
-      fontSize: '36px',
+      fontSize: isMobile ? '28px' : '36px',
       fontWeight: 'bold',
       color: '#f97316'
     },
@@ -296,7 +306,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     },
     featuresGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
+      gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
       gap: '16px',
       marginBottom: '32px'
     },
@@ -347,14 +357,14 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       background: '#1f2937',
       border: '3px solid #f97316',
       borderRadius: '12px',
-      padding: '24px',
-      position: 'sticky' as const,
-      top: '80px',
+      padding: isMobile ? '20px' : '24px',
+      position: isMobile ? 'relative' as const : 'sticky' as const,
+      top: isMobile ? undefined : '80px',
       height: 'fit-content',
       boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
     },
     buyBoxPrice: {
-      fontSize: '32px',
+      fontSize: isMobile ? '28px' : '32px',
       fontWeight: 'bold',
       color: '#f97316',
       marginBottom: '20px'
@@ -497,18 +507,18 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     // Similar Products
     similarSection: {
       background: 'rgba(17, 24, 39, 0.5)',
-      padding: '40px 0'
+      padding: isMobile ? '24px 0' : '40px 0'
     },
     sectionTitle: {
-      fontSize: '24px',
+      fontSize: isMobile ? '20px' : '24px',
       fontWeight: 'bold',
       color: '#fdba74',
       marginBottom: '24px'
     },
     similarGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-      gap: '20px'
+      gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(200px, 1fr))',
+      gap: isMobile ? '12px' : '20px'
     },
     similarCard: {
       background: '#1f2937',
