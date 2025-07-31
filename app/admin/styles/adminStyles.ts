@@ -1,0 +1,172 @@
+export const adminStyles = {
+  container: {
+    minHeight: '100vh',
+    background: 'linear-gradient(to bottom right, #111827, #1f2937)',
+    padding: '40px 20px',
+  },
+  content: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+  },
+  header: {
+    marginBottom: '40px',
+  },
+  title: {
+    fontSize: '36px',
+    fontWeight: '900',
+    color: '#fdba74',
+    marginBottom: '8px',
+  },
+  subtitle: {
+    color: '#94a3b8',
+    fontSize: '16px',
+  },
+  backButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    color: '#fdba74',
+    textDecoration: 'none',
+    marginBottom: '20px',
+    padding: '8px 16px',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '8px',
+    transition: 'all 0.2s',
+  },
+  section: {
+    background: 'rgba(30, 41, 59, 0.8)',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '12px',
+    padding: '24px',
+    backdropFilter: 'blur(10px)',
+    marginBottom: '24px',
+  },
+  sectionTitle: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    color: '#fdba74',
+    marginBottom: '20px',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '20px',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse' as const,
+  },
+  tableHeader: {
+    background: 'rgba(249, 115, 22, 0.1)',
+    borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+  },
+  tableHeaderCell: {
+    padding: '12px',
+    textAlign: 'left' as const,
+    fontWeight: '600',
+    color: '#fdba74',
+    fontSize: '14px',
+  },
+  tableRow: {
+    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+    transition: 'background 0.2s',
+  },
+  tableCell: {
+    padding: '12px',
+    color: '#e2e8f0',
+    fontSize: '14px',
+  },
+  button: {
+    padding: '8px 16px',
+    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'transform 0.2s',
+    fontSize: '14px',
+  },
+  outlineButton: {
+    padding: '8px 16px',
+    background: 'transparent',
+    color: '#fdba74',
+    border: '2px solid rgba(249, 115, 22, 0.5)',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    fontSize: '14px',
+  },
+  dangerButton: {
+    padding: '8px 16px',
+    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'transform 0.2s',
+    fontSize: '14px',
+  },
+  input: {
+    padding: '12px',
+    borderRadius: '8px',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(17, 24, 39, 0.8)',
+    color: '#f3f4f6',
+    fontSize: '16px',
+    transition: 'all 0.2s',
+    width: '100%',
+  },
+  label: {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#e2e8f0',
+    marginBottom: '8px',
+    display: 'block',
+  },
+  fieldGroup: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '8px',
+  },
+  card: {
+    background: 'rgba(30, 41, 59, 0.8)',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '12px',
+    padding: '24px',
+    backdropFilter: 'blur(10px)',
+    transition: 'all 0.2s',
+  },
+  badge: {
+    padding: '4px 12px',
+    background: 'rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(249, 115, 22, 0.5)',
+    borderRadius: '16px',
+    fontSize: '12px',
+    color: '#fde68a',
+    fontWeight: '600',
+  },
+  // Hover effects
+  hoverEffects: {
+    button: {
+      onMouseEnter: (e: any) => e.currentTarget.style.transform = 'scale(1.05)',
+      onMouseLeave: (e: any) => e.currentTarget.style.transform = 'scale(1)',
+    },
+    card: {
+      onMouseEnter: (e: any) => {
+        e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+        e.currentTarget.style.boxShadow = '0 4px 20px rgba(249, 115, 22, 0.2)';
+      },
+      onMouseLeave: (e: any) => {
+        e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+        e.currentTarget.style.boxShadow = 'none';
+      },
+    },
+    row: {
+      onMouseEnter: (e: any) => e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)',
+      onMouseLeave: (e: any) => e.currentTarget.style.background = 'transparent',
+    },
+  },
+};
