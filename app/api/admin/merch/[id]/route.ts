@@ -17,7 +17,7 @@ export async function PUT(
     const { id } = await params;
     const merchId = parseInt(id);
 
-    const merch = await prisma.merchandise.update({
+    const merch = await prisma.Merchandise.update({
       where: { id: merchId },
       data
     });
@@ -43,7 +43,7 @@ export async function DELETE(
     const { id } = await params;
     const merchId = parseInt(id);
 
-    await prisma.merchandise.delete({
+    await prisma.Merchandise.delete({
       where: { id: merchId }
     });
 

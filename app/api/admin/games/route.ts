@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const games = await prisma.game.findMany({
+    const games = await prisma.Game.findMany({
       orderBy: {
         createdAt: 'desc'
       }
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     const data = await request.json();
 
-    const game = await prisma.game.create({
+    const game = await prisma.Game.create({
       data: {
         ...data,
         additionalDesigners: data.additionalDesigners || [],
