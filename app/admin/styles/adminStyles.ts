@@ -32,6 +32,8 @@ export const adminStyles = {
     border: '2px solid rgba(249, 115, 22, 0.3)',
     borderRadius: '8px',
     transition: 'all 0.2s',
+    background: 'transparent',
+    cursor: 'pointer',
   },
   section: {
     background: 'rgba(30, 41, 59, 0.8)',

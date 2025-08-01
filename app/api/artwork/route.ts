@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// Increase body size limit for large base64 images
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+
 export async function GET() {
   try {
     const artwork = await prisma.artwork.findMany({

@@ -52,12 +52,6 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
       return;
     }
 
-    // Validate file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage({ type: 'error', text: 'File size must be less than 5MB' });
-      return;
-    }
-
     setUploading(true);
     setMessage({ type: '', text: '' });
 
@@ -161,7 +155,14 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
       <button
         onClick={onBack}
         style={adminStyles.backButton}
-        {...adminStyles.hoverEffects.button}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+          e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+          e.currentTarget.style.background = 'transparent';
+        }}
       >
         <ArrowLeft size={20} />
         Back to Artwork
