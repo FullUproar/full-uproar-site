@@ -76,6 +76,8 @@ export default async function GamePage({ params }: GamePageProps) {
     howToPlay: game.howToPlay || undefined,
     components: game.components || undefined,
     videoUrl: game.videoUrl || undefined,
+    isNew: game.isNew ?? undefined,
+    isBestseller: game.isBestseller ?? undefined,
   };
 
   // Transform similar games
@@ -88,6 +90,8 @@ export default async function GamePage({ params }: GamePageProps) {
     howToPlay: g.howToPlay || undefined,
     components: g.components || undefined,
     videoUrl: g.videoUrl || undefined,
+    isNew: g.isNew ?? undefined,
+    isBestseller: g.isBestseller ?? undefined,
   }));
 
   return (

@@ -36,7 +36,8 @@
       "Bash(gh api:*)",
       "Bash(gh repo list:*)",
       "WebFetch(domain:github.com)",
-      "Bash(gh issue view:*)"
+      "Bash(gh issue view:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": []
   }
