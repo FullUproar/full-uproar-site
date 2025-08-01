@@ -247,9 +247,7 @@ body:has(.cl-modalBackdrop) {
   background-color: transparent !important;
 }
 
-.cl-rootBox {
-  background-color: #1e293b !important;
-}
+/* Moved .cl-rootBox to be transparent - see critical override section */
 
 .cl-cardBox {
   background-color: #1e293b !important;
@@ -639,12 +637,51 @@ p[class*="cl-"] {
   background-color: transparent !important;
 }
 
+/* CRITICAL: Override the root box that's causing full-page background */
+.cl-rootBox {
+  background-color: transparent !important;
+}
+
+/* Ensure only the card inside has background */
+.cl-rootBox .cl-card,
+.cl-rootBox .cl-cardBox {
+  background-color: #1e293b !important;
+}
+
+/* Target the specific modal wrapper that might be setting page background */
+div:has(> .cl-modalBackdrop) {
+  background-color: transparent !important;
+}
+
+/* Ensure Clerk portal doesn't set page background */
+.cl-portal {
+  background-color: transparent !important;
+}
+
 /* Last resort - target by inline styles */
 div[style*="background-color: white"],
 div[style*="background-color: rgb(255, 255, 255)"],
 div[style*="background: white"],
 div[style*="background: rgb(255, 255, 255)"] {
   background-color: #1e293b !important;
+}
+
+/* Target any div with dark inline background that's not modal content */
+div[style*="background-color: rgb(30, 41, 59)"],
+div[style*="background: rgb(30, 41, 59)"],
+div[style*="background-color: #1e293b"],
+div[style*="background: #1e293b"] {
+  /* Only apply to modal content, not full page */
+}
+
+/* Override any full-viewport dark backgrounds */
+div[style*="position: fixed"][style*="inset: 0"][style*="background-color"] {
+  background-color: transparent !important;
+}
+
+/* Target elements that might have viewport dimensions */
+div[style*="width: 100vw"][style*="height: 100vh"] {
+  background-color: transparent !important;
 }
 
 /* Fix any remaining sections */
