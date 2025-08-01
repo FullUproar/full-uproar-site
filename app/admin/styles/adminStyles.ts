@@ -39,7 +39,7 @@ export const adminStyles = {
     background: 'rgba(30, 41, 59, 0.8)',
     border: '2px solid rgba(249, 115, 22, 0.3)',
     borderRadius: '12px',
-    padding: '24px',
+    padding: '32px',
     backdropFilter: 'blur(10px)',
     marginBottom: '24px',
   },
@@ -138,6 +138,7 @@ export const adminStyles = {
     fontSize: '16px',
     transition: 'all 0.2s',
     width: '100%',
+    boxSizing: 'border-box' as const,
   },
   label: {
     fontSize: '14px',
@@ -174,7 +175,7 @@ export const adminStyles = {
   formRow: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '32px',
+    gap: '48px',
     marginBottom: '24px',
   },
   textarea: {
@@ -188,6 +189,7 @@ export const adminStyles = {
     width: '100%',
     resize: 'vertical' as const,
     fontFamily: 'inherit',
+    boxSizing: 'border-box' as const,
   },
   select: {
     padding: '12px',
@@ -199,6 +201,7 @@ export const adminStyles = {
     transition: 'all 0.2s',
     width: '100%',
     cursor: 'pointer',
+    boxSizing: 'border-box' as const,
   },
   checkbox: {
     marginRight: '8px',
