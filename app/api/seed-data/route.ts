@@ -71,7 +71,7 @@ export async function POST(request: Request) {
         ageRating: AgeRating.ELEVEN_PLUS,
         category: GameCategory.GAME,
         playerCount: PlayerCount.CUSTOM,
-        playTime: PlayTime.VARIABLE,
+        playTime: PlayTime.VARIES,
         stock: 100,
         tags: JSON.stringify(["dice", "modifier", "chaos"])
       }
