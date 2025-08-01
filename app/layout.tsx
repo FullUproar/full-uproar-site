@@ -12,6 +12,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import DrawerWrapper from './components/DrawerWrapper'
 import TestModeBanner from './components/TestModeBanner'
+import GlobalFooter from './components/GlobalFooter'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -62,11 +63,14 @@ export default function RootLayout({
     >
       <html lang="en">
       <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
           style={{ margin: 0, padding: 0 }}
         >
           <TestModeBanner />
-          {children}
+          <div className="flex-1">
+            {children}
+          </div>
+          <GlobalFooter />
           <DrawerWrapper />
         </body>
       </html>
