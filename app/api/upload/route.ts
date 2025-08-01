@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
               fit: 'inside',
               withoutEnlargement: true
             })
+            .withMetadata({ density: 72 }) // Standard web DPI
             .png({ quality: 90, compressionLevel: 9 })
             .toBuffer();
           mimeType = 'image/png';
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest) {
               fit: 'inside',
               withoutEnlargement: true
             })
+            .withMetadata({ density: 72 }) // Standard web DPI
             .jpeg({ quality: 85, progressive: true })
             .toBuffer();
           mimeType = 'image/jpeg';
