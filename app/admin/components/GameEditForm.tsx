@@ -90,13 +90,21 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
       const url = game ? `/api/admin/games/${game.id}` : '/api/admin/games';
       const method = game ? 'PATCH' : 'POST';
 
-      // Prepare data for sending
+      // Prepare data for sending - destructure to exclude fields
+      const {
+        leadDesigner,
+        leadArtist,
+        whatsInTheBox,
+        gameCategory,
+        ...baseData
+      } = formData;
+      
       const dataToSend = {
-        ...formData,
+        ...baseData,
         // Convert field names to match database schema
-        designer: formData.leadDesigner,
-        artist: formData.leadArtist,
-        components: formData.whatsInTheBox,
+        designer: leadDesigner,
+        artist: leadArtist,
+        components: whatsInTheBox,
         // Convert arrays to JSON strings for storage
         additionalDesigners: formData.additionalDesigners && formData.additionalDesigners.length > 0 
           ? JSON.stringify(formData.additionalDesigners.filter(d => d.trim() !== ''))
@@ -105,12 +113,6 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
           ? JSON.stringify(formData.additionalArtists.filter(a => a.trim() !== ''))
           : null,
       };
-      
-      // Remove fields that don't exist in the database
-      delete dataToSend.leadDesigner;
-      delete dataToSend.leadArtist;
-      delete dataToSend.whatsInTheBox;
-      delete dataToSend.gameCategory;
       
       // Debug log
       console.log('Sending game data:', dataToSend);
