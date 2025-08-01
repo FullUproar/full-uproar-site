@@ -12,7 +12,7 @@ export async function GET() {
     },
     database: {
       status: 'checking',
-      error: null,
+      error: null as string | null,
     },
     tables: {},
     features: config.get('features'),
