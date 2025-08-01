@@ -312,10 +312,38 @@ button[class*="cl-"] {
   color: #fdba74 !important;
 }
 
-/* Navbar in Clerk modals */
+/* Navbar in Clerk modals - more aggressive */
 .cl-navbar {
   background-color: #0f172a !important;
+  background-image: none !important;
+  background: #0f172a !important;
   border-bottom: 1px solid #334155 !important;
+}
+
+.cl-navbar * {
+  background-image: none !important;
+}
+
+/* Target navbar with any inline styles */
+.cl-navbar[style] {
+  background-color: #0f172a !important;
+  background-image: none !important;
+  background: #0f172a !important;
+}
+
+/* Profile modal specific navbar */
+.cl-modalContent .cl-navbar {
+  background-color: #0f172a !important;
+  background-image: none !important;
+  background: #0f172a !important;
+}
+
+/* Target the navbar container and all children */
+nav.cl-navbar,
+div.cl-navbar {
+  background-color: #0f172a !important;
+  background-image: none !important;
+  background: #0f172a !important;
 }
 
 .cl-navbarButton {
@@ -383,6 +411,35 @@ button[class*="cl-"] {
 .cl-modalContent__userProfile > div:first-child {
   background: #0f172a !important;
   background-image: none !important;
+}
+
+/* Check for any parent containers of navbar */
+.cl-navbar-parent,
+.cl-navbar-wrapper,
+.cl-navbar-container {
+  background-color: #0f172a !important;
+  background-image: none !important;
+  background: #0f172a !important;
+}
+
+/* Target any div that contains navbar */
+div:has(.cl-navbar) {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+/* Last resort - check for light backgrounds on any navbar ancestors */
+.cl-profilePage .cl-navbar,
+.cl-profilePage__sidebar .cl-navbar,
+.cl-profilePage__nav .cl-navbar {
+  background-color: #0f172a !important;
+  background-image: none !important;
+  background: #0f172a !important;
+}
+
+/* Debug: make absolutely sure the color is valid */
+.cl-navbar {
+  background-color: rgb(15, 23, 42) !important; /* #0f172a in RGB */
 }
 
 /* Scrollbar in Clerk modals */
