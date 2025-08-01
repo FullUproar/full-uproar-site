@@ -71,7 +71,7 @@ model Game {
   stock               Int            @default(0)
   slug                String         @unique
   tags                String?
-  category            String?        @default("game") @db.VarChar(10)
+  category            String?        @default("GAME") @db.VarChar(10)
   howToPlay           String?
   components          String?
   videoUrl            String?        @db.VarChar(255)

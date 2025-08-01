@@ -49,8 +49,10 @@
       "Bash(gh label:*)",
       "Bash(gh issue close:*)",
       "Bash(git checkout:*)",
-      "Bash(tsx scripts/check-tables.ts:*)"
+      "Bash(tsx scripts/check-tables.ts:*)",
+      "Bash(del test-game-creation.js)"
     ],
     "deny": []
-  }
+  },
+  "$schema": "https://json.schemastore.org/claude-code-settings.json"
 }

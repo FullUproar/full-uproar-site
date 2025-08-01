@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Save, X, Plus } from 'lucide-react';
+import { ArrowLeft, Save, X, Plus, TestTube } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import ImageUpload from '../../components/ImageUpload';
 
@@ -31,9 +31,9 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     publisher: 'Full Uproar Games, Inc.',
     bggUrl: '',
     whatsInTheBox: '',
-    gameCategory: 'BOARD',
+    category: 'GAME',
     playerCount: 'TWO_TO_FOUR',
-    playTime: 'QUICK',
+    playTime: 'MEDIUM',
     players: '2-4',
     timeToPlay: '60-90 min',
     isNew: false,
@@ -48,10 +48,34 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
 
   useEffect(() => {
     if (game) {
+      // Parse JSON strings back to arrays
+      let parsedDesigners = [];
+      let parsedArtists = [];
+      
+      try {
+        if (game.additionalDesigners) {
+          parsedDesigners = JSON.parse(game.additionalDesigners);
+        }
+      } catch (e) {
+        console.error('Error parsing additionalDesigners:', e);
+      }
+      
+      try {
+        if (game.additionalArtists) {
+          parsedArtists = JSON.parse(game.additionalArtists);
+        }
+      } catch (e) {
+        console.error('Error parsing additionalArtists:', e);
+      }
+      
       setFormData({
         ...game,
-        additionalDesigners: game.additionalDesigners || [],
-        additionalArtists: game.additionalArtists || [],
+        // Map database fields to form fields
+        leadDesigner: game.designer || '',
+        leadArtist: game.artist || '',
+        whatsInTheBox: game.components || '',
+        additionalDesigners: parsedDesigners,
+        additionalArtists: parsedArtists,
         launchDate: game.launchDate ? new Date(game.launchDate) : null,
       });
       setIsFullUproarPublisher(game.publisher === 'Full Uproar Games, Inc.');
@@ -64,10 +88,32 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
 
     try {
       const url = game ? `/api/admin/games/${game.id}` : '/api/admin/games';
-      const method = game ? 'PUT' : 'POST';
+      const method = game ? 'PATCH' : 'POST';
 
-      // Remove playerCount and playTime as they're not in the database
-      const { playerCount, playTime, ...dataToSend } = formData;
+      // Prepare data for sending
+      const dataToSend = {
+        ...formData,
+        // Convert field names to match database schema
+        designer: formData.leadDesigner,
+        artist: formData.leadArtist,
+        components: formData.whatsInTheBox,
+        // Convert arrays to JSON strings for storage
+        additionalDesigners: formData.additionalDesigners && formData.additionalDesigners.length > 0 
+          ? JSON.stringify(formData.additionalDesigners.filter(d => d.trim() !== ''))
+          : null,
+        additionalArtists: formData.additionalArtists && formData.additionalArtists.length > 0
+          ? JSON.stringify(formData.additionalArtists.filter(a => a.trim() !== ''))
+          : null,
+      };
+      
+      // Remove fields that don't exist in the database
+      delete dataToSend.leadDesigner;
+      delete dataToSend.leadArtist;
+      delete dataToSend.whatsInTheBox;
+      delete dataToSend.gameCategory;
+      
+      // Debug log
+      console.log('Sending game data:', dataToSend);
       
       const response = await fetch(url, {
         method,
@@ -79,7 +125,8 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
         onSave();
       } else {
         const error = await response.json();
-        alert(`Error: ${error.error}`);
+        console.error('Game save error:', error);
+        alert(`Error: ${error.error}\n${error.details ? `Details: ${error.details}` : ''}`);
       }
     } catch (error) {
       console.error('Error saving game:', error);
@@ -151,6 +198,39 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     setFormData({ ...formData, additionalArtists: artists });
   };
 
+  const fillTestData = () => {
+    const timestamp = Date.now();
+    setFormData({
+      title: 'Test Game ' + timestamp,
+      tagline: 'An exciting test adventure',
+      description: 'This is a test game created for debugging purposes. It features exciting gameplay, stunning artwork, and hours of entertainment for the whole family.',
+      priceCents: 3999,
+      slug: 'test-game-' + timestamp,
+      ageRating: 'ALL_AGES',
+      imageUrl: 'https://via.placeholder.com/400x300',
+      isBundle: false,
+      isPreorder: false,
+      featured: true,
+      bundleInfo: '',
+      leadDesigner: 'John Testerman',
+      leadArtist: 'Jane Artistry',
+      additionalDesigners: ['Bob Designer', 'Alice Creator'],
+      additionalArtists: ['Charlie Artist'],
+      publisher: 'Full Uproar Games, Inc.',
+      bggUrl: 'https://boardgamegeek.com/boardgame/12345/test-game',
+      whatsInTheBox: '1 Game board\n4 Player pieces\n100 Cards\n2 Dice\n1 Rulebook\n50 Victory tokens',
+      category: 'GAME',
+      playerCount: 'TWO_TO_FOUR',
+      playTime: 'MEDIUM',
+      players: '2-4',
+      timeToPlay: '60-90 min',
+      isNew: true,
+      isBestseller: false,
+      launchDate: null,
+      stock: 100,
+    });
+  };
+
   return (
     <>
       <div style={adminStyles.header}>
@@ -159,6 +239,23 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
           {game ? `Editing: ${game.title}` : 'Create a new game listing'}
         </p>
       </div>
+
+      {!game && (
+        <div style={{ marginBottom: '20px' }}>
+          <button
+            type="button"
+            onClick={fillTestData}
+            style={{
+              ...adminStyles.button,
+              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+              marginBottom: '16px',
+            }}
+          >
+            <TestTube size={16} style={{ marginRight: '4px' }} />
+            Fill with Test Data
+          </button>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
         {/* Basic Information */}
@@ -293,18 +390,13 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
             <div style={adminStyles.formGroup}>
               <label style={adminStyles.label}>Category</label>
               <select
-                value={formData.gameCategory}
-                onChange={(e) => setFormData({ ...formData, gameCategory: e.target.value })}
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 style={adminStyles.select}
               >
-                <option value="BOARD">Board Game</option>
-                <option value="CARD">Card Game</option>
-                <option value="DICE">Dice Game</option>
-                <option value="RPG">RPG</option>
-                <option value="MINIATURES">Miniatures</option>
-                <option value="PARTY">Party Game</option>
-                <option value="STRATEGY">Strategy Game</option>
-                <option value="FAMILY">Family Game</option>
+                <option value="GAME">Game</option>
+                <option value="MOD">Mod</option>
+                <option value="EXPANSION">Expansion</option>
               </select>
             </div>
 
@@ -341,8 +433,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
                     'THREE_TO_SIX': '3-6',
                     'FOUR_TO_EIGHT': '4-8',
                     'PARTY': '6+',
-                    'VARIES': 'Varies',
-                    'CUSTOM': 'Custom'
+                    'VARIES': 'Varies'
                   };
                   setFormData({ 
                     ...formData, 
@@ -362,7 +453,6 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
                 <option value="FOUR_TO_EIGHT">4-8 Players</option>
                 <option value="PARTY">Party (6+)</option>
                 <option value="VARIES">Varies</option>
-                <option value="CUSTOM">Custom</option>
               </select>
             </div>
 

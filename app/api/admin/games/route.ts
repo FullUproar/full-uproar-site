@@ -35,12 +35,15 @@ export async function POST(request: NextRequest) {
     
     console.log('Creating game with data:', JSON.stringify(data, null, 2));
 
+    // Convert arrays to JSON strings for storage
+    const processedData = {
+      ...data,
+      additionalDesigners: data.additionalDesigners ? JSON.stringify(data.additionalDesigners) : null,
+      additionalArtists: data.additionalArtists ? JSON.stringify(data.additionalArtists) : null,
+    };
+
     const game = await prisma.game.create({
-      data: {
-        ...data,
-        additionalDesigners: data.additionalDesigners || [],
-        additionalArtists: data.additionalArtists || [],
-      }
+      data: processedData
     });
 
     return NextResponse.json(game);
