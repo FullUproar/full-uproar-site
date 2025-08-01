@@ -35,17 +35,38 @@ export async function POST(request: NextRequest) {
     // Process each size
     for (const [sizeName, dimensions] of Object.entries(sizes)) {
       try {
-        const resized = await sharp(buffer)
-          .resize(dimensions.width, dimensions.height, {
-            fit: 'inside',
-            withoutEnlargement: true
-          })
-          .jpeg({ quality: 85, progressive: true })
-          .toBuffer();
+        // Check if image has transparency
+        const metadata = await sharp(buffer).metadata();
+        const hasAlpha = metadata.channels === 4;
+        
+        let resized;
+        let mimeType;
+        
+        if (hasAlpha || file.type === 'image/png') {
+          // Preserve transparency with PNG
+          resized = await sharp(buffer)
+            .resize(dimensions.width, dimensions.height, {
+              fit: 'inside',
+              withoutEnlargement: true
+            })
+            .png({ quality: 90, compressionLevel: 9 })
+            .toBuffer();
+          mimeType = 'image/png';
+        } else {
+          // Use JPEG for non-transparent images
+          resized = await sharp(buffer)
+            .resize(dimensions.width, dimensions.height, {
+              fit: 'inside',
+              withoutEnlargement: true
+            })
+            .jpeg({ quality: 85, progressive: true })
+            .toBuffer();
+          mimeType = 'image/jpeg';
+        }
 
         // Convert to base64 data URL
         const base64 = resized.toString('base64');
-        resizedImages[sizeName] = `data:image/jpeg;base64,${base64}`;
+        resizedImages[sizeName] = `data:${mimeType};base64,${base64}`;
       } catch (err) {
         console.error(`Error resizing ${sizeName}:`, err);
         // Fall back to original
