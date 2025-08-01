@@ -4,16 +4,18 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../components/Navigation';
 import { Users, Flame, Star, Crown, Skull, Heart } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
+import { useUser, SignInButton } from '@clerk/nextjs';
 
 export default function CultPage() {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const [isMobile, setIsMobile] = useState(false);
   const [hoveredPerk, setHoveredPerk] = useState<number | null>(null);
   const [cultLevel, setCultLevel] = useState(1);
   const [ritualActive, setRitualActive] = useState(false);
   const [devotion, setDevotion] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [lastSavedDevotion, setLastSavedDevotion] = useState(0);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -23,46 +25,92 @@ export default function CultPage() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    // Load saved cult data from localStorage
-    const savedDevotion = localStorage.getItem('cult-devotion');
-    const savedLevel = localStorage.getItem('cult-level');
-    const savedLastVisit = localStorage.getItem('cult-last-visit');
-    
-    if (savedDevotion) {
-      setDevotion(parseInt(savedDevotion));
-    }
-    if (savedLevel) {
-      setCultLevel(parseInt(savedLevel));
-    }
-    
-    // Calculate devotion gained while away (1 point per minute, max 100)
-    if (savedLastVisit) {
-      const lastVisit = new Date(savedLastVisit);
-      const now = new Date();
-      const minutesAway = Math.floor((now.getTime() - lastVisit.getTime()) / 60000);
-      const bonusDevotion = Math.min(minutesAway, 100 - devotion);
-      if (bonusDevotion > 0) {
-        setDevotion(prev => Math.min(prev + bonusDevotion, 100));
-      }
-    }
-    
-    // Update last visit time
-    localStorage.setItem('cult-last-visit', new Date().toISOString());
-    
-    // Slowly increase devotion over time
-    const devotionInterval = setInterval(() => {
-      setDevotion(prev => {
-        const newDevotion = prev < 100 ? prev + 1 : 100;
-        localStorage.setItem('cult-devotion', newDevotion.toString());
-        return newDevotion;
-      });
-    }, 5000); // Increase every 5 seconds instead of 100ms
-    
     return () => {
       window.removeEventListener('resize', checkMobile);
-      clearInterval(devotionInterval);
     };
   }, []);
+
+  // Load cult data from database
+  useEffect(() => {
+    if (!isLoaded || !user) {
+      setLoading(false);
+      return;
+    }
+
+    const loadCultData = async () => {
+      try {
+        const response = await fetch('/api/cult/devotion');
+        if (response.ok) {
+          const data = await response.json();
+          setDevotion(data.devotion);
+          setCultLevel(data.level || 1);
+          setLastSavedDevotion(data.devotion);
+          
+          // Check for localStorage data to migrate
+          const localDevotion = localStorage.getItem('cult-devotion');
+          const localLevel = localStorage.getItem('cult-level');
+          
+          if (localDevotion || localLevel) {
+            const migratedDevotion = Math.max(data.devotion, parseInt(localDevotion || '0'));
+            const migratedLevel = Math.max(data.level || 1, parseInt(localLevel || '1'));
+            
+            if (migratedDevotion !== data.devotion || migratedLevel !== data.level) {
+              // Update database with migrated data
+              await saveCultData(migratedDevotion, migratedLevel);
+            }
+            
+            // Clear localStorage after migration
+            localStorage.removeItem('cult-devotion');
+            localStorage.removeItem('cult-level');
+            localStorage.removeItem('cult-last-visit');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading cult data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCultData();
+  }, [isLoaded, user]);
+
+  // Save cult data to database periodically
+  useEffect(() => {
+    if (!user || loading) return;
+
+    const saveInterval = setInterval(() => {
+      if (devotion !== lastSavedDevotion) {
+        saveCultData(devotion, cultLevel);
+        setLastSavedDevotion(devotion);
+      }
+    }, 10000); // Save every 10 seconds if changed
+
+    return () => clearInterval(saveInterval);
+  }, [user, devotion, cultLevel, lastSavedDevotion, loading]);
+
+  // Increase devotion over time
+  useEffect(() => {
+    if (!user || loading) return;
+
+    const devotionInterval = setInterval(() => {
+      setDevotion(prev => Math.min(prev + 1, 100));
+    }, 5000); // Increase every 5 seconds
+
+    return () => clearInterval(devotionInterval);
+  }, [user, loading]);
+
+  const saveCultData = async (newDevotion: number, newLevel: number) => {
+    try {
+      await fetch('/api/cult/devotion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ devotion: newDevotion, level: newLevel })
+      });
+    } catch (error) {
+      console.error('Error saving cult data:', error);
+    }
+  };
 
   const cultPerks = [
     {
@@ -130,19 +178,37 @@ export default function CultPage() {
     }
   };
 
-  const performRitual = () => {
+  const performRitual = async () => {
+    if (!user) {
+      alert('You must be signed in to perform rituals!');
+      return;
+    }
+    
     setRitualActive(true);
-    setTimeout(() => {
-      if (devotion >= 100) {
-        const newLevel = Math.min(cultLevel + 1, 6);
-        setCultLevel(newLevel);
-        localStorage.setItem('cult-level', newLevel.toString());
-        // Reset devotion after level up
-        setDevotion(0);
-        localStorage.setItem('cult-devotion', '0');
+    
+    try {
+      const response = await fetch('/api/cult/ritual', {
+        method: 'POST'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setTimeout(() => {
+          setCultLevel(data.newLevel);
+          setDevotion(data.devotion);
+          setLastSavedDevotion(data.devotion);
+          setRitualActive(false);
+        }, 3000);
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to perform ritual');
+        setRitualActive(false);
       }
+    } catch (error) {
+      console.error('Error performing ritual:', error);
+      alert('Failed to perform ritual');
       setRitualActive(false);
-    }, 3000);
+    }
   };
 
   return (
@@ -180,8 +246,47 @@ export default function CultPage() {
           JOIN THE CULT OF FUGLY
         </h1>
 
-        {/* User Status */}
-        {user && (
+        {/* User Status or Sign In Prompt */}
+        {!user && isLoaded ? (
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '3rem',
+            padding: '3rem',
+            background: 'rgba(239, 68, 68, 0.1)',
+            borderRadius: '1rem',
+            border: '2px solid #ef4444'
+          }}>
+            <p style={{ color: '#fca5a5', fontSize: '1.5rem', marginBottom: '1.5rem' }}>
+              SIGN IN TO TRACK YOUR DEVOTION
+            </p>
+            <p style={{ color: '#f87171', fontSize: '1rem', marginBottom: '2rem' }}>
+              Your path to chaos requires authentication
+            </p>
+            <SignInButton mode="modal">
+              <button style={{
+                background: 'linear-gradient(45deg, #a855f7, #f97316)',
+                color: '#111827',
+                padding: '1rem 2rem',
+                borderRadius: '0.5rem',
+                fontWeight: 900,
+                fontSize: '1.125rem',
+                border: 'none',
+                cursor: 'pointer',
+                transform: 'rotate(-2deg)',
+                transition: 'all 0.3s',
+                letterSpacing: '0.05em'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'rotate(2deg) scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'rotate(-2deg) scale(1)';
+              }}>
+                JOIN THE CULT
+              </button>
+            </SignInButton>
+          </div>
+        ) : user ? (
           <div style={{
             textAlign: 'center',
             marginBottom: '3rem',
@@ -222,7 +327,7 @@ export default function CultPage() {
               </p>
             </div>
           </div>
-        )}
+        ) : null}
 
         {/* Devotion Meter */}
         <div style={{

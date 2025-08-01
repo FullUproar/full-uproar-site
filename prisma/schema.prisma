@@ -301,6 +301,16 @@ model User {
   lastLogin     DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @default(now()) @updatedAt
+  
+  // Cult devotion fields
+  cultDevotion  Int           @default(0)
+  cultLevel     Int           @default(0)
+  cultLastVisit DateTime?
+  
+  // Future fields for gamification
+  achievementPoints Int        @default(0)
+  easterEggsFound   String?    // JSON array of found easter egg IDs
+  
   posts         MessagePost[]
   permissions   Permission[]
   profile       UserProfile?
