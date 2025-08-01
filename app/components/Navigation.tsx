@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu, X, ShoppingCart, Package } from 'lucide-react';
+import { Menu, X, ShoppingCart, Package, User } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import FuglyLogo from './FuglyLogo';
@@ -145,57 +145,40 @@ export default function Navigation() {
                 </SignedOut>
                 
                 <SignedIn>
-                  <UserButton 
-                    afterSignOutUrl="/"
-                    appearance={{
-                      elements: {
-                        avatarBox: "w-10 h-10 border-2 border-orange-500",
-                        userButtonPopoverCard: "bg-gray-900 border-2 border-orange-500",
-                        userButtonPopoverActionButton: "text-orange-400 hover:text-orange-300 hover:bg-orange-500/20",
-                        userButtonPopoverActionButtonText: "text-orange-400",
-                        userButtonPopoverActionButtonIcon: "text-orange-400",
-                        userButtonPopoverFooter: "hidden",
-                        userPreviewMainIdentifier: "text-orange-400 font-bold",
-                        userPreviewSecondaryIdentifier: "text-gray-400",
-                        userButtonTrigger: "hover:opacity-80",
-                        userButtonBox: "shadow-xl",
-                        userButtonOuterIdentifier: "text-orange-400",
-                        userButtonPopoverMain: "bg-gray-900",
-                        userButtonPopoverActions: "bg-gray-900",
-                        userPreviewTextContainer: "text-orange-400",
-                        userButtonPopoverActionButtonTextContainer: "text-orange-400",
-                        accordionTriggerButton: "text-orange-400 hover:text-orange-300",
-                      },
-                      variables: {
-                        colorPrimary: "#f97316",
-                        colorText: "#fdba74",
-                        colorTextOnPrimaryBackground: "#111827",
-                        colorTextSecondary: "#94a3b8",
-                        colorBackground: "#111827",
-                        colorInputBackground: "#1f2937",
-                        colorInputText: "#fdba74",
-                        borderRadius: "0.5rem"
-                      }
+                  <Link
+                    href="/account"
+                    style={{
+                      display: 'inline-block',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      border: '2px solid #f97316',
+                      transition: 'all 0.2s',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                      e.currentTarget.style.borderColor = '#fdba74';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.borderColor = '#f97316';
                     }}
                   >
-                    <UserButton.MenuItems>
-                      <UserButton.Link
-                        label="My Profile"
-                        labelIcon={<Package size={16} />}
-                        href="/profile"
-                      />
-                      <UserButton.Link
-                        label="Track Orders"
-                        labelIcon={<Package size={16} />}
-                        href="/track-order"
-                      />
-                      <UserButton.Link
-                        label="Admin Dashboard"
-                        labelIcon={<Package size={16} />}
-                        href="/admin"
-                      />
-                    </UserButton.MenuItems>
-                  </UserButton>
+                    <UserButton 
+                      afterSignOutUrl="/"
+                      showName={false}
+                      appearance={{
+                        elements: {
+                          userButtonBox: "w-full h-full",
+                          userButtonTrigger: "w-full h-full",
+                          avatarBox: "w-full h-full",
+                          userButtonPopoverCard: "hidden"
+                        }
+                      }}
+                    />
+                  </Link>
                 </SignedIn>
                 
                 <button onClick={toggleCart} style={styles.cartButton}>
@@ -306,41 +289,14 @@ export default function Navigation() {
             >
               ADMIN
             </Link>
-            <div style={{ padding: '0.5rem' }}>
-              <UserButton 
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    avatarBox: "w-10 h-10 border-2 border-orange-500",
-                    userButtonPopoverCard: "bg-gray-900 border-2 border-orange-500",
-                    userButtonPopoverActionButton: "text-orange-400 hover:text-orange-300 hover:bg-orange-500/20",
-                    userButtonPopoverActionButtonText: "text-orange-400",
-                    userButtonPopoverActionButtonIcon: "text-orange-400",
-                    userButtonPopoverFooter: "hidden",
-                    userPreviewMainIdentifier: "text-orange-400 font-bold",
-                    userPreviewSecondaryIdentifier: "text-gray-400",
-                    userButtonTrigger: "hover:opacity-80",
-                    userButtonBox: "shadow-xl",
-                    userButtonOuterIdentifier: "text-orange-400",
-                    userButtonPopoverMain: "bg-gray-900",
-                    userButtonPopoverActions: "bg-gray-900",
-                    userPreviewTextContainer: "text-orange-400",
-                    userButtonPopoverActionButtonTextContainer: "text-orange-400",
-                    accordionTriggerButton: "text-orange-400 hover:text-orange-300",
-                  },
-                  variables: {
-                    colorPrimary: "#f97316",
-                    colorText: "#fdba74",
-                    colorTextOnPrimaryBackground: "#111827",
-                    colorTextSecondary: "#94a3b8",
-                    colorBackground: "#111827",
-                    colorInputBackground: "#1f2937",
-                    colorInputText: "#fdba74",
-                    borderRadius: "0.5rem"
-                  }
-                }}
-              />
-            </div>
+            <Link 
+              href="/account" 
+              style={{ ...styles.navLink, display: 'flex', alignItems: 'center', padding: '0.5rem', gap: '8px' }}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <User size={20} />
+              MY ACCOUNT
+            </Link>
           </SignedIn>
           
           <button onClick={() => { toggleCart(); setIsMenuOpen(false); }} style={{
