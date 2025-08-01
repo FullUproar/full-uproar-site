@@ -4,7 +4,12 @@ import { UserRole } from '@prisma/client'
 
 export async function getCurrentUser() {
   const user = await currentUser()
-  if (!user) return null
+  if (!user) {
+    console.log('No Clerk user found');
+    return null
+  }
+
+  console.log('Clerk user:', { id: user.id, email: user.emailAddresses?.[0]?.emailAddress });
 
   const dbUser = await prisma.user.findUnique({
     where: { clerkId: user.id },
@@ -13,6 +18,12 @@ export async function getCurrentUser() {
       profile: true 
     }
   })
+
+  if (dbUser) {
+    console.log('DB user found:', { id: dbUser.id, email: dbUser.email, role: dbUser.role });
+  } else {
+    console.log('No DB user found for Clerk ID:', user.id);
+  }
 
   return dbUser
 }
@@ -27,17 +38,30 @@ export async function checkPermission(
     include: { permissions: true }
   })
 
-  if (!user) return false
+  if (!user) {
+    console.log('No user found for permission check');
+    return false
+  }
+
+  console.log('Permission check - User role:', user.role);
 
   // Super admins have all permissions
-  if (user.role === UserRole.SUPER_ADMIN) return true
+  if (user.role === UserRole.SUPER_ADMIN) {
+    console.log('User is SUPER_ADMIN, granting permission');
+    return true
+  }
 
   // Check role-based permissions
   const rolePermissions = getRolePermissions(user.role)
-  if (rolePermissions.some(p => 
+  console.log('Role permissions:', rolePermissions);
+  
+  const hasRolePermission = rolePermissions.some(p => 
     p.resource === resource && 
     (p.action === action || p.action === '*')
-  )) {
+  )
+  
+  if (hasRolePermission) {
+    console.log('Permission granted via role');
     return true
   }
 
@@ -49,6 +73,7 @@ export async function checkPermission(
     (!p.expiresAt || p.expiresAt > new Date())
   )
 
+  console.log('Individual permission found:', !!permission);
   return !!permission
 }
 
