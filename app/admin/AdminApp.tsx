@@ -300,6 +300,11 @@ export default function AdminApp() {
               Admin Panel
             </h2>
           )}
+          {!sidebarCollapsed && (
+            <div style={{ fontSize: '10px', color: '#64748b', marginTop: '4px' }}>
+              v1.1.0
+            </div>
+          )}
           <button
             onClick={() => {
               if (isMobile) {
