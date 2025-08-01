@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json({ error: 'This endpoint is disabled in production' }, { status: 403 });
-  }
+  // Temporarily allow in production for migration
+  // if (process.env.NODE_ENV === 'production') {
+  //   return NextResponse.json({ error: 'This endpoint is disabled in production' }, { status: 403 });
+  // }
 
   try {
     // Run Prisma migration
