@@ -163,7 +163,7 @@ export default function DiagnosticsView() {
               </h3>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                <div style={adminStyles.statCard}>
+                <div style={{...adminStyles.card, padding: '1rem'}}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                     <span style={{ color: getStatusColor(healthData.status) }}>
                       {getStatusIcon(healthData.status)}
@@ -175,17 +175,17 @@ export default function DiagnosticsView() {
                   </p>
                 </div>
 
-                <div style={adminStyles.statCard}>
+                <div style={{...adminStyles.card, padding: '1rem'}}>
                   <p style={{ color: '#94a3b8', marginBottom: '0.25rem' }}>Environment</p>
                   <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{healthData.environment}</p>
                 </div>
 
-                <div style={adminStyles.statCard}>
+                <div style={{...adminStyles.card, padding: '1rem'}}>
                   <p style={{ color: '#94a3b8', marginBottom: '0.25rem' }}>Uptime</p>
                   <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{formatUptime(healthData.system.uptime)}</p>
                 </div>
 
-                <div style={adminStyles.statCard}>
+                <div style={{...adminStyles.card, padding: '1rem'}}>
                   <p style={{ color: '#94a3b8', marginBottom: '0.25rem' }}>Memory Usage</p>
                   <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
                     {healthData.system.memory.percentage}%
