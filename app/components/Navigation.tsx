@@ -199,10 +199,6 @@ export default function Navigation() {
                         labelIcon={<Package size={16} />}
                         href="/admin"
                       />
-                      <UserButton.Action
-                        label="Manage account"
-                        open="/account"
-                      />
                     </UserButton.MenuItems>
                   </UserButton>
                 </SignedIn>
