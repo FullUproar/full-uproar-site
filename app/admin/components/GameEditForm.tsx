@@ -95,7 +95,6 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
         leadDesigner,
         leadArtist,
         whatsInTheBox,
-        gameCategory,
         ...baseData
       } = formData;
       
