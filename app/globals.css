@@ -665,6 +665,21 @@ div:has(> .cl-rootBox):not(.cl-modalContent) {
   background-color: transparent !important;
 }
 
+/* Target the outermost wrapper that might have the dark background */
+body > div[style*="background"] {
+  background-color: transparent !important;
+}
+
+/* Target immediate children of body that might be overlays */
+body > div[style*="position: fixed"] {
+  background-color: transparent !important;
+}
+
+/* But ensure the actual modal stays styled */
+body > div[style*="position: fixed"] .cl-modalContent {
+  background-color: #1e293b !important;
+}
+
 /* Target the specific modal wrapper that might be setting page background */
 div:has(> .cl-modalBackdrop) {
   background-color: transparent !important;
@@ -698,6 +713,33 @@ div[style*="position: fixed"][style*="inset: 0"][style*="background-color"] {
 
 /* Target elements that might have viewport dimensions */
 div[style*="width: 100vw"][style*="height: 100vh"] {
+  background-color: transparent !important;
+}
+
+/* Target dark blue/black backgrounds that might be inline styled */
+div[style*="background-color: rgb(15, 23, 42)"],
+div[style*="background: rgb(15, 23, 42)"],
+div[style*="background-color: #0f172a"],
+div[style*="background: #0f172a"],
+div[style*="background-color: rgb(17, 24, 39)"],
+div[style*="background: rgb(17, 24, 39)"],
+div[style*="background-color: #111827"],
+div[style*="background: #111827"] {
+  /* Only make transparent if it's a full-screen overlay */
+}
+
+/* More aggressive: any fixed position element with dark background covering viewport */
+[style*="position: fixed"][style*="top: 0"][style*="left: 0"][style*="right: 0"][style*="bottom: 0"] {
+  background-color: transparent !important;
+}
+
+/* Target Clerk's overlay specifically */
+.cl-modalOverlay {
+  background-color: transparent !important;
+}
+
+/* If there's a presentational div wrapping everything */
+[role="presentation"] {
   background-color: transparent !important;
 }
 
