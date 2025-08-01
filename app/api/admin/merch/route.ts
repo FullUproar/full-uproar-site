@@ -32,6 +32,8 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
+    
+    console.log('Creating merch with data:', JSON.stringify(data, null, 2));
 
     const merch = await prisma.merch.create({
       data
@@ -40,6 +42,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(merch);
   } catch (error) {
     console.error('Error creating merch:', error);
-    return NextResponse.json({ error: 'Failed to create merch' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to create merch',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }

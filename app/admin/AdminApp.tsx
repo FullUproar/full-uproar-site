@@ -17,6 +17,7 @@ import GamesListView from './components/GamesListView';
 import GameEditForm from './components/GameEditForm';
 import OrdersListView from './components/OrdersListView';
 import MerchListView from './components/MerchListView';
+import MerchEditForm from './components/MerchEditForm';
 import MigrationsView from './components/MigrationsView';
 import DashboardView from './components/DashboardView';
 import TestModesView from './components/TestModesView';
@@ -252,6 +253,23 @@ export default function AdminApp() {
           <MerchListView 
             onEdit={(merch) => navigateTo({ type: 'merch-edit', data: merch }, `Edit: ${merch.name}`)}
             onNew={() => navigateTo({ type: 'merch-new' }, 'New Merch')}
+          />
+        );
+      
+      case 'merch-edit':
+        return (
+          <MerchEditForm 
+            merch={currentView.data}
+            onSave={() => navigateTo({ type: 'merch-list' }, 'Merchandise')}
+            onCancel={() => navigateTo({ type: 'merch-list' }, 'Merchandise')}
+          />
+        );
+      
+      case 'merch-new':
+        return (
+          <MerchEditForm 
+            onSave={() => navigateTo({ type: 'merch-list' }, 'Merchandise')}
+            onCancel={() => navigateTo({ type: 'merch-list' }, 'Merchandise')}
           />
         );
       
