@@ -148,7 +148,24 @@ export default function Navigation() {
                     afterSignOutUrl="/"
                     appearance={{
                       elements: {
-                        avatarBox: "w-10 h-10"
+                        avatarBox: "w-10 h-10 border-2 border-orange-500",
+                        userButtonPopoverCard: "bg-gray-900 border-2 border-orange-500",
+                        userButtonPopoverActionButton: "text-orange-400 hover:text-orange-300 hover:bg-orange-500/20",
+                        userButtonPopoverActionButtonText: "text-orange-400",
+                        userButtonPopoverActionButtonIcon: "text-orange-400",
+                        userButtonPopoverFooter: "hidden",
+                        userPreviewMainIdentifier: "text-orange-400 font-bold",
+                        userPreviewSecondaryIdentifier: "text-gray-400",
+                      },
+                      variables: {
+                        colorPrimary: "#f97316",
+                        colorText: "#fdba74",
+                        colorTextOnPrimaryBackground: "#111827",
+                        colorTextSecondary: "#94a3b8",
+                        colorBackground: "#111827",
+                        colorInputBackground: "#1f2937",
+                        colorInputText: "#fdba74",
+                        borderRadius: "0.5rem"
                       }
                     }}
                   >
@@ -161,7 +178,7 @@ export default function Navigation() {
                       <UserButton.Link
                         label="Admin Dashboard"
                         labelIcon={<Package size={16} />}
-                        href="/admin/dashboard"
+                        href="/admin"
                       />
                     </UserButton.MenuItems>
                   </UserButton>
@@ -269,14 +286,38 @@ export default function Navigation() {
               TRACK ORDERS
             </Link>
             <Link 
-              href="/admin/dashboard" 
+              href="/admin" 
               style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
               onClick={() => setIsMenuOpen(false)}
             >
               ADMIN
             </Link>
             <div style={{ padding: '0.5rem' }}>
-              <UserButton />
+              <UserButton 
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: "w-10 h-10 border-2 border-orange-500",
+                    userButtonPopoverCard: "bg-gray-900 border-2 border-orange-500",
+                    userButtonPopoverActionButton: "text-orange-400 hover:text-orange-300 hover:bg-orange-500/20",
+                    userButtonPopoverActionButtonText: "text-orange-400",
+                    userButtonPopoverActionButtonIcon: "text-orange-400",
+                    userButtonPopoverFooter: "hidden",
+                    userPreviewMainIdentifier: "text-orange-400 font-bold",
+                    userPreviewSecondaryIdentifier: "text-gray-400",
+                  },
+                  variables: {
+                    colorPrimary: "#f97316",
+                    colorText: "#fdba74",
+                    colorTextOnPrimaryBackground: "#111827",
+                    colorTextSecondary: "#94a3b8",
+                    colorBackground: "#111827",
+                    colorInputBackground: "#1f2937",
+                    colorInputText: "#fdba74",
+                    borderRadius: "0.5rem"
+                  }
+                }}
+              />
             </div>
           </SignedIn>
           
