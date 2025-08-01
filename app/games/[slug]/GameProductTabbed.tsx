@@ -14,46 +14,44 @@ import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Tooltip from '@/app/components/Tooltip';
 import ReviewForm from '@/app/components/ReviewForm';
-import { PlayerCount, PlayTime, AgeRating } from '@prisma/client';
-
 // Helper functions to format enum values for display
-const formatPlayerCount = (playerCount: PlayerCount): string => {
-  const mapping: Record<PlayerCount, string> = {
-    [PlayerCount.SINGLE]: '1 Player',
-    [PlayerCount.TWO]: '2 Players',
-    [PlayerCount.TWO_TO_FOUR]: '2-4 Players',
-    [PlayerCount.TWO_TO_SIX]: '2-6 Players',
-    [PlayerCount.THREE_TO_FIVE]: '3-5 Players',
-    [PlayerCount.THREE_TO_SIX]: '3-6 Players',
-    [PlayerCount.FOUR_TO_EIGHT]: '4-8 Players',
-    [PlayerCount.PARTY]: '6+ Players',
-    [PlayerCount.CUSTOM]: 'Variable'
+const formatPlayerCount = (playerCount: string | null | undefined): string => {
+  const mapping: Record<string, string> = {
+    'SINGLE': '1 Player',
+    'TWO': '2 Players',
+    'TWO_TO_FOUR': '2-4 Players',
+    'TWO_TO_SIX': '2-6 Players',
+    'THREE_TO_FIVE': '3-5 Players',
+    'THREE_TO_SIX': '3-6 Players',
+    'FOUR_TO_EIGHT': '4-8 Players',
+    'PARTY': '6+ Players',
+    'CUSTOM': 'Variable'
   };
-  return mapping[playerCount] || 'Unknown';
+  return mapping[playerCount || ''] || 'Unknown';
 };
 
-const formatPlayTime = (playTime: PlayTime): string => {
-  const mapping: Record<PlayTime, string> = {
-    [PlayTime.QUICK]: 'Under 30 min',
-    [PlayTime.SHORT]: '30-60 min',
-    [PlayTime.MEDIUM]: '60-90 min',
-    [PlayTime.LONG]: '90-120 min',
-    [PlayTime.EXTENDED]: '2+ hours',
-    [PlayTime.VARIABLE]: 'Variable'
+const formatPlayTime = (playTime: string | null | undefined): string => {
+  const mapping: Record<string, string> = {
+    'QUICK': 'Under 30 min',
+    'SHORT': '30-60 min',
+    'MEDIUM': '60-90 min',
+    'LONG': '90-120 min',
+    'EXTENDED': '2+ hours',
+    'VARIABLE': 'Variable'
   };
-  return mapping[playTime] || 'Unknown';
+  return mapping[playTime || ''] || 'Unknown';
 };
 
-const formatAgeRating = (ageRating: AgeRating): string => {
-  const mapping: Record<AgeRating, string> = {
-    [AgeRating.ALL_AGES]: 'All Ages',
-    [AgeRating.ELEVEN_PLUS]: '11+',
-    [AgeRating.FOURTEEN_PLUS]: '14+',
-    [AgeRating.SIXTEEN_PLUS]: '16+',
-    [AgeRating.EIGHTEEN_PLUS]: '18+',
-    [AgeRating.TWENTYONE_PLUS]: '21+'
+const formatAgeRating = (ageRating: string | null | undefined): string => {
+  const mapping: Record<string, string> = {
+    'ALL_AGES': 'All Ages',
+    'ELEVEN_PLUS': '11+',
+    'FOURTEEN_PLUS': '14+',
+    'SIXTEEN_PLUS': '16+',
+    'EIGHTEEN_PLUS': '18+',
+    'TWENTYONE_PLUS': '21+'
   };
-  return mapping[ageRating] || 'Unknown';
+  return mapping[ageRating || ''] || 'Unknown';
 };
 
 interface GameImage {
@@ -84,9 +82,9 @@ interface Game {
   tagline: string | null;
   description: string;
   priceCents: number;
-  playerCount: PlayerCount;
-  playTime: PlayTime;
-  ageRating: AgeRating;
+  playerCount: string | null;
+  playTime: string | null;
+  ageRating: string;
   category?: string;
   imageUrl: string | null;
   isBundle: boolean;

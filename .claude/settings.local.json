@@ -41,7 +41,12 @@
       "Bash(npm run typecheck:*)",
       "Bash(npm run setup-admin:*)",
       "Bash(npx ts-node:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh label create:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh label:*)"
     ],
     "deny": []
   }
