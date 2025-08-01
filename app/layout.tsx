@@ -63,13 +63,13 @@ export default function RootLayout({
     >
       <html lang="en">
       <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-          style={{ margin: 0, padding: 0 }}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          style={{ margin: 0, padding: 0, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
         >
           <TestModeBanner />
-          <div className="flex-1">
+          <main style={{ flex: 1 }}>
             {children}
-          </div>
+          </main>
           <GlobalFooter />
           <DrawerWrapper />
         </body>
