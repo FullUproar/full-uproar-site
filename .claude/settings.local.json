@@ -48,7 +48,8 @@
       "Bash(gh issue edit:*)",
       "Bash(gh label:*)",
       "Bash(gh issue close:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(tsx scripts/check-tables.ts:*)"
     ],
     "deny": []
   }

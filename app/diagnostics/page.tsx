@@ -312,7 +312,7 @@ export default function DiagnosticsPage() {
                           }}
                         >
                           <span style={{ color: '#94a3b8' }}>{table}</span>
-                          <span style={{ color: '#fdba74', fontWeight: 'bold' }}>{count}</span>
+                          <span style={{ color: '#fdba74', fontWeight: 'bold' }}>{String(count)}</span>
                         </div>
                       ))}
                     </div>

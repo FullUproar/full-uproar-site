@@ -49,8 +49,8 @@ model Merch {
   releaseDate      DateTime?    @db.Timestamp(6)
   inventory        Inventory[]
   images           MerchImage[]
-  reviews          Review[]
   orderItems       OrderItem[]
+  reviews          Review[]
 }
 
 model Game {
@@ -102,8 +102,8 @@ model Game {
   launchMinute        Int?
   images              GameImage[]
   inventory           GameInventory?
-  reviews             Review[]
   orderItems          OrderItem[]
+  reviews             Review[]
 }
 
 model Comic {
@@ -188,9 +188,9 @@ model OrderItem {
   merchSize  String?
   quantity   Int
   priceCents Int
-  order      Order   @relation(fields: [orderId], references: [id])
   game       Game?   @relation(fields: [gameId], references: [id])
   merch      Merch?  @relation(fields: [merchId], references: [id])
+  order      Order   @relation(fields: [orderId], references: [id])
 }
 
 model OrderStatusHistory {
@@ -297,12 +297,12 @@ model User {
   bio           String?
   favoriteQuote String?
   role          UserRole      @default(USER)
-  permissions   Permission[]
   isActive      Boolean       @default(true)
   lastLogin     DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @default(now()) @updatedAt
   posts         MessagePost[]
+  permissions   Permission[]
   profile       UserProfile?
   sessions      UserSession[]
 
@@ -313,9 +313,9 @@ model User {
 }
 
 model UserSession {
-  id           String    @id @default(cuid())
+  id           String   @id @default(cuid())
   userId       String
-  sessionToken String    @unique
+  sessionToken String   @unique
   ipAddress    String?
   userAgent    String?
   browser      String?
@@ -323,11 +323,11 @@ model UserSession {
   device       String?
   city         String?
   country      String?
-  lastActive   DateTime  @default(now())
-  createdAt    DateTime  @default(now())
+  lastActive   DateTime @default(now())
+  createdAt    DateTime @default(now())
   expiresAt    DateTime
-  isActive     Boolean   @default(true)
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isActive     Boolean  @default(true)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([sessionToken])
@@ -355,15 +355,15 @@ model UserProfile {
 }
 
 model Permission {
-  id          Int      @id @default(autoincrement())
-  userId      String
-  resource    String
-  action      String
-  granted     Boolean  @default(true)
-  grantedBy   String?
-  grantedAt   DateTime @default(now())
-  expiresAt   DateTime?
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  userId    String
+  resource  String
+  action    String
+  granted   Boolean   @default(true)
+  grantedBy String?
+  grantedAt DateTime  @default(now())
+  expiresAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, resource, action])
   @@index([userId])
@@ -371,33 +371,33 @@ model Permission {
 }
 
 model MessageBoard {
-  id          Int           @id @default(autoincrement())
+  id          Int             @id @default(autoincrement())
   name        String
-  slug        String        @unique
+  slug        String          @unique
   description String?
   icon        String?
-  sortOrder   Int           @default(0)
-  isActive    Boolean       @default(true)
-  isPrivate   Boolean       @default(false)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now()) @updatedAt
+  sortOrder   Int             @default(0)
+  isActive    Boolean         @default(true)
+  isPrivate   Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @default(now()) @updatedAt
   threads     MessageThread[]
 }
 
 model MessageThread {
-  id           Int           @id @default(autoincrement())
-  boardId      Int
-  title        String
-  slug         String
-  authorId     String
-  isPinned     Boolean       @default(false)
-  isLocked     Boolean       @default(false)
-  viewCount    Int           @default(0)
-  lastPostAt   DateTime      @default(now())
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @default(now()) @updatedAt
-  board        MessageBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  posts        MessagePost[]
+  id         Int           @id @default(autoincrement())
+  boardId    Int
+  title      String
+  slug       String
+  authorId   String
+  isPinned   Boolean       @default(false)
+  isLocked   Boolean       @default(false)
+  viewCount  Int           @default(0)
+  lastPostAt DateTime      @default(now())
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @default(now()) @updatedAt
+  posts      MessagePost[]
+  board      MessageBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
 
   @@unique([boardId, slug])
   @@index([boardId])
@@ -406,16 +406,16 @@ model MessageThread {
 }
 
 model MessagePost {
-  id         Int           @id @default(autoincrement())
-  threadId   Int
-  authorId   String
-  content    String
-  isEdited   Boolean       @default(false)
-  editedAt   DateTime?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @default(now()) @updatedAt
-  thread     MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  author     User          @relation(fields: [authorId], references: [id])
+  id        Int           @id @default(autoincrement())
+  threadId  Int
+  authorId  String
+  content   String
+  isEdited  Boolean       @default(false)
+  editedAt  DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @default(now()) @updatedAt
+  author    User          @relation(fields: [authorId], references: [id])
+  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@index([threadId])
   @@index([authorId])
