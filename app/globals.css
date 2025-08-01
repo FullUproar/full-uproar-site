@@ -367,6 +367,24 @@ button[class*="cl-"] {
   background-image: none !important;
 }
 
+/* Specifically target the profile modal left panel */
+.cl-modalContent__userProfile .cl-profilePage__sidebar {
+  background: #0f172a !important;
+  background-image: none !important;
+}
+
+/* Also target the container that holds the navigation */
+.cl-profilePage__nav {
+  background: #0f172a !important;
+  background-image: none !important;
+}
+
+/* Make sure the navigation wrapper is also solid */
+.cl-modalContent__userProfile > div:first-child {
+  background: #0f172a !important;
+  background-image: none !important;
+}
+
 /* Scrollbar in Clerk modals */
 .cl-scrollBox::-webkit-scrollbar {
   width: 8px;
