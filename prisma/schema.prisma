@@ -69,7 +69,7 @@ model Game {
   bundleInfo          String?
   createdAt           DateTime       @default(now())
   stock               Int            @default(0)
-  slug                String?
+  slug                String         @unique
   tags                String?
   category            String?        @default("game") @db.VarChar(10)
   howToPlay           String?
