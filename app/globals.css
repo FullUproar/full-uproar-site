@@ -105,6 +105,9 @@ html, body {
 .cl-modalBackdrop {
   background-color: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(8px) !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9998 !important;
 }
 
 .cl-modalContent {
@@ -116,6 +119,11 @@ html, body {
     0 0 0 1px rgba(249, 115, 22, 0.1) !important;
   transform: scale(1) !important;
   transition: all 0.2s ease-out !important;
+  position: relative !important;
+  z-index: 9999 !important;
+  margin: 40px auto !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
 }
 
 .cl-modalContent > div {
@@ -126,22 +134,56 @@ html, body {
   background-color: transparent !important;
 }
 
+/* Ensure the modal container doesn't take full page */
+.cl-modalContainerContent {
+  background-color: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 40px !important;
+}
+
+/* Prevent full-page dark background on modal wrapper */
+[data-clerk-portal-root] {
+  background-color: transparent !important;
+}
+
+.cl-modal {
+  background-color: transparent !important;
+}
+
 .cl-card {
   background-color: #1e293b !important;
   border: 2px solid #334155 !important;
 }
 
-/* Fix the outer container that's still white */
-.cl-component {
+/* Fix the outer container - but not if it's the backdrop */
+.cl-modalContent .cl-component {
   background-color: #1e293b !important;
 }
 
-.cl-main {
+.cl-modalContent .cl-main {
   background-color: #1e293b !important;
 }
 
-.cl-content {
+.cl-modalContent .cl-content {
   background-color: #1e293b !important;
+}
+
+/* Ensure the page body isn't affected */
+body:has(.cl-modalBackdrop) {
+  background-color: inherit !important;
+  overflow: hidden !important; /* Prevent scrolling while modal is open */
+}
+
+/* Target the portal root that might be causing full-page background */
+[aria-live="polite"] {
+  background-color: transparent !important;
+}
+
+/* Ensure backdrop doesn't affect main content */
+#__next {
+  isolation: isolate !important;
 }
 
 .cl-headerTitle {
@@ -558,9 +600,9 @@ p[class*="cl-"] {
   color: #94a3b8;
 }
 
-/* Ultra-aggressive modal background fixes */
+/* Remove the dark background from modal container */
 .cl-modalContainerContent {
-  background-color: #1e293b !important;
+  background-color: transparent !important;
 }
 
 .cl-modalCloseButton {
@@ -573,21 +615,28 @@ p[class*="cl-"] {
   background-color: rgba(249, 115, 22, 0.1) !important;
 }
 
-/* Force modal structure to be dark */
-[aria-modal="true"] {
+/* Force ONLY the modal dialog to be dark, not the entire page */
+[role="dialog"] .cl-modalContent {
   background-color: #1e293b !important;
 }
 
-[aria-modal="true"] > div {
-  background-color: #1e293b !important;
+/* Remove full-page backgrounds */
+[aria-modal="true"] {
+  background-color: transparent !important;
 }
 
 [role="dialog"] {
-  background-color: #1e293b !important;
+  background-color: transparent !important;
 }
 
-[role="dialog"] > div {
-  background-color: #1e293b !important;
+/* Target Clerk's root modal container */
+.cl-rootBox[data-localization-key="userProfile.start.title"] {
+  background-color: transparent !important;
+}
+
+/* Any element that might be setting page background */
+.cl-component:not(.cl-modalContent) {
+  background-color: transparent !important;
 }
 
 /* Last resort - target by inline styles */
@@ -617,6 +666,27 @@ div[style*="background: rgb(255, 255, 255)"] {
 .cl-profileSection__emailAddresses,
 .cl-profileSection__connectedAccounts {
   padding: 16px !important;
+}
+
+/* Fix text margins within profile sections */
+.cl-profileSectionItem {
+  padding: 12px 16px !important;
+}
+
+.cl-profileSectionItemText {
+  margin: 4px 0 !important;
+}
+
+.cl-profileSectionPrimaryButton {
+  margin-top: 8px !important;
+}
+
+.cl-formFieldRow {
+  margin: 0 0 16px 0 !important;
+}
+
+.cl-formFieldLabelRow {
+  margin-bottom: 8px !important;
 }
 
 /* Fix cramped text */
