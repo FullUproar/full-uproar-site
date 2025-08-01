@@ -18,6 +18,8 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
     tags: '',
     chaosMode: false,
     imageUrl: '',
+    thumbnailUrl: '',
+    largeUrl: '',
   });
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -71,9 +73,19 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
       }
 
       const data = await response.json();
-      setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
+      setFormData(prev => ({ 
+        ...prev, 
+        imageUrl: data.imageUrl,
+        thumbnailUrl: data.thumbnailUrl,
+        largeUrl: data.largeUrl 
+      }));
       setPreviewUrl(data.imageUrl);
-      setMessage({ type: 'success', text: 'Image uploaded successfully!' });
+      
+      if (data.warning) {
+        setMessage({ type: 'success', text: `Image uploaded! Note: ${data.warning}` });
+      } else {
+        setMessage({ type: 'success', text: 'Image uploaded and resized successfully!' });
+      }
     } catch (error) {
       console.error('Upload error:', error);
       setMessage({ type: 'error', text: 'Failed to upload image' });
@@ -101,7 +113,13 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          name: formData.name,
+          description: formData.description,
+          category: formData.category,
+          chaosMode: formData.chaosMode,
+          imageUrl: formData.imageUrl,
+          thumbnailUrl: formData.thumbnailUrl || formData.imageUrl,
+          largeUrl: formData.largeUrl || formData.imageUrl,
           tags: formData.tags ? JSON.stringify(formData.tags.split(',').map(tag => tag.trim())) : '[]',
         }),
       });
