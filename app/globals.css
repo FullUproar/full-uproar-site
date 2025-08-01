@@ -878,3 +878,29 @@ div[style*="background: #111827"] {
     transform: rotate(360deg);
   }
 }
+
+/* Fix UserButton avatar sizing and centering */
+.cl-userButtonTrigger {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cl-userButtonAvatarBox {
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cl-userButtonAvatarImage {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Hide the Manage Account button since we have Account Settings */
+.cl-userButtonPopoverActionButton__manageAccount {
+  display: none !important;
+}
