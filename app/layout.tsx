@@ -7,6 +7,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+import { dark } from '@clerk/themes'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import DrawerWrapper from './components/DrawerWrapper'
@@ -33,7 +34,27 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        variables: {
+          colorPrimary: '#f97316',
+          colorText: '#fdba74',
+          colorTextOnPrimaryBackground: '#111827',
+          colorTextSecondary: '#94a3b8',
+          colorBackground: '#1e293b',
+          colorInputBackground: '#0f172a',
+          colorInputText: '#fdba74',
+          borderRadius: '0.5rem',
+        },
+        elements: {
+          modalBackdrop: 'bg-black/50 backdrop-blur-sm',
+          modalContent: 'bg-slate-800',
+          rootBox: 'bg-slate-800',
+          card: 'bg-slate-800',
+        },
+      }}
+    >
       <html lang="en">
       <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
