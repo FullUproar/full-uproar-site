@@ -103,8 +103,8 @@ html, body {
 
 /* Clerk Modal Overrides - Dark Theme */
 .cl-modalBackdrop {
-  background-color: rgba(0, 0, 0, 0.75) !important;
-  backdrop-filter: blur(4px) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .cl-modalContent {
@@ -190,23 +190,19 @@ html, body {
 
 /* Profile Management Modal - More aggressive overrides */
 .cl-profilePage {
-  background-color: #1e293b !important;
+  background-color: transparent !important;
 }
 
 .cl-profilePage > div {
-  background-color: #1e293b !important;
+  background-color: transparent !important;
 }
 
 .cl-userProfile-modal {
-  background-color: #1e293b !important;
-}
-
-.cl-userProfile-root {
-  background-color: #1e293b !important;
+  background-color: transparent !important;
 }
 
 .cl-userProfile-root > div {
-  background-color: #1e293b !important;
+  background-color: transparent !important;
 }
 
 .cl-rootBox {
@@ -236,6 +232,7 @@ html, body {
 .cl-profileSectionContent {
   background-color: #0f172a !important;
   border: 1px solid #334155 !important;
+  padding: 16px !important;
 }
 
 .cl-profileSectionItemText {
@@ -491,7 +488,7 @@ div:has(.cl-navbar) {
 
 /* Additional Clerk component fixes */
 .cl-userProfile-root {
-  background-color: #0f172a !important;
+  background-color: transparent !important;
 }
 
 .cl-profileSection {
@@ -606,6 +603,29 @@ div[style*="background: rgb(255, 255, 255)"] {
   background-color: #0f172a !important;
   border: 1px solid #334155 !important;
   margin-bottom: 16px !important;
+  padding: 20px !important;
+}
+
+/* Fix text spacing in profile sections */
+.cl-profileSectionPrimaryButton,
+.cl-profileSectionInput,
+.cl-profileSectionItem {
+  margin-bottom: 12px !important;
+}
+
+.cl-profileSection__profile,
+.cl-profileSection__emailAddresses,
+.cl-profileSection__connectedAccounts {
+  padding: 16px !important;
+}
+
+/* Fix cramped text */
+.cl-field {
+  margin-bottom: 16px !important;
+}
+
+.cl-formFieldRow {
+  margin-bottom: 12px !important;
 }
 
 /* Fix navigation/menu area in profile modal */
