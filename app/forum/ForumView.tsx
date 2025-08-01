@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Navigation from '../components/Navigation';
 import { 
   MessageSquare, Users, TrendingUp, Clock, Pin, Lock,
   Search, Filter, Plus, ChevronRight, Eye, MessageCircle
@@ -76,14 +77,8 @@ export default function ForumView() {
   const styles = {
     container: {
       minHeight: '100vh',
-      background: '#0f172a',
+      background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)',
       color: '#e2e8f0'
-    },
-    header: {
-      background: 'rgba(17, 24, 39, 0.95)',
-      borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
-      padding: '60px 0',
-      marginBottom: '40px'
     },
     content: {
       maxWidth: '1200px',
@@ -149,18 +144,30 @@ export default function ForumView() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '12px', color: '#fdba74' }}>
-            Community Forum
-          </h1>
-          <p style={{ fontSize: '18px', color: '#94a3b8' }}>
-            Join the Full Uproar community discussion
-          </p>
-        </div>
-      </div>
-
-      <div style={styles.content}>
+      <Navigation />
+      
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
+        <h1 style={{
+          fontSize: '4rem',
+          fontWeight: 900,
+          color: '#f97316',
+          textAlign: 'center',
+          marginBottom: '1rem',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>
+          Community Forum
+        </h1>
+        
+        <p style={{
+          fontSize: '1.5rem',
+          color: '#fdba74',
+          textAlign: 'center',
+          marginBottom: '3rem',
+          fontWeight: 'bold'
+        }}>
+          Join the Full Uproar community discussion
+        </p>
         {/* Search Bar */}
         <div style={styles.searchBar}>
           <Search size={20} style={{ color: '#94a3b8' }} />
