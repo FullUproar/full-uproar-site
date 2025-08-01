@@ -39,6 +39,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     isNew: false,
     isBestseller: false,
     launchDate: null as Date | null,
+    stock: 0,
   });
 
   const [saving, setSaving] = useState(false);
@@ -263,6 +264,23 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
                   Full Uproar Games, Inc.
                 </label>
               </div>
+            </div>
+          </div>
+
+          <div style={adminStyles.formRow}>
+            <div style={adminStyles.formGroup}>
+              <label style={adminStyles.label}>Stock</label>
+              <input
+                type="number"
+                value={formData.stock}
+                onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
+                style={adminStyles.input}
+                min="0"
+                required
+              />
+            </div>
+            <div style={adminStyles.formGroup}>
+              {/* Empty column for spacing */}
             </div>
           </div>
         </div>
