@@ -21,6 +21,9 @@ import MigrationsView from './components/MigrationsView';
 import DashboardView from './components/DashboardView';
 import TestModesView from './components/TestModesView';
 import UsersListView from './components/UsersListView';
+import ComicsListView from './components/ComicsListView';
+import ArtworkListView from './components/ArtworkListView';
+import SettingsView from './components/SettingsView';
 
 type ViewType = 
   | 'dashboard'
@@ -248,6 +251,25 @@ export default function AdminApp() {
             onNew={() => navigateTo({ type: 'users-new' }, 'New User')}
           />
         );
+      
+      case 'comics-list':
+        return (
+          <ComicsListView
+            onEdit={(comic) => navigateTo({ type: 'comics-edit', data: comic }, `Edit: ${comic.title}`)}
+            onNew={() => navigateTo({ type: 'comics-new' }, 'New Comic')}
+          />
+        );
+      
+      case 'artwork-list':
+        return (
+          <ArtworkListView
+            onEdit={(artwork) => navigateTo({ type: 'artwork-edit', data: artwork }, `Edit: ${artwork.name}`)}
+            onNew={() => navigateTo({ type: 'artwork-new' }, 'New Artwork')}
+          />
+        );
+      
+      case 'settings':
+        return <SettingsView />;
       
       default:
         return (
