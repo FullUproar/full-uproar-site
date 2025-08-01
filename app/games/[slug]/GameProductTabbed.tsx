@@ -19,13 +19,15 @@ const formatPlayerCount = (playerCount: string | null | undefined): string => {
   const mapping: Record<string, string> = {
     'SINGLE': '1 Player',
     'TWO': '2 Players',
+    'TWO_PLUS': '2+ Players',
     'TWO_TO_FOUR': '2-4 Players',
     'TWO_TO_SIX': '2-6 Players',
     'THREE_TO_FIVE': '3-5 Players',
     'THREE_TO_SIX': '3-6 Players',
     'FOUR_TO_EIGHT': '4-8 Players',
     'PARTY': '6+ Players',
-    'CUSTOM': 'Variable'
+    'CUSTOM': 'Custom',
+    'VARIES': 'Varies'
   };
   return mapping[playerCount || ''] || 'Unknown';
 };
@@ -37,7 +39,8 @@ const formatPlayTime = (playTime: string | null | undefined): string => {
     'MEDIUM': '60-90 min',
     'LONG': '90-120 min',
     'EXTENDED': '2+ hours',
-    'VARIABLE': 'Variable'
+    'VARIABLE': 'Variable',
+    'VARIES': 'Varies'
   };
   return mapping[playTime || ''] || 'Unknown';
 };

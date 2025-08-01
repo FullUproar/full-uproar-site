@@ -284,13 +284,17 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
                 onChange={(e) => setFormData({ ...formData, playerCount: e.target.value })}
                 style={adminStyles.select}
               >
-                <option value="SOLO">Solo (1)</option>
+                <option value="SINGLE">1 Player</option>
                 <option value="TWO">2 Players</option>
+                <option value="TWO_PLUS">2+ Players</option>
                 <option value="TWO_TO_FOUR">2-4 Players</option>
                 <option value="TWO_TO_SIX">2-6 Players</option>
                 <option value="THREE_TO_FIVE">3-5 Players</option>
-                <option value="FOUR_PLUS">4+ Players</option>
-                <option value="PARTY_SIZE">Party (6+)</option>
+                <option value="THREE_TO_SIX">3-6 Players</option>
+                <option value="FOUR_TO_EIGHT">4-8 Players</option>
+                <option value="PARTY">Party (6+)</option>
+                <option value="VARIES">Varies</option>
+                <option value="CUSTOM">Custom</option>
               </select>
             </div>
 
@@ -301,11 +305,13 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
                 onChange={(e) => setFormData({ ...formData, playTime: e.target.value })}
                 style={adminStyles.select}
               >
-                <option value="UNDER_30">Under 30 min</option>
-                <option value="THIRTY_TO_SIXTY">30-60 min</option>
-                <option value="SIXTY_TO_NINETY">60-90 min</option>
-                <option value="NINETY_TO_ONEEIGHTY">90-180 min</option>
-                <option value="OVER_ONEEIGHTY">Over 3 hours</option>
+                <option value="QUICK">Under 30 min</option>
+                <option value="SHORT">30-60 min</option>
+                <option value="MEDIUM">60-90 min</option>
+                <option value="LONG">90-120 min</option>
+                <option value="EXTENDED">Over 2 hours</option>
+                <option value="VARIABLE">Variable</option>
+                <option value="VARIES">Varies</option>
               </select>
             </div>
           </div>

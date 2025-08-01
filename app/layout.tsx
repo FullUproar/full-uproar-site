@@ -10,7 +10,6 @@ import {
 import { dark } from '@clerk/themes'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import DrawerWrapper from './components/DrawerWrapper'
 import TestModeBanner from './components/TestModeBanner'
 import GlobalFooter from './components/GlobalFooter'
 
@@ -71,7 +70,6 @@ export default function RootLayout({
             {children}
           </main>
           <GlobalFooter />
-          <DrawerWrapper />
         </body>
       </html>
     </ClerkProvider>
