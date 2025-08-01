@@ -644,6 +644,12 @@ p[class*="cl-"] {
   background-color: #1e293b !important; /* Restore dark background for rootBox */
 }
 
+/* Ensure modal content areas have proper background */
+.cl-modalContent .cl-cardBox,
+.cl-modalContent .cl-card {
+  background-color: #1e293b !important;
+}
+
 /* Target the parent container of the modal */
 .cl-modalContainer {
   background-color: transparent !important;
@@ -654,8 +660,8 @@ p[class*="cl-"] {
   background-color: transparent !important;
 }
 
-/* Target the div that contains cl-rootBox */
-div:has(> .cl-rootBox) {
+/* Target the div that contains cl-rootBox but NOT the rootBox itself */
+div:has(> .cl-rootBox):not(.cl-modalContent) {
   background-color: transparent !important;
 }
 
