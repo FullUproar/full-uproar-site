@@ -103,12 +103,19 @@ html, body {
 
 /* Clerk Modal Overrides - Dark Theme */
 .cl-modalBackdrop {
-  background-color: rgba(0, 0, 0, 0.8) !important;
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
 }
 
 .cl-modalContent {
   background-color: #1e293b !important;
   border: 2px solid #334155 !important;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(249, 115, 22, 0.1) !important;
+  transform: scale(1) !important;
+  transition: all 0.2s ease-out !important;
 }
 
 .cl-modalContent > div {
@@ -299,6 +306,28 @@ div[data-localization-key="userProfile.profilePage.title"] {
 [class*="cl-"][class*="Popover"] {
   background-color: #1e293b !important;
   color: #e2e8f0 !important;
+}
+
+/* Add floating effect to all Clerk modals */
+[role="dialog"] {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* Animate modal entrance */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.cl-modalContent {
+  animation: modalFadeIn 0.2s ease-out !important;
 }
 
 /* Fix form elements */
