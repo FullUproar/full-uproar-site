@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import GameProductTabbed from './GameProductTabbed';
+import { PlayerCount, PlayTime, AgeRating } from '@prisma/client';
 
 interface GamePageProps {
   params: Promise<{ slug: string }>;
@@ -65,10 +66,34 @@ export default async function GamePage({ params }: GamePageProps) {
   const game = await getGame(slug);
   const similarGames = await getSimilarGames(game);
 
+  // Transform the game data to match the expected types
+  const transformedGame = {
+    ...game,
+    playerCount: game.playerCount as PlayerCount || PlayerCount.TWO_TO_FOUR,
+    playTime: game.playTime as PlayTime || PlayTime.MEDIUM,
+    ageRating: game.ageRating as AgeRating || AgeRating.ALL_AGES,
+    category: game.category || undefined,
+    howToPlay: game.howToPlay || undefined,
+    components: game.components || undefined,
+    videoUrl: game.videoUrl || undefined,
+  };
+
+  // Transform similar games
+  const transformedSimilarGames = similarGames.map(g => ({
+    ...g,
+    playerCount: g.playerCount as PlayerCount || PlayerCount.TWO_TO_FOUR,
+    playTime: g.playTime as PlayTime || PlayTime.MEDIUM,
+    ageRating: g.ageRating as AgeRating || AgeRating.ALL_AGES,
+    category: g.category || undefined,
+    howToPlay: g.howToPlay || undefined,
+    components: g.components || undefined,
+    videoUrl: g.videoUrl || undefined,
+  }));
+
   return (
     <GameProductTabbed 
-      game={game} 
-      similarGames={similarGames}
+      game={transformedGame} 
+      similarGames={transformedSimilarGames}
     />
   );
 }
