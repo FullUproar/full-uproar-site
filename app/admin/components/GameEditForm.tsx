@@ -30,7 +30,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     leadArtist: '',
     additionalDesigners: [] as string[],
     additionalArtists: [] as string[],
-    publisher: '',
+    publisher: 'Full Uproar Games, Inc.',
     bggUrl: '',
     whatsInTheBox: '',
     gameCategory: 'BOARD',
@@ -43,6 +43,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
 
   const [saving, setSaving] = useState(false);
   const [slugError, setSlugError] = useState('');
+  const [isFullUproarPublisher, setIsFullUproarPublisher] = useState(true);
 
   useEffect(() => {
     if (game) {
@@ -52,6 +53,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
         additionalArtists: game.additionalArtists || [],
         launchDate: game.launchDate ? new Date(game.launchDate) : null,
       });
+      setIsFullUproarPublisher(game.publisher === 'Full Uproar Games, Inc.');
     }
   }, [game]);
 
@@ -231,11 +233,32 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
 
             <div style={adminStyles.formGroup}>
               <label style={adminStyles.label}>Publisher</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <input
+                  type="checkbox"
+                  id="fullUproarPublisher"
+                  checked={isFullUproarPublisher}
+                  onChange={(e) => {
+                    setIsFullUproarPublisher(e.target.checked);
+                    if (e.target.checked) {
+                      setFormData({ ...formData, publisher: 'Full Uproar Games, Inc.' });
+                    } else {
+                      setFormData({ ...formData, publisher: '' });
+                    }
+                  }}
+                  style={{ width: 'auto', marginRight: '4px' }}
+                />
+                <label htmlFor="fullUproarPublisher" style={{ fontWeight: 'normal', color: '#94a3b8', fontSize: '14px' }}>
+                  Full Uproar Games, Inc.
+                </label>
+              </div>
               <input
                 type="text"
                 value={formData.publisher}
                 onChange={(e) => setFormData({ ...formData, publisher: e.target.value })}
                 style={adminStyles.input}
+                disabled={isFullUproarPublisher}
+                placeholder={isFullUproarPublisher ? 'Full Uproar Games, Inc.' : 'Enter publisher name'}
               />
             </div>
           </div>

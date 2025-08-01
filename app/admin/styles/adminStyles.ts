@@ -173,9 +173,9 @@ export const adminStyles = {
   },
   formRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '20px',
-    marginBottom: '20px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '24px',
+    marginBottom: '24px',
   },
   textarea: {
     padding: '12px',
