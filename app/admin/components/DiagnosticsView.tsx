@@ -165,33 +165,33 @@ export default function DiagnosticsView() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
                 <div style={{...adminStyles.card, padding: '1rem'}}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <span style={{ color: getStatusColor(healthData.status) }}>
-                      {getStatusIcon(healthData.status)}
+                    <span style={{ color: getStatusColor(healthData?.status || 'unknown') }}>
+                      {getStatusIcon(healthData?.status || 'unknown')}
                     </span>
                     <span style={{ fontWeight: 'bold' }}>Overall Status</span>
                   </div>
-                  <p style={{ color: getStatusColor(healthData.status), fontSize: '1.5rem', fontWeight: 'bold' }}>
-                    {healthData.status.toUpperCase()}
+                  <p style={{ color: getStatusColor(healthData?.status || 'unknown'), fontSize: '1.5rem', fontWeight: 'bold' }}>
+                    {(healthData?.status || 'unknown').toUpperCase()}
                   </p>
                 </div>
 
                 <div style={{...adminStyles.card, padding: '1rem'}}>
                   <p style={{ color: '#94a3b8', marginBottom: '0.25rem' }}>Environment</p>
-                  <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{healthData.environment}</p>
+                  <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{healthData?.environment || 'N/A'}</p>
                 </div>
 
                 <div style={{...adminStyles.card, padding: '1rem'}}>
                   <p style={{ color: '#94a3b8', marginBottom: '0.25rem' }}>Uptime</p>
-                  <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{formatUptime(healthData.system.uptime)}</p>
+                  <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{formatUptime(healthData?.system?.uptime || 0)}</p>
                 </div>
 
                 <div style={{...adminStyles.card, padding: '1rem'}}>
                   <p style={{ color: '#94a3b8', marginBottom: '0.25rem' }}>Memory Usage</p>
                   <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
-                    {healthData.system.memory.percentage}%
+                    {healthData?.system?.memory?.percentage || 0}%
                   </p>
                   <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                    {healthData.system.memory.used}MB / {healthData.system.memory.total}MB
+                    {healthData?.system?.memory?.used || 0}MB / {healthData?.system?.memory?.total || 0}MB
                   </p>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function DiagnosticsView() {
               </h4>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
-                {Object.entries(healthData.services).map(([service, data]) => {
+                {Object.entries(healthData?.services || {}).map(([service, data]) => {
                   if (!data) return null;
                   return (
                     <div
@@ -245,7 +245,7 @@ export default function DiagnosticsView() {
                 Database Information
               </h3>
 
-              {debugData.database.status === 'error' ? (
+              {debugData?.database?.status === 'error' ? (
                 <div style={{
                   ...adminStyles.tableRow,
                   background: 'rgba(239, 68, 68, 0.1)',
@@ -253,7 +253,7 @@ export default function DiagnosticsView() {
                   color: '#ef4444',
                   padding: '1rem'
                 }}>
-                  Database Error: {debugData.database.error}
+                  Database Error: {debugData?.database?.error || 'Unknown error'}
                 </div>
               ) : (
                 <>
@@ -261,7 +261,7 @@ export default function DiagnosticsView() {
                     Table Counts
                   </h4>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
-                    {Object.entries(debugData.tables || {}).map(([table, count]) => (
+                    {Object.entries(debugData?.tables || {}).map(([table, count]) => (
                       <div
                         key={table}
                         style={{
@@ -281,7 +281,7 @@ export default function DiagnosticsView() {
                     Feature Flags
                   </h4>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '0.75rem' }}>
-                    {Object.entries(debugData.features?.flags || {}).map(([feature, enabled]) => (
+                    {Object.entries(debugData?.features?.flags || {}).map(([feature, enabled]) => (
                       <div
                         key={feature}
                         style={{
