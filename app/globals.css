@@ -111,9 +111,30 @@ html, body {
   border: 2px solid #334155 !important;
 }
 
+.cl-modalContent > div {
+  background-color: #1e293b !important;
+}
+
+.cl-modalContent * {
+  background-color: transparent !important;
+}
+
 .cl-card {
   background-color: #1e293b !important;
   border: 2px solid #334155 !important;
+}
+
+/* Fix the outer container that's still white */
+.cl-component {
+  background-color: #1e293b !important;
+}
+
+.cl-main {
+  background-color: #1e293b !important;
+}
+
+.cl-content {
+  background-color: #1e293b !important;
 }
 
 .cl-headerTitle {
@@ -160,8 +181,40 @@ html, body {
   color: #fdba74 !important;
 }
 
-/* Profile Management Modal */
+/* Profile Management Modal - More aggressive overrides */
 .cl-profilePage {
+  background-color: #1e293b !important;
+}
+
+.cl-profilePage > div {
+  background-color: #1e293b !important;
+}
+
+.cl-userProfile-modal {
+  background-color: #1e293b !important;
+}
+
+.cl-userProfile-root {
+  background-color: #1e293b !important;
+}
+
+.cl-userProfile-root > div {
+  background-color: #1e293b !important;
+}
+
+.cl-rootBox {
+  background-color: #1e293b !important;
+}
+
+.cl-cardBox {
+  background-color: #1e293b !important;
+}
+
+.cl-scrollBox {
+  background-color: #1e293b !important;
+}
+
+.cl-pageScrollBox {
   background-color: #1e293b !important;
 }
 
@@ -189,6 +242,22 @@ html, body {
 .cl-avatarImageActionsUpload {
   background-color: #f97316 !important;
   color: white !important;
+}
+
+/* Fix specific white background divs */
+div[data-localization-key="userProfile.profilePage.title"] {
+  background-color: transparent !important;
+}
+
+/* Nuclear option - force all divs in profile modal to be dark */
+.cl-userProfile-root div {
+  background-color: inherit !important;
+}
+
+.cl-profileSection__profile,
+.cl-profileSection__emailAddresses, 
+.cl-profileSection__connectedAccounts {
+  background-color: #0f172a !important;
 }
 
 /* User Button Menu - Fix non-selectable items */
@@ -351,6 +420,53 @@ span[class*="cl-"] {
 
 p[class*="cl-"] {
   color: #94a3b8;
+}
+
+/* Ultra-aggressive modal background fixes */
+.cl-modalContainerContent {
+  background-color: #1e293b !important;
+}
+
+.cl-modalCloseButton {
+  color: #94a3b8 !important;
+  background-color: transparent !important;
+}
+
+.cl-modalCloseButton:hover {
+  color: #fdba74 !important;
+  background-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+/* Force modal structure to be dark */
+[aria-modal="true"] {
+  background-color: #1e293b !important;
+}
+
+[aria-modal="true"] > div {
+  background-color: #1e293b !important;
+}
+
+[role="dialog"] {
+  background-color: #1e293b !important;
+}
+
+[role="dialog"] > div {
+  background-color: #1e293b !important;
+}
+
+/* Last resort - target by inline styles */
+div[style*="background-color: white"],
+div[style*="background-color: rgb(255, 255, 255)"],
+div[style*="background: white"],
+div[style*="background: rgb(255, 255, 255)"] {
+  background-color: #1e293b !important;
+}
+
+/* Fix any remaining sections */
+.cl-profileSection {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  margin-bottom: 16px !important;
 }
 
 /* Animation for loading states */
