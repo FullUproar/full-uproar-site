@@ -4,6 +4,8 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 
 export async function POST(req: Request) {
+  console.log('Clerk webhook called');
+  
   // Get the headers
   const headerPayload = await headers()
   const svix_id = headerPayload.get("svix-id")
@@ -42,17 +44,19 @@ export async function POST(req: Request) {
 
   // Handle the webhook
   const eventType = evt.type
+  console.log('Clerk webhook event type:', eventType);
 
   if (eventType === 'user.created') {
     const { id, email_addresses, username, first_name, last_name, image_url } = evt.data
 
     try {
       const email = email_addresses[0].email_address;
+      console.log('Creating user:', email);
       
       // Automatically grant admin role to info@fulluproar.com
       const isAdminEmail = email.toLowerCase() === 'info@fulluproar.com';
       
-      await prisma.user.create({
+      const newUser = await prisma.user.create({
         data: {
           clerkId: id,
           email: email,
@@ -60,8 +64,13 @@ export async function POST(req: Request) {
           displayName: first_name && last_name ? `${first_name} ${last_name}` : undefined,
           avatarUrl: image_url || undefined,
           role: isAdminEmail ? 'ADMIN' : 'USER',
+          cultDevotion: 0,
+          cultLevel: 0,
+          achievementPoints: 0
         }
-      })
+      });
+      
+      console.log('User created:', newUser.email, 'Role:', newUser.role);
     } catch (error) {
       console.error('Error creating user:', error)
       return new Response('Error creating user', { status: 500 })
