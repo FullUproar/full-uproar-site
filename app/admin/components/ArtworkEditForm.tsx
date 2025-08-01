@@ -157,7 +157,7 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
   ];
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div style={{ padding: '2rem', maxWidth: '100%', overflow: 'hidden' }}>
       <button
         onClick={onBack}
         style={adminStyles.backButton}
@@ -184,7 +184,7 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={adminStyles.card}>
+      <form onSubmit={handleSubmit} style={{ ...adminStyles.card, overflow: 'hidden' }}>
         <div style={{ display: 'grid', gap: '1.5rem' }}>
           {/* Image Upload */}
           <div style={adminStyles.fieldGroup}>
@@ -198,10 +198,12 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
                   src={previewUrl} 
                   alt="Preview" 
                   style={{ 
-                    maxWidth: '300px', 
-                    maxHeight: '300px',
+                    maxWidth: '100%',
+                    width: '300px', 
+                    height: 'auto',
                     borderRadius: '8px',
-                    border: '2px solid rgba(249, 115, 22, 0.3)'
+                    border: '2px solid rgba(249, 115, 22, 0.3)',
+                    display: 'block'
                   }} 
                 />
                 {!artwork && (
@@ -226,7 +228,7 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
               </div>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <label 
                 style={{
                   ...adminStyles.button,
@@ -257,8 +259,16 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
                 )}
               </label>
               {formData.imageUrl && (
-                <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
-                  {formData.imageUrl}
+                <span style={{ 
+                  color: '#94a3b8', 
+                  fontSize: '0.875rem',
+                  wordBreak: 'break-all',
+                  maxWidth: '300px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {formData.imageUrl.startsWith('data:') ? 'Image uploaded (data URL)' : formData.imageUrl}
                 </span>
               )}
             </div>
