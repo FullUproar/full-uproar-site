@@ -8,7 +8,7 @@ import {
   Plus, Edit2, Trash2, Eye, Database, ArrowLeft, Menu, Home,
   Gamepad2, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
-  Clock, Filter, Calendar, Tag, Save, TestTube, UserCog
+  Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -24,6 +24,7 @@ import UsersListView from './components/UsersListView';
 import ComicsListView from './components/ComicsListView';
 import ArtworkListView from './components/ArtworkListView';
 import SettingsView from './components/SettingsView';
+import DiagnosticsView from './components/DiagnosticsView';
 
 type ViewType = 
   | 'dashboard'
@@ -46,7 +47,8 @@ type ViewType =
   | 'test-modes'
   | 'users-list'
   | 'users-edit'
-  | 'users-new';
+  | 'users-new'
+  | 'diagnostics';
 
 interface ViewState {
   type: ViewType;
@@ -185,6 +187,13 @@ export default function AdminApp() {
       view: { type: 'test-modes' as ViewType },
       color: '#f97316',
     },
+    {
+      id: 'diagnostics',
+      label: 'System Health',
+      icon: <Heart size={20} />,
+      view: { type: 'diagnostics' as ViewType },
+      color: '#ef4444',
+    },
   ];
 
   const [expandedMenuItems, setExpandedMenuItems] = useState<string[]>([]);
@@ -247,6 +256,9 @@ export default function AdminApp() {
       
       case 'test-modes':
         return <TestModesView />;
+      
+      case 'diagnostics':
+        return <DiagnosticsView />;
       
       case 'users-list':
         return (
