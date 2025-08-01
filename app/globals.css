@@ -332,6 +332,46 @@ button[class*="cl-"] {
   border-bottom: 2px solid #f97316 !important;
 }
 
+/* Fix the left sidebar/navigation in profile modal */
+.cl-sidebarContainer {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+.cl-sidebar {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+.cl-navbarMobileMenuRow {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+/* Remove any gradients */
+[class*="cl-"][style*="background-image"],
+[class*="cl-"][style*="linear-gradient"] {
+  background-image: none !important;
+  background-color: #0f172a !important;
+}
+
+/* Target the navigation list container */
+.cl-navbarMobileMenuList {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+.cl-list {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+/* Fix any gradient overlays */
+div[class*="gradient"] {
+  background-image: none !important;
+  background-color: transparent !important;
+}
+
 /* Scrollbar in Clerk modals */
 .cl-scrollBox::-webkit-scrollbar {
   width: 8px;
@@ -467,6 +507,54 @@ div[style*="background: rgb(255, 255, 255)"] {
   background-color: #0f172a !important;
   border: 1px solid #334155 !important;
   margin-bottom: 16px !important;
+}
+
+/* Fix navigation/menu area in profile modal */
+.cl-modalContent__userProfile {
+  background-color: #1e293b !important;
+}
+
+.cl-modalContent__userProfile > div:first-child {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+/* Remove any pseudo-elements with gradients */
+.cl-navbar::before,
+.cl-navbar::after,
+.cl-sidebar::before,
+.cl-sidebar::after {
+  display: none !important;
+}
+
+/* Force all navigation items to have solid backgrounds */
+.cl-navbarButtons {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+.cl-navbarButtonsRow {
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
+
+/* Target any element with inline gradient styles */
+*[style*="linear-gradient"] {
+  background-image: none !important;
+}
+
+/* Specific fix for the lighter area around menu */
+.cl-profilePage__contents {
+  background-color: #1e293b !important;
+}
+
+.cl-profilePage__activeContent {
+  background-color: #1e293b !important;
+}
+
+/* Remove any box shadows that might create gradient effects */
+[class*="cl-"] {
+  box-shadow: none !important;
 }
 
 /* Animation for loading states */
