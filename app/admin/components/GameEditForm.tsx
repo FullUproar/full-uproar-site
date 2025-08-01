@@ -233,7 +233,15 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
 
             <div style={adminStyles.formGroup}>
               <label style={adminStyles.label}>Publisher</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <input
+                type="text"
+                value={formData.publisher}
+                onChange={(e) => setFormData({ ...formData, publisher: e.target.value })}
+                style={adminStyles.input}
+                disabled={isFullUproarPublisher}
+                placeholder={isFullUproarPublisher ? 'Full Uproar Games, Inc.' : 'Enter publisher name'}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
                 <input
                   type="checkbox"
                   id="fullUproarPublisher"
@@ -252,14 +260,6 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
                   Full Uproar Games, Inc.
                 </label>
               </div>
-              <input
-                type="text"
-                value={formData.publisher}
-                onChange={(e) => setFormData({ ...formData, publisher: e.target.value })}
-                style={adminStyles.input}
-                disabled={isFullUproarPublisher}
-                placeholder={isFullUproarPublisher ? 'Full Uproar Games, Inc.' : 'Enter publisher name'}
-              />
             </div>
           </div>
         </div>

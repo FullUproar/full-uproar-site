@@ -173,8 +173,8 @@ export const adminStyles = {
   },
   formRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '24px',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '32px',
     marginBottom: '24px',
   },
   textarea: {
