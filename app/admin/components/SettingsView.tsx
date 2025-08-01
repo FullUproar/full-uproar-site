@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, RefreshCw, Key, Globe, Mail, Shield, Bell, Database } from 'lucide-react';
+import { Settings, Save, RefreshCw, Key, Globe, Mail, Shield, Bell, Database, Package } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
 interface Setting {
