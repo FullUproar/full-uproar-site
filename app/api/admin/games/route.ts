@@ -44,6 +44,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(game);
   } catch (error) {
     console.error('Error creating game:', error);
-    return NextResponse.json({ error: 'Failed to create game' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to create game',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }

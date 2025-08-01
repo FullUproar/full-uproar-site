@@ -18,8 +18,6 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     description: '',
     priceCents: 0,
     slug: '',
-    players: '',
-    timeToPlay: '',
     ageRating: 'ALL_AGES',
     imageUrl: '',
     isBundle: false,
@@ -36,6 +34,8 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     gameCategory: 'BOARD',
     playerCount: 'TWO_TO_FOUR',
     playTime: 'QUICK',
+    players: '2-4',
+    timeToPlay: '60-90 min',
     isNew: false,
     isBestseller: false,
     launchDate: null as Date | null,
@@ -65,10 +65,13 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
       const url = game ? `/api/admin/games/${game.id}` : '/api/admin/games';
       const method = game ? 'PUT' : 'POST';
 
+      // Remove playerCount and playTime as they're not in the database
+      const { playerCount, playTime, ...dataToSend } = formData;
+      
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (response.ok) {
@@ -309,7 +312,26 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
               <label style={adminStyles.label}>Player Count</label>
               <select
                 value={formData.playerCount}
-                onChange={(e) => setFormData({ ...formData, playerCount: e.target.value })}
+                onChange={(e) => {
+                  const playerCountMap: Record<string, string> = {
+                    'SINGLE': '1',
+                    'TWO': '2',
+                    'TWO_PLUS': '2+',
+                    'TWO_TO_FOUR': '2-4',
+                    'TWO_TO_SIX': '2-6',
+                    'THREE_TO_FIVE': '3-5',
+                    'THREE_TO_SIX': '3-6',
+                    'FOUR_TO_EIGHT': '4-8',
+                    'PARTY': '6+',
+                    'VARIES': 'Varies',
+                    'CUSTOM': 'Custom'
+                  };
+                  setFormData({ 
+                    ...formData, 
+                    playerCount: e.target.value,
+                    players: playerCountMap[e.target.value] || e.target.value
+                  });
+                }}
                 style={adminStyles.select}
               >
                 <option value="SINGLE">1 Player</option>
@@ -330,7 +352,21 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
               <label style={adminStyles.label}>Play Time</label>
               <select
                 value={formData.playTime}
-                onChange={(e) => setFormData({ ...formData, playTime: e.target.value })}
+                onChange={(e) => {
+                  const playTimeMap: Record<string, string> = {
+                    'QUICK': 'Under 30 min',
+                    'SHORT': '30-60 min',
+                    'MEDIUM': '60-90 min',
+                    'LONG': '90-120 min',
+                    'EXTENDED': 'Over 2 hours',
+                    'VARIES': 'Varies'
+                  };
+                  setFormData({ 
+                    ...formData, 
+                    playTime: e.target.value,
+                    timeToPlay: playTimeMap[e.target.value] || e.target.value
+                  });
+                }}
                 style={adminStyles.select}
               >
                 <option value="QUICK">Under 30 min</option>
