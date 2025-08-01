@@ -101,11 +101,11 @@ export default function AccountView() {
       });
       if (response.ok) {
         await fetchSessions();
-        showMessage('success', 'Session revoked successfully');
+        setMessage({ type: 'success', text: 'Session revoked successfully' });
       }
     } catch (error) {
       console.error('Error revoking session:', error);
-      showMessage('error', 'Failed to revoke session');
+      setMessage({ type: 'error', text: 'Failed to revoke session' });
     }
   };
 
@@ -118,11 +118,11 @@ export default function AccountView() {
       });
       if (response.ok) {
         await fetchSessions();
-        showMessage('success', 'All other sessions have been signed out');
+        setMessage({ type: 'success', text: 'All other sessions have been signed out' });
       }
     } catch (error) {
       console.error('Error revoking sessions:', error);
-      showMessage('error', 'Failed to revoke sessions');
+      setMessage({ type: 'error', text: 'Failed to revoke sessions' });
     }
   };
 
