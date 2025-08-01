@@ -35,6 +35,8 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
         tags: Array.isArray(artwork.tags) ? artwork.tags.join(', ') : (artwork.tags || ''),
         chaosMode: artwork.chaosMode || false,
         imageUrl: artwork.imageUrl || '',
+        thumbnailUrl: artwork.thumbnailUrl || artwork.imageUrl || '',
+        largeUrl: artwork.largeUrl || artwork.imageUrl || '',
       });
       setPreviewUrl(artwork.imageUrl || '');
     }
