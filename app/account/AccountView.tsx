@@ -799,7 +799,7 @@ export default function AccountView() {
                           Password
                         </div>
                         <div style={{ fontSize: '14px', color: '#94a3b8' }}>
-                          Last changed 3 months ago
+                          Managed by Clerk Auth
                         </div>
                       </div>
                       <button style={styles.secondaryButton}>

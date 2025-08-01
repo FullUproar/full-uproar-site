@@ -46,6 +46,31 @@ export default function ForumView() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Add CSS animation for floating emojis
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes chaosFloat {
+        0%, 100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-20px) rotate(5deg);
+        }
+        50% {
+          transform: translateY(0) rotate(-5deg);
+        }
+        75% {
+          transform: translateY(-10px) rotate(3deg);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   useEffect(() => {
     fetchForumData();
   }, []);
@@ -146,28 +171,93 @@ export default function ForumView() {
     <div style={styles.container}>
       <Navigation />
       
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
-        <h1 style={{
-          fontSize: '4rem',
-          fontWeight: 900,
-          color: '#f97316',
+      {/* Hero Section - Match Main Site Style */}
+      <section style={{
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #1f2937 0%, #111827 50%, #ea580c 100%)',
+        borderBottom: '4px solid #f97316',
+        marginBottom: '3rem'
+      }}>
+        <div style={{
+          maxWidth: '80rem',
+          margin: '0 auto',
+          padding: '4rem 1rem',
           textAlign: 'center',
-          marginBottom: '1rem',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em'
+          position: 'relative'
         }}>
-          Community Forum
-        </h1>
-        
-        <p style={{
-          fontSize: '1.5rem',
-          color: '#fdba74',
-          textAlign: 'center',
-          marginBottom: '3rem',
-          fontWeight: 'bold'
-        }}>
-          Join the Full Uproar community discussion
-        </p>
+          {/* Chaos Badge */}
+          <div style={{
+            display: 'inline-block',
+            background: 'linear-gradient(135deg, #f97316 0%, #dc2626 100%)',
+            color: '#111827',
+            padding: '0.5rem 1.5rem',
+            borderRadius: '50px',
+            fontWeight: 900,
+            transform: 'rotate(-2deg)',
+            marginBottom: '2rem',
+            fontSize: '0.875rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em'
+          }}>
+            🔥 PURE CHAOS DISCUSSIONS 🔥
+          </div>
+          
+          <h1 style={{
+            fontSize: '5rem',
+            fontWeight: 900,
+            marginBottom: '1.5rem',
+            background: 'linear-gradient(45deg, #f97316, #ef4444, #f97316)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            lineHeight: 1
+          }}>
+            Community Chaos Forum
+          </h1>
+          
+          <p style={{
+            fontSize: '1.5rem',
+            color: '#fdba74',
+            marginBottom: '2rem',
+            fontWeight: 700
+          }}>
+            Where game-ruining strategies are born and friendships go to die
+          </p>
+          
+          {/* Floating Emojis */}
+          <div style={{
+            position: 'absolute',
+            top: '20%',
+            left: '10%',
+            fontSize: '2rem',
+            animation: 'chaosFloat 6s ease-in-out infinite',
+            opacity: 0.3
+          }}>💀</div>
+          <div style={{
+            position: 'absolute',
+            top: '30%',
+            right: '15%',
+            fontSize: '2.5rem',
+            animation: 'chaosFloat 8s ease-in-out infinite',
+            animationDelay: '1s',
+            opacity: 0.3
+          }}>🔥</div>
+          <div style={{
+            position: 'absolute',
+            bottom: '20%',
+            left: '20%',
+            fontSize: '2rem',
+            animation: 'chaosFloat 7s ease-in-out infinite',
+            animationDelay: '2s',
+            opacity: 0.3
+          }}>😈</div>
+        </div>
+      </section>
+      
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
         {/* Search Bar */}
         <div style={styles.searchBar}>
           <Search size={20} style={{ color: '#94a3b8' }} />

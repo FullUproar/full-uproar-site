@@ -2,6 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/middleware/rate-limit';
 import { logger } from '@/lib/utils/logger';
+import { isProtectedEndpoint, protectEndpoint } from './app/api/middleware/protect-endpoints';
 
 const isProtectedRoute = createRouteMatcher([
   '/admin(.*)',
@@ -33,6 +34,14 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
 
   // Apply rate limiting for API routes
   if (path.startsWith('/api/')) {
+    // Check if this is a protected test/migration endpoint
+    if (isProtectedEndpoint(path)) {
+      const protectionResponse = protectEndpoint(request);
+      if (protectionResponse) {
+        return protectionResponse;
+      }
+    }
+
     const rateLimitResponse = await rateLimit(request, rateLimitType);
     if (rateLimitResponse) {
       return rateLimitResponse;

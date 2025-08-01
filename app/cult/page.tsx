@@ -23,10 +23,40 @@ export default function CultPage() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    // Simulate devotion increase
+    // Load saved cult data from localStorage
+    const savedDevotion = localStorage.getItem('cult-devotion');
+    const savedLevel = localStorage.getItem('cult-level');
+    const savedLastVisit = localStorage.getItem('cult-last-visit');
+    
+    if (savedDevotion) {
+      setDevotion(parseInt(savedDevotion));
+    }
+    if (savedLevel) {
+      setCultLevel(parseInt(savedLevel));
+    }
+    
+    // Calculate devotion gained while away (1 point per minute, max 100)
+    if (savedLastVisit) {
+      const lastVisit = new Date(savedLastVisit);
+      const now = new Date();
+      const minutesAway = Math.floor((now.getTime() - lastVisit.getTime()) / 60000);
+      const bonusDevotion = Math.min(minutesAway, 100 - devotion);
+      if (bonusDevotion > 0) {
+        setDevotion(prev => Math.min(prev + bonusDevotion, 100));
+      }
+    }
+    
+    // Update last visit time
+    localStorage.setItem('cult-last-visit', new Date().toISOString());
+    
+    // Slowly increase devotion over time
     const devotionInterval = setInterval(() => {
-      setDevotion(prev => (prev + 1) % 101);
-    }, 100);
+      setDevotion(prev => {
+        const newDevotion = prev < 100 ? prev + 1 : 100;
+        localStorage.setItem('cult-devotion', newDevotion.toString());
+        return newDevotion;
+      });
+    }, 5000); // Increase every 5 seconds instead of 100ms
     
     return () => {
       window.removeEventListener('resize', checkMobile);
@@ -103,7 +133,14 @@ export default function CultPage() {
   const performRitual = () => {
     setRitualActive(true);
     setTimeout(() => {
-      setCultLevel(prev => Math.min(prev + 1, 6));
+      if (devotion >= 100) {
+        const newLevel = Math.min(cultLevel + 1, 6);
+        setCultLevel(newLevel);
+        localStorage.setItem('cult-level', newLevel.toString());
+        // Reset devotion after level up
+        setDevotion(0);
+        localStorage.setItem('cult-devotion', '0');
+      }
       setRitualActive(false);
     }, 3000);
   };
@@ -327,27 +364,29 @@ export default function CultPage() {
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <button 
             onClick={performRitual}
-            disabled={ritualActive || cultLevel >= 6}
+            disabled={ritualActive || cultLevel >= 6 || devotion < 100}
             style={{
               background: ritualActive 
                 ? 'linear-gradient(45deg, #111827, #1f2937)' 
                 : cultLevel >= 6 
                   ? 'linear-gradient(45deg, #fbbf24, #f59e0b)'
-                  : 'linear-gradient(45deg, #a855f7, #f97316, #ef4444)',
-              color: '#111827',
+                  : devotion < 100
+                    ? 'linear-gradient(45deg, #4b5563, #6b7280)'
+                    : 'linear-gradient(45deg, #a855f7, #f97316, #ef4444)',
+              color: devotion < 100 && cultLevel < 6 ? '#9ca3af' : '#111827',
               padding: '1.5rem 4rem',
               borderRadius: '50px',
               border: 'none',
               fontWeight: 900,
               fontSize: '1.5rem',
-              cursor: cultLevel >= 6 ? 'not-allowed' : 'pointer',
+              cursor: (cultLevel >= 6 || devotion < 100) ? 'not-allowed' : 'pointer',
               transform: 'scale(1)',
               transition: 'all 0.3s',
-              boxShadow: '0 20px 40px rgba(168, 85, 247, 0.3)',
+              boxShadow: devotion >= 100 ? '0 20px 40px rgba(168, 85, 247, 0.3)' : 'none',
               opacity: ritualActive ? 0.7 : 1
             }}
             onMouseEnter={(e) => {
-              if (!ritualActive && cultLevel < 6) {
+              if (!ritualActive && cultLevel < 6 && devotion >= 100) {
                 e.currentTarget.style.transform = 'scale(1.1) rotate(-2deg)';
               }
             }}
@@ -355,11 +394,11 @@ export default function CultPage() {
               e.currentTarget.style.transform = 'scale(1)';
             }}
           >
-            {ritualActive ? '🔮 RITUAL IN PROGRESS...' : cultLevel >= 6 ? '👑 MAXIMUM CHAOS ACHIEVED' : 'PERFORM CHAOS RITUAL'}
+            {ritualActive ? '🔮 RITUAL IN PROGRESS...' : cultLevel >= 6 ? '👑 MAXIMUM CHAOS ACHIEVED' : devotion < 100 ? `NEED ${100 - devotion}% MORE DEVOTION` : 'PERFORM CHAOS RITUAL'}
           </button>
           {cultLevel < 6 && !ritualActive && (
             <p style={{ color: '#9ca3af', marginTop: '1rem', fontSize: '0.875rem' }}>
-              Complete the ritual to advance your cult rank
+              {devotion < 100 ? 'Build your devotion to 100% to perform the ritual' : 'Complete the ritual to advance your cult rank'}
             </p>
           )}
         </div>
