@@ -52,3 +52,61 @@ html, body {
 ::-webkit-scrollbar-thumb:hover {
   background: #ea580c;
 }
+
+/* Override Clerk UserButton styles for better visibility */
+.cl-userButtonPopoverCard {
+  background-color: #1e293b !important;
+  border: 2px solid #334155 !important;
+}
+
+.cl-userButtonPopoverActionButton {
+  color: #fdba74 !important;
+}
+
+.cl-userButtonPopoverActionButton:hover {
+  background-color: rgba(249, 115, 22, 0.1) !important;
+  color: #fde68a !important;
+}
+
+.cl-userButtonPopoverActionButtonText {
+  color: #fdba74 !important;
+}
+
+.cl-userButtonPopoverActionButtonIcon {
+  color: #fdba74 !important;
+}
+
+.cl-menuItem {
+  color: #fdba74 !important;
+}
+
+.cl-menuItem:hover {
+  background-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+.cl-userPreviewMainIdentifier {
+  color: #fdba74 !important;
+}
+
+.cl-userPreviewSecondaryIdentifier {
+  color: #94a3b8 !important;
+}
+
+.cl-accordion__triggerButton {
+  color: #fdba74 !important;
+}
+
+/* Force all Clerk dropdown text to be visible */
+[data-localization-key] {
+  color: #fdba74 !important;
+}
+
+/* Animation for loading states */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

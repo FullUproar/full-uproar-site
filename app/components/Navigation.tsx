@@ -180,6 +180,11 @@ export default function Navigation() {
                   >
                     <UserButton.MenuItems>
                       <UserButton.Link
+                        label="My Profile"
+                        labelIcon={<Package size={16} />}
+                        href="/profile"
+                      />
+                      <UserButton.Link
                         label="Track Orders"
                         labelIcon={<Package size={16} />}
                         href="/track-order"

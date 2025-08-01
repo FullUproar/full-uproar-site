@@ -80,7 +80,8 @@ export default function ForumView() {
       color: '#e2e8f0'
     },
     header: {
-      background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
+      background: 'rgba(17, 24, 39, 0.95)',
+      borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
       padding: '60px 0',
       marginBottom: '40px'
     },
@@ -150,10 +151,10 @@ export default function ForumView() {
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '12px' }}>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '12px', color: '#fdba74' }}>
             Community Forum
           </h1>
-          <p style={{ fontSize: '18px', opacity: 0.9 }}>
+          <p style={{ fontSize: '18px', color: '#94a3b8' }}>
             Join the Full Uproar community discussion
           </p>
         </div>

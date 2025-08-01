@@ -158,7 +158,8 @@ export default function ProfileView() {
       color: '#e2e8f0'
     },
     header: {
-      background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
+      background: 'rgba(17, 24, 39, 0.95)',
+      borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
       padding: '80px 0 120px',
       position: 'relative' as const
     },
@@ -257,10 +258,10 @@ export default function ProfileView() {
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '8px' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '8px', color: '#fdba74' }}>
             My Profile
           </h1>
-          <p style={{ fontSize: '18px', opacity: 0.9 }}>
+          <p style={{ fontSize: '18px', color: '#94a3b8' }}>
             Manage your Full Uproar account
           </p>
         </div>
