@@ -13,16 +13,17 @@ interface GlobalFooterProps {
 
 export default function GlobalFooter({ showLogo = true }: GlobalFooterProps) {
   return (
-    <footer className="mt-auto border-t border-gray-800 bg-gray-900/50">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col items-center gap-4">
-          {showLogo && (
-            <FooterLogo size={40} />
-          )}
-          <div className="text-center text-sm text-gray-400">
-            © {new Date().getFullYear()} Full Uproar. All rights reserved.
-          </div>
-        </div>
+    <footer className="bg-black text-white py-12 text-center">
+      <div className="max-w-7xl mx-auto px-4">
+        {showLogo && (
+          <FooterLogo size={200} style={{ margin: '0 auto 1.5rem auto' }} />
+        )}
+        <p className="text-gray-400 font-semibold">
+          Professionally ruining game nights since day one
+        </p>
+        <p className="text-gray-500 mt-8 font-semibold">
+          © {new Date().getFullYear()} Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.
+        </p>
       </div>
     </footer>
   );
