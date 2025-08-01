@@ -460,6 +460,7 @@ enum GameCategory {
 enum PlayerCount {
   SINGLE
   TWO
+  TWO_PLUS
   TWO_TO_FOUR
   TWO_TO_SIX
   THREE_TO_FIVE
@@ -467,6 +468,7 @@ enum PlayerCount {
   FOUR_TO_EIGHT
   PARTY
   CUSTOM
+  VARIES
 }
 
 enum PlayTime {
@@ -476,6 +478,7 @@ enum PlayTime {
   LONG
   EXTENDED
   VARIABLE
+  VARIES
 }
 
 enum UserRole {
