@@ -287,6 +287,116 @@ model UserActivity {
   @@index([createdAt])
 }
 
+model User {
+  id            String        @id @default(cuid())
+  clerkId       String        @unique
+  email         String        @unique
+  username      String?       @unique
+  displayName   String?
+  avatarUrl     String?
+  bio           String?
+  favoriteQuote String?
+  role          UserRole      @default(USER)
+  permissions   Permission[]
+  isActive      Boolean       @default(true)
+  lastLogin     DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt
+  posts         MessagePost[]
+  profile       UserProfile?
+
+  @@index([clerkId])
+  @@index([email])
+  @@index([username])
+  @@index([role])
+}
+
+model UserProfile {
+  id                 Int      @id @default(autoincrement())
+  userId             String   @unique
+  location           String?
+  website            String?
+  twitter            String?
+  discord            String?
+  favoriteGame       String?
+  gamerTag           String?
+  backgroundColor    String?  @default("#111827")
+  accentColor        String?  @default("#f97316")
+  showEmail          Boolean  @default(false)
+  showActivity       Boolean  @default(true)
+  emailNotifications Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  resource    String
+  action      String
+  granted     Boolean  @default(true)
+  grantedBy   String?
+  grantedAt   DateTime @default(now())
+  expiresAt   DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, resource, action])
+  @@index([userId])
+  @@index([resource])
+}
+
+model MessageBoard {
+  id          Int           @id @default(autoincrement())
+  name        String
+  slug        String        @unique
+  description String?
+  icon        String?
+  sortOrder   Int           @default(0)
+  isActive    Boolean       @default(true)
+  isPrivate   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  threads     MessageThread[]
+}
+
+model MessageThread {
+  id           Int           @id @default(autoincrement())
+  boardId      Int
+  title        String
+  slug         String
+  authorId     String
+  isPinned     Boolean       @default(false)
+  isLocked     Boolean       @default(false)
+  viewCount    Int           @default(0)
+  lastPostAt   DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  board        MessageBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  posts        MessagePost[]
+
+  @@unique([boardId, slug])
+  @@index([boardId])
+  @@index([authorId])
+  @@index([lastPostAt])
+}
+
+model MessagePost {
+  id         Int           @id @default(autoincrement())
+  threadId   Int
+  authorId   String
+  content    String
+  isEdited   Boolean       @default(false)
+  editedAt   DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @default(now()) @updatedAt
+  thread     MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  author     User          @relation(fields: [authorId], references: [id])
+
+  @@index([threadId])
+  @@index([authorId])
+}
+
 enum MerchCategory {
   APPAREL
   ACCESSORIES
@@ -342,4 +452,12 @@ enum PlayTime {
   LONG
   EXTENDED
   VARIABLE
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MODERATOR
+  USER
+  GUEST
 }

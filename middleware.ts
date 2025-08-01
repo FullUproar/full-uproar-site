@@ -1,11 +1,24 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/middleware/rate-limit';
 import { logger } from '@/lib/utils/logger';
 
+const isProtectedRoute = createRouteMatcher([
+  '/admin(.*)',
+  '/profile(.*)',
+  '/api/admin(.*)',
+  '/api/profile(.*)',
+  '/api/users(.*)',
+])
+
 // Combine Clerk auth with rate limiting
-export default async function middleware(request: NextRequest) {
+export default clerkMiddleware(async (auth, request: NextRequest) => {
   const path = request.nextUrl.pathname;
+
+  // Protect admin and profile routes
+  if (isProtectedRoute(request)) {
+    await auth.protect()
+  }
 
   // Determine rate limit type based on path
   let rateLimitType: 'api' | 'auth' | 'checkout' | 'upload' = 'api';
@@ -33,11 +46,7 @@ export default async function middleware(request: NextRequest) {
       userAgent: request.headers.get('user-agent'),
     });
   }
-
-  // Apply Clerk authentication
-  const authMiddleware = clerkMiddleware();
-  return authMiddleware(request, {} as any);
-}
+})
 
 export const config = {
   matcher: [

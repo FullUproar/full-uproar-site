@@ -8,7 +8,7 @@ import {
   Plus, Edit2, Trash2, Eye, Database, ArrowLeft, Menu, Home,
   Gamepad2, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
-  Clock, Filter, Calendar, Tag, Save, TestTube
+  Clock, Filter, Calendar, Tag, Save, TestTube, UserCog
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -20,6 +20,7 @@ import MerchListView from './components/MerchListView';
 import MigrationsView from './components/MigrationsView';
 import DashboardView from './components/DashboardView';
 import TestModesView from './components/TestModesView';
+import UsersListView from './components/UsersListView';
 
 type ViewType = 
   | 'dashboard'
@@ -35,7 +36,10 @@ type ViewType =
   | 'artwork-list'
   | 'migrations'
   | 'settings'
-  | 'test-modes';
+  | 'test-modes'
+  | 'users-list'
+  | 'users-edit'
+  | 'users-new';
 
 interface ViewState {
   type: ViewType;
@@ -98,6 +102,17 @@ export default function AdminApp() {
       icon: <Home size={20} />,
       view: { type: 'dashboard' as ViewType },
       color: '#fdba74',
+    },
+    {
+      id: 'users',
+      label: 'Users',
+      icon: <UserCog size={20} />,
+      view: { type: 'users-list' as ViewType },
+      color: '#3b82f6',
+      subItems: [
+        { label: 'All Users', view: { type: 'users-list' as ViewType } },
+        { label: 'New User', view: { type: 'users-new' as ViewType } },
+      ]
     },
     {
       id: 'games',
@@ -225,6 +240,14 @@ export default function AdminApp() {
       
       case 'test-modes':
         return <TestModesView />;
+      
+      case 'users-list':
+        return (
+          <UsersListView 
+            onEdit={(user) => navigateTo({ type: 'users-edit', data: user }, `Edit: ${user.displayName || user.username || user.email}`)}
+            onNew={() => navigateTo({ type: 'users-new' }, 'New User')}
+          />
+        );
       
       default:
         return (
