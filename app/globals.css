@@ -247,7 +247,9 @@ body:has(.cl-modalBackdrop) {
   background-color: transparent !important;
 }
 
-/* Moved .cl-rootBox to be transparent - see critical override section */
+.cl-rootBox {
+  background-color: #1e293b !important;
+}
 
 .cl-cardBox {
   background-color: #1e293b !important;
@@ -637,15 +639,24 @@ p[class*="cl-"] {
   background-color: transparent !important;
 }
 
-/* CRITICAL: Override the root box that's causing full-page background */
+/* CRITICAL: Target the parent of rootBox that's causing full-page background */
 .cl-rootBox {
+  background-color: #1e293b !important; /* Restore dark background for rootBox */
+}
+
+/* Target the parent container of the modal */
+.cl-modalContainer {
   background-color: transparent !important;
 }
 
-/* Ensure only the card inside has background */
-.cl-rootBox .cl-card,
-.cl-rootBox .cl-cardBox {
-  background-color: #1e293b !important;
+/* Target elements that wrap the modal */
+[data-clerk-portal] {
+  background-color: transparent !important;
+}
+
+/* Target the div that contains cl-rootBox */
+div:has(> .cl-rootBox) {
+  background-color: transparent !important;
 }
 
 /* Target the specific modal wrapper that might be setting page background */
