@@ -46,6 +46,8 @@ export default function AdminApp() {
   const { user, isLoaded } = useUser();
   const [currentView, setCurrentView] = useState<ViewState>({ type: 'dashboard' });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [breadcrumbs, setBreadcrumbs] = useState<Array<{ label: string; view: ViewState }>>([
     { label: 'Dashboard', view: { type: 'dashboard' } }
   ]);
@@ -56,6 +58,22 @@ export default function AdminApp() {
       redirect('/');
     }
   }, [user, isLoaded]);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setSidebarCollapsed(true);
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const navigateTo = (view: ViewState, label: string) => {
     setCurrentView(view);
@@ -235,17 +253,34 @@ export default function AdminApp() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: adminStyles.container.background }}>
+      {/* Mobile Overlay */}
+      {isMobile && mobileMenuOpen && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 99,
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <div style={{
-        width: sidebarCollapsed ? '60px' : '260px',
+        width: isMobile ? '260px' : (sidebarCollapsed ? '60px' : '260px'),
         background: 'rgba(17, 24, 39, 0.95)',
         borderRight: '2px solid rgba(249, 115, 22, 0.3)',
-        transition: 'width 0.3s',
+        transition: 'all 0.3s',
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
         height: '100vh',
         zIndex: 100,
+        left: isMobile ? (mobileMenuOpen ? 0 : '-260px') : 0,
       }}>
         {/* Sidebar Header */}
         <div style={{
@@ -266,7 +301,13 @@ export default function AdminApp() {
             </h2>
           )}
           <button
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            onClick={() => {
+              if (isMobile) {
+                setMobileMenuOpen(!mobileMenuOpen);
+              } else {
+                setSidebarCollapsed(!sidebarCollapsed);
+              }
+            }}
             style={{
               background: 'transparent',
               border: 'none',
@@ -275,7 +316,7 @@ export default function AdminApp() {
               padding: '4px',
             }}
           >
-            <Menu size={24} />
+            {isMobile && mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
@@ -288,6 +329,9 @@ export default function AdminApp() {
                   navigateTo(item.view, item.label);
                   if (item.subItems) {
                     toggleMenuItem(item.id);
+                  }
+                  if (isMobile) {
+                    setMobileMenuOpen(false);
                   }
                 }}
                 style={{
@@ -382,6 +426,40 @@ export default function AdminApp() {
           ))}
         </nav>
 
+        {/* Back to Site Link */}
+        <div style={{
+          padding: '12px',
+          borderTop: '2px solid rgba(249, 115, 22, 0.2)',
+        }}>
+          <a
+            href="/"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px 16px',
+              background: 'rgba(249, 115, 22, 0.1)',
+              border: '1px solid rgba(249, 115, 22, 0.3)',
+              borderRadius: '8px',
+              color: '#fdba74',
+              textDecoration: 'none',
+              transition: 'all 0.2s',
+              justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+              e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+            }}
+          >
+            <ArrowLeft size={20} />
+            {!sidebarCollapsed && <span style={{ fontWeight: '500' }}>Back to Site</span>}
+          </a>
+        </div>
+
         {/* User Info */}
         <div style={{
           padding: '16px',
@@ -402,20 +480,38 @@ export default function AdminApp() {
       {/* Main Content */}
       <div style={{
         flex: 1,
-        marginLeft: sidebarCollapsed ? '60px' : '260px',
+        marginLeft: isMobile ? 0 : (sidebarCollapsed ? '60px' : '260px'),
         transition: 'margin-left 0.3s',
       }}>
         {/* Header with Breadcrumbs */}
         <div style={{
           background: 'rgba(30, 41, 59, 0.8)',
           borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
-          padding: '16px 32px',
+          padding: isMobile ? '16px' : '16px 32px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
           backdropFilter: 'blur(10px)',
           position: 'sticky',
           top: 0,
           zIndex: 50,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {isMobile && (
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#fdba74',
+                cursor: 'pointer',
+                padding: '4px',
+                marginRight: '8px',
+              }}
+            >
+              <Menu size={24} />
+            </button>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
             {breadcrumbs.map((crumb, index) => (
               <React.Fragment key={index}>
                 {index > 0 && (
