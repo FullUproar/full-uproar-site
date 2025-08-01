@@ -101,6 +101,258 @@ html, body {
   color: #fdba74 !important;
 }
 
+/* Clerk Modal Overrides - Dark Theme */
+.cl-modalBackdrop {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.cl-modalContent {
+  background-color: #1e293b !important;
+  border: 2px solid #334155 !important;
+}
+
+.cl-card {
+  background-color: #1e293b !important;
+  border: 2px solid #334155 !important;
+}
+
+.cl-headerTitle {
+  color: #fdba74 !important;
+}
+
+.cl-headerSubtitle {
+  color: #94a3b8 !important;
+}
+
+.cl-formButtonPrimary {
+  background-color: #f97316 !important;
+  color: white !important;
+}
+
+.cl-formButtonPrimary:hover {
+  background-color: #ea580c !important;
+}
+
+.cl-formFieldLabel {
+  color: #e2e8f0 !important;
+}
+
+.cl-formFieldInput {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.cl-formFieldInput:focus {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1) !important;
+}
+
+.cl-footerActionText {
+  color: #94a3b8 !important;
+}
+
+.cl-footerActionLink {
+  color: #f97316 !important;
+}
+
+.cl-footerActionLink:hover {
+  color: #fdba74 !important;
+}
+
+/* Profile Management Modal */
+.cl-profilePage {
+  background-color: #1e293b !important;
+}
+
+.cl-profileSectionTitle {
+  color: #fdba74 !important;
+}
+
+.cl-profileSectionTitleText {
+  color: #fdba74 !important;
+}
+
+.cl-profileSectionContent {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+}
+
+.cl-profileSectionItemText {
+  color: #e2e8f0 !important;
+}
+
+.cl-profileSectionItemSubtext {
+  color: #94a3b8 !important;
+}
+
+.cl-avatarImageActionsUpload {
+  background-color: #f97316 !important;
+  color: white !important;
+}
+
+/* User Button Menu - Fix non-selectable items */
+.cl-userButtonPopoverActionButton__manageAccount {
+  color: #fdba74 !important;
+  cursor: pointer !important;
+}
+
+.cl-userButtonPopoverActionButton__signOut {
+  color: #fdba74 !important;
+  cursor: pointer !important;
+}
+
+.cl-dividerRow {
+  background-color: #334155 !important;
+}
+
+.cl-userButtonPopoverFooter {
+  background-color: #0f172a !important;
+  border-top: 1px solid #334155 !important;
+}
+
+.cl-userButtonPopoverFooterPrimaryText {
+  color: #94a3b8 !important;
+}
+
+/* Ensure all text in Clerk components is visible */
+.cl-internal-b3fm6y {
+  color: #fdba74 !important;
+}
+
+.cl-internal-1dauvpw {
+  color: #94a3b8 !important;
+}
+
+/* Fix any remaining white backgrounds */
+[class*="cl-"][class*="Modal"],
+[class*="cl-"][class*="Card"],
+[class*="cl-"][class*="Popover"] {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* Fix form elements */
+input[class*="cl-"] {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+button[class*="cl-"] {
+  color: #fdba74 !important;
+}
+
+/* Navbar in Clerk modals */
+.cl-navbar {
+  background-color: #0f172a !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+.cl-navbarButton {
+  color: #94a3b8 !important;
+}
+
+.cl-navbarButton:hover {
+  color: #fdba74 !important;
+  background-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+.cl-navbarButtonActive {
+  color: #fdba74 !important;
+  border-bottom: 2px solid #f97316 !important;
+}
+
+/* Scrollbar in Clerk modals */
+.cl-scrollBox::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cl-scrollBox::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.cl-scrollBox::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.cl-scrollBox::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Additional Clerk component fixes */
+.cl-userProfile-root {
+  background-color: #0f172a !important;
+}
+
+.cl-profileSection {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+.cl-badge {
+  background-color: rgba(249, 115, 22, 0.2) !important;
+  color: #fdba74 !important;
+  border: 1px solid #f97316 !important;
+}
+
+.cl-formHeaderTitle {
+  color: #fdba74 !important;
+}
+
+.cl-formHeaderSubtitle {
+  color: #94a3b8 !important;
+}
+
+.cl-socialButtonsBlockButton {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  background-color: rgba(249, 115, 22, 0.1) !important;
+  border-color: #f97316 !important;
+}
+
+.cl-dividerLine {
+  background-color: #334155 !important;
+}
+
+.cl-dividerText {
+  color: #94a3b8 !important;
+  background-color: #1e293b !important;
+}
+
+/* Fix any buttons that might still be wrong */
+.cl-actionCard {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+}
+
+.cl-actionCard:hover {
+  border-color: #f97316 !important;
+  background-color: rgba(249, 115, 22, 0.05) !important;
+}
+
+.cl-userButtonPopoverActions {
+  background-color: #1e293b !important;
+}
+
+/* Make sure all text is visible */
+div[class*="cl-"] {
+  color: #e2e8f0;
+}
+
+span[class*="cl-"] {
+  color: inherit;
+}
+
+p[class*="cl-"] {
+  color: #94a3b8;
+}
+
 /* Animation for loading states */
 @keyframes spin {
   from {
