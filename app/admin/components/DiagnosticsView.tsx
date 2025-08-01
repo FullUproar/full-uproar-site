@@ -115,7 +115,7 @@ export default function DiagnosticsView() {
   return (
     <div style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2 style={adminStyles.pageTitle}>System Diagnostics</h2>
+        <h2 style={adminStyles.title}>System Diagnostics</h2>
         <button
           onClick={fetchDiagnostics}
           disabled={loading}
