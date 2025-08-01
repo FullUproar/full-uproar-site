@@ -103,11 +103,12 @@ html, body {
 
 /* Clerk Modal Overrides - Dark Theme */
 .cl-modalBackdrop {
-  background-color: rgba(0, 0, 0, 0.5) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important; /* Semi-transparent, not solid */
   backdrop-filter: blur(8px) !important;
   position: fixed !important;
   inset: 0 !important;
-  z-index: 9998 !important;
+  z-index: 1000 !important; /* Middle layer */
+  pointer-events: auto !important;
 }
 
 .cl-modalContent {
@@ -120,7 +121,7 @@ html, body {
   transform: scale(1) !important;
   transition: all 0.2s ease-out !important;
   position: relative !important;
-  z-index: 9999 !important;
+  z-index: 1001 !important; /* Highest layer */
   margin: 40px auto !important;
   max-width: 90vw !important;
   max-height: 90vh !important;
@@ -176,14 +177,45 @@ body:has(.cl-modalBackdrop) {
   overflow: hidden !important; /* Prevent scrolling while modal is open */
 }
 
+/* Fix if body/html are getting backgrounds applied */
+body.cl-modal-open,
+html.cl-modal-open,
+body[class*="modal-open"],
+html[class*="modal-open"] {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Ensure main content stays visible */
+#__next {
+  z-index: 1 !important; /* Not -1, but low positive */
+  position: relative !important;
+}
+
 /* Target the portal root that might be causing full-page background */
 [aria-live="polite"] {
   background-color: transparent !important;
 }
 
-/* Ensure backdrop doesn't affect main content */
-#__next {
-  isolation: isolate !important;
+/* Check for solid backgrounds masquerading as backdrop */
+.cl-modalBackdrop[style*="background-color: rgb"],
+.cl-modalBackdrop[style*="background: rgb"] {
+  background-color: rgba(0, 0, 0, 0.5) !important; /* Force transparency */
+}
+
+/* Prevent any solid dark backgrounds on modal wrappers */
+div[class*="modal"][style*="background-color: #"],
+div[class*="modal"][style*="background-color: rgb"] {
+  background-color: transparent !important;
+}
+
+/* Diagnostic: make backdrop clearly visible */
+.cl-modalBackdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent !important;
+  pointer-events: none;
 }
 
 .cl-headerTitle {
