@@ -23,6 +23,7 @@ import TestModesView from './components/TestModesView';
 import UsersListView from './components/UsersListView';
 import ComicsListView from './components/ComicsListView';
 import ArtworkListView from './components/ArtworkListView';
+import ArtworkEditForm from './components/ArtworkEditForm';
 import SettingsView from './components/SettingsView';
 import DiagnosticsView from './components/DiagnosticsView';
 
@@ -281,6 +282,23 @@ export default function AdminApp() {
           <ArtworkListView
             onEdit={(artwork) => navigateTo({ type: 'artwork-edit', data: artwork }, `Edit: ${artwork.name}`)}
             onNew={() => navigateTo({ type: 'artwork-new' }, 'New Artwork')}
+          />
+        );
+      
+      case 'artwork-new':
+        return (
+          <ArtworkEditForm
+            onBack={() => navigateTo({ type: 'artwork-list' }, 'Artwork')}
+            onSave={() => navigateTo({ type: 'artwork-list' }, 'Artwork')}
+          />
+        );
+      
+      case 'artwork-edit':
+        return (
+          <ArtworkEditForm
+            artwork={currentView.data}
+            onBack={() => navigateTo({ type: 'artwork-list' }, 'Artwork')}
+            onSave={() => navigateTo({ type: 'artwork-list' }, 'Artwork')}
           />
         );
       
