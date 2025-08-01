@@ -94,6 +94,17 @@ export const adminStyles = {
     transition: 'transform 0.2s',
     fontSize: '14px',
   },
+  primaryButton: {
+    padding: '10px 20px',
+    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'transform 0.2s',
+    fontSize: '14px',
+  },
   outlineButton: {
     padding: '8px 16px',
     background: 'transparent',
@@ -211,6 +222,23 @@ export const adminStyles = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchBar: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '12px 16px',
+    background: 'rgba(17, 24, 39, 0.8)',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '8px',
+  },
+  searchInput: {
+    flex: 1,
+    background: 'transparent',
+    border: 'none',
+    color: '#e2e8f0',
+    fontSize: '16px',
+    outline: 'none',
   },
   // Hover effects
   hoverEffects: {
