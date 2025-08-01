@@ -21,6 +21,19 @@ interface TabConfig {
   description: string;
 }
 
+interface UserSession {
+  id: string;
+  browser?: string;
+  os?: string;
+  device?: string;
+  ipAddress?: string;
+  city?: string;
+  country?: string;
+  lastActive: string;
+  createdAt: string;
+  isActive: boolean;
+}
+
 export default function AccountView() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
@@ -28,6 +41,8 @@ export default function AccountView() {
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+  const [sessions, setSessions] = useState<UserSession[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(false);
 
   // Profile form state
   const [profileData, setProfileData] = useState({
@@ -57,6 +72,59 @@ export default function AccountView() {
       });
     }
   }, [isLoaded, user]);
+
+  useEffect(() => {
+    if (activeTab === 'security' && user) {
+      fetchSessions();
+    }
+  }, [activeTab, user]);
+
+  const fetchSessions = async () => {
+    setLoadingSessions(true);
+    try {
+      const response = await fetch('/api/account/sessions');
+      if (response.ok) {
+        const data = await response.json();
+        setSessions(data);
+      }
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    } finally {
+      setLoadingSessions(false);
+    }
+  };
+
+  const handleRevokeSession = async (sessionId: string) => {
+    try {
+      const response = await fetch(`/api/account/sessions/${sessionId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        await fetchSessions();
+        showMessage('success', 'Session revoked successfully');
+      }
+    } catch (error) {
+      console.error('Error revoking session:', error);
+      showMessage('error', 'Failed to revoke session');
+    }
+  };
+
+  const handleRevokeAllSessions = async () => {
+    if (!confirm('Are you sure you want to sign out all other sessions?')) return;
+    
+    try {
+      const response = await fetch('/api/account/sessions/revoke-all', {
+        method: 'POST',
+      });
+      if (response.ok) {
+        await fetchSessions();
+        showMessage('success', 'All other sessions have been signed out');
+      }
+    } catch (error) {
+      console.error('Error revoking sessions:', error);
+      showMessage('error', 'Failed to revoke sessions');
+    }
+  };
 
   const tabs: TabConfig[] = [
     {
@@ -772,24 +840,77 @@ export default function AccountView() {
                     <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '16px' }}>
                       Active Sessions
                     </h3>
-                    <div style={{
-                      background: 'rgba(51, 65, 85, 0.5)',
-                      borderRadius: '8px',
-                      padding: '20px'
-                    }}>
-                      <div style={{ marginBottom: '16px' }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                          Current Session
-                        </div>
-                        <div style={{ fontSize: '14px', color: '#94a3b8' }}>
-                          Windows • Chrome • Active now
-                        </div>
+                    {loadingSessions ? (
+                      <div style={{ textAlign: 'center', padding: '40px' }}>
+                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#fdba74' }} />
                       </div>
-                      <button style={styles.secondaryButton}>
-                        <LogOut size={18} />
-                        Sign Out Other Sessions
-                      </button>
-                    </div>
+                    ) : sessions.length === 0 ? (
+                      <div style={{
+                        background: 'rgba(51, 65, 85, 0.5)',
+                        borderRadius: '8px',
+                        padding: '20px',
+                        textAlign: 'center',
+                        color: '#94a3b8'
+                      }}>
+                        No active sessions found
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {sessions.map((session, index) => (
+                          <div
+                            key={session.id}
+                            style={{
+                              background: 'rgba(51, 65, 85, 0.5)',
+                              borderRadius: '8px',
+                              padding: '20px',
+                              border: index === 0 ? '2px solid rgba(249, 115, 22, 0.3)' : 'none'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                                  {index === 0 ? 'Current Session' : `${session.device || 'Desktop'} Session`}
+                                </div>
+                                <div style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px' }}>
+                                  {session.os || 'Unknown OS'} • {session.browser || 'Unknown Browser'}
+                                </div>
+                                {session.ipAddress && (
+                                  <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>
+                                    IP: {session.ipAddress}
+                                    {session.city && session.country && ` • ${session.city}, ${session.country}`}
+                                  </div>
+                                )}
+                                <div style={{ fontSize: '13px', color: '#64748b' }}>
+                                  Last active: {new Date(session.lastActive).toLocaleString()}
+                                </div>
+                              </div>
+                              {index !== 0 && (
+                                <button
+                                  onClick={() => handleRevokeSession(session.id)}
+                                  style={{
+                                    ...styles.secondaryButton,
+                                    padding: '6px 12px',
+                                    fontSize: '13px'
+                                  }}
+                                >
+                                  Revoke
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {sessions.length > 1 && (
+                          <button
+                            onClick={handleRevokeAllSessions}
+                            style={styles.secondaryButton}
+                          >
+                            <LogOut size={18} />
+                            Sign Out All Other Sessions
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

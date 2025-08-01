@@ -41,7 +41,7 @@ export default function ArtworkListView({ onEdit, onNew }: ArtworkListViewProps)
         setArtworks(data);
         
         // Extract unique categories
-        const uniqueCategories = [...new Set(data.map((item: Artwork) => item.category))];
+        const uniqueCategories = [...new Set(data.map((item: Artwork) => item.category))] as string[];
         setCategories(uniqueCategories);
       }
     } catch (error) {
