@@ -304,11 +304,35 @@ model User {
   updatedAt     DateTime      @default(now()) @updatedAt
   posts         MessagePost[]
   profile       UserProfile?
+  sessions      UserSession[]
 
   @@index([clerkId])
   @@index([email])
   @@index([username])
   @@index([role])
+}
+
+model UserSession {
+  id           String    @id @default(cuid())
+  userId       String
+  sessionToken String    @unique
+  ipAddress    String?
+  userAgent    String?
+  browser      String?
+  os           String?
+  device       String?
+  city         String?
+  country      String?
+  lastActive   DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  isActive     Boolean   @default(true)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionToken])
+  @@index([lastActive])
+  @@index([expiresAt])
 }
 
 model UserProfile {
