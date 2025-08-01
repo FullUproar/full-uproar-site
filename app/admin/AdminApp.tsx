@@ -8,7 +8,7 @@ import {
   Plus, Edit2, Trash2, Eye, Database, ArrowLeft, Menu, Home,
   Gamepad2, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
-  Clock, Filter, Calendar, Tag, Save
+  Clock, Filter, Calendar, Tag, Save, TestTube
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -19,6 +19,7 @@ import OrdersListView from './components/OrdersListView';
 import MerchListView from './components/MerchListView';
 import MigrationsView from './components/MigrationsView';
 import DashboardView from './components/DashboardView';
+import TestModesView from './components/TestModesView';
 
 type ViewType = 
   | 'dashboard'
@@ -33,7 +34,8 @@ type ViewType =
   | 'comics-list'
   | 'artwork-list'
   | 'migrations'
-  | 'settings';
+  | 'settings'
+  | 'test-modes';
 
 interface ViewState {
   type: ViewType;
@@ -136,6 +138,13 @@ export default function AdminApp() {
       view: { type: 'settings' as ViewType },
       color: '#94a3b8',
     },
+    {
+      id: 'test-modes',
+      label: 'Test Modes',
+      icon: <TestTube size={20} />,
+      view: { type: 'test-modes' as ViewType },
+      color: '#f97316',
+    },
   ];
 
   const [expandedMenuItems, setExpandedMenuItems] = useState<string[]>([]);
@@ -195,6 +204,9 @@ export default function AdminApp() {
       
       case 'migrations':
         return <MigrationsView />;
+      
+      case 'test-modes':
+        return <TestModesView />;
       
       default:
         return (
