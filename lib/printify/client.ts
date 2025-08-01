@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { MerchCategory } from '@prisma/client';
+import { stripHtmlTags } from '@/lib/utils/formatting';
 
 export interface PrintifyProductImage {
   src: string;
@@ -226,7 +227,7 @@ export class PrintifyClient {
     return {
       name: product.title,
       slug: `${product.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}-${product.id}`,
-      description: product.description || product.title,
+      description: stripHtmlTags(product.description || product.title),
       category: category,
       priceCents: averagePrice,
       imageUrl: primaryImage,

@@ -140,3 +140,31 @@ export function getInitials(name: string): string {
 export function formatPercentage(value: number, decimals: number = 0): string {
   return `${(value * 100).toFixed(decimals)}%`;
 }
+
+/**
+ * Strip HTML tags from text
+ */
+export function stripHtmlTags(text: string): string {
+  if (!text) return '';
+  
+  // Remove HTML tags
+  let stripped = text.replace(/<[^>]*>/g, '');
+  
+  // Decode common HTML entities
+  stripped = stripped
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&mdash;/g, '—')
+    .replace(/&ndash;/g, '–')
+    .replace(/&hellip;/g, '...')
+    .replace(/&copy;/g, '©')
+    .replace(/&reg;/g, '®')
+    .replace(/&trade;/g, '™');
+    
+  // Clean up extra whitespace
+  return stripped.replace(/\s+/g, ' ').trim();
+}

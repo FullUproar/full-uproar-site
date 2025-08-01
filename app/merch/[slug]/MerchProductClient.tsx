@@ -7,6 +7,7 @@ import { useCartStore } from '@/lib/cartStore';
 import Link from 'next/link';
 import FuglyLogo from '@/app/components/FuglyLogo';
 import ProductImageGallery from '@/app/components/ProductImageGallery';
+import { stripHtmlTags } from '@/lib/utils/formatting';
 
 interface MerchImage {
   id: number;
@@ -87,7 +88,7 @@ export default function MerchProductClient({ merch, similarMerch }: MerchProduct
     if (navigator.share) {
       navigator.share({
         title: merch.name,
-        text: merch.description,
+        text: stripHtmlTags(merch.description),
         url: window.location.href
       });
     } else {
@@ -164,7 +165,7 @@ export default function MerchProductClient({ merch, similarMerch }: MerchProduct
 
             {/* Description */}
             <div className="bg-gray-800 rounded-xl p-6 mb-6 border-2 border-orange-500/20">
-              <p className="text-gray-300 text-lg leading-relaxed">{merch.description}</p>
+              <p className="text-gray-300 text-lg leading-relaxed">{stripHtmlTags(merch.description)}</p>
             </div>
 
             {/* Size Selection */}
