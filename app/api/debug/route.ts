@@ -1,24 +1,66 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { config } from '@/lib/config';
 
 export async function GET() {
+  const debugInfo = {
+    environment: {
+      nodeEnv: process.env.NODE_ENV,
+      vercelEnv: process.env.VERCEL_ENV,
+      isDevelopment: process.env.NODE_ENV === 'development',
+      isProduction: process.env.NODE_ENV === 'production',
+    },
+    database: {
+      status: 'checking',
+      error: null,
+    },
+    tables: {},
+    features: config.get('features'),
+  };
+
   try {
-    // Test database connection
-    const gameCount = await prisma.game.count();
-    const games = await prisma.game.findMany();
-    
-    return NextResponse.json({
-      success: true,
+    // Test database connection and get table counts
+    const [
+      userCount,
       gameCount,
-      games,
-      message: 'Database connection working'
-    });
+      merchCount,
+      orderCount,
+      comicCount,
+      artworkCount,
+      orderItemCount,
+      userSessionCount,
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.game.count(),
+      prisma.merch.count(),
+      prisma.order.count(),
+      prisma.comic.count(),
+      prisma.artwork.count(),
+      prisma.orderItem.count(),
+      prisma.userSession.count(),
+    ]);
+
+    debugInfo.database.status = 'connected';
+    debugInfo.tables = {
+      User: userCount,
+      Game: gameCount,
+      Merch: merchCount,
+      Order: orderCount,
+      Comic: comicCount,
+      Artwork: artworkCount,
+      OrderItem: orderItemCount,
+      UserSession: userSessionCount,
+    };
+
   } catch (error) {
-    console.error('Database error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      message: 'Database connection failed'
-    }, { status: 500 });
+    console.error('Database error in debug endpoint:', error);
+    debugInfo.database.status = 'error';
+    debugInfo.database.error = error instanceof Error ? error.message : 'Unknown database error';
   }
+
+  return NextResponse.json(debugInfo, {
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    }
+  });
 }
