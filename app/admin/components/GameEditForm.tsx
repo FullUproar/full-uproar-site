@@ -35,7 +35,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     whatsInTheBox: '',
     gameCategory: 'BOARD',
     playerCount: 'TWO_TO_FOUR',
-    playTime: 'UNDER_30',
+    playTime: 'QUICK',
     isNew: false,
     isBestseller: false,
     launchDate: null as Date | null,
@@ -217,7 +217,12 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
               <input
                 type="number"
                 value={formData.priceCents / 100}
-                onChange={(e) => setFormData({ ...formData, priceCents: Math.round(parseFloat(e.target.value) * 100) })}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (!isNaN(value)) {
+                    setFormData({ ...formData, priceCents: Math.round(value * 100) });
+                  }
+                }}
                 style={adminStyles.input}
                 step="0.01"
                 required
@@ -310,7 +315,6 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
                 <option value="MEDIUM">60-90 min</option>
                 <option value="LONG">90-120 min</option>
                 <option value="EXTENDED">Over 2 hours</option>
-                <option value="VARIABLE">Variable</option>
                 <option value="VARIES">Varies</option>
               </select>
             </div>

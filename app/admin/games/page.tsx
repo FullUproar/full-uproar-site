@@ -102,7 +102,6 @@ export default function GamesAdminPage() {
       'MEDIUM': '60-90 min',
       'LONG': '90-120 min',
       'EXTENDED': '2+ hours',
-      'VARIABLE': 'Variable',
       'VARIES': 'Varies'
     };
     return mapping[time] || time;
