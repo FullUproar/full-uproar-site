@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ShoppingCart, Heart, Star, Package } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import Link from 'next/link';
+import OptimizedImage from './OptimizedImage';
 
 interface Merch {
   id: number;
@@ -103,18 +104,16 @@ export default function MerchSection({ merchItems }: MerchSectionProps) {
                         onMouseLeave={() => setHoveredItem(null)}
                       >
                         <div className="flex gap-6">
-                          <div className="w-32 h-32 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
-                            {merch.imageUrl ? (
-                              <img
-                                src={merch.imageUrl}
-                                alt={merch.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-4xl">
-                                👕
-                              </div>
-                            )}
+                          <div className="w-32 h-32 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 relative">
+                            <OptimizedImage
+                              src={merch.imageUrl}
+                              alt={merch.name}
+                              fill
+                              className="w-full h-full"
+                              sizes="128px"
+                              placeholder="👕"
+                              priority={true}
+                            />
                           </div>
                           <div className="flex-1">
                             <h4 className="text-2xl font-black text-yellow-400 mb-2">
@@ -163,19 +162,17 @@ export default function MerchSection({ merchItems }: MerchSectionProps) {
                         onMouseLeave={() => setHoveredItem(null)}
                       >
                         <div className="relative h-48 bg-gray-700">
-                          {merch.imageUrl ? (
-                            <img
-                              src={merch.imageUrl}
-                              alt={merch.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-6xl">
-                              {category === 'Apparel' ? '👕' : '🎁'}
-                            </div>
-                          )}
+                          <OptimizedImage
+                            src={merch.imageUrl}
+                            alt={merch.name}
+                            fill
+                            className="w-full h-full"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            placeholder={category === 'Apparel' ? '👕' : '🎁'}
+                            priority={index < 4}
+                          />
                           {isHovered && (
-                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
                               <Heart className="h-12 w-12 text-red-500 animate-pulse" />
                             </div>
                           )}

@@ -36,9 +36,20 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'featured' | 'bundle' | 'preorder'>('all');
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     fetchGames();
+    
+    // Check if mobile on mount and resize
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const fetchGames = async () => {
@@ -101,16 +112,25 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
         ...adminStyles.section,
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         flexWrap: 'wrap',
         gap: '16px',
       }}>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flex: 1 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: '12px', 
+          alignItems: 'stretch', 
+          flex: 1,
+          minWidth: 0,
+        }}>
           {/* Search */}
           <div style={{
             position: 'relative',
-            flex: 1,
-            maxWidth: '400px',
+            flex: isMobile ? 'none' : 1,
+            width: isMobile ? '100%' : 'auto',
+            maxWidth: isMobile ? '100%' : '400px',
+            minWidth: isMobile ? '100%' : '200px',
           }}>
             <Search size={20} style={{
               position: 'absolute',
@@ -118,6 +138,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
               top: '50%',
               transform: 'translateY(-50%)',
               color: '#94a3b8',
+              pointerEvents: 'none',
             }} />
             <input
               type="text"
@@ -128,6 +149,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                 ...adminStyles.input,
                 paddingLeft: '40px',
                 width: '100%',
+                margin: 0,
               }}
             />
           </div>
@@ -136,7 +158,11 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value as any)}
-            style={adminStyles.select}
+            style={{
+              ...adminStyles.select,
+              minWidth: isMobile ? '100%' : '150px',
+              margin: 0,
+            }}
           >
             <option value="all">All Games</option>
             <option value="featured">Featured</option>

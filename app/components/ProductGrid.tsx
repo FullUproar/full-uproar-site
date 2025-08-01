@@ -1,6 +1,7 @@
 'use client';
 
 import { useCartStore } from '@/lib/cartStore';
+import OptimizedImage from './OptimizedImage';
 
 export default function ProductGrid({ products }: { products: any[] }) {
   const { addToCart } = useCartStore();
@@ -14,11 +15,15 @@ export default function ProductGrid({ products }: { products: any[] }) {
             key={product.id}
             className="bg-gray-100 p-6 rounded-xl text-center shadow-md max-w-sm mx-auto"
           >
-            <div className="h-64 flex items-center justify-center mb-4">
-              <img
+            <div className="h-64 mb-4 relative">
+              <OptimizedImage
                 src={product.imageUrl}
                 alt={product.name}
-                className="max-h-full max-w-full object-contain"
+                fill
+                className="w-full h-full"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                placeholder={product.title ? '🎮' : '👕'}
+                priority={false}
               />
             </div>
             <h4 className="text-2xl font-bold mb-2">{product.name}</h4>
