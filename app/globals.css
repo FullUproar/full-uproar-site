@@ -348,9 +348,10 @@ button[class*="cl-"] {
   background-image: none !important;
 }
 
-/* Remove any gradients */
-[class*="cl-"][style*="background-image"],
-[class*="cl-"][style*="linear-gradient"] {
+/* Remove gradients ONLY from Clerk navigation areas */
+.cl-sidebar[style*="background-image"],
+.cl-sidebarContainer[style*="linear-gradient"],
+.cl-navbarMobileMenuRow[style*="linear-gradient"] {
   background-image: none !important;
   background-color: #0f172a !important;
 }
@@ -364,12 +365,6 @@ button[class*="cl-"] {
 .cl-list {
   background-color: #0f172a !important;
   background-image: none !important;
-}
-
-/* Fix any gradient overlays */
-div[class*="gradient"] {
-  background-image: none !important;
-  background-color: transparent !important;
 }
 
 /* Scrollbar in Clerk modals */
@@ -538,8 +533,8 @@ div[style*="background: rgb(255, 255, 255)"] {
   background-image: none !important;
 }
 
-/* Target any element with inline gradient styles */
-*[style*="linear-gradient"] {
+/* ONLY target Clerk modal gradients */
+.cl-modalContent *[style*="linear-gradient"] {
   background-image: none !important;
 }
 
@@ -550,11 +545,6 @@ div[style*="background: rgb(255, 255, 255)"] {
 
 .cl-profilePage__activeContent {
   background-color: #1e293b !important;
-}
-
-/* Remove any box shadows that might create gradient effects */
-[class*="cl-"] {
-  box-shadow: none !important;
 }
 
 /* Animation for loading states */
