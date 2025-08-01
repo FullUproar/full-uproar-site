@@ -32,6 +32,8 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
+    
+    console.log('Creating game with data:', JSON.stringify(data, null, 2));
 
     const game = await prisma.game.create({
       data: {
