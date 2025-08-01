@@ -904,3 +904,10 @@ div[style*="background: #111827"] {
 .cl-userButtonPopoverActionButton__manageAccount {
   display: none !important;
 }
+
+/* Fix game card jitter on hover - prevent transform changes */
+.game-card-wrapper {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}

@@ -175,7 +175,7 @@ export const adminStyles = {
   formRow: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '48px',
+    gap: '20px',
     marginBottom: '24px',
   },
   textarea: {

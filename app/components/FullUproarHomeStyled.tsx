@@ -428,8 +428,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       borderRadius: '1rem',
       padding: '1.5rem',
       boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      transition: 'all 0.3s',
-      border: '4px solid #fb923c'
+      transition: 'box-shadow 0.3s, border-color 0.3s',
+      border: '4px solid #fb923c',
+      willChange: 'box-shadow, border-color'
     },
     gameImage: {
       width: '100%',
@@ -747,6 +748,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             {games.map((game, index) => (
               <div 
                 key={game.id} 
+                className="game-card-wrapper"
                 style={{
                   ...styles.gameCard,
                   transform: `rotate(${index % 2 === 0 ? '-2' : '2'}deg)`

@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   title: 'Full Uproar - Fugly Approved Games',
   description: 'Game modifiers so chaotic, Fugly approves. Turn any game night into beautiful disaster.',
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
 }
 

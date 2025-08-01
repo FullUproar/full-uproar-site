@@ -102,15 +102,21 @@ export default function AdminApp() {
       
       // Determine parent for sub-views
       const viewTypePrefix = view.type.split('-')[0]; // e.g., 'games' from 'games-edit'
+      const viewTypeSuffix = view.type.split('-')[1]; // e.g., 'edit' from 'games-edit'
       const parentItem = menuItems.find(item => item.id === viewTypePrefix);
       
-      if (parentItem && view.type !== parentItem.view.type) {
-        // Add parent breadcrumb if this is a sub-view
+      // Only add parent breadcrumb if this is actually a sub-view (edit/new/detail)
+      if (parentItem && viewTypeSuffix && viewTypeSuffix !== 'list') {
         newBreadcrumbs.push({ label: parentItem.label, view: parentItem.view });
+        // Add current breadcrumb with specific label
+        newBreadcrumbs.push({ label, view });
+      } else if (parentItem && view.type === parentItem.view.type) {
+        // This is the parent view itself, just add it once
+        newBreadcrumbs.push({ label: parentItem.label, view });
+      } else {
+        // Add current breadcrumb for any other case
+        newBreadcrumbs.push({ label, view });
       }
-      
-      // Add current breadcrumb
-      newBreadcrumbs.push({ label, view });
       
       setBreadcrumbs(newBreadcrumbs);
     }
