@@ -498,7 +498,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p className="font-semibold">© 2024 Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.</p>
+            <p className="font-semibold">© {new Date().getFullYear()} Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.</p>
           </div>
         </div>
       </footer>

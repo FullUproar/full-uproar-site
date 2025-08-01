@@ -96,12 +96,22 @@ export default function AdminApp() {
     if (view.type === 'dashboard') {
       setBreadcrumbs([{ label: 'Dashboard', view: { type: 'dashboard' } }]);
     } else {
-      const existingIndex = breadcrumbs.findIndex(b => b.view.type === view.type);
-      if (existingIndex >= 0) {
-        setBreadcrumbs(breadcrumbs.slice(0, existingIndex + 1));
-      } else {
-        setBreadcrumbs([...breadcrumbs, { label, view }]);
+      // Always start with Dashboard
+      let newBreadcrumbs = [{ label: 'Dashboard', view: { type: 'dashboard' as ViewType } }];
+      
+      // Determine parent for sub-views
+      const viewTypePrefix = view.type.split('-')[0]; // e.g., 'games' from 'games-edit'
+      const parentItem = menuItems.find(item => item.id === viewTypePrefix);
+      
+      if (parentItem && view.type !== parentItem.view.type) {
+        // Add parent breadcrumb if this is a sub-view
+        newBreadcrumbs.push({ label: parentItem.label, view: parentItem.view });
       }
+      
+      // Add current breadcrumb
+      newBreadcrumbs.push({ label, view });
+      
+      setBreadcrumbs(newBreadcrumbs);
     }
   };
 
