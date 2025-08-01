@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Database, Heart, AlertCircle, CheckCircle, Loader2, RefreshCw } from 'lucide-react';
+import { Database, Heart, AlertCircle, CheckCircle, Loader2, RefreshCw, Copy, Check } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
 interface HealthData {
@@ -48,6 +48,7 @@ export default function DiagnosticsView() {
   const [debugData, setDebugData] = useState<DebugData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const fetchDiagnostics = async () => {
     setLoading(true);
@@ -82,6 +83,22 @@ export default function DiagnosticsView() {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours}h ${minutes}m`;
+  };
+
+  const copyDiagnosticData = async () => {
+    const diagnosticData = {
+      health: healthData,
+      debug: debugData,
+      timestamp: new Date().toISOString()
+    };
+    
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(diagnosticData, null, 2));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -240,10 +257,36 @@ export default function DiagnosticsView() {
           {/* Database Information */}
           {debugData && (
             <div style={{ ...adminStyles.card, marginTop: '2rem' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#fdba74', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Database size={24} />
-                Database Information
-              </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#fdba74', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+                  <Database size={24} />
+                  Database Information
+                </h3>
+                <button
+                  onClick={copyDiagnosticData}
+                  style={{
+                    ...adminStyles.button,
+                    background: copied ? '#10b981' : '#6b7280',
+                    padding: '0.5rem 1rem',
+                    fontSize: '0.875rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  {copied ? (
+                    <>
+                      <Check size={16} />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} />
+                      Copy Data
+                    </>
+                  )}
+                </button>
+              </div>
 
               {debugData?.database?.status === 'error' ? (
                 <div style={{
