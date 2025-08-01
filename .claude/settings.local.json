@@ -46,7 +46,8 @@
       "Bash(gh issue comment:*)",
       "Bash(gh label create:*)",
       "Bash(gh issue edit:*)",
-      "Bash(gh label:*)"
+      "Bash(gh label:*)",
+      "Bash(gh issue close:*)"
     ],
     "deny": []
   }

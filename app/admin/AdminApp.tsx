@@ -575,7 +575,11 @@ export default function AdminApp() {
         </div>
 
         {/* Content Area */}
-        <div style={{ padding: '32px' }}>
+        <div style={{ 
+          padding: '32px',
+          minHeight: 'calc(100vh - 100px)',
+          color: '#e2e8f0'
+        }}>
           {renderContent()}
         </div>
       </div>

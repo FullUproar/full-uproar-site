@@ -43,8 +43,15 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
   const fetchUsers = async () => {
     try {
       const response = await fetch('/api/admin/users');
-      const data = await response.json();
-      setUsers(data);
+      if (!response.ok) {
+        console.error('Failed to fetch users:', response.status, response.statusText);
+        const errorData = await response.json();
+        console.error('Error details:', errorData);
+      } else {
+        const data = await response.json();
+        console.log('Fetched users:', data);
+        setUsers(data);
+      }
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
@@ -157,7 +164,7 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
 
   return (
     <PermissionGate resource="users" action="read">
-      <>
+      <div style={{ width: '100%' }}>
         <div style={adminStyles.header}>
           <h1 style={adminStyles.title}>User Management</h1>
           <PermissionGate resource="users" action="create">
@@ -475,7 +482,7 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
           </div>
         )}
       </div>
-      </>
+      </div>
     </PermissionGate>
   );
 }
