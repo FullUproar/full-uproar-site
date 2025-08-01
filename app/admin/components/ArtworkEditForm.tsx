@@ -255,25 +255,20 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
                 ) : (
                   <>
                     <Upload size={18} />
-                    Upload Image (Temporarily Disabled)
+                    {previewUrl ? 'Change Image' : 'Upload Image'}
                   </>
                 )}
               </label>
             </div>
             
-            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '8px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-              <p style={{ color: '#93c5fd', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
-                <strong>Temporary Solution:</strong> Due to file size limits, please use an external image URL instead:
+            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+              <p style={{ color: '#86efac', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+                <strong>Alternative:</strong> You can also use an external image URL:
               </p>
-              <ol style={{ color: '#93c5fd', fontSize: '0.875rem', marginLeft: '1.5rem', marginBottom: '1rem' }}>
-                <li>Upload your image to a service like <a href="https://imgur.com" target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', textDecoration: 'underline' }}>Imgur</a> or <a href="https://imgbb.com" target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', textDecoration: 'underline' }}>ImgBB</a></li>
-                <li>Copy the direct image URL</li>
-                <li>Paste it below</li>
-              </ol>
               <input
                 type="url"
-                placeholder="https://example.com/image.jpg"
-                value={formData.imageUrl}
+                placeholder="https://example.com/image.jpg (optional)"
+                value={!previewUrl || previewUrl.startsWith('data:') ? '' : formData.imageUrl}
                 onChange={(e) => {
                   const url = e.target.value;
                   setFormData({ ...formData, imageUrl: url });
