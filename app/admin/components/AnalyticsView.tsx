@@ -329,8 +329,8 @@ export default function AnalyticsView() {
         <div style={{ padding: '20px' }}>
           {data.funnel.map((stage, index) => {
             const percentage = maxCount > 0 ? (stage.count / maxCount) * 100 : 0;
-            const dropoff = index > 0 && data.funnel ? 
-              ((data.funnel[index - 1].count - stage.count) / data.funnel[index - 1].count * 100).toFixed(1) : 
+            const dropoffPercent = index > 0 && data.funnel ? 
+              ((data.funnel[index - 1].count - stage.count) / data.funnel[index - 1].count * 100) : 
               0;
             
             return (
@@ -345,9 +345,9 @@ export default function AnalyticsView() {
                   </span>
                   <span style={{ color: '#fdba74' }}>
                     {formatNumber(stage.count)}
-                    {index > 0 && dropoff > 0 && (
+                    {index > 0 && dropoffPercent > 0 && (
                       <span style={{ color: '#ef4444', marginLeft: '8px', fontSize: '14px' }}>
-                        (-{dropoff}%)
+                        (-{dropoffPercent.toFixed(1)}%)
                       </span>
                     )}
                   </span>
