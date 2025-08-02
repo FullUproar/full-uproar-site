@@ -131,7 +131,7 @@ export default function UserModerationView({ onBack }: UserModerationViewProps) 
   const trustLevelColors = ['#6b7280', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', paddingBottom: '2rem' }}>
       <div style={adminStyles.header}>
         <h1 style={adminStyles.title}>User Moderation</h1>
         <button onClick={onBack} style={adminStyles.primaryButton}>
@@ -196,7 +196,9 @@ export default function UserModerationView({ onBack }: UserModerationViewProps) 
                         border: '1px solid #374151',
                         background: '#1f2937',
                         color: trustLevelColors[user.trustLevel],
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        position: 'relative',
+                        zIndex: 10
                       }}
                     >
                       {trustLevelNames.map((name, level) => (

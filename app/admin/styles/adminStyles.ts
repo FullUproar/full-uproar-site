@@ -60,8 +60,11 @@ export const adminStyles = {
   },
   tableContainer: {
     overflowX: 'auto' as const,
+    overflowY: 'visible' as const,
     borderRadius: '8px',
     border: '1px solid rgba(249, 115, 22, 0.2)',
+    marginBottom: '100px', // Space for dropdowns
+    position: 'relative' as const,
   },
   tableHeader: {
     padding: '16px',
