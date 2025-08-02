@@ -28,12 +28,23 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [isMobile, setIsMobile] = useState(false);
   const [selectedMerch, setSelectedMerch] = useState<Set<number>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchMerch();
+    
+    // Check if mobile on mount and resize
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const fetchMerch = async () => {
@@ -152,16 +163,25 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
         ...adminStyles.section,
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         flexWrap: 'wrap',
         gap: '16px',
       }}>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flex: 1 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: '12px', 
+          alignItems: 'stretch', 
+          flex: 1,
+          minWidth: 0,
+        }}>
           {/* Search */}
           <div style={{
             position: 'relative',
-            flex: 1,
-            maxWidth: '400px',
+            flex: isMobile ? 'none' : 1,
+            width: isMobile ? '100%' : 'auto',
+            maxWidth: isMobile ? '100%' : '400px',
+            minWidth: isMobile ? '100%' : '200px',
           }}>
             <Search size={20} style={{
               position: 'absolute',
@@ -169,6 +189,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
               top: '50%',
               transform: 'translateY(-50%)',
               color: '#94a3b8',
+              pointerEvents: 'none',
             }} />
             <input
               type="text"
@@ -179,6 +200,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                 ...adminStyles.input,
                 paddingLeft: '40px',
                 width: '100%',
+                margin: 0,
               }}
             />
           </div>
@@ -187,7 +209,11 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            style={adminStyles.select}
+            style={{
+              ...adminStyles.select,
+              minWidth: isMobile ? '100%' : '150px',
+              margin: 0,
+            }}
           >
             <option value="all">All Categories</option>
             <option value="TSHIRT">T-Shirts</option>
@@ -226,188 +252,190 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
         </div>
       </div>
 
-      {/* Select All Bar */}
-      {filteredMerch.length > 0 && (
-        <div style={{
-          ...adminStyles.section,
-          padding: '12px 24px',
-          marginTop: '-20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          background: 'rgba(249, 115, 22, 0.05)',
-          borderTop: 'none',
-        }}>
-          <button
-            onClick={toggleSelectAll}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#fdba74',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '4px',
-            }}
-          >
-            {allSelected ? <CheckSquare size={20} /> : someSelected ? <CheckSquare size={20} style={{ opacity: 0.5 }} /> : <Square size={20} />}
-            <span>Select All</span>
-          </button>
-          {selectedCount > 0 && (
-            <span style={{ color: '#94a3b8', fontSize: '14px' }}>
-              {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* Merch Grid */}
+      {/* Merch Table */}
       <div style={adminStyles.section}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '24px',
-        }}>
-          {filteredMerch.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                ...adminStyles.card,
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                position: 'relative',
-                border: selectedMerch.has(item.id) ? '2px solid #fdba74' : '2px solid rgba(249, 115, 22, 0.3)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = selectedMerch.has(item.id) ? '#fdba74' : 'rgba(249, 115, 22, 0.5)';
-                e.currentTarget.style.boxShadow = '0 4px 20px rgba(249, 115, 22, 0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = selectedMerch.has(item.id) ? '#fdba74' : 'rgba(249, 115, 22, 0.3)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              {/* Selection Checkbox */}
-              <button
-                onClick={() => toggleSelectMerch(item.id)}
-                style={{
-                  position: 'absolute',
-                  top: '12px',
-                  left: '12px',
-                  background: 'rgba(30, 41, 59, 0.8)',
-                  border: '2px solid #fdba74',
-                  borderRadius: '6px',
-                  color: '#fdba74',
-                  cursor: 'pointer',
-                  padding: '6px',
-                  zIndex: 1,
-                  backdropFilter: 'blur(4px)',
-                }}
-              >
-                {selectedMerch.has(item.id) ? <CheckSquare size={20} /> : <Square size={20} />}
-              </button>
-
-              {/* Image */}
-              <div style={{
-                height: '200px',
-                background: item.imageUrl 
-                  ? `url(${item.imageUrl}) center/cover`
-                  : 'rgba(249, 115, 22, 0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderBottom: '2px solid rgba(249, 115, 22, 0.2)',
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+          }}>
+            <thead>
+              <tr style={{
+                borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
               }}>
-                {!item.imageUrl && (
-                  <ShoppingBag size={48} style={{ color: '#94a3b8', opacity: 0.5 }} />
-                )}
-              </div>
-
-              {/* Content */}
-              <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  color: '#fde68a',
-                  marginBottom: '8px',
-                }}>
-                  {item.name}
-                </h3>
-
-                <p style={{
-                  fontSize: '14px',
-                  color: '#94a3b8',
-                  marginBottom: '16px',
-                  flex: 1,
-                }}>
-                  {item.description}
-                </p>
-
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '16px',
-                }}>
-                  <span style={{
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    color: '#86efac',
-                  }}>
-                    ${(item.priceCents / 100).toFixed(2)}
-                  </span>
-
-                  <span style={{
-                    ...adminStyles.badge,
-                    background: 'rgba(139, 92, 246, 0.2)',
-                    borderColor: '#8b5cf6',
-                    color: '#c4b5fd',
-                  }}>
-                    {getCategoryDisplay(item.category)}
-                  </span>
-                </div>
-
-                {/* Actions */}
-                <div style={{
-                  display: 'flex',
-                  gap: '8px',
-                  paddingTop: '16px',
-                  borderTop: '1px solid rgba(249, 115, 22, 0.2)',
-                }}>
+                <th style={{ ...adminStyles.tableHeader, width: '50px' }}>
                   <button
-                    onClick={() => window.open(`/merch/${item.slug}`, '_blank')}
-                    style={{ ...adminStyles.iconButton, flex: 1 }}
-                    title="View on site"
-                  >
-                    <Eye size={16} />
-                    <span style={{ marginLeft: '4px' }}>View</span>
-                  </button>
-                  <button
-                    onClick={() => onEdit(item)}
-                    style={{ ...adminStyles.iconButton, flex: 1 }}
-                    title="Edit"
-                  >
-                    <Edit2 size={16} />
-                    <span style={{ marginLeft: '4px' }}>Edit</span>
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
+                    onClick={toggleSelectAll}
                     style={{
-                      ...adminStyles.iconButton,
-                      flex: 1,
-                      color: '#fca5a5',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#fdba74',
+                      cursor: 'pointer',
+                      padding: '4px',
                     }}
-                    title="Delete"
                   >
-                    <Trash2 size={16} />
-                    <span style={{ marginLeft: '4px' }}>Delete</span>
+                    {allSelected ? <CheckSquare size={20} /> : someSelected ? <CheckSquare size={20} style={{ opacity: 0.5 }} /> : <Square size={20} />}
                   </button>
-                </div>
-              </div>
-            </div>
-          ))}
+                </th>
+                <th style={adminStyles.tableHeader}>Image</th>
+                <th style={adminStyles.tableHeader}>Name</th>
+                <th style={adminStyles.tableHeader}>Category</th>
+                <th style={adminStyles.tableHeader}>Price</th>
+                <th style={adminStyles.tableHeader}>Variants</th>
+                <th style={adminStyles.tableHeader}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredMerch.map((item) => (
+                <tr
+                  key={item.id}
+                  style={{
+                    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+                    transition: 'background 0.2s',
+                    background: selectedMerch.has(item.id) ? 'rgba(249, 115, 22, 0.1)' : 'transparent',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selectedMerch.has(item.id)) {
+                      e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selectedMerch.has(item.id)) {
+                      e.currentTarget.style.background = 'transparent';
+                    }
+                  }}
+                >
+                  <td style={adminStyles.tableCell}>
+                    <button
+                      onClick={() => toggleSelectMerch(item.id)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#fdba74',
+                        cursor: 'pointer',
+                        padding: '4px',
+                      }}
+                    >
+                      {selectedMerch.has(item.id) ? <CheckSquare size={18} /> : <Square size={18} />}
+                    </button>
+                  </td>
+                  <td style={adminStyles.tableCell}>
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        style={{
+                          width: '60px',
+                          height: '60px',
+                          objectFit: 'cover',
+                          borderRadius: '8px',
+                          border: '2px solid rgba(249, 115, 22, 0.3)',
+                        }}
+                      />
+                    ) : (
+                      <div style={{
+                        width: '60px',
+                        height: '60px',
+                        background: 'rgba(249, 115, 22, 0.1)',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '2px solid rgba(249, 115, 22, 0.3)',
+                      }}>
+                        <ShoppingBag size={24} style={{ color: '#94a3b8' }} />
+                      </div>
+                    )}
+                  </td>
+                  <td style={adminStyles.tableCell}>
+                    <div>
+                      <div style={{ fontWeight: 'bold', color: '#fde68a' }}>
+                        {item.name}
+                      </div>
+                      <div style={{ fontSize: '13px', color: '#94a3b8' }}>
+                        {item.description}
+                      </div>
+                    </div>
+                  </td>
+                  <td style={adminStyles.tableCell}>
+                    <span style={{
+                      ...adminStyles.badge,
+                      background: 'rgba(139, 92, 246, 0.2)',
+                      borderColor: '#8b5cf6',
+                      color: '#c4b5fd',
+                    }}>
+                      {getCategoryDisplay(item.category)}
+                    </span>
+                  </td>
+                  <td style={adminStyles.tableCell}>
+                    ${(item.priceCents / 100).toFixed(2)}
+                  </td>
+                  <td style={adminStyles.tableCell}>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {item.sizes && item.sizes.length > 0 && (
+                        <span style={{
+                          ...adminStyles.badge,
+                          background: 'rgba(59, 130, 246, 0.2)',
+                          borderColor: '#3b82f6',
+                          color: '#93bbfc',
+                        }}>
+                          {item.sizes.length} Sizes
+                        </span>
+                      )}
+                      {item.colors && item.colors.length > 0 && (
+                        <span style={{
+                          ...adminStyles.badge,
+                          background: 'rgba(236, 72, 153, 0.2)',
+                          borderColor: '#ec4899',
+                          color: '#f9a8d4',
+                        }}>
+                          {item.colors.length} Colors
+                        </span>
+                      )}
+                      {item.printifyId && (
+                        <span style={{
+                          ...adminStyles.badge,
+                          background: 'rgba(16, 185, 129, 0.2)',
+                          borderColor: '#10b981',
+                          color: '#86efac',
+                        }}>
+                          Printify
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td style={adminStyles.tableCell}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() => window.open(`/merch/${item.slug}`, '_blank')}
+                        style={adminStyles.iconButton}
+                        title="View on site"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button
+                        onClick={() => onEdit(item)}
+                        style={adminStyles.iconButton}
+                        title="Edit"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        style={{
+                          ...adminStyles.iconButton,
+                          color: '#fca5a5',
+                        }}
+                        title="Delete"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {filteredMerch.length === 0 && (
