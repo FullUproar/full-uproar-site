@@ -67,7 +67,7 @@ export default function ThreadPage() {
       setLoading(true);
       
       // Fetch thread info
-      const threadRes = await fetch(`/api/forum/threads/${boardSlug}/${threadSlug}`);
+      const threadRes = await fetch(`/api/forum/thread-by-slug?board=${boardSlug}&thread=${threadSlug}`);
       if (!threadRes.ok) {
         router.push('/forum');
         return;

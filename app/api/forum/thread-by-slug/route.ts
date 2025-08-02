@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { board: string; thread: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { board: boardSlug, thread: threadSlug } = params;
+    const { searchParams } = new URL(request.url);
+    const boardSlug = searchParams.get('board');
+    const threadSlug = searchParams.get('thread');
+
+    if (!boardSlug || !threadSlug) {
+      return NextResponse.json({ error: 'Board and thread slugs are required' }, { status: 400 });
+    }
 
     // Find the board
     const board = await prisma.messageBoard.findUnique({
