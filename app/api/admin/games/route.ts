@@ -10,7 +10,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { searchParams } = new URL(request.url);
+    const showArchived = searchParams.get('showArchived') === 'true';
+
     const games = await prisma.game.findMany({
+      where: showArchived ? {} : { archived: false },
       orderBy: {
         createdAt: 'desc'
       }

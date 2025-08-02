@@ -36,6 +36,15 @@ export async function PATCH(
     const { id } = await params;
     const merchId = parseInt(id);
     
+    // Handle archive/unarchive action
+    if (body.action === 'archive' || body.action === 'unarchive') {
+      const merch = await prisma.merch.update({
+        where: { id: merchId },
+        data: { archived: body.action === 'archive' }
+      });
+      return NextResponse.json(merch);
+    }
+    
     // Remove fields that shouldn't be updated directly
     const { id: _, createdAt, updatedAt, inventory, images, orderItems, reviews, ...updateData } = body;
 

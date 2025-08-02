@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, Search, ShoppingBag, CheckSquare, Square } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Search, ShoppingBag, CheckSquare, Square, Archive, ArchiveRestore } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import ConfirmationModal from './ConfirmationModal';
 
@@ -16,6 +16,7 @@ interface Merch {
   printifyId?: string;
   sizes?: string[];
   colors?: string[];
+  archived?: boolean;
 }
 
 interface MerchListViewProps {
@@ -32,6 +33,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
   const [selectedMerch, setSelectedMerch] = useState<Set<number>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   useEffect(() => {
     fetchMerch();
@@ -45,11 +47,12 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
     window.addEventListener('resize', checkMobile);
     
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [showArchived]);
 
   const fetchMerch = async () => {
     try {
-      const response = await fetch('/api/admin/merch');
+      const url = showArchived ? '/api/admin/merch?showArchived=true' : '/api/admin/merch';
+      const response = await fetch(url);
       const data = await response.json();
       setMerch(data);
     } catch (error) {
@@ -59,8 +62,33 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
     }
   };
 
+  const handleArchive = async (id: number, archive: boolean) => {
+    try {
+      const response = await fetch(`/api/admin/merch/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: archive ? 'archive' : 'unarchive' })
+      });
+      
+      if (response.ok) {
+        await fetchMerch();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || `Failed to ${archive ? 'archive' : 'unarchive'} merchandise`);
+      }
+    } catch (error) {
+      console.error(`Error ${archive ? 'archiving' : 'unarchiving'} merch:`, error);
+      alert(`Failed to ${archive ? 'archive' : 'unarchive'} merchandise. Please try again.`);
+    }
+  };
+
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this merchandise?')) return;
+    const item = merch.find(m => m.id === id);
+    const message = item?.archived 
+      ? 'This item is archived. Are you sure you want to permanently delete it? This action cannot be undone.'
+      : 'Are you sure you want to permanently delete this merchandise? This will remove all related data including inventory, images, and reviews. Consider archiving instead if you want to keep the data but hide it from the store.';
+    
+    if (!confirm(message)) return;
 
     try {
       const response = await fetch(`/api/admin/merch/${id}`, {
@@ -243,7 +271,22 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <label style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px',
+            color: '#94a3b8',
+            cursor: 'pointer'
+          }}>
+            <input
+              type="checkbox"
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+              style={{ cursor: 'pointer' }}
+            />
+            Show Archived
+          </label>
           {selectedCount > 0 && (
             <button
               onClick={() => setShowDeleteModal(true)}
@@ -417,6 +460,16 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                           Printify
                         </span>
                       )}
+                      {item.archived && (
+                        <span style={{
+                          ...adminStyles.badge,
+                          background: 'rgba(107, 114, 128, 0.2)',
+                          borderColor: '#6b7280',
+                          color: '#d1d5db',
+                        }}>
+                          Archived
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td style={adminStyles.tableCell}>
@@ -434,6 +487,16 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                         title="Edit"
                       >
                         <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleArchive(item.id, !item.archived)}
+                        style={{
+                          ...adminStyles.iconButton,
+                          color: item.archived ? '#86efac' : '#fbbf24',
+                        }}
+                        title={item.archived ? 'Unarchive' : 'Archive'}
+                      >
+                        {item.archived ? <ArchiveRestore size={16} /> : <Archive size={16} />}
                       </button>
                       <button
                         onClick={() => handleDelete(item.id)}

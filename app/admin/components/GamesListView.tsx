@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, Search, Filter, Package, CheckSquare, Square } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Search, Filter, Package, CheckSquare, Square, Archive, ArchiveRestore } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import ConfirmationModal from './ConfirmationModal';
 
@@ -25,6 +25,7 @@ interface Game {
   publisher?: string;
   isNew?: boolean;
   isBestseller?: boolean;
+  archived?: boolean;
 }
 
 interface GamesListViewProps {
@@ -41,6 +42,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
   const [selectedGames, setSelectedGames] = useState<Set<number>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   useEffect(() => {
     fetchGames();
@@ -54,11 +56,12 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
     window.addEventListener('resize', checkMobile);
     
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [showArchived]);
 
   const fetchGames = async () => {
     try {
-      const response = await fetch('/api/admin/games');
+      const url = showArchived ? '/api/admin/games?showArchived=true' : '/api/admin/games';
+      const response = await fetch(url);
       const data = await response.json();
       setGames(data);
     } catch (error) {
@@ -68,8 +71,33 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
     }
   };
 
+  const handleArchive = async (id: number, archive: boolean) => {
+    try {
+      const response = await fetch(`/api/admin/games/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: archive ? 'archive' : 'unarchive' })
+      });
+      
+      if (response.ok) {
+        await fetchGames();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || `Failed to ${archive ? 'archive' : 'unarchive'} game`);
+      }
+    } catch (error) {
+      console.error(`Error ${archive ? 'archiving' : 'unarchiving'} game:`, error);
+      alert(`Failed to ${archive ? 'archive' : 'unarchive'} game. Please try again.`);
+    }
+  };
+
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this game?')) return;
+    const game = games.find(g => g.id === id);
+    const message = game?.archived 
+      ? 'This game is archived. Are you sure you want to permanently delete it? This action cannot be undone.'
+      : 'Are you sure you want to permanently delete this game? This will remove all related data including inventory, images, and reviews. Consider archiving instead if you want to keep the data but hide it from the store.';
+    
+    if (!confirm(message)) return;
 
     try {
       const response = await fetch(`/api/admin/games/${id}`, {
@@ -78,9 +106,13 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
       
       if (response.ok) {
         await fetchGames();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to delete game');
       }
     } catch (error) {
       console.error('Error deleting game:', error);
+      alert('Failed to delete game. Please try again.');
     }
   };
 
@@ -88,11 +120,22 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
     setIsDeleting(true);
     try {
       // Delete each selected game
-      const deletePromises = Array.from(selectedGames).map(id => 
-        fetch(`/api/admin/games/${id}`, { method: 'DELETE' })
-      );
+      const deletePromises = Array.from(selectedGames).map(async (id) => {
+        const response = await fetch(`/api/admin/games/${id}`, { method: 'DELETE' });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Failed to delete game ${id}`);
+        }
+        return response;
+      });
       
-      await Promise.all(deletePromises);
+      const results = await Promise.allSettled(deletePromises);
+      const failures = results.filter(r => r.status === 'rejected');
+      
+      if (failures.length > 0) {
+        const errorMessages = failures.map((f: any) => f.reason?.message || 'Unknown error').join('\n');
+        alert(`Failed to delete some games:\n${errorMessages}`);
+      }
       
       // Refresh the list and clear selection
       await fetchGames();
@@ -100,7 +143,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
       setShowDeleteModal(false);
     } catch (error) {
       console.error('Error deleting games:', error);
-      alert('Failed to delete some games. Please try again.');
+      alert('Failed to delete games. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -220,7 +263,22 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <label style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px',
+            color: '#94a3b8',
+            cursor: 'pointer'
+          }}>
+            <input
+              type="checkbox"
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+              style={{ cursor: 'pointer' }}
+            />
+            Show Archived
+          </label>
           {selectedCount > 0 && (
             <button
               onClick={() => setShowDeleteModal(true)}
@@ -407,6 +465,16 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                           Bundle
                         </span>
                       )}
+                      {game.archived && (
+                        <span style={{
+                          ...adminStyles.badge,
+                          background: 'rgba(107, 114, 128, 0.2)',
+                          borderColor: '#6b7280',
+                          color: '#d1d5db',
+                        }}>
+                          Archived
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td style={adminStyles.tableCell}>
@@ -424,6 +492,16 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                         title="Edit"
                       >
                         <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleArchive(game.id, !game.archived)}
+                        style={{
+                          ...adminStyles.iconButton,
+                          color: game.archived ? '#86efac' : '#fbbf24',
+                        }}
+                        title={game.archived ? 'Unarchive' : 'Archive'}
+                      >
+                        {game.archived ? <ArchiveRestore size={16} /> : <Archive size={16} />}
                       </button>
                       <button
                         onClick={() => handleDelete(game.id)}
@@ -461,7 +539,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleBulkDelete}
         title="Delete Games"
-        message={`Are you sure you want to permanently delete ${selectedCount} ${selectedCount === 1 ? 'game' : 'games'}? This action cannot be undone.`}
+        message={`Are you sure you want to permanently delete ${selectedCount} ${selectedCount === 1 ? 'game' : 'games'}? This action cannot be undone and will remove all related data including inventory, images, and reviews.`}
         confirmText="Delete"
         cancelText="Cancel"
         isDestructive={true}

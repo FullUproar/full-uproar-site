@@ -48,6 +48,7 @@ model Merch {
   isLimitedEdition Boolean?     @default(false)
   releaseDate      DateTime?    @db.Timestamp(6)
   viewCount        Int          @default(0)
+  archived         Boolean      @default(false)
   inventory        Inventory[]
   images           MerchImage[]
   orderItems       OrderItem[]
@@ -103,6 +104,7 @@ model Game {
   launchHour          Int?
   launchMinute        Int?
   viewCount           Int            @default(0)
+  archived            Boolean        @default(false)
   images              GameImage[]
   inventory           GameInventory?
   orderItems          OrderItem[]

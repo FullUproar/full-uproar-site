@@ -6,7 +6,11 @@ export async function GET(request: NextRequest) {
   try {
     await requirePermission('admin:access');
 
+    const { searchParams } = new URL(request.url);
+    const showArchived = searchParams.get('showArchived') === 'true';
+
     const merch = await prisma.merch.findMany({
+      where: showArchived ? {} : { archived: false },
       orderBy: {
         createdAt: 'desc'
       }
