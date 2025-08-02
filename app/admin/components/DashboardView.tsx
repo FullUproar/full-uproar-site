@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Package, ShoppingBag, ShoppingCart, DollarSign, Users, TrendingUp,
-  Plus, Gamepad2, BookOpen, Palette, Database, Settings
+  Plus, Gamepad2, BookOpen, Palette, Database, Settings, MessageSquare
 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import DeploymentInfo from '../../components/DeploymentInfo';
@@ -409,6 +409,35 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
             >
               <ShoppingBag size={16} style={{ marginRight: '4px' }} />
               Printify Import
+            </button>
+            <button
+              onClick={async () => {
+                if (confirm('This will create sample forum boards and posts. Continue?')) {
+                  try {
+                    const response = await fetch('/api/admin/seed-forum', {
+                      method: 'POST'
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                      alert(`Forum seeded successfully! Created ${data.boards} boards.`);
+                    } else {
+                      alert(`Error: ${data.error}`);
+                    }
+                  } catch (error) {
+                    alert('Failed to seed forum');
+                  }
+                }
+              }}
+              style={adminStyles.outlineButton}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+              }}
+            >
+              <MessageSquare size={16} style={{ marginRight: '4px' }} />
+              Seed Forum
             </button>
           </div>
         </div>

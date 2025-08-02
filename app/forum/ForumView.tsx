@@ -276,6 +276,7 @@ export default function ForumView() {
             }}
           />
           <button
+            onClick={() => router.push('/forum/new-thread')}
             style={{
               padding: '8px 16px',
               background: '#f97316',
