@@ -29,8 +29,7 @@ export async function POST() {
           displayName: clerkUser.firstName || username,
           role: 'ADMIN',
           emailVerified: clerkUser.emailAddresses[0]?.verification?.status === 'verified',
-          cultDevotion: 0,
-          lastRitualAt: new Date()
+          cultDevotion: 0
         }
       });
     } else {
