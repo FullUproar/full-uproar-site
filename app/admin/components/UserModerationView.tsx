@@ -1,13 +1,109 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { adminStyles } from '../styles/adminStyles';
-import { AlertTriangle, Shield, ShieldOff, Clock, Flag, CheckCircle, XCircle } from 'lucide-react';
+import { AlertTriangle, Shield, ShieldOff, Clock, Flag, CheckCircle, XCircle, ChevronDown } from 'lucide-react';
 import { User } from '@prisma/client';
 
 interface UserModerationViewProps {
   onBack: () => void;
 }
+
+// Custom dropdown component
+const TrustLevelDropdown = ({ 
+  userId, 
+  currentLevel, 
+  onLevelChange, 
+  disabled 
+}: { 
+  userId: string; 
+  currentLevel: number; 
+  onLevelChange: (userId: string, level: number) => void;
+  disabled: boolean;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const trustLevelNames = ['New', 'Basic', 'Member', 'Regular', 'Leader'];
+  const trustLevelColors = ['#6b7280', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={dropdownRef} style={{ position: 'relative' }}>
+      <button
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
+        style={{
+          padding: '0.25rem 0.5rem',
+          borderRadius: '0.375rem',
+          border: '1px solid #374151',
+          background: '#1f2937',
+          color: trustLevelColors[currentLevel],
+          fontWeight: 'bold',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.25rem',
+          minWidth: '120px',
+          justifyContent: 'space-between'
+        }}
+      >
+        <span>{currentLevel} - {trustLevelNames[currentLevel]}</span>
+        <ChevronDown size={14} />
+      </button>
+      
+      {isOpen && (
+        <div style={{
+          position: 'absolute',
+          bottom: '100%',
+          left: 0,
+          marginBottom: '4px',
+          background: '#1f2937',
+          border: '1px solid #374151',
+          borderRadius: '0.375rem',
+          boxShadow: '0 -10px 15px -3px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000,
+          minWidth: '120px'
+        }}>
+          {trustLevelNames.map((name, level) => (
+            <button
+              key={level}
+              onClick={() => {
+                onLevelChange(userId, level);
+                setIsOpen(false);
+              }}
+              style={{
+                display: 'block',
+                width: '100%',
+                padding: '0.5rem',
+                background: 'transparent',
+                border: 'none',
+                color: trustLevelColors[level],
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'background 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
+              {level} - {name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function UserModerationView({ onBack }: UserModerationViewProps) {
   const [users, setUsers] = useState<User[]>([]);
@@ -127,9 +223,6 @@ export default function UserModerationView({ onBack }: UserModerationViewProps) 
     }
   };
 
-  const trustLevelNames = ['New', 'Basic', 'Member', 'Regular', 'Leader'];
-  const trustLevelColors = ['#6b7280', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
-
   return (
     <div style={{ width: '100%', paddingBottom: '2rem' }}>
       <div style={adminStyles.header}>
@@ -186,25 +279,12 @@ export default function UserModerationView({ onBack }: UserModerationViewProps) 
                     </div>
                   </td>
                   <td style={adminStyles.tableCell}>
-                    <select
-                      value={user.trustLevel}
-                      onChange={(e) => handleUpdateTrustLevel(user.id, parseInt(e.target.value))}
+                    <TrustLevelDropdown
+                      userId={user.id}
+                      currentLevel={user.trustLevel}
+                      onLevelChange={handleUpdateTrustLevel}
                       disabled={actionLoading === user.id}
-                      style={{
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '0.375rem',
-                        border: '1px solid #374151',
-                        background: '#1f2937',
-                        color: trustLevelColors[user.trustLevel],
-                        fontWeight: 'bold',
-                        position: 'relative',
-                        zIndex: 10
-                      }}
-                    >
-                      {trustLevelNames.map((name, level) => (
-                        <option key={level} value={level}>{level} - {name}</option>
-                      ))}
-                    </select>
+                    />
                   </td>
                   <td style={adminStyles.tableCell}>
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
