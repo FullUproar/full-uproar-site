@@ -1,20 +1,45 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 export async function POST() {
   try {
     const { userId } = await auth();
+    const clerkUser = await currentUser();
     
-    if (!userId) {
+    if (!userId || !clerkUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Grant admin role to the current user
-    const user = await prisma.user.update({
-      where: { id: userId },
-      data: { role: 'ADMIN' }
+    // Check if user exists
+    let user = await prisma.user.findUnique({
+      where: { id: userId }
     });
+
+    if (!user) {
+      // Create user if they don't exist
+      const email = clerkUser.emailAddresses[0]?.emailAddress || '';
+      const username = clerkUser.username || email.split('@')[0];
+      
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          email: email,
+          username: username,
+          displayName: clerkUser.firstName || username,
+          role: 'ADMIN',
+          emailVerified: clerkUser.emailAddresses[0]?.verification?.status === 'verified',
+          cultDevotion: 0,
+          lastRitualAt: new Date()
+        }
+      });
+    } else {
+      // Update existing user to admin
+      user = await prisma.user.update({
+        where: { id: userId },
+        data: { role: 'ADMIN' }
+      });
+    }
 
     return NextResponse.json({ 
       message: 'Admin access granted',
@@ -24,8 +49,11 @@ export async function POST() {
         role: user.role
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error granting admin access:', error);
-    return NextResponse.json({ error: 'Failed to grant admin access' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to grant admin access',
+      details: error.message 
+    }, { status: 500 });
   }
 }

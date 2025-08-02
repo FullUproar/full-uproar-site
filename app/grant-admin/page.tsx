@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 
@@ -9,6 +9,23 @@ export default function GrantAdminPage() {
   const { userId } = useAuth();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
+
+  useEffect(() => {
+    if (userId) {
+      fetchDebugInfo();
+    }
+  }, [userId]);
+
+  const fetchDebugInfo = async () => {
+    try {
+      const response = await fetch('/api/debug-user');
+      const data = await response.json();
+      setDebugInfo(data);
+    } catch (error) {
+      console.error('Failed to fetch debug info:', error);
+    }
+  };
 
   const handleGrantAdmin = async () => {
     if (!userId) {
@@ -57,6 +74,30 @@ export default function GrantAdminPage() {
         <h1 style={{ color: '#f97316', marginBottom: '1rem' }}>
           Grant Admin Access
         </h1>
+        
+        {debugInfo && (
+          <div style={{
+            background: 'rgba(0, 0, 0, 0.3)',
+            padding: '1rem',
+            borderRadius: '8px',
+            marginBottom: '1.5rem',
+            textAlign: 'left',
+            fontSize: '14px',
+            color: '#94a3b8'
+          }}>
+            <p><strong>Debug Info:</strong></p>
+            <p>Clerk User ID: {debugInfo.clerkUserId || 'Not found'}</p>
+            <p>Clerk Email: {debugInfo.clerkEmail || 'Not found'}</p>
+            <p>DB User Exists: {debugInfo.dbUserExists ? 'Yes' : 'No'}</p>
+            {debugInfo.dbUser && (
+              <>
+                <p>DB Role: {debugInfo.dbUser.role}</p>
+                <p>DB Created: {new Date(debugInfo.dbUser.createdAt).toLocaleDateString()}</p>
+              </>
+            )}
+            <p>Total Users in DB: {debugInfo.totalUsersInDb}</p>
+          </div>
+        )}
         
         {!result ? (
           <>
