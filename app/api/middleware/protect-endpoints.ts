@@ -15,17 +15,7 @@ const PROTECTED_ENDPOINTS = [
   '/api/admin/fix-connections',
 ];
 
-// Temporarily allowed migrations (remove after running)
-const TEMP_ALLOWED_ENDPOINTS = [
-  '/api/migrate-user-security',
-  '/api/run-migrations'
-];
-
 export function isProtectedEndpoint(pathname: string): boolean {
-  // Check if it's temporarily allowed
-  if (TEMP_ALLOWED_ENDPOINTS.some(endpoint => pathname === endpoint)) {
-    return false;
-  }
   return PROTECTED_ENDPOINTS.some(endpoint => pathname.startsWith(endpoint));
 }
 
