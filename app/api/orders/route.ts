@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('Order API received:', JSON.stringify(body, null, 2));
     
     // Validate required fields
     if (!body.customerEmail || !body.customerName || !body.shippingAddress || !body.items || !Array.isArray(body.items)) {
@@ -133,7 +134,7 @@ export async function POST(request: NextRequest) {
         statusHistory: {
           create: {
             status: 'pending',
-            note: 'Order created'
+            notes: 'Order created'
           }
         }
       },
@@ -208,7 +209,7 @@ export async function PUT(request: NextRequest) {
         statusHistory: {
           create: {
             status: body.status,
-            note: body.statusNote
+            notes: body.statusNote
           }
         }
       },

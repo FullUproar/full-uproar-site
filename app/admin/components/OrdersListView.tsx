@@ -6,16 +6,15 @@ import { adminStyles } from '../styles/adminStyles';
 
 interface Order {
   id: string;
-  stripePaymentIntentId: string;
-  userEmail: string;
-  userName: string;
+  paymentIntentId?: string;
+  customerEmail: string;
+  customerName: string;
   items: any[];
-  subtotalCents: number;
   shippingCents: number;
   taxCents: number;
   totalCents: number;
   status: string;
-  shippingAddress: any;
+  shippingAddress: string;
   createdAt: string;
 }
 
@@ -36,10 +35,27 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
   const fetchOrders = async () => {
     try {
       const response = await fetch('/api/admin/orders');
+      
+      if (!response.ok) {
+        console.error('Failed to fetch orders:', response.status);
+        setOrders([]);
+        return;
+      }
+      
       const data = await response.json();
-      setOrders(data);
+      
+      // Check if it's an error response
+      if (data.error) {
+        console.error('API error:', data.error);
+        setOrders([]);
+        return;
+      }
+      
+      // The API returns an object with orders array
+      setOrders(Array.isArray(data) ? data : data.orders || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -47,8 +63,8 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
-      order.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.id.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
@@ -186,10 +202,10 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
                   <td style={adminStyles.tableCell}>
                     <div>
                       <div style={{ fontWeight: 'bold', color: '#fde68a' }}>
-                        {order.userName || 'Guest'}
+                        {order.customerName || 'Guest'}
                       </div>
                       <div style={{ fontSize: '13px', color: '#94a3b8' }}>
-                        {order.userEmail}
+                        {order.customerEmail}
                       </div>
                     </div>
                   </td>

@@ -5,6 +5,9 @@ import Link from 'next/link';
 import Navigation from '../components/Navigation';
 import { ShoppingCart, Calendar, Users, Play, Star, Package } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
+import AddToCartButton from '../components/AddToCartButton';
+import { TestId, getTestId } from '@/lib/constants/test-ids';
+import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
 
 interface Game {
   id: number;
@@ -31,6 +34,8 @@ export default function GamesPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'preorder' | 'bundle'>('all');
   const [hoveredGame, setHoveredGame] = useState<number | null>(null);
+  
+  useAnalytics();
 
   useEffect(() => {
     fetchGames();
@@ -59,6 +64,8 @@ export default function GamesPage() {
       imageUrl: game.imageUrl || '/placeholder-game.jpg',
       type: 'game'
     });
+    
+    analytics.trackAddToCart(game.id.toString(), game.title, game.priceCents);
   };
 
   const filteredGames = games.filter(game => {
@@ -154,6 +161,12 @@ export default function GamesPage() {
             {filteredGames.map((game, index) => (
               <div 
                 key={game.id}
+                {...getTestId(TestId.PRODUCT_CARD)}
+                data-track-impression="true"
+                data-product-id={game.id}
+                data-product-name={game.title}
+                data-product-price={game.priceCents}
+                data-product-category="game"
                 style={{
                   background: '#1f2937',
                   borderRadius: '1rem',
@@ -219,14 +232,17 @@ export default function GamesPage() {
                     )}
                   </div>
                   
-                  <h3 style={{ 
-                    fontSize: '1.5rem', 
-                    fontWeight: 900, 
-                    marginBottom: '0.5rem', 
-                    color: '#fdba74',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em'
-                  }}>
+                  <h3 
+                    {...getTestId(TestId.PRODUCT_CARD_NAME)}
+                    style={{ 
+                      fontSize: '1.5rem', 
+                      fontWeight: 900, 
+                      marginBottom: '0.5rem', 
+                      color: '#fdba74',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}
+                  >
                     {game.title}
                   </h3>
                   
@@ -277,35 +293,11 @@ export default function GamesPage() {
                   <span style={{ fontSize: '1.875rem', fontWeight: 900, color: '#f97316' }}>
                     ${(game.priceCents / 100).toFixed(2)}
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleAddToCart(game);
-                    }}
-                    style={{
-                      background: '#f97316',
-                      color: '#111827',
-                      padding: '0.75rem 1.5rem',
-                      borderRadius: '50px',
-                      fontWeight: 900,
-                      transition: 'all 0.3s',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1)';
-                      e.currentTarget.style.background = '#ea580c';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.background = '#f97316';
-                    }}
-                  >
-                    <ShoppingCart size={16} /> ADD
-                  </button>
+                  <AddToCartButton
+                    onClick={() => handleAddToCart(game)}
+                    disabled={game.stock === 0}
+                    size="small"
+                  />
                 </div>
                 
                 {game.isPreorder && !game.isBundle && (

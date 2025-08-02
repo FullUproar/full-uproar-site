@@ -5,12 +5,12 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, ShoppingCart, Package, User, Settings } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
-import { useCartStore } from '@/lib/cartStore';
 import FuglyLogo from './FuglyLogo';
+import CartButton from './CartButton';
+import MobileCartButton from './MobileCartButton';
 
 export default function Navigation() {
   const pathname = usePathname();
-  const { getTotalItems, toggleCart } = useCartStore();
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -87,15 +87,6 @@ export default function Navigation() {
     },
     activeNavLink: {
       borderBottomColor: '#f97316'
-    },
-    cartButton: {
-      position: 'relative' as const,
-      padding: '0.5rem',
-      borderRadius: '50%',
-      transition: 'background-color 0.3s',
-      background: 'transparent',
-      border: 'none',
-      cursor: 'pointer'
     }
   };
 
@@ -203,28 +194,7 @@ export default function Navigation() {
                   </UserButton>
                 </SignedIn>
                 
-                <button onClick={toggleCart} style={styles.cartButton}>
-                  <ShoppingCart style={{ height: '1.25rem', width: '1.25rem', color: '#fdba74' }} />
-                  {getTotalItems() > 0 && (
-                    <span style={{
-                      position: 'absolute',
-                      top: '-0.25rem',
-                      right: '-0.25rem',
-                      background: '#ef4444',
-                      color: 'white',
-                      fontSize: '0.75rem',
-                      borderRadius: '50%',
-                      height: '1.25rem',
-                      width: '1.25rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 'bold'
-                    }}>
-                      {getTotalItems()}
-                    </span>
-                  )}
-                </button>
+                <CartButton />
               </div>
             )}
 
@@ -321,23 +291,7 @@ export default function Navigation() {
             </Link>
           </SignedIn>
           
-          <button onClick={() => { toggleCart(); setIsMenuOpen(false); }} style={{
-            background: 'rgba(249, 115, 22, 0.2)',
-            color: '#fdba74',
-            padding: '0.75rem',
-            borderRadius: '0.5rem',
-            fontWeight: 'bold',
-            border: '2px solid #f97316',
-            cursor: 'pointer',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem'
-          }}>
-            <ShoppingCart size={20} />
-            CART {getTotalItems() > 0 && `(${getTotalItems()})`}
-          </button>
+          <MobileCartButton onClose={() => setIsMenuOpen(false)} />
         </div>
       )}
     </>

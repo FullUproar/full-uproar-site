@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(npx prisma:*)",
@@ -50,9 +51,14 @@
       "Bash(gh issue close:*)",
       "Bash(git checkout:*)",
       "Bash(tsx scripts/check-tables.ts:*)",
-      "Bash(del test-game-creation.js)"
+      "Bash(del test-game-creation.js)",
+      "Bash(npm run test:seed:*)",
+      "Bash(del page.tsx)",
+      "Bash(ren:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(del /Q prismamigrations20250102000000_add_performance_indexes_migration_lock)",
+      "Bash(del nul)"
     ],
     "deny": []
-  },
-  "$schema": "https://json.schemastore.org/claude-code-settings.json"
+  }
 }

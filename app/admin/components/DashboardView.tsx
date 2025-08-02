@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Package, ShoppingBag, ShoppingCart, DollarSign, Users, TrendingUp,
-  Plus, Gamepad2, BookOpen, Palette, Database, Settings, MessageSquare
+  Plus, Gamepad2, BookOpen, Palette, Database, Settings, MessageSquare,
+  Truck, RotateCcw, Box, HelpCircle, BarChart3
 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import DeploymentInfo from '../../components/DeploymentInfo';
+import TestModeToggle from './TestModeToggle';
 
 interface Stats {
   totalGames: number;
@@ -46,13 +48,17 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
 
       const games = await gamesRes.json();
       const merch = await merchRes.json();
-      const orders = await ordersRes.json();
+      const ordersData = await ordersRes.json();
+
+      // Extract orders array from the response object
+      const orders = ordersData.orders || [];
+      const totalRevenue = ordersData.stats?.totalRevenue || 0;
 
       setStats({
         totalGames: games.length || 0,
         totalMerch: merch.length || 0,
-        totalOrders: orders.length || 0,
-        totalRevenue: orders.reduce((sum: number, order: any) => sum + (order.totalCents || 0), 0) / 100,
+        totalOrders: ordersData.stats?.totalOrders || orders.length || 0,
+        totalRevenue: totalRevenue / 100,
         totalArtwork: 0,
         totalComics: 0,
       });
@@ -85,6 +91,38 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       count: stats.totalOrders,
       color: '#10b981',
       description: 'Process & track orders'
+    },
+    {
+      title: 'Analytics',
+      icon: <BarChart3 size={24} />,
+      view: { type: 'analytics' },
+      count: null,
+      color: '#06b6d4',
+      description: 'View insights & metrics'
+    },
+    {
+      title: 'Fulfillment',
+      icon: <Box size={24} />,
+      view: { type: 'fulfillment' },
+      count: null,
+      color: '#f97316',
+      description: 'Pick, pack & ship orders'
+    },
+    {
+      title: 'Returns',
+      icon: <RotateCcw size={24} />,
+      view: { type: 'returns' },
+      count: null,
+      color: '#ef4444',
+      description: 'Manage returns & RMAs'
+    },
+    {
+      title: 'Support',
+      icon: <HelpCircle size={24} />,
+      view: { type: 'support' },
+      count: null,
+      color: '#a78bfa',
+      description: 'Customer support tickets'
     },
     {
       title: 'Comics',
@@ -204,6 +242,9 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
           ))}
         </div>
       </div>
+
+      {/* Test Mode Toggle */}
+      <TestModeToggle />
 
       {/* Tab Content */}
       {activeTab === 'overview' && (

@@ -8,7 +8,8 @@ import {
   Plus, Edit2, Trash2, Eye, Database, ArrowLeft, Menu, Home,
   Gamepad2, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
-  Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart
+  Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
+  BarChart3
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -28,6 +29,7 @@ import ArtworkListView from './components/ArtworkListView';
 import ArtworkEditForm from './components/ArtworkEditForm';
 import SettingsView from './components/SettingsView';
 import DiagnosticsView from './components/DiagnosticsView';
+import AnalyticsView from './components/AnalyticsView';
 
 type ViewType = 
   | 'dashboard'
@@ -39,6 +41,9 @@ type ViewType =
   | 'merch-new'
   | 'orders-list'
   | 'orders-detail'
+  | 'fulfillment'
+  | 'returns'
+  | 'support'
   | 'comics-list'
   | 'comics-edit'
   | 'comics-new'
@@ -52,7 +57,8 @@ type ViewType =
   | 'users-edit'
   | 'users-new'
   | 'users-moderation'
-  | 'diagnostics';
+  | 'diagnostics'
+  | 'analytics';
 
 interface ViewState {
   type: ViewType;
@@ -174,6 +180,13 @@ export default function AdminApp() {
       color: '#10b981',
     },
     {
+      id: 'analytics',
+      label: 'Analytics',
+      icon: <BarChart3 size={20} />,
+      view: { type: 'analytics' as ViewType },
+      color: '#06b6d4',
+    },
+    {
       id: 'comics',
       label: 'Comics',
       icon: <BookOpen size={20} />,
@@ -232,6 +245,9 @@ export default function AdminApp() {
       case 'dashboard':
         return <DashboardView onNavigate={navigateTo} />;
       
+      case 'analytics':
+        return <AnalyticsView />;
+      
       case 'games-list':
         return (
           <GamesListView 
@@ -287,6 +303,51 @@ export default function AdminApp() {
           <OrdersListView 
             onViewDetails={(order) => navigateTo({ type: 'orders-detail', data: order }, `Order: ${order.id.slice(0, 8)}`)}
           />
+        );
+      
+      case 'fulfillment':
+        return (
+          <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+            <iframe 
+              src="/admin/fulfillment" 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                border: 'none',
+                background: '#111827'
+              }} 
+            />
+          </div>
+        );
+      
+      case 'returns':
+        return (
+          <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+            <iframe 
+              src="/admin/returns" 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                border: 'none',
+                background: '#111827'
+              }} 
+            />
+          </div>
+        );
+      
+      case 'support':
+        return (
+          <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+            <iframe 
+              src="/admin/support" 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                border: 'none',
+                background: '#111827'
+              }} 
+            />
+          </div>
         );
       
       case 'migrations':

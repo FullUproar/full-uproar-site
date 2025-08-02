@@ -4,8 +4,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/lib/cartStore';
 import { ArrowLeft, CreditCard, Truck, Package, AlertCircle, TestTube } from 'lucide-react';
-import FuglyLogo from '@/app/components/FuglyLogo';
+import Navigation from '@/app/components/Navigation';
 import { simulatePayment, TEST_CARDS, formatTestCardDisplay } from '@/lib/payment-test-mode';
+import dynamic from 'next/dynamic';
+import { TestId, getTestId } from '@/lib/constants/test-ids';
+import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
+
+// Dynamically import StripeCheckout to avoid SSR issues
+const StripeCheckout = dynamic(() => import('@/app/components/StripeCheckout'), {
+  ssr: false,
+  loading: () => <div style={{ color: '#fdba74', textAlign: 'center' }}>Loading payment processor...</div>
+});
 
 type OrderForm = {
   customerEmail: string;
@@ -43,6 +52,9 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [mounted, setMounted] = useState(false);
+  
+  useAnalytics();
   
   const [form, setForm] = useState<OrderForm>({
     customerEmail: '',
@@ -76,8 +88,14 @@ export default function CheckoutPage() {
 
   // Redirect if cart is empty
   useEffect(() => {
+    setMounted(true);
     if (items.length === 0) {
       router.push('/');
+    } else {
+      analytics.track(AnalyticsEvent.CHECKOUT_START, {
+        cartItemCount: items.length,
+        cartValue: getTotalPrice()
+      });
     }
   }, [items, router]);
 
@@ -156,11 +174,9 @@ export default function CheckoutPage() {
       const orderData = {
         customerEmail: form.customerEmail,
         customerName: form.customerName,
+        customerPhone: form.phone,
         shippingAddress,
         billingAddress,
-        totalCents: total,
-        shippingCents: shipping,
-        taxCents: tax,
         items: items.map(item => ({
           itemType: item.type,
           ...(item.type === 'game' ? { gameId: item.id } : { merchId: item.id }),
@@ -170,6 +186,9 @@ export default function CheckoutPage() {
         }))
       };
 
+      console.log('Cart items:', items);
+      console.log('Submitting order:', orderData);
+
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -177,7 +196,9 @@ export default function CheckoutPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create order');
+        const errorData = await response.json();
+        console.error('Order creation failed:', errorData);
+        throw new Error(errorData.error || 'Failed to create order');
       }
 
       const order = await response.json();
@@ -197,112 +218,232 @@ export default function CheckoutPage() {
       router.push(`/order-confirmation?orderId=${order.id}`);
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Something went wrong. Fugly is investigating!');
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
+      setErrors({ submit: errorMessage });
+      alert(`Order failed: ${errorMessage}`);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  if (items.length === 0) {
-    return null; // Will redirect
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-600">
-      {/* Header */}
-      <div className="sticky top-0 z-10 backdrop-blur-md bg-gray-900/90 border-b-4 border-orange-500">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <button
-              onClick={() => router.push('/')}
-              className="flex items-center gap-2 text-yellow-400 hover:text-yellow-300 font-bold transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              Back to chaos
-            </button>
-            <div className="flex items-center gap-3">
-              <FuglyLogo size={50} />
-              <span className="text-2xl font-black text-orange-500">CHECKOUT</span>
-            </div>
+  if (!mounted || items.length === 0) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)' }}>
+        <Navigation />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: '#fdba74', fontSize: '1.5rem' }}>Loading checkout...</p>
           </div>
         </div>
       </div>
+    );
+  }
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main checkout form */}
-          <div className="lg:col-span-2">
+  const inputStyle = {
+    width: '100%',
+    padding: '0.75rem 1rem',
+    background: '#111827',
+    color: '#fde68a',
+    borderRadius: '0.5rem',
+    border: '2px solid #374151',
+    outline: 'none',
+    fontSize: '1rem',
+    transition: 'all 0.3s',
+    boxSizing: 'border-box' as const
+  };
+
+  const labelStyle = {
+    display: 'block',
+    color: '#fdba74',
+    fontWeight: 'bold' as const,
+    marginBottom: '0.5rem',
+    fontSize: '0.875rem',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em'
+  };
+
+  const buttonStyle = {
+    width: '100%',
+    background: '#f97316',
+    color: '#111827',
+    padding: '1rem',
+    borderRadius: '50px',
+    fontWeight: 900,
+    fontSize: '1.125rem',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.3s',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em'
+  };
+
+  return (
+    <>
+      <style jsx global>{`
+        * {
+          box-sizing: border-box;
+        }
+      `}</style>
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)' }}>
+        <Navigation />
+      
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '3rem 1rem' }}>
+        <h1 style={{
+          fontSize: '3rem',
+          fontWeight: 900,
+          color: '#f97316',
+          textAlign: 'center',
+          marginBottom: '3rem',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>
+          FUGLY CHECKOUT
+        </h1>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', marginBottom: '2rem' }}>
+          <div style={{ maxWidth: '48rem', margin: '0 auto', width: '100%' }}>
             {/* Progress indicator */}
-            <div className="flex items-center justify-between mb-8">
-              {[1, 2, 3].map((step) => (
-                <div key={step} className="flex items-center">
-                  <div className={`
-                    w-10 h-10 rounded-full flex items-center justify-center font-bold
-                    ${currentStep >= step ? 'bg-orange-500 text-gray-900' : 'bg-gray-700 text-gray-400'}
-                  `}>
-                    {step}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '3rem', gap: '1rem' }}>
+              {[
+                { step: 1, label: 'Contact' },
+                { step: 2, label: 'Shipping' },
+                { step: 3, label: 'Payment' }
+              ].map(({ step, label }) => (
+                <div key={step} style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{
+                      width: '3rem',
+                      height: '3rem',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 900,
+                      fontSize: '1.25rem',
+                      background: currentStep >= step ? '#f97316' : '#374151',
+                      color: currentStep >= step ? '#111827' : '#9ca3af',
+                      border: currentStep >= step ? '3px solid #fb923c' : '3px solid #4b5563',
+                      transition: 'all 0.3s',
+                      transform: currentStep === step ? 'scale(1.1)' : 'scale(1)'
+                    }}>
+                      {step}
+                    </div>
+                    <span style={{
+                      marginTop: '0.5rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      color: currentStep >= step ? '#fdba74' : '#6b7280',
+                      textTransform: 'uppercase'
+                    }}>
+                      {label}
+                    </span>
                   </div>
                   {step < 3 && (
-                    <div className={`
-                      w-full h-1 mx-2
-                      ${currentStep > step ? 'bg-orange-500' : 'bg-gray-700'}
-                    `} style={{ width: '100px' }} />
+                    <div style={{ 
+                      width: '8rem',
+                      height: '4px',
+                      margin: '0 1rem',
+                      marginBottom: '2rem',
+                      background: currentStep > step ? '#f97316' : '#374151',
+                      transition: 'all 0.3s'
+                    }} />
                   )}
                 </div>
               ))}
             </div>
 
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20">
+            <div style={{
+              background: '#1f2937',
+              borderRadius: '1rem',
+              padding: '2rem',
+              border: '4px solid #fb923c',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+              overflow: 'hidden'
+            }}>
               {/* Step 1: Contact Info */}
               {currentStep === 1 && (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-black text-orange-500">Contact Information</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316', marginBottom: '1rem' }}>
+                    WHO'S BUYING THE CHAOS?
+                  </h2>
                   
                   <div>
-                    <label className="block text-yellow-400 font-bold mb-2">Email</label>
+                    <label style={labelStyle}>Email Address</label>
                     <input
                       type="email"
                       value={form.customerEmail}
                       onChange={(e) => setForm({ ...form, customerEmail: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      style={inputStyle}
                       placeholder="fugly@chaos.com"
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#f97316';
+                        e.currentTarget.style.background = '#1f2937';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = '#111827';
+                      }}
                     />
                     {errors.customerEmail && (
-                      <p className="text-red-500 text-sm mt-1">{errors.customerEmail}</p>
+                      <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors.customerEmail}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-yellow-400 font-bold mb-2">Full Name</label>
+                    <label style={labelStyle}>Full Name</label>
                     <input
                       type="text"
                       value={form.customerName}
                       onChange={(e) => setForm({ ...form, customerName: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      style={inputStyle}
                       placeholder="Fugly McChaosFace"
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#f97316';
+                        e.currentTarget.style.background = '#1f2937';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = '#111827';
+                      }}
                     />
                     {errors.customerName && (
-                      <p className="text-red-500 text-sm mt-1">{errors.customerName}</p>
+                      <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors.customerName}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-yellow-400 font-bold mb-2">Phone Number</label>
+                    <label style={labelStyle}>Phone Number</label>
                     <input
                       type="tel"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      style={inputStyle}
                       placeholder="555-CHAOS-666"
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#f97316';
+                        e.currentTarget.style.background = '#1f2937';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = '#111827';
+                      }}
                     />
                     {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                      <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors.phone}</p>
                     )}
                   </div>
 
                   <button
                     onClick={handleNext}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-gray-900 font-black py-4 rounded-lg transition-all transform hover:scale-105"
+                    style={buttonStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#ea580c';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#f97316';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
                   >
                     Continue to Shipping
                   </button>
@@ -311,43 +452,61 @@ export default function CheckoutPage() {
 
               {/* Step 2: Shipping */}
               {currentStep === 2 && (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-black text-orange-500">Shipping Address</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316', marginBottom: '1rem' }}>
+                    WHERE'S THE CHAOS GOING?
+                  </h2>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <label className="block text-yellow-400 font-bold mb-2">Street Address</label>
-                      <input
-                        type="text"
-                        value={form.shippingAddress.street}
-                        onChange={(e) => setForm({ 
-                          ...form, 
-                          shippingAddress: { ...form.shippingAddress, street: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        placeholder="666 Chaos Street"
-                      />
-                      {errors['shipping.street'] && (
-                        <p className="text-red-500 text-sm mt-1">{errors['shipping.street']}</p>
-                      )}
-                    </div>
+                  <div>
+                    <label style={labelStyle}>Street Address</label>
+                    <input
+                      type="text"
+                      value={form.shippingAddress.street}
+                      onChange={(e) => setForm({ 
+                        ...form, 
+                        shippingAddress: { ...form.shippingAddress, street: e.target.value }
+                      })}
+                      style={inputStyle}
+                      placeholder="666 Chaos Street"
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#f97316';
+                        e.currentTarget.style.background = '#1f2937';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = '#111827';
+                      }}
+                    />
+                    {errors['shipping.street'] && (
+                      <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['shipping.street']}</p>
+                    )}
+                  </div>
 
-                    <div className="md:col-span-2">
-                      <label className="block text-yellow-400 font-bold mb-2">Apartment/Suite (optional)</label>
-                      <input
-                        type="text"
-                        value={form.shippingAddress.apartment}
-                        onChange={(e) => setForm({ 
-                          ...form, 
-                          shippingAddress: { ...form.shippingAddress, apartment: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        placeholder="Apt 13"
-                      />
-                    </div>
+                  <div>
+                    <label style={labelStyle}>Apartment/Suite (optional)</label>
+                    <input
+                      type="text"
+                      value={form.shippingAddress.apartment}
+                      onChange={(e) => setForm({ 
+                        ...form, 
+                        shippingAddress: { ...form.shippingAddress, apartment: e.target.value }
+                      })}
+                      style={inputStyle}
+                      placeholder="Apt 13"
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#f97316';
+                        e.currentTarget.style.background = '#1f2937';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = '#111827';
+                      }}
+                    />
+                  </div>
 
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-                      <label className="block text-yellow-400 font-bold mb-2">City</label>
+                      <label style={labelStyle}>City</label>
                       <input
                         type="text"
                         value={form.shippingAddress.city}
@@ -355,16 +514,24 @@ export default function CheckoutPage() {
                           ...form, 
                           shippingAddress: { ...form.shippingAddress, city: e.target.value }
                         })}
-                        className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        style={inputStyle}
                         placeholder="Chaos City"
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = '#f97316';
+                          e.currentTarget.style.background = '#1f2937';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = '#374151';
+                          e.currentTarget.style.background = '#111827';
+                        }}
                       />
                       {errors['shipping.city'] && (
-                        <p className="text-red-500 text-sm mt-1">{errors['shipping.city']}</p>
+                        <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['shipping.city']}</p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-yellow-400 font-bold mb-2">State</label>
+                      <label style={labelStyle}>State</label>
                       <input
                         type="text"
                         value={form.shippingAddress.state}
@@ -372,43 +539,80 @@ export default function CheckoutPage() {
                           ...form, 
                           shippingAddress: { ...form.shippingAddress, state: e.target.value }
                         })}
-                        className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        style={inputStyle}
                         placeholder="XX"
                         maxLength={2}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = '#f97316';
+                          e.currentTarget.style.background = '#1f2937';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = '#374151';
+                          e.currentTarget.style.background = '#111827';
+                        }}
                       />
                       {errors['shipping.state'] && (
-                        <p className="text-red-500 text-sm mt-1">{errors['shipping.state']}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-yellow-400 font-bold mb-2">ZIP Code</label>
-                      <input
-                        type="text"
-                        value={form.shippingAddress.zipCode}
-                        onChange={(e) => setForm({ 
-                          ...form, 
-                          shippingAddress: { ...form.shippingAddress, zipCode: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        placeholder="12345"
-                      />
-                      {errors['shipping.zipCode'] && (
-                        <p className="text-red-500 text-sm mt-1">{errors['shipping.zipCode']}</p>
+                        <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['shipping.state']}</p>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
+                  <div>
+                    <label style={labelStyle}>ZIP Code</label>
+                    <input
+                      type="text"
+                      value={form.shippingAddress.zipCode}
+                      onChange={(e) => setForm({ 
+                        ...form, 
+                        shippingAddress: { ...form.shippingAddress, zipCode: e.target.value }
+                      })}
+                      style={inputStyle}
+                      placeholder="12345"
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#f97316';
+                        e.currentTarget.style.background = '#1f2937';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = '#111827';
+                      }}
+                    />
+                    {errors['shipping.zipCode'] && (
+                      <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['shipping.zipCode']}</p>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <button
                       onClick={handleBack}
-                      className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-lg transition-colors"
+                      style={{
+                        ...buttonStyle,
+                        background: 'transparent',
+                        border: '2px solid #374151',
+                        color: '#fdba74'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#4b5563';
+                        e.currentTarget.style.background = 'rgba(55, 65, 81, 0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = 'transparent';
+                      }}
                     >
                       Back
                     </button>
                     <button
                       onClick={handleNext}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-gray-900 font-black py-4 rounded-lg transition-all transform hover:scale-105"
+                      style={buttonStyle}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#ea580c';
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#f97316';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
                     >
                       Continue to Payment
                     </button>
@@ -418,39 +622,118 @@ export default function CheckoutPage() {
 
               {/* Step 3: Payment */}
               {currentStep === 3 && (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-black text-orange-500">Payment Method</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316', marginBottom: '1rem' }}>
+                    PAY FOR THE CHAOS
+                  </h2>
                   
-                  <div className="space-y-4">
-                    <label className="flex items-center gap-3 p-4 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors">
+                  {/* Order Summary */}
+                  <div style={{
+                    background: '#111827',
+                    borderRadius: '0.75rem',
+                    padding: '1.5rem',
+                    border: '2px solid #374151',
+                    marginBottom: '1rem'
+                  }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#fdba74', marginBottom: '1rem' }}>
+                      Order Summary
+                    </h3>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
+                      {items.map((item) => (
+                        <div key={`${item.id}-${item.size || ''}`} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <div>
+                            <p style={{ color: '#fde68a', fontWeight: 'bold' }}>{item.name}</p>
+                            {item.size && (
+                              <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>Size: {item.size}</p>
+                            )}
+                            <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>Qty: {item.quantity}</p>
+                          </div>
+                          <p style={{ color: '#fdba74', fontWeight: 'bold' }}>
+                            ${((item.priceCents * item.quantity) / 100).toFixed(2)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#9ca3af' }}>Subtotal</span>
+                        <span style={{ color: '#d1d5db' }}>${(subtotal / 100).toFixed(2)}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#9ca3af' }}>Shipping</span>
+                        <span style={{ color: '#d1d5db' }}>
+                          {shipping === 0 ? 'FREE' : `$${(shipping / 100).toFixed(2)}`}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#9ca3af' }}>Tax</span>
+                        <span style={{ color: '#d1d5db' }}>${(tax / 100).toFixed(2)}</span>
+                      </div>
+                      <div style={{ borderTop: '1px solid #374151', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316' }}>Total</span>
+                        <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316' }}>
+                          ${(total / 100).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <label style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      padding: '1rem',
+                      background: '#111827',
+                      borderRadius: '0.75rem',
+                      cursor: 'pointer',
+                      border: '2px solid',
+                      borderColor: form.paymentMethod === 'card' ? '#f97316' : '#374151',
+                      transition: 'all 0.3s'
+                    }}>
                       <input
                         type="radio"
                         value="card"
                         checked={form.paymentMethod === 'card'}
                         onChange={(e) => setForm({ ...form, paymentMethod: 'card' })}
-                        className="w-5 h-5 text-orange-500"
+                        style={{ width: '1.25rem', height: '1.25rem', accentColor: '#f97316' }}
                       />
-                      <CreditCard className="h-6 w-6 text-orange-500" />
-                      <span className="font-bold text-yellow-400">Credit/Debit Card</span>
+                      <CreditCard style={{ width: '1.5rem', height: '1.5rem', color: '#f97316' }} />
+                      <span style={{ fontWeight: 'bold', color: '#fdba74' }}>Credit/Debit Card</span>
                     </label>
 
-                    <label className="flex items-center gap-3 p-4 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors">
+                    <label style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      padding: '1rem',
+                      background: '#111827',
+                      borderRadius: '0.75rem',
+                      cursor: 'not-allowed',
+                      border: '2px solid',
+                      borderColor: form.paymentMethod === 'fugly-credit' ? '#f97316' : '#374151',
+                      opacity: 0.5,
+                      transition: 'all 0.3s'
+                    }}>
                       <input
                         type="radio"
                         value="fugly-credit"
                         checked={form.paymentMethod === 'fugly-credit'}
                         onChange={(e) => setForm({ ...form, paymentMethod: 'fugly-credit' })}
-                        className="w-5 h-5 text-orange-500"
+                        disabled
+                        style={{ width: '1.25rem', height: '1.25rem', accentColor: '#f97316' }}
                       />
-                      <Package className="h-6 w-6 text-orange-500" />
-                      <span className="font-bold text-yellow-400">Fugly Credit (Coming Soon)</span>
+                      <Package style={{ width: '1.5rem', height: '1.5rem', color: '#f97316' }} />
+                      <span style={{ fontWeight: 'bold', color: '#fdba74' }}>Fugly Credit (Coming Soon)</span>
                     </label>
                   </div>
 
                   {form.paymentMethod === 'card' && (
-                    <div className="space-y-4 mt-6">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
                       <div>
-                        <label className="block text-yellow-400 font-bold mb-2">Card Number</label>
+                        <label style={labelStyle}>Card Number</label>
                         <input
                           type="text"
                           value={form.cardDetails.number}
@@ -458,18 +741,26 @@ export default function CheckoutPage() {
                             ...form, 
                             cardDetails: { ...form.cardDetails, number: formatCardNumber(e.target.value) }
                           })}
-                          className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          style={inputStyle}
                           placeholder="4242 4242 4242 4242"
                           maxLength={19}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#f97316';
+                            e.currentTarget.style.background = '#1f2937';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = '#374151';
+                            e.currentTarget.style.background = '#111827';
+                          }}
                         />
                         {errors['card.number'] && (
-                          <p className="text-red-500 text-sm mt-1">{errors['card.number']}</p>
+                          <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['card.number']}</p>
                         )}
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div>
-                          <label className="block text-yellow-400 font-bold mb-2">Expiry Date</label>
+                          <label style={labelStyle}>Expiry Date</label>
                           <input
                             type="text"
                             value={form.cardDetails.expiry}
@@ -477,17 +768,25 @@ export default function CheckoutPage() {
                               ...form, 
                               cardDetails: { ...form.cardDetails, expiry: formatExpiry(e.target.value) }
                             })}
-                            className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            style={inputStyle}
                             placeholder="MM/YY"
                             maxLength={5}
+                            onFocus={(e) => {
+                              e.currentTarget.style.borderColor = '#f97316';
+                              e.currentTarget.style.background = '#1f2937';
+                            }}
+                            onBlur={(e) => {
+                              e.currentTarget.style.borderColor = '#374151';
+                              e.currentTarget.style.background = '#111827';
+                            }}
                           />
                           {errors['card.expiry'] && (
-                            <p className="text-red-500 text-sm mt-1">{errors['card.expiry']}</p>
+                            <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['card.expiry']}</p>
                           )}
                         </div>
 
                         <div>
-                          <label className="block text-yellow-400 font-bold mb-2">CVC</label>
+                          <label style={labelStyle}>CVC</label>
                           <input
                             type="text"
                             value={form.cardDetails.cvc}
@@ -495,18 +794,26 @@ export default function CheckoutPage() {
                               ...form, 
                               cardDetails: { ...form.cardDetails, cvc: e.target.value.replace(/\D/g, '') }
                             })}
-                            className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            style={inputStyle}
                             placeholder="123"
                             maxLength={4}
+                            onFocus={(e) => {
+                              e.currentTarget.style.borderColor = '#f97316';
+                              e.currentTarget.style.background = '#1f2937';
+                            }}
+                            onBlur={(e) => {
+                              e.currentTarget.style.borderColor = '#374151';
+                              e.currentTarget.style.background = '#111827';
+                            }}
                           />
                           {errors['card.cvc'] && (
-                            <p className="text-red-500 text-sm mt-1">{errors['card.cvc']}</p>
+                            <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['card.cvc']}</p>
                           )}
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-yellow-400 font-bold mb-2">Cardholder Name</label>
+                        <label style={labelStyle}>Cardholder Name</label>
                         <input
                           type="text"
                           value={form.cardDetails.name}
@@ -514,64 +821,113 @@ export default function CheckoutPage() {
                             ...form, 
                             cardDetails: { ...form.cardDetails, name: e.target.value }
                           })}
-                          className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          style={inputStyle}
                           placeholder="FUGLY MCCHAOSFACE"
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#f97316';
+                            e.currentTarget.style.background = '#1f2937';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = '#374151';
+                            e.currentTarget.style.background = '#111827';
+                          }}
                         />
                         {errors['card.name'] && (
-                          <p className="text-red-500 text-sm mt-1">{errors['card.name']}</p>
+                          <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['card.name']}</p>
                         )}
                       </div>
                     </div>
                   )}
 
-                  <div className="flex items-start gap-3 p-4 bg-orange-500/10 rounded-lg border-2 border-orange-500/30">
-                    <TestTube className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-yellow-400">
-                      <p className="font-bold mb-2">🧪 Test Mode Active</p>
-                      <p className="mb-2">This is a simulated checkout. No real payment will be processed.</p>
-                      <details className="cursor-pointer">
-                        <summary className="font-bold hover:text-yellow-300">View test card numbers →</summary>
-                        <div className="mt-2 space-y-1 text-xs">
-                          <p className="font-mono">✅ 4242 4242 4242 4242 - Success</p>
-                          <p className="font-mono">❌ 4000 0000 0000 0002 - Declined</p>
-                          <p className="font-mono">💸 4000 0000 0000 9995 - Insufficient funds</p>
-                          <p className="font-mono">⏱️ 4000 0000 0000 0069 - Expired card</p>
-                          <p className="font-mono">🐌 4000 0000 0000 1000 - Slow network (5s)</p>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                    padding: '1rem',
+                    background: 'rgba(249, 115, 22, 0.1)',
+                    borderRadius: '0.75rem',
+                    border: '2px solid rgba(249, 115, 22, 0.3)'
+                  }}>
+                    <TestTube style={{ width: '1.25rem', height: '1.25rem', color: '#f97316', flexShrink: 0, marginTop: '0.125rem' }} />
+                    <div style={{ fontSize: '0.875rem', color: '#fdba74' }}>
+                      <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>🧪 Test Mode Active</p>
+                      <p style={{ marginBottom: '0.5rem' }}>This is a simulated checkout. No real payment will be processed.</p>
+                      <details style={{ cursor: 'pointer' }}>
+                        <summary style={{ fontWeight: 'bold', color: '#fde68a' }}>View test card numbers →</summary>
+                        <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                          <p>✅ 4242 4242 4242 4242 - Success</p>
+                          <p>❌ 4000 0000 0000 0002 - Declined</p>
+                          <p>💸 4000 0000 0000 9995 - Insufficient funds</p>
+                          <p>⏱️ 4000 0000 0000 0069 - Expired card</p>
+                          <p>🐌 4000 0000 0000 1000 - Slow network (5s)</p>
                         </div>
                       </details>
                     </div>
                   </div>
 
                   {errors.payment && (
-                    <div className="flex items-start gap-3 p-4 bg-red-500/10 rounded-lg border-2 border-red-500/30">
-                      <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-red-400 font-bold">{errors.payment}</p>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '1rem',
+                      padding: '1rem',
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      borderRadius: '0.75rem',
+                      border: '2px solid rgba(239, 68, 68, 0.3)'
+                    }}>
+                      <AlertCircle style={{ width: '1.25rem', height: '1.25rem', color: '#ef4444', flexShrink: 0, marginTop: '0.125rem' }} />
+                      <p style={{ fontSize: '0.875rem', color: '#ef4444', fontWeight: 'bold' }}>{errors.payment}</p>
                     </div>
                   )}
 
                   {form.cardDetails.number && (
-                    <div className="text-xs text-gray-500 text-center">
+                    <div style={{ fontSize: '0.75rem', color: '#6b7280', textAlign: 'center' }}>
                       Test card type: {formatTestCardDisplay(form.cardDetails.number)}
                     </div>
                   )}
 
-                  <div className="flex gap-4">
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <button
                       onClick={handleBack}
-                      className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-lg transition-colors"
+                      style={{
+                        ...buttonStyle,
+                        background: 'transparent',
+                        border: '2px solid #374151',
+                        color: '#fdba74'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#4b5563';
+                        e.currentTarget.style.background = 'rgba(55, 65, 81, 0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#374151';
+                        e.currentTarget.style.background = 'transparent';
+                      }}
                     >
                       Back
                     </button>
                     <button
                       onClick={handleSubmit}
                       disabled={isProcessing || form.paymentMethod === 'fugly-credit'}
-                      className={`
-                        flex-1 font-black py-4 rounded-lg transition-all transform
-                        ${isProcessing || form.paymentMethod === 'fugly-credit'
-                          ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                          : 'bg-orange-500 hover:bg-orange-600 text-gray-900 hover:scale-105'
+                      style={{
+                        ...buttonStyle,
+                        background: isProcessing || form.paymentMethod === 'fugly-credit' ? '#4b5563' : '#f97316',
+                        color: isProcessing || form.paymentMethod === 'fugly-credit' ? '#9ca3af' : '#111827',
+                        cursor: isProcessing || form.paymentMethod === 'fugly-credit' ? 'not-allowed' : 'pointer',
+                        opacity: isProcessing || form.paymentMethod === 'fugly-credit' ? 0.7 : 1
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isProcessing && form.paymentMethod !== 'fugly-credit') {
+                          e.currentTarget.style.background = '#ea580c';
+                          e.currentTarget.style.transform = 'scale(1.05)';
                         }
-                      `}
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isProcessing && form.paymentMethod !== 'fugly-credit') {
+                          e.currentTarget.style.background = '#f97316';
+                          e.currentTarget.style.transform = 'scale(1)';
+                        }
+                      }}
                     >
                       {isProcessing ? 'Processing...' : 'Complete Order'}
                     </button>
@@ -580,63 +936,9 @@ export default function CheckoutPage() {
               )}
             </div>
           </div>
-
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20 sticky top-24">
-              <h3 className="text-xl font-black text-orange-500 mb-4">Order Summary</h3>
-              
-              <div className="space-y-3 mb-6">
-                {items.map((item) => (
-                  <div key={`${item.id}-${item.size || ''}`} className="flex justify-between text-sm">
-                    <div className="flex-1">
-                      <p className="font-bold text-yellow-400">{item.name}</p>
-                      {item.size && (
-                        <p className="text-gray-400">Size: {item.size}</p>
-                      )}
-                      <p className="text-gray-400">Qty: {item.quantity}</p>
-                    </div>
-                    <p className="font-bold text-white">
-                      ${((item.priceCents * item.quantity) / 100).toFixed(2)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-2 border-t border-gray-700 pt-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Subtotal</span>
-                  <span className="text-white">${(subtotal / 100).toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Shipping</span>
-                  <span className="text-white">
-                    {shipping === 0 ? 'FREE' : `$${(shipping / 100).toFixed(2)}`}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Tax</span>
-                  <span className="text-white">${(tax / 100).toFixed(2)}</span>
-                </div>
-              </div>
-
-              <div className="flex justify-between border-t border-gray-700 pt-4 mt-4">
-                <span className="text-xl font-black text-orange-500">Total</span>
-                <span className="text-xl font-black text-white">${(total / 100).toFixed(2)}</span>
-              </div>
-
-              {shipping === 0 && (
-                <div className="mt-4 p-3 bg-green-500/10 rounded-lg border border-green-500/30">
-                  <p className="text-sm text-green-400 font-bold flex items-center gap-2">
-                    <Truck className="h-4 w-4" />
-                    You qualified for FREE shipping!
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </div>
+    </>
   );
 }

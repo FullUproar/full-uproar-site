@@ -43,7 +43,7 @@ interface GameProductClientProps {
 
 export default function GameProductClient({ game, similarGames }: GameProductClientProps) {
   const router = useRouter();
-  const { addToCart, toggleCart } = useCartStore();
+  const { addToCart } = useCartStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
@@ -58,7 +58,6 @@ export default function GameProductClient({ game, similarGames }: GameProductCli
         type: 'game'
       });
     }
-    toggleCart();
   };
 
   const handleShare = () => {

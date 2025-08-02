@@ -47,6 +47,7 @@ model Merch {
   fit              String?      @db.VarChar(50)
   isLimitedEdition Boolean?     @default(false)
   releaseDate      DateTime?    @db.Timestamp(6)
+  viewCount        Int          @default(0)
   inventory        Inventory[]
   images           MerchImage[]
   orderItems       OrderItem[]
@@ -69,6 +70,7 @@ model Game {
   bundleInfo          String?
   createdAt           DateTime       @default(now())
   stock               Int            @default(0)
+  reservedStock       Int            @default(0)
   slug                String         @unique
   tags                String?
   category            String?        @default("GAME") @db.VarChar(10)
@@ -100,6 +102,7 @@ model Game {
   launchDay           Int?
   launchHour          Int?
   launchMinute        Int?
+  viewCount           Int            @default(0)
   images              GameImage[]
   inventory           GameInventory?
   orderItems          OrderItem[]
@@ -162,42 +165,67 @@ model GameInventory {
 }
 
 model Order {
-  id              String               @id @default(cuid())
-  customerEmail   String
-  customerName    String
-  shippingAddress String
-  billingAddress  String?
-  status          String               @default("pending")
-  totalCents      Int
-  shippingCents   Int                  @default(0)
-  taxCents        Int                  @default(0)
-  trackingNumber  String?
-  notes           String?
-  createdAt       DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt       DateTime             @default(now()) @updatedAt @db.Timestamp(6)
-  items           OrderItem[]
-  statusHistory   OrderStatusHistory[]
+  id                    String               @id @default(cuid())
+  userId                String?
+  customerEmail         String
+  customerName          String
+  customerPhone         String?
+  shippingAddress       String
+  billingAddress        String?
+  status                String               @default("pending")
+  totalCents            Int
+  shippingCents         Int                  @default(0)
+  taxCents              Int                  @default(0)
+  refundAmountCents     Int                  @default(0)
+  paymentIntentId       String?
+  paymentMethod         String?
+  paidAt                DateTime?            @db.Timestamp(6)
+  shippedAt             DateTime?            @db.Timestamp(6)
+  deliveredAt           DateTime?            @db.Timestamp(6)
+  cancelledAt           DateTime?            @db.Timestamp(6)
+  refundedAt            DateTime?            @db.Timestamp(6)
+  trackingNumber        String?
+  shippingMethod        String?
+  shippingCarrier       String?
+  shippingLabelUrl      String?
+  estimatedDeliveryDate DateTime?            @db.Timestamp(6)
+  notes                 String?
+  internalNotes         String?
+  createdAt             DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt             DateTime             @default(now()) @updatedAt @db.Timestamp(6)
+  user                  User?                @relation(fields: [userId], references: [id])
+  items                 OrderItem[]
+  statusHistory         OrderStatusHistory[]
+  shippingLabels        ShippingLabel[]
+  returns               Return[]
+  tickets               SupportTicket[]
+  orderNotes            OrderNote[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model OrderItem {
-  id         Int     @id @default(autoincrement())
-  orderId    String
-  itemType   String
-  gameId     Int?
-  merchId    Int?
-  merchSize  String?
-  quantity   Int
-  priceCents Int
-  game       Game?   @relation(fields: [gameId], references: [id])
-  merch      Merch?  @relation(fields: [merchId], references: [id])
-  order      Order   @relation(fields: [orderId], references: [id])
+  id          Int          @id @default(autoincrement())
+  orderId     String
+  itemType    String
+  gameId      Int?
+  merchId     Int?
+  merchSize   String?
+  quantity    Int
+  priceCents  Int
+  game        Game?        @relation(fields: [gameId], references: [id])
+  merch       Merch?       @relation(fields: [merchId], references: [id])
+  order       Order        @relation(fields: [orderId], references: [id])
+  returnItems ReturnItem[]
 }
 
 model OrderStatusHistory {
   id        Int      @id @default(autoincrement())
   orderId   String
   status    String
-  note      String?
+  notes     String?
   createdAt DateTime @default(now()) @db.Timestamp(6)
   order     Order    @relation(fields: [orderId], references: [id])
 }
@@ -323,10 +351,17 @@ model User {
   achievementPoints Int        @default(0)
   easterEggsFound   String?    // JSON array of found easter egg IDs
   
-  posts         MessagePost[]
-  permissions   Permission[]
-  profile       UserProfile?
-  sessions      UserSession[]
+  posts             MessagePost[]
+  permissions       Permission[]
+  profile           UserProfile?
+  sessions          UserSession[]
+  orders            Order[]
+  returns           Return[]
+  supportTickets    SupportTicket[]
+  assignedTickets   SupportTicket[]     @relation("AssignedTickets")
+  supportMessages   SupportMessage[]
+  orderNotes        OrderNote[]
+  inventoryAlerts   InventoryAlert[]
 
   @@index([clerkId])
   @@index([email])
@@ -510,4 +545,171 @@ enum UserRole {
   MODERATOR
   USER
   GUEST
+}
+
+model ShippingLabel {
+  id             Int       @id @default(autoincrement())
+  orderId        String
+  carrier        String
+  trackingNumber String
+  labelUrl       String
+  labelPdfUrl    String?
+  rate           Json?
+  costCents      Int
+  weight         Decimal?  @db.Decimal(10, 2)
+  length         Decimal?  @db.Decimal(10, 2)
+  width          Decimal?  @db.Decimal(10, 2)
+  height         Decimal?  @db.Decimal(10, 2)
+  isVoid         Boolean   @default(false)
+  voidedAt       DateTime? @db.Timestamp(6)
+  createdAt      DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  order          Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([trackingNumber])
+}
+
+model Return {
+  id                    Int          @id @default(autoincrement())
+  rmaNumber             String       @unique
+  orderId               String
+  userId                String?
+  customerEmail         String
+  status                String       @default("requested")
+  reason                String
+  condition             String?
+  customerNotes         String?
+  internalNotes         String?
+  returnShippingMethod  String?
+  returnTrackingNumber  String?
+  receivedAt            DateTime?    @db.Timestamp(6)
+  processedAt           DateTime?    @db.Timestamp(6)
+  refundAmountCents     Int?
+  restockingFeeCents    Int          @default(0)
+  replacementOrderId    String?
+  createdAt             DateTime     @default(now()) @db.Timestamp(6)
+  updatedAt             DateTime     @default(now()) @updatedAt @db.Timestamp(6)
+  order                 Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user                  User?        @relation(fields: [userId], references: [id])
+  items                 ReturnItem[]
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model ReturnItem {
+  id          Int       @id @default(autoincrement())
+  returnId    Int
+  orderItemId Int
+  quantity    Int
+  reason      String?
+  condition   String?
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  return      Return    @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+}
+
+model SupportTicket {
+  id                 Int              @id @default(autoincrement())
+  ticketNumber       String           @unique
+  userId             String?
+  customerEmail      String
+  customerName       String
+  orderId            String?
+  category           String
+  priority           String           @default("normal")
+  status             String           @default("open")
+  subject            String
+  assignedTo         String?
+  resolvedAt         DateTime?        @db.Timestamp(6)
+  satisfactionRating Int?
+  tags               String[]
+  createdAt          DateTime         @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime         @default(now()) @updatedAt @db.Timestamp(6)
+  order              Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  user               User?            @relation(fields: [userId], references: [id])
+  assignedUser       User?            @relation("AssignedTickets", fields: [assignedTo], references: [id])
+  messages           SupportMessage[]
+
+  @@index([status])
+  @@index([customerEmail])
+  @@index([orderId])
+}
+
+model SupportMessage {
+  id          Int           @id @default(autoincrement())
+  ticketId    Int
+  senderId    String?
+  senderName  String?
+  senderType  String        // 'customer', 'staff', 'system'
+  message     String
+  attachments Json?
+  isInternal  Boolean       @default(false)
+  createdAt   DateTime      @default(now()) @db.Timestamp(6)
+  ticket      SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender      User?         @relation(fields: [senderId], references: [id])
+}
+
+model OrderNote {
+  id        Int      @id @default(autoincrement())
+  orderId   String
+  userId    String
+  note      String
+  noteType  String   @default("general") // 'general', 'shipping', 'customer', 'issue'
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([orderId])
+}
+
+model InventoryAlert {
+  id           Int       @id @default(autoincrement())
+  itemType     String    // 'game' or 'merch'
+  itemId       Int
+  itemName     String
+  currentStock Int
+  threshold    Int
+  alertType    String    // 'low_stock', 'out_of_stock', 'restock_needed'
+  isResolved   Boolean   @default(false)
+  resolvedAt   DateTime? @db.Timestamp(6)
+  resolvedBy   String?
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  resolver     User?     @relation(fields: [resolvedBy], references: [id])
+
+  @@index([isResolved])
+}
+
+model EmailNotification {
+  id             Int       @id @default(autoincrement())
+  recipientEmail String
+  recipientName  String?
+  subject        String
+  templateType   String
+  relatedId      String?   // Could be orderId, ticketId, etc
+  relatedType    String?   // 'order', 'ticket', 'return', etc
+  status         String    @default("pending")
+  sentAt         DateTime? @db.Timestamp(6)
+  errorMessage   String?
+  metadata       Json?
+  createdAt      DateTime  @default(now()) @db.Timestamp(6)
+
+  @@index([status])
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  eventType  String
+  properties Json
+  userId     String?
+  sessionId  String
+  timestamp  DateTime
+  pageUrl    String?
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([eventType])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([timestamp])
 }

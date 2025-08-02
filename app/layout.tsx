@@ -12,6 +12,8 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import TestModeBanner from './components/TestModeBanner'
 import GlobalFooter from './components/GlobalFooter'
+import ToastContainer from './components/ToastContainer'
+import AnalyticsProvider from './components/AnalyticsProvider'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -65,11 +67,14 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           style={{ margin: 0, padding: 0, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
         >
-          <TestModeBanner />
-          <main style={{ flex: 1 }}>
-            {children}
-          </main>
-          <GlobalFooter />
+          <AnalyticsProvider>
+            <TestModeBanner />
+            <main style={{ flex: 1 }}>
+              {children}
+            </main>
+            <GlobalFooter />
+            <ToastContainer />
+          </AnalyticsProvider>
         </body>
       </html>
     </ClerkProvider>

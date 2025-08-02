@@ -1,48 +1,110 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
-  ArrowLeft, Package, Clock, CheckCircle, XCircle, 
-  Truck, DollarSign, User, Calendar, Eye, Filter
+  Package, 
+  Search, 
+  Filter, 
+  Download, 
+  Truck, 
+  RefreshCw,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  XCircle,
+  DollarSign,
+  Eye,
+  Edit,
+  MoreVertical,
+  ChevronLeft,
+  ChevronRight,
+  ArrowLeft,
+  CreditCard,
+  MapPin,
+  Calendar,
+  FileText,
+  MessageSquare,
+  RotateCcw
 } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 import { adminStyles } from '../styles/adminStyles';
 
 interface Order {
   id: string;
-  customerEmail: string;
   customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
   status: string;
   totalCents: number;
-  trackingNumber: string | null;
-  shippingCarrier: string | null;
+  shippingCents: number;
+  taxCents: number;
+  refundAmountCents: number;
   createdAt: string;
-  items: Array<{
-    id: string;
-    gameId: number | null;
-    merchId: number | null;
-    productName: string;
-    quantity: number;
-    priceCents: number;
-    size: string | null;
-  }>;
+  paidAt?: string;
+  shippedAt?: string;
+  deliveredAt?: string;
+  trackingNumber?: string;
+  shippingCarrier?: string;
+  paymentMethod?: string;
+  items: any[];
+  statusHistory?: any[];
 }
 
-export default function OrdersAdminPage() {
+const statusConfig = {
+  pending: { icon: Clock, color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.1)' },
+  payment_pending: { icon: Clock, color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.1)' },
+  paid: { icon: DollarSign, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  processing: { icon: Package, color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+  shipped: { icon: Truck, color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' },
+  delivered: { icon: CheckCircle, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  cancelled: { icon: XCircle, color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  refunded: { icon: RotateCcw, color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+  partially_refunded: { icon: RotateCcw, color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+  payment_failed: { icon: AlertCircle, color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' }
+};
+
+export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    totalRevenue: 0,
+    pendingOrders: 0,
+    shippedToday: 0
+  });
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [currentPage, statusFilter]);
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('/api/admin/orders');
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '20',
+        ...(statusFilter !== 'all' && { status: statusFilter })
+      });
+      
+      const response = await fetch(`/api/admin/orders?${params}`);
       const data = await response.json();
-      setOrders(data);
+      
+      if (Array.isArray(data)) {
+        // Old API format - just an array of orders
+        setOrders(data);
+        setTotalPages(1);
+        calculateStats(data);
+      } else {
+        // New API format with pagination
+        setOrders(data.orders || []);
+        setTotalPages(data.totalPages || 1);
+        setStats(data.stats || calculateStats(data.orders || []));
+      }
     } catch (error) {
       console.error('Error fetching orders:', error);
     } finally {
@@ -50,84 +112,100 @@ export default function OrdersAdminPage() {
     }
   };
 
-  const updateOrderStatus = async (orderId: string, status: string) => {
+  const calculateStats = (orderList: Order[]) => {
+    const stats = {
+      totalOrders: orderList.length,
+      totalRevenue: orderList.reduce((sum, order) => sum + order.totalCents, 0),
+      pendingOrders: orderList.filter(o => ['pending', 'payment_pending', 'processing'].includes(o.status)).length,
+      shippedToday: orderList.filter(o => {
+        if (!o.shippedAt) return false;
+        const shipped = new Date(o.shippedAt);
+        const today = new Date();
+        return shipped.toDateString() === today.toDateString();
+      }).length
+    };
+    setStats(stats);
+    return stats;
+  };
+
+  const filteredOrders = orders.filter(order => {
+    if (!searchTerm) return true;
+    const search = searchTerm.toLowerCase();
+    return (
+      order.id.toLowerCase().includes(search) ||
+      order.customerName.toLowerCase().includes(search) ||
+      order.customerEmail.toLowerCase().includes(search) ||
+      order.trackingNumber?.toLowerCase().includes(search)
+    );
+  });
+
+  const getStatusDisplay = (status: string) => {
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const Icon = config.icon;
+    return (
+      <span style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '4px 12px',
+        borderRadius: '9999px',
+        fontSize: '13px',
+        fontWeight: '600',
+        background: config.bg,
+        color: config.color,
+        border: `1px solid ${config.color}40`
+      }}>
+        <Icon size={14} />
+        {status.replace(/_/g, ' ')}
+      </span>
+    );
+  };
+
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
       const response = await fetch(`/api/admin/orders/${orderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: newStatus })
       });
 
       if (response.ok) {
         setOrders(orders.map(order => 
-          order.id === orderId ? { ...order, status } : order
+          order.id === orderId ? { ...order, status: newStatus } : order
         ));
       }
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error('Error updating order:', error);
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'completed': return '#10b981';
-      case 'processing': return '#f59e0b';
-      case 'shipped': return '#3b82f6';
-      case 'cancelled': return '#ef4444';
-      default: return '#6b7280';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'completed': return <CheckCircle size={16} />;
-      case 'processing': return <Clock size={16} />;
-      case 'shipped': return <Truck size={16} />;
-      case 'cancelled': return <XCircle size={16} />;
-      default: return <Package size={16} />;
-    }
-  };
-
-  const filteredOrders = filterStatus === 'all' 
-    ? orders 
-    : orders.filter(order => order.status.toLowerCase() === filterStatus);
-
-  const orderStats = {
-    total: orders.length,
-    completed: orders.filter(o => o.status.toLowerCase() === 'completed').length,
-    processing: orders.filter(o => o.status.toLowerCase() === 'processing').length,
-    shipped: orders.filter(o => o.status.toLowerCase() === 'shipped').length,
-    revenue: orders.reduce((sum, order) => sum + order.totalCents, 0) / 100,
+  const exportOrders = () => {
+    // TODO: Implement CSV export
+    alert('Export functionality coming soon!');
   };
 
   return (
     <div style={adminStyles.container}>
       <div style={adminStyles.content}>
         <Link 
-          href="/admin/dashboard" 
+          href="/admin"
           style={adminStyles.backButton}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent';
-          }}
         >
           <ArrowLeft size={20} />
-          Back to Dashboard
+          Back to Admin Dashboard
         </Link>
 
         <div style={adminStyles.header}>
-          <h1 style={adminStyles.title}>Orders Management</h1>
+          <h1 style={adminStyles.title}>Order Management</h1>
           <p style={adminStyles.subtitle}>
-            Track and manage customer orders
+            Manage orders, process shipments, and handle returns
           </p>
         </div>
 
-        {/* Stats Overview */}
+        {/* Stats Cards */}
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
           gap: '20px',
           marginBottom: '32px'
         }}>
@@ -135,247 +213,471 @@ export default function OrdersAdminPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Total Orders</p>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{orderStats.total}</h3>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalOrders}</p>
               </div>
-              <Package size={24} style={{ color: '#fdba74' }} />
+              <Package size={32} style={{ color: '#fdba74' }} />
             </div>
           </div>
+
           <div style={adminStyles.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Processing</p>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{orderStats.processing}</h3>
+                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Revenue</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>
+                  ${(stats.totalRevenue / 100).toFixed(2)}
+                </p>
               </div>
-              <Clock size={24} style={{ color: '#f59e0b' }} />
+              <DollarSign size={32} style={{ color: '#10b981' }} />
             </div>
           </div>
+
           <div style={adminStyles.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Completed</p>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{orderStats.completed}</h3>
+                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Pending</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.pendingOrders}</p>
               </div>
-              <CheckCircle size={24} style={{ color: '#10b981' }} />
+              <Clock size={32} style={{ color: '#fbbf24' }} />
             </div>
           </div>
+
           <div style={adminStyles.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Total Revenue</p>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>${orderStats.revenue.toFixed(2)}</h3>
+                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Shipped Today</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.shippedToday}</p>
               </div>
-              <DollarSign size={24} style={{ color: '#10b981' }} />
+              <Truck size={32} style={{ color: '#a78bfa' }} />
             </div>
           </div>
         </div>
 
-        {/* Filter Bar */}
+        {/* Filters and Search */}
         <div style={adminStyles.section}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Filter size={20} style={{ color: '#fdba74' }} />
-            <button
-              onClick={() => setFilterStatus('all')}
-              style={{
-                ...adminStyles.outlineButton,
-                background: filterStatus === 'all' ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
-              }}
-            >
-              All Orders
-            </button>
-            <button
-              onClick={() => setFilterStatus('processing')}
-              style={{
-                ...adminStyles.outlineButton,
-                background: filterStatus === 'processing' ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
-              }}
-            >
-              Processing
-            </button>
-            <button
-              onClick={() => setFilterStatus('shipped')}
-              style={{
-                ...adminStyles.outlineButton,
-                background: filterStatus === 'shipped' ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
-              }}
-            >
-              Shipped
-            </button>
-            <button
-              onClick={() => setFilterStatus('completed')}
-              style={{
-                ...adminStyles.outlineButton,
-                background: filterStatus === 'completed' ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
-              }}
-            >
-              Completed
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{ flex: '1', minWidth: '300px', position: 'relative' }}>
+                <Search size={20} style={{ 
+                  position: 'absolute', 
+                  left: '12px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)',
+                  color: '#94a3b8'
+                }} />
+                <input
+                  type="text"
+                  placeholder="Search by order ID, customer, email, or tracking number..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    ...adminStyles.input,
+                    paddingLeft: '44px',
+                    width: '100%'
+                  }}
+                />
+              </div>
+
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={adminStyles.input}
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="refunded">Refunded</option>
+              </select>
+
+              <button
+                onClick={exportOrders}
+                style={adminStyles.secondaryButton}
+              >
+                <Download size={16} />
+                Export
+              </button>
+
+              <button
+                onClick={fetchOrders}
+                style={adminStyles.primaryButton}
+              >
+                <RefreshCw size={16} />
+                Refresh
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Orders Table */}
         <div style={adminStyles.section}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '60px', color: '#94a3b8' }}>
-              Loading orders...
+            <div style={{ textAlign: 'center', padding: '60px' }}>
+              <RefreshCw size={32} style={{ 
+                color: '#fdba74', 
+                marginBottom: '16px',
+                animation: 'spin 1s linear infinite'
+              }} />
+              <p style={{ color: '#94a3b8' }}>Loading orders...</p>
             </div>
           ) : filteredOrders.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px' }}>
               <Package size={48} style={{ color: '#94a3b8', marginBottom: '16px' }} />
               <h3 style={{ color: '#e2e8f0', marginBottom: '8px' }}>No orders found</h3>
               <p style={{ color: '#94a3b8' }}>
-                {filterStatus !== 'all' ? 'Try changing the filter' : 'Orders will appear here'}
+                {searchTerm || statusFilter !== 'all' 
+                  ? 'Try adjusting your search or filters' 
+                  : 'Orders will appear here when customers make purchases'}
               </p>
             </div>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={adminStyles.table}>
-                <thead>
-                  <tr style={adminStyles.tableHeader}>
-                    <th style={adminStyles.tableHeaderCell}>Order ID</th>
-                    <th style={adminStyles.tableHeaderCell}>Customer</th>
-                    <th style={adminStyles.tableHeaderCell}>Date</th>
-                    <th style={adminStyles.tableHeaderCell}>Items</th>
-                    <th style={adminStyles.tableHeaderCell}>Total</th>
-                    <th style={adminStyles.tableHeaderCell}>Status</th>
-                    <th style={adminStyles.tableHeaderCell}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredOrders.map((order) => (
-                    <React.Fragment key={order.id}>
-                      <tr 
-                        style={adminStyles.tableRow}
-                        {...adminStyles.hoverEffects.row}
-                      >
-                        <td style={adminStyles.tableCell}>
-                          <span style={{ fontFamily: 'monospace', fontSize: '13px' }}>
-                            {order.id.slice(0, 8)}...
-                          </span>
-                        </td>
-                        <td style={adminStyles.tableCell}>
-                          <div>
-                            <div style={{ fontWeight: '600' }}>{order.customerName}</div>
-                            <div style={{ fontSize: '12px', color: '#94a3b8' }}>{order.customerEmail}</div>
-                          </div>
-                        </td>
-                        <td style={adminStyles.tableCell}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Calendar size={14} style={{ color: '#94a3b8' }} />
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </div>
-                        </td>
-                        <td style={adminStyles.tableCell}>
-                          {order.items.length} items
-                        </td>
-                        <td style={adminStyles.tableCell}>
-                          <span style={{ fontWeight: '600', color: '#fde68a' }}>
-                            ${(order.totalCents / 100).toFixed(2)}
-                          </span>
-                        </td>
-                        <td style={adminStyles.tableCell}>
-                          <div style={{
-                            ...adminStyles.badge,
-                            background: `${getStatusColor(order.status)}20`,
-                            borderColor: getStatusColor(order.status),
-                            color: getStatusColor(order.status),
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                          }}>
-                            {getStatusIcon(order.status)}
-                            {order.status}
-                          </div>
-                        </td>
-                        <td style={adminStyles.tableCell}>
-                          <button
-                            onClick={() => setExpandedOrder(
-                              expandedOrder === order.id ? null : order.id
-                            )}
-                            style={{
-                              ...adminStyles.outlineButton,
-                              padding: '6px 12px',
-                              fontSize: '13px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                            }}
-                          >
-                            <Eye size={14} />
-                            Details
-                          </button>
-                        </td>
-                      </tr>
-                      {expandedOrder === order.id && (
-                        <tr>
-                          <td colSpan={7} style={{ padding: 0 }}>
-                            <div style={{
-                              background: 'rgba(249, 115, 22, 0.05)',
-                              padding: '24px',
-                              borderBottom: '2px solid rgba(249, 115, 22, 0.2)',
-                            }}>
-                              <h4 style={{ 
-                                color: '#fdba74', 
-                                marginBottom: '16px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
+            <>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={adminStyles.table}>
+                  <thead>
+                    <tr style={adminStyles.tableHeader}>
+                      <th style={adminStyles.tableHeaderCell}>Order</th>
+                      <th style={adminStyles.tableHeaderCell}>Customer</th>
+                      <th style={adminStyles.tableHeaderCell}>Status</th>
+                      <th style={adminStyles.tableHeaderCell}>Total</th>
+                      <th style={adminStyles.tableHeaderCell}>Date</th>
+                      <th style={adminStyles.tableHeaderCell}>Items</th>
+                      <th style={adminStyles.tableHeaderCell}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredOrders.map((order) => (
+                      <>
+                        <tr 
+                          key={order.id}
+                          style={{
+                            ...adminStyles.tableRow,
+                            cursor: 'pointer'
+                          }}
+                          onClick={() => setExpandedOrder(
+                            expandedOrder === order.id ? null : order.id
+                          )}
+                        >
+                          <td style={adminStyles.tableCell}>
+                            <div>
+                              <p style={{ 
+                                fontFamily: 'monospace', 
+                                fontSize: '13px',
+                                color: '#fde68a',
+                                fontWeight: '600'
                               }}>
-                                Order Items
-                              </h4>
-                              <div style={{ marginBottom: '16px' }}>
-                                {order.items.map((item) => (
-                                  <div key={item.id} style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    padding: '8px 0',
-                                    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
-                                  }}>
-                                    <div>
-                                      <span style={{ color: '#e2e8f0' }}>{item.productName}</span>
-                                      {item.size && (
-                                        <span style={{ color: '#94a3b8', marginLeft: '8px' }}>
-                                          Size: {item.size}
-                                        </span>
-                                      )}
-                                    </div>
-                                    <div style={{ color: '#fde68a' }}>
-                                      {item.quantity} × ${(item.priceCents / 100).toFixed(2)}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
+                                {order.id.slice(0, 8)}...
+                              </p>
                               {order.trackingNumber && (
-                                <div style={{ marginBottom: '16px' }}>
-                                  <strong style={{ color: '#fdba74' }}>Tracking:</strong>
-                                  <span style={{ marginLeft: '8px', color: '#e2e8f0' }}>
-                                    {order.trackingNumber} ({order.shippingCarrier})
-                                  </span>
-                                </div>
+                                <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                                  <Truck size={12} style={{ display: 'inline', marginRight: '4px' }} />
+                                  {order.trackingNumber}
+                                </p>
                               )}
-                              <div style={{ display: 'flex', gap: '8px' }}>
-                                <select
-                                  value={order.status}
-                                  onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                                  style={{
-                                    ...adminStyles.input,
-                                    width: 'auto',
-                                  }}
-                                >
-                                  <option value="pending">Pending</option>
-                                  <option value="processing">Processing</option>
-                                  <option value="shipped">Shipped</option>
-                                  <option value="completed">Completed</option>
-                                  <option value="cancelled">Cancelled</option>
-                                </select>
-                              </div>
+                            </div>
+                          </td>
+                          <td style={adminStyles.tableCell}>
+                            <div>
+                              <p style={{ fontWeight: '600', color: '#e2e8f0' }}>{order.customerName}</p>
+                              <p style={{ fontSize: '12px', color: '#94a3b8' }}>{order.customerEmail}</p>
+                            </div>
+                          </td>
+                          <td style={adminStyles.tableCell}>
+                            {getStatusDisplay(order.status)}
+                          </td>
+                          <td style={adminStyles.tableCell}>
+                            <div>
+                              <p style={{ fontWeight: '600', color: '#fde68a' }}>
+                                ${(order.totalCents / 100).toFixed(2)}
+                              </p>
+                              {order.refundAmountCents > 0 && (
+                                <p style={{ fontSize: '12px', color: '#ef4444' }}>
+                                  Refunded: ${(order.refundAmountCents / 100).toFixed(2)}
+                                </p>
+                              )}
+                            </div>
+                          </td>
+                          <td style={adminStyles.tableCell}>
+                            <div>
+                              <p style={{ fontSize: '13px', color: '#e2e8f0' }}>
+                                {new Date(order.createdAt).toLocaleDateString()}
+                              </p>
+                              <p style={{ fontSize: '12px', color: '#94a3b8' }}>
+                                {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+                              </p>
+                            </div>
+                          </td>
+                          <td style={adminStyles.tableCell}>
+                            <p style={{ fontSize: '13px' }}>{order.items.length} items</p>
+                          </td>
+                          <td style={adminStyles.tableCell}>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <Link
+                                href={`/admin/orders/${order.id}`}
+                                style={{
+                                  ...adminStyles.outlineButton,
+                                  padding: '6px 12px',
+                                  fontSize: '13px',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Eye size={14} />
+                                View
+                              </Link>
                             </div>
                           </td>
                         </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+
+                        {/* Expanded Order Details */}
+                        {expandedOrder === order.id && (
+                          <tr>
+                            <td colSpan={7} style={{ padding: 0 }}>
+                              <div style={{
+                                background: 'rgba(249, 115, 22, 0.05)',
+                                padding: '24px',
+                                borderBottom: '2px solid rgba(249, 115, 22, 0.2)'
+                              }}>
+                                <div style={{ 
+                                  display: 'grid', 
+                                  gridTemplateColumns: '1fr 1fr',
+                                  gap: '24px',
+                                  marginBottom: '24px'
+                                }}>
+                                  {/* Order Items */}
+                                  <div>
+                                    <h4 style={{ 
+                                      color: '#fdba74', 
+                                      marginBottom: '12px',
+                                      fontWeight: 'bold',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '8px'
+                                    }}>
+                                      <Package size={16} />
+                                      Order Items
+                                    </h4>
+                                    {order.items.map((item: any, index: number) => (
+                                      <div key={index} style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        padding: '8px 0',
+                                        borderBottom: '1px solid rgba(249, 115, 22, 0.1)'
+                                      }}>
+                                        <div>
+                                          <span style={{ color: '#e2e8f0' }}>
+                                            {item.game?.name || item.merch?.name || item.productName || 'Unknown Item'}
+                                          </span>
+                                          {item.merchSize && (
+                                            <span style={{ color: '#94a3b8', marginLeft: '8px' }}>
+                                              Size: {item.merchSize}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div style={{ color: '#fde68a' }}>
+                                          {item.quantity} × ${(item.priceCents / 100).toFixed(2)}
+                                        </div>
+                                      </div>
+                                    ))}
+                                    <div style={{ 
+                                      marginTop: '12px', 
+                                      paddingTop: '12px', 
+                                      borderTop: '1px solid rgba(249, 115, 22, 0.2)' 
+                                    }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                        <span style={{ color: '#94a3b8' }}>Subtotal:</span>
+                                        <span style={{ color: '#e2e8f0' }}>
+                                          ${((order.totalCents - order.shippingCents - order.taxCents) / 100).toFixed(2)}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                        <span style={{ color: '#94a3b8' }}>Shipping:</span>
+                                        <span style={{ color: '#e2e8f0' }}>
+                                          ${(order.shippingCents / 100).toFixed(2)}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                        <span style={{ color: '#94a3b8' }}>Tax:</span>
+                                        <span style={{ color: '#e2e8f0' }}>
+                                          ${(order.taxCents / 100).toFixed(2)}
+                                        </span>
+                                      </div>
+                                      <div style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'space-between',
+                                        fontWeight: 'bold',
+                                        fontSize: '16px'
+                                      }}>
+                                        <span style={{ color: '#fdba74' }}>Total:</span>
+                                        <span style={{ color: '#fde68a' }}>
+                                          ${(order.totalCents / 100).toFixed(2)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Order Info */}
+                                  <div>
+                                    <h4 style={{ 
+                                      color: '#fdba74', 
+                                      marginBottom: '12px',
+                                      fontWeight: 'bold',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '8px'
+                                    }}>
+                                      <FileText size={16} />
+                                      Order Information
+                                    </h4>
+                                    <div style={{ fontSize: '13px', color: '#e2e8f0' }}>
+                                      {order.paymentMethod && (
+                                        <div style={{ marginBottom: '8px' }}>
+                                          <CreditCard size={14} style={{ display: 'inline', marginRight: '8px', color: '#94a3b8' }} />
+                                          Payment: {order.paymentMethod}
+                                        </div>
+                                      )}
+                                      {order.paidAt && (
+                                        <div style={{ marginBottom: '8px' }}>
+                                          <DollarSign size={14} style={{ display: 'inline', marginRight: '8px', color: '#94a3b8' }} />
+                                          Paid: {new Date(order.paidAt).toLocaleString()}
+                                        </div>
+                                      )}
+                                      {order.shippedAt && (
+                                        <div style={{ marginBottom: '8px' }}>
+                                          <Truck size={14} style={{ display: 'inline', marginRight: '8px', color: '#94a3b8' }} />
+                                          Shipped: {new Date(order.shippedAt).toLocaleString()}
+                                        </div>
+                                      )}
+                                      {order.deliveredAt && (
+                                        <div style={{ marginBottom: '8px' }}>
+                                          <CheckCircle size={14} style={{ display: 'inline', marginRight: '8px', color: '#94a3b8' }} />
+                                          Delivered: {new Date(order.deliveredAt).toLocaleString()}
+                                        </div>
+                                      )}
+                                      {order.customerPhone && (
+                                        <div style={{ marginBottom: '8px' }}>
+                                          <MessageSquare size={14} style={{ display: 'inline', marginRight: '8px', color: '#94a3b8' }} />
+                                          Phone: {order.customerPhone}
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* Quick Actions */}
+                                    <div style={{ marginTop: '16px' }}>
+                                      <h5 style={{ color: '#fdba74', marginBottom: '8px', fontSize: '14px' }}>
+                                        Quick Actions
+                                      </h5>
+                                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                        <select
+                                          value={order.status}
+                                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                                          style={{
+                                            ...adminStyles.input,
+                                            padding: '6px 12px',
+                                            fontSize: '13px'
+                                          }}
+                                          onClick={(e) => e.stopPropagation()}
+                                        >
+                                          <option value="pending">Pending</option>
+                                          <option value="paid">Paid</option>
+                                          <option value="processing">Processing</option>
+                                          <option value="shipped">Shipped</option>
+                                          <option value="delivered">Delivered</option>
+                                          <option value="cancelled">Cancelled</option>
+                                          <option value="refunded">Refunded</option>
+                                        </select>
+                                        <button
+                                          style={{
+                                            ...adminStyles.outlineButton,
+                                            padding: '6px 12px',
+                                            fontSize: '13px'
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            // TODO: Implement shipping label generation
+                                            alert('Shipping label generation coming soon!');
+                                          }}
+                                        >
+                                          <Truck size={14} />
+                                          Create Label
+                                        </button>
+                                        <button
+                                          style={{
+                                            ...adminStyles.outlineButton,
+                                            padding: '6px 12px',
+                                            fontSize: '13px'
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            // TODO: Implement refund processing
+                                            alert('Refund processing coming soon!');
+                                          }}
+                                        >
+                                          <RotateCcw size={14} />
+                                          Process Refund
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginTop: '24px',
+                  padding: '16px',
+                  borderTop: '1px solid rgba(249, 115, 22, 0.2)'
+                }}>
+                  <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+                    Page {currentPage} of {totalPages}
+                  </p>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      style={{
+                        ...adminStyles.outlineButton,
+                        padding: '6px 12px',
+                        opacity: currentPage === 1 ? 0.5 : 1,
+                        cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      <ChevronLeft size={16} />
+                      Previous
+                    </button>
+                    <button
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      style={{
+                        ...adminStyles.outlineButton,
+                        padding: '6px 12px',
+                        opacity: currentPage === totalPages ? 0.5 : 1,
+                        cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      Next
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

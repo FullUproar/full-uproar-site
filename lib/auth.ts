@@ -28,6 +28,13 @@ export async function checkPermission(
     action = arguments[2];
   }
 
+  // Handle colon notation (e.g., 'admin:access')
+  if (!action && resource.includes(':')) {
+    const parts = resource.split(':');
+    resource = parts[0];
+    action = parts[1];
+  }
+
   const user = await getCurrentUser();
   if (!user) return false
 
@@ -71,6 +78,13 @@ export async function requirePermission(
   resource: string,
   action?: string
 ) {
+  // Handle colon notation (e.g., 'admin:access')
+  if (!action && resource.includes(':')) {
+    const parts = resource.split(':');
+    resource = parts[0];
+    action = parts[1];
+  }
+
   const user = await getCurrentUser()
   if (!user) {
     throw new Error('Unauthorized')

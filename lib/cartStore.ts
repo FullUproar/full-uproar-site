@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useToastStore } from './toastStore';
 
 export type CartItem = {
   id: number;
@@ -15,12 +16,10 @@ export type CartItem = {
 
 type CartState = {
   items: CartItem[];
-  isOpen: boolean;
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
   updateQuantity: (id: number, quantity: number, size?: string) => void;
   removeFromCart: (id: number, size?: string) => void;
   clearCart: () => void;
-  toggleCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
 };
@@ -29,9 +28,8 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
-      isOpen: false,
       
-      addToCart: (item) =>
+      addToCart: (item) => {
         set((state) => {
           // For merch with sizes, we need to check both id and size
           const existing = state.items.find((i) => 
@@ -50,7 +48,16 @@ export const useCartStore = create<CartState>()(
             };
           }
           return { items: [...state.items, { ...item, quantity: 1 }] };
-        }),
+        });
+        
+        // Show success toast
+        const { addToast } = useToastStore.getState();
+        addToast({
+          message: `${item.name} added to cart!`,
+          type: 'success',
+          duration: 2000,
+        });
+      },
         
       updateQuantity: (id, quantity, size) =>
         set((state) => ({
@@ -69,8 +76,6 @@ export const useCartStore = create<CartState>()(
         })),
         
       clearCart: () => set({ items: [] }),
-      
-      toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       
       getTotalItems: () => {
         const { items } = get();
