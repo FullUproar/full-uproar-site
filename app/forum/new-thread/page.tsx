@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import Navigation from '@/app/components/Navigation';
@@ -13,7 +13,7 @@ interface Board {
   slug: string;
 }
 
-export default function NewThreadPage() {
+function NewThreadForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { userId, isLoaded } = useAuth();
@@ -288,5 +288,20 @@ export default function NewThreadPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function NewThreadPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937)' }}>
+        <Navigation />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+          <p style={{ color: '#fdba74' }}>Loading...</p>
+        </div>
+      </div>
+    }>
+      <NewThreadForm />
+    </Suspense>
   );
 }

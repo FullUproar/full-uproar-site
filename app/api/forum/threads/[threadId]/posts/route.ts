@@ -63,7 +63,7 @@ export async function POST(
     }
 
     // Check user permissions
-    const securityCheck = await UserSecurityService.checkUserAction(userId, 'post');
+    const securityCheck = await UserSecurityService.canPerformAction(userId, 'post');
     if (!securityCheck.allowed) {
       return NextResponse.json({ 
         error: securityCheck.reason || 'You cannot post at this time',

@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check user permissions
-    const securityCheck = await UserSecurityService.checkUserAction(userId, 'create_thread');
+    const securityCheck = await UserSecurityService.canPerformAction(userId, 'create_thread');
     if (!securityCheck.allowed) {
       return NextResponse.json({ 
         error: securityCheck.reason || 'You cannot create threads at this time',

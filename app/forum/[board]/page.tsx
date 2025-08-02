@@ -294,10 +294,14 @@ export default function BoardPage() {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                     {thread.isPinned && (
-                      <Pin size={16} style={{ color: '#f97316' }} title="Pinned" />
+                      <span title="Pinned">
+                        <Pin size={16} style={{ color: '#f97316' }} />
+                      </span>
                     )}
                     {thread.isLocked && (
-                      <Lock size={16} style={{ color: '#ef4444' }} title="Locked" />
+                      <span title="Locked">
+                        <Lock size={16} style={{ color: '#ef4444' }} />
+                      </span>
                     )}
                     <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{thread.title}</span>
                   </div>
