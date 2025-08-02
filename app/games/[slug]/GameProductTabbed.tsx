@@ -111,7 +111,7 @@ interface GameProductTabbedProps {
 export default function GameProductTabbed({ game, similarGames }: GameProductTabbedProps) {
   const router = useRouter();
   const { user } = useUser();
-  const { addToCart, toggleCart } = useCartStore();
+  const { addToCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [activeTab, setActiveTab] = useState('details');
@@ -238,7 +238,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
 
   const handleBuyNow = () => {
     handleAddToCart();
-    toggleCart();
+    router.push('/cart');
   };
 
   const handleShare = () => {

@@ -98,23 +98,23 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             await prisma.gameInventory.updateMany({
               where: { 
                 gameId: item.gameId,
-                reservedStock: { gte: item.quantity }
+                reserved: { gte: item.quantity }
               },
               data: {
-                stock: { decrement: item.quantity },
-                reservedStock: { decrement: item.quantity }
+                quantity: { decrement: item.quantity },
+                reserved: { decrement: item.quantity }
               }
             });
           } else if (item.itemType === 'merch' && item.merchId && item.merchSize) {
-            await prisma.merchInventory.updateMany({
+            await prisma.inventory.updateMany({
               where: { 
                 merchId: item.merchId,
                 size: item.merchSize,
-                reservedStock: { gte: item.quantity }
+                reserved: { gte: item.quantity }
               },
               data: {
-                stock: { decrement: item.quantity },
-                reservedStock: { decrement: item.quantity }
+                quantity: { decrement: item.quantity },
+                reserved: { decrement: item.quantity }
               }
             });
           }
@@ -159,17 +159,17 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
               await prisma.gameInventory.updateMany({
                 where: { gameId: item.gameId },
                 data: {
-                  reservedStock: { decrement: item.quantity }
+                  reserved: { decrement: item.quantity }
                 }
               });
             } else if (item.itemType === 'merch' && item.merchId && item.merchSize) {
-              await prisma.merchInventory.updateMany({
+              await prisma.inventory.updateMany({
                 where: { 
                   merchId: item.merchId,
                   size: item.merchSize
                 },
                 data: {
-                  reservedStock: { decrement: item.quantity }
+                  reserved: { decrement: item.quantity }
                 }
               });
             }

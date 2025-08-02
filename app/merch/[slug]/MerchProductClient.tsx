@@ -46,7 +46,7 @@ interface MerchProductClientProps {
 
 export default function MerchProductClient({ merch, similarMerch }: MerchProductClientProps) {
   const router = useRouter();
-  const { addToCart, toggleCart } = useCartStore();
+  const { addToCart } = useCartStore();
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -81,7 +81,7 @@ export default function MerchProductClient({ merch, similarMerch }: MerchProduct
         category: merch.category
       });
     }
-    toggleCart();
+    router.push('/cart');
   };
 
   const handleShare = () => {

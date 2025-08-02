@@ -19,7 +19,7 @@ export async function GET(
           include: {
             game: {
               select: {
-                name: true,
+                title: true,
                 slug: true
               }
             },
@@ -135,19 +135,19 @@ export async function PATCH(
               await tx.gameInventory.updateMany({
                 where: { gameId: item.gameId },
                 data: {
-                  stock: { increment: item.quantity },
-                  reservedStock: { decrement: Math.min(item.quantity, 0) }
+                  quantity: { increment: item.quantity },
+                  reserved: { decrement: Math.min(item.quantity, 0) }
                 }
               });
             } else if (item.itemType === 'merch' && item.merchId && item.merchSize) {
-              await tx.merchInventory.updateMany({
+              await tx.inventory.updateMany({
                 where: { 
                   merchId: item.merchId,
                   size: item.merchSize
                 },
                 data: {
-                  stock: { increment: item.quantity },
-                  reservedStock: { decrement: Math.min(item.quantity, 0) }
+                  quantity: { increment: item.quantity },
+                  reserved: { decrement: Math.min(item.quantity, 0) }
                 }
               });
             }

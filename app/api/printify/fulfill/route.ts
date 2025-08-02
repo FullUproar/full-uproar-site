@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       data: {
         orderId: order.id,
         status: 'printify_created',
-        note: `Printify order created: ${printifyResponse.id}`
+        notes: `Printify order created: ${printifyResponse.id}`
       }
     });
     

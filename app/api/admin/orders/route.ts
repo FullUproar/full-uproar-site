@@ -161,9 +161,13 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const data = createOrderSchema.parse(rawData);
 
     // Create order with status history
+    const { items, ...orderData } = data;
     const order = await prisma.order.create({
       data: {
-        ...data,
+        ...orderData,
+        items: {
+          create: items
+        },
         statusHistory: {
           create: {
             status: 'pending',

@@ -7,7 +7,11 @@ import { useRouter } from 'next/navigation';
 
 export default function CartModal() {
   const router = useRouter();
-  const { items, isOpen, toggleCart, updateQuantity, removeFromCart, getTotalPrice, getTotalItems } = useCartStore();
+  const { items, updateQuantity, removeFromCart, getTotalPrice, getTotalItems } = useCartStore();
+  
+  // TODO: Implement modal open/close state management
+  const isOpen = false;
+  const toggleCart = () => {};
 
   if (!isOpen) return null;
 

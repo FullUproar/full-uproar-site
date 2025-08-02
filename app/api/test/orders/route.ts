@@ -80,12 +80,22 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   // Get available products
   const games = await prisma.game.findMany({ 
-    where: { stock: { gt: 0 } },
+    where: { 
+      inventory: {
+        quantity: { gt: 0 }
+      }
+    },
     take: 10 
   });
   
   const merchItems = await prisma.merch.findMany({ 
-    where: { stock: { gt: 0 } },
+    where: { 
+      inventory: {
+        some: {
+          quantity: { gt: 0 }
+        }
+      }
+    },
     take: 10 
   });
   

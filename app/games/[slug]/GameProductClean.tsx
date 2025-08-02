@@ -51,7 +51,7 @@ interface GameProductCleanProps {
 
 export default function GameProductClean({ game, similarGames }: GameProductCleanProps) {
   const router = useRouter();
-  const { addToCart, toggleCart } = useCartStore();
+  const { addToCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isInCart, setIsInCart] = useState(false);
@@ -92,7 +92,8 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
 
   const handleBuyNow = () => {
     handleAddToCart();
-    toggleCart();
+    // Navigate to cart instead of opening modal
+    router.push('/cart');
   };
 
   const handleShare = () => {

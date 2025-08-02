@@ -85,18 +85,18 @@ export class InventoryService {
         : `merch_${item.id}_${item.size || 'default'}`;
       
       if (item.type === 'game') {
-        const game = await prisma.game.findUnique({
-          where: { id: item.id },
-          select: { stock: true, reservedStock: true }
+        const gameInventory = await prisma.gameInventory.findUnique({
+          where: { gameId: item.id }
         });
-        levels[key] = (game?.stock || 0) - (game?.reservedStock || 0);
+        levels[key] = (gameInventory?.quantity || 0) - (gameInventory?.reserved || 0);
       } else {
-        const merch = await prisma.merch.findUnique({
-          where: { id: item.id },
-          select: { stock: true, reservedStock: true }
+        const merchInventory = await prisma.inventory.findFirst({
+          where: { 
+            merchId: item.id,
+            size: item.size || null
+          }
         });
-        // TODO: Implement size-specific stock tracking
-        levels[key] = (merch?.stock || 0) - (merch?.reservedStock || 0);
+        levels[key] = (merchInventory?.quantity || 0) - (merchInventory?.reserved || 0);
       }
     }
     
@@ -112,20 +112,24 @@ export class InventoryService {
   ): Promise<void> {
     // Use raw SQL for atomic update with lock
     const result = await tx.$executeRaw`
-      UPDATE "Game"
-      SET "reservedStock" = "reservedStock" + ${quantity}
-      WHERE id = ${gameId}
-        AND ("stock" - "reservedStock") >= ${quantity}
+      UPDATE "GameInventory"
+      SET "reserved" = "reserved" + ${quantity}
+      WHERE "gameId" = ${gameId}
+        AND ("quantity" - "reserved") >= ${quantity}
     `;
 
     if (result === 0) {
       const game = await tx.game.findUnique({
         where: { id: gameId },
-        select: { name: true, stock: true, reservedStock: true }
+        select: { title: true }
+      });
+      
+      const gameInventory = await tx.gameInventory.findUnique({
+        where: { gameId }
       });
       
       throw new InventoryError(
-        `Insufficient stock for game: ${game?.name}. Available: ${(game?.stock || 0) - (game?.reservedStock || 0)}`,
+        `Insufficient stock for game: ${game?.title}. Available: ${(gameInventory?.quantity || 0) - (gameInventory?.reserved || 0)}`,
         'INSUFFICIENT_STOCK'
       );
     }
@@ -147,21 +151,37 @@ export class InventoryService {
     size?: string
   ): Promise<void> {
     // Use raw SQL for atomic update with lock
-    const result = await tx.$executeRaw`
-      UPDATE "Merch"
-      SET "reservedStock" = "reservedStock" + ${quantity}
-      WHERE id = ${merchId}
-        AND ("stock" - "reservedStock") >= ${quantity}
-    `;
+    const result = size 
+      ? await tx.$executeRaw`
+          UPDATE "Inventory"
+          SET "reserved" = "reserved" + ${quantity}
+          WHERE "merchId" = ${merchId}
+            AND "size" = ${size}
+            AND ("quantity" - "reserved") >= ${quantity}
+        `
+      : await tx.$executeRaw`
+          UPDATE "Inventory"
+          SET "reserved" = "reserved" + ${quantity}
+          WHERE "merchId" = ${merchId}
+            AND "size" IS NULL
+            AND ("quantity" - "reserved") >= ${quantity}
+        `;
 
     if (result === 0) {
       const merch = await tx.merch.findUnique({
         where: { id: merchId },
-        select: { name: true, stock: true, reservedStock: true }
+        select: { name: true }
+      });
+      
+      const merchInventory = await tx.inventory.findFirst({
+        where: { 
+          merchId,
+          size: size || null
+        }
       });
       
       throw new InventoryError(
-        `Insufficient stock for merch: ${merch?.name}${size ? ` (Size: ${size})` : ''}. Available: ${(merch?.stock || 0) - (merch?.reservedStock || 0)}`,
+        `Insufficient stock for merch: ${merch?.name}${size ? ` (Size: ${size})` : ''}. Available: ${(merchInventory?.quantity || 0) - (merchInventory?.reserved || 0)}`,
         'INSUFFICIENT_STOCK'
       );
     }
@@ -183,9 +203,9 @@ export class InventoryService {
     orderId: string
   ): Promise<void> {
     await tx.$executeRaw`
-      UPDATE "Game"
-      SET "reservedStock" = GREATEST("reservedStock" - ${quantity}, 0)
-      WHERE id = ${gameId}
+      UPDATE "GameInventory"
+      SET "reserved" = GREATEST("reserved" - ${quantity}, 0)
+      WHERE "gameId" = ${gameId}
     `;
 
     systemLogger.info('Game inventory released', {
@@ -203,11 +223,19 @@ export class InventoryService {
     orderId: string,
     size?: string
   ): Promise<void> {
-    await tx.$executeRaw`
-      UPDATE "Merch"
-      SET "reservedStock" = GREATEST("reservedStock" - ${quantity}, 0)
-      WHERE id = ${merchId}
-    `;
+    const result = size
+      ? await tx.$executeRaw`
+          UPDATE "Inventory"
+          SET "reserved" = GREATEST("reserved" - ${quantity}, 0)
+          WHERE "merchId" = ${merchId}
+            AND "size" = ${size}
+        `
+      : await tx.$executeRaw`
+          UPDATE "Inventory"
+          SET "reserved" = GREATEST("reserved" - ${quantity}, 0)
+          WHERE "merchId" = ${merchId}
+            AND "size" IS NULL
+        `;
 
     systemLogger.info('Merch inventory released', {
       merchId,
@@ -222,13 +250,12 @@ export class InventoryService {
     gameId: number,
     quantity: number
   ): Promise<boolean> {
-    const game = await prisma.game.findUnique({
-      where: { id: gameId },
-      select: { stock: true, reservedStock: true }
+    const gameInventory = await prisma.gameInventory.findUnique({
+      where: { gameId }
     });
     
-    if (!game) return false;
-    return (game.stock - game.reservedStock) >= quantity;
+    if (!gameInventory) return false;
+    return (gameInventory.quantity - gameInventory.reserved) >= quantity;
   }
 
   private static async checkMerchAvailability(
@@ -236,14 +263,15 @@ export class InventoryService {
     quantity: number,
     size?: string
   ): Promise<boolean> {
-    const merch = await prisma.merch.findUnique({
-      where: { id: merchId },
-      select: { stock: true, reservedStock: true }
+    const merchInventory = await prisma.inventory.findFirst({
+      where: { 
+        merchId,
+        size: size || null
+      }
     });
     
-    if (!merch) return false;
-    // TODO: Implement size-specific stock checking
-    return (merch.stock - merch.reservedStock) >= quantity;
+    if (!merchInventory) return false;
+    return (merchInventory.quantity - merchInventory.reserved) >= quantity;
   }
 
   /**
@@ -254,20 +282,30 @@ export class InventoryService {
       for (const item of items) {
         if (item.type === 'game') {
           await tx.$executeRaw`
-            UPDATE "Game"
+            UPDATE "GameInventory"
             SET 
-              "stock" = "stock" - ${item.quantity},
-              "reservedStock" = GREATEST("reservedStock" - ${item.quantity}, 0)
-            WHERE id = ${item.id}
+              "quantity" = "quantity" - ${item.quantity},
+              "reserved" = GREATEST("reserved" - ${item.quantity}, 0)
+            WHERE "gameId" = ${item.id}
           `;
         } else {
-          await tx.$executeRaw`
-            UPDATE "Merch"
-            SET 
-              "stock" = "stock" - ${item.quantity},
-              "reservedStock" = GREATEST("reservedStock" - ${item.quantity}, 0)
-            WHERE id = ${item.id}
-          `;
+          const updateResult = item.size
+            ? await tx.$executeRaw`
+                UPDATE "Inventory"
+                SET 
+                  "quantity" = "quantity" - ${item.quantity},
+                  "reserved" = GREATEST("reserved" - ${item.quantity}, 0)
+                WHERE "merchId" = ${item.id}
+                  AND "size" = ${item.size}
+              `
+            : await tx.$executeRaw`
+                UPDATE "Inventory"
+                SET 
+                  "quantity" = "quantity" - ${item.quantity},
+                  "reserved" = GREATEST("reserved" - ${item.quantity}, 0)
+                WHERE "merchId" = ${item.id}
+                  AND "size" IS NULL
+              `;
         }
       }
     });
@@ -283,34 +321,51 @@ export class InventoryService {
    * Get low stock items
    */
   static async getLowStockItems(threshold: number = 10): Promise<any[]> {
-    const [games, merch] = await Promise.all([
-      prisma.game.findMany({
+    const [gameInventories, merchInventories] = await Promise.all([
+      prisma.gameInventory.findMany({
         where: {
-          stock: { lte: threshold }
+          quantity: { lte: threshold }
         },
-        select: {
-          id: true,
-          name: true,
-          stock: true,
-          reservedStock: true
+        include: {
+          game: {
+            select: {
+              id: true,
+              title: true
+            }
+          }
         }
       }),
-      prisma.merch.findMany({
+      prisma.inventory.findMany({
         where: {
-          stock: { lte: threshold }
+          quantity: { lte: threshold }
         },
-        select: {
-          id: true,
-          name: true,
-          stock: true,
-          reservedStock: true
+        include: {
+          merch: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
         }
       })
     ]);
 
     return [
-      ...games.map(g => ({ type: 'game', ...g })),
-      ...merch.map(m => ({ type: 'merch', ...m }))
+      ...gameInventories.map(gi => ({ 
+        type: 'game', 
+        id: gi.game.id,
+        name: gi.game.title,
+        stock: gi.quantity,
+        reservedStock: gi.reserved
+      })),
+      ...merchInventories.map(mi => ({ 
+        type: 'merch', 
+        id: mi.merch.id,
+        name: mi.merch.name,
+        size: mi.size,
+        stock: mi.quantity,
+        reservedStock: mi.reserved
+      }))
     ];
   }
 }

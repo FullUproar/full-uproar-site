@@ -51,7 +51,7 @@ async function cleanTestData() {
     ];
     const deletedGames = await prisma.game.deleteMany({
       where: {
-        name: { in: testGameNames }
+        title: { in: testGameNames }
       }
     });
     console.log(`✅ Deleted ${deletedGames.count} test games`);

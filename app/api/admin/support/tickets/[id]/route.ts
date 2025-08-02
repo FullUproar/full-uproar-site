@@ -30,7 +30,7 @@ export async function GET(
             }
           }
         },
-        assignedTo: {
+        assignedUser: {
           select: {
             id: true,
             username: true,
@@ -132,7 +132,7 @@ export async function PATCH(
     }
 
     // If assigned to someone, add system message
-    if (assignedToId !== undefined && assignedToId !== currentTicket.assignedToId) {
+    if (assignedToId !== undefined && assignedToId !== currentTicket.assignedTo) {
       const assignedUser = assignedToId ? await prisma.user.findUnique({
         where: { id: assignedToId },
         select: { displayName: true, username: true }
@@ -176,7 +176,7 @@ export async function DELETE(
       where: { id: parseInt(id) },
       data: {
         status: 'closed',
-        resolution: 'Closed by admin'
+        resolvedAt: new Date()
       }
     });
 

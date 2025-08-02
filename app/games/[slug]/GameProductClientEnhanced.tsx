@@ -50,7 +50,7 @@ interface GameProductClientEnhancedProps {
 
 export default function GameProductClientEnhanced({ game, similarGames }: GameProductClientEnhancedProps) {
   const router = useRouter();
-  const { addToCart, toggleCart } = useCartStore();
+  const { addToCart } = useCartStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [urgencyMessage, setUrgencyMessage] = useState('');
@@ -115,7 +115,7 @@ export default function GameProductClientEnhanced({ game, similarGames }: GamePr
     setTimeout(() => setShowAddedMessage(false), 3000);
     
     // Confetti effect or visual feedback could go here
-    toggleCart();
+    router.push('/cart');
   };
 
   const handleShare = () => {

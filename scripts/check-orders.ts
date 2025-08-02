@@ -35,8 +35,11 @@ async function checkOrders() {
         console.log(`  Created: ${order.createdAt}`);
         console.log(`  Items: ${order.items.length}`);
         order.items.forEach(item => {
-          const product = item.game || item.merch;
-          console.log(`    - ${product?.title || product?.name} x${item.quantity}`);
+          if (item.game) {
+            console.log(`    - ${item.game.title} x${item.quantity}`);
+          } else if (item.merch) {
+            console.log(`    - ${item.merch.name} x${item.quantity}`);
+          }
         });
         console.log('');
       });

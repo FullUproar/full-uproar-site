@@ -69,7 +69,7 @@ export async function POST(
         });
         
         refundId = refund.id;
-        refundStatus = refund.status;
+        refundStatus = refund.status || 'pending';
       } catch (stripeError: any) {
         console.error('Stripe refund error:', stripeError);
         refundError = stripeError.message;
@@ -123,17 +123,17 @@ export async function POST(
           await prisma.gameInventory.updateMany({
             where: { gameId: item.gameId },
             data: {
-              stock: { increment: item.quantity }
+              quantity: { increment: item.quantity }
             }
           });
         } else if (item.itemType === 'merch' && item.merchId && item.merchSize) {
-          await prisma.merchInventory.updateMany({
+          await prisma.inventory.updateMany({
             where: { 
               merchId: item.merchId,
               size: item.merchSize
             },
             data: {
-              stock: { increment: item.quantity }
+              quantity: { increment: item.quantity }
             }
           });
         }

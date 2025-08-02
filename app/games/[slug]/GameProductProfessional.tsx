@@ -49,7 +49,7 @@ interface GameProductProfessionalProps {
 
 export default function GameProductProfessional({ game, similarGames }: GameProductProfessionalProps) {
   const router = useRouter();
-  const { addToCart, toggleCart } = useCartStore();
+  const { addToCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [showZoom, setShowZoom] = useState(false);
@@ -80,7 +80,7 @@ export default function GameProductProfessional({ game, similarGames }: GameProd
 
   const handleBuyNow = () => {
     handleAddToCart();
-    toggleCart();
+    router.push('/cart');
   };
 
   const handleShare = () => {

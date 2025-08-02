@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
             status: true
           }
         },
-        assignedTo: {
+        assignedUser: {
           select: {
             id: true,
             username: true,
