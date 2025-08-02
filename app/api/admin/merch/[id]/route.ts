@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { requirePermission } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function PUT(
@@ -7,11 +7,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    await requirePermission('admin:access');
 
     const data = await request.json();
     const { id } = await params;
@@ -34,11 +30,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    await requirePermission('admin:access');
 
     const body = await request.json();
     const { id } = await params;
@@ -67,22 +59,51 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    await requirePermission('admin:access');
 
     const { id } = await params;
     const merchId = parseInt(id);
 
-    await prisma.merch.delete({
-      where: { id: merchId }
+    // Delete in a transaction to handle all related records
+    await prisma.$transaction(async (tx) => {
+      // Delete related inventory records first
+      await tx.inventory.deleteMany({
+        where: { merchId }
+      });
+
+      // Delete related images
+      await tx.merchImage.deleteMany({
+        where: { merchId }
+      });
+
+      // Delete related reviews
+      await tx.review.deleteMany({
+        where: { merchId }
+      });
+
+      // Check if there are any orders with this merchandise
+      const orderItems = await tx.orderItem.findMany({
+        where: { merchId },
+        include: { order: true }
+      });
+
+      if (orderItems.length > 0) {
+        // Don't delete if there are orders, just mark as unavailable or throw error
+        throw new Error('Cannot delete merchandise that has been ordered. Consider archiving instead.');
+      }
+
+      // Finally delete the merchandise
+      await tx.merch.delete({
+        where: { id: merchId }
+      });
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting merch:', error);
-    return NextResponse.json({ error: 'Failed to delete merch' }, { status: 500 });
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : 'Failed to delete merch',
+      details: error instanceof Error ? error.message : undefined
+    }, { status: 500 });
   }
 }

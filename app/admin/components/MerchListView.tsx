@@ -69,9 +69,13 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
       
       if (response.ok) {
         await fetchMerch();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to delete merchandise');
       }
     } catch (error) {
       console.error('Error deleting merch:', error);
+      alert('Failed to delete merchandise. Please try again.');
     }
   };
 
@@ -79,11 +83,22 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
     setIsDeleting(true);
     try {
       // Delete each selected item
-      const deletePromises = Array.from(selectedMerch).map(id => 
-        fetch(`/api/admin/merch/${id}`, { method: 'DELETE' })
-      );
+      const deletePromises = Array.from(selectedMerch).map(async (id) => {
+        const response = await fetch(`/api/admin/merch/${id}`, { method: 'DELETE' });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Failed to delete item ${id}`);
+        }
+        return response;
+      });
       
-      await Promise.all(deletePromises);
+      const results = await Promise.allSettled(deletePromises);
+      const failures = results.filter(r => r.status === 'rejected');
+      
+      if (failures.length > 0) {
+        const errorMessages = failures.map((f: any) => f.reason?.message || 'Unknown error').join('\n');
+        alert(`Failed to delete some items:\n${errorMessages}`);
+      }
       
       // Refresh the list and clear selection
       await fetchMerch();
@@ -91,7 +106,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
       setShowDeleteModal(false);
     } catch (error) {
       console.error('Error deleting merchandise:', error);
-      alert('Failed to delete some items. Please try again.');
+      alert('Failed to delete items. Please try again.');
     } finally {
       setIsDeleting(false);
     }
