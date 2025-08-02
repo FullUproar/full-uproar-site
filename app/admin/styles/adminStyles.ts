@@ -58,6 +58,11 @@ export const adminStyles = {
     width: '100%',
     borderCollapse: 'collapse' as const,
   },
+  tableContainer: {
+    overflowX: 'auto' as const,
+    borderRadius: '8px',
+    border: '1px solid rgba(249, 115, 22, 0.2)',
+  },
   tableHeader: {
     padding: '16px',
     textAlign: 'left' as const,
