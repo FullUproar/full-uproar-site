@@ -5,10 +5,11 @@ import { UserSecurityService } from '@/lib/services/user-security';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
   try {
-    const threadId = parseInt(params.threadId);
+    const { threadId: threadIdStr } = await params;
+    const threadId = parseInt(threadIdStr);
 
     const posts = await prisma.messagePost.findMany({
       where: { threadId },
@@ -36,7 +37,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -45,7 +46,8 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const threadId = parseInt(params.threadId);
+    const { threadId: threadIdStr } = await params;
+    const threadId = parseInt(threadIdStr);
 
     // Check if thread exists and is not locked
     const thread = await prisma.messageThread.findUnique({

@@ -3,10 +3,11 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
   try {
-    const threadId = parseInt(params.threadId);
+    const { threadId: threadIdStr } = await params;
+    const threadId = parseInt(threadIdStr);
 
     await prisma.messageThread.update({
       where: { id: threadId },
