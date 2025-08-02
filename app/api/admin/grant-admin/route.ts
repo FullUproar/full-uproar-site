@@ -13,7 +13,7 @@ export async function POST() {
 
     // Check if user exists
     let user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { clerkId: userId }
     });
 
     if (!user) {
@@ -23,7 +23,7 @@ export async function POST() {
       
       user = await prisma.user.create({
         data: {
-          id: userId,
+          clerkId: userId,
           email: email,
           username: username,
           displayName: clerkUser.firstName || username,
@@ -35,7 +35,7 @@ export async function POST() {
     } else {
       // Update existing user to admin
       user = await prisma.user.update({
-        where: { id: userId },
+        where: { clerkId: userId },
         data: { role: 'ADMIN' }
       });
     }

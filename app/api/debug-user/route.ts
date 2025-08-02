@@ -13,7 +13,7 @@ export async function GET() {
 
     // Check if user exists in database
     const dbUser = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { clerkId: userId }
     });
 
     // Get user count
