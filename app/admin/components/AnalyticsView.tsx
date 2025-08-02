@@ -329,7 +329,7 @@ export default function AnalyticsView() {
         <div style={{ padding: '20px' }}>
           {data.funnel.map((stage, index) => {
             const percentage = maxCount > 0 ? (stage.count / maxCount) * 100 : 0;
-            const dropoff = index > 0 ? 
+            const dropoff = index > 0 && data.funnel ? 
               ((data.funnel[index - 1].count - stage.count) / data.funnel[index - 1].count * 100).toFixed(1) : 
               0;
             
