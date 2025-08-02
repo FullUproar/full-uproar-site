@@ -18,19 +18,26 @@ export async function getCurrentUser() {
 }
 
 export async function checkPermission(
-  userId: string,
   resource: string,
-  action: string
+  action?: string
 ): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: { permissions: true }
-  })
+  // If called with old signature (3 params), handle it
+  if (arguments.length === 3) {
+    console.warn('checkPermission called with deprecated signature. Use checkPermission(resource, action) instead.');
+    resource = arguments[1];
+    action = arguments[2];
+  }
 
+  const user = await getCurrentUser();
   if (!user) return false
 
   // Super admins have all permissions
   if (user.role === UserRole.SUPER_ADMIN) return true
+
+  // If no action specified, check for any permission on the resource
+  if (!action) {
+    action = '*';
+  }
 
   // Check role-based permissions
   const rolePermissions = getRolePermissions(user.role)
@@ -44,7 +51,7 @@ export async function checkPermission(
   // Check individual permissions
   const permission = user.permissions.find(p =>
     p.resource === resource &&
-    p.action === action &&
+    (p.action === action || p.action === '*') &&
     p.granted &&
     (!p.expiresAt || p.expiresAt > new Date())
   )
@@ -62,14 +69,14 @@ export async function requireAuth() {
 
 export async function requirePermission(
   resource: string,
-  action: string
+  action?: string
 ) {
   const user = await getCurrentUser()
   if (!user) {
     throw new Error('Unauthorized')
   }
 
-  const hasPermission = await checkPermission(user.id, resource, action)
+  const hasPermission = await checkPermission(resource, action)
   if (!hasPermission) {
     throw new Error('Forbidden')
   }

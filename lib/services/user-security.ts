@@ -17,7 +17,7 @@ export class UserSecurityService {
     action: 'post' | 'comment' | 'vote' | 'message' | 'create_thread'
   ): Promise<SecurityCheckResult> {
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { clerkId: userId }
     });
 
     if (!user) {
@@ -45,7 +45,7 @@ export class UserSecurityService {
       } else {
         // Mute expired, unmute the user
         await prisma.user.update({
-          where: { id: userId },
+          where: { clerkId: userId },
           data: { isMuted: false, mutedUntil: null }
         });
       }
@@ -102,7 +102,7 @@ export class UserSecurityService {
    */
   static async updateTrustLevel(userId: string): Promise<void> {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { clerkId: userId },
       include: {
         posts: {
           where: {
@@ -135,7 +135,7 @@ export class UserSecurityService {
 
     if (newTrustLevel !== user.trustLevel) {
       await prisma.user.update({
-        where: { id: userId },
+        where: { clerkId: userId },
         data: { trustLevel: newTrustLevel }
       });
     }
@@ -146,7 +146,7 @@ export class UserSecurityService {
    */
   static async flagUser(userId: string, reason: string, reportedBy: string): Promise<void> {
     await prisma.user.update({
-      where: { id: userId },
+      where: { clerkId: userId },
       data: {
         flagCount: { increment: 1 },
         lastFlaggedAt: new Date()
@@ -165,10 +165,10 @@ export class UserSecurityService {
     });
 
     // Auto-mute if too many flags
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
     if (user && user.flagCount >= 5 && !user.isMuted) {
       await prisma.user.update({
-        where: { id: userId },
+        where: { clerkId: userId },
         data: {
           isMuted: true,
           mutedUntil: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hour mute

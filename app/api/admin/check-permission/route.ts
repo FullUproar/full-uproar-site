@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
 
     const { resource, action } = await request.json();
     
-    const hasPermission = await checkPermission(user.id, resource, action);
+    const hasPermission = await checkPermission(resource, action);
     
     return NextResponse.json({ hasPermission });
   } catch (error) {
