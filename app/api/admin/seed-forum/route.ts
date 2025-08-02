@@ -15,7 +15,7 @@ export async function POST() {
       where: { clerkId: userId }
     });
 
-    if (user?.role !== 'ADMIN') {
+    if (user?.role !== 'ADMIN' && user?.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
