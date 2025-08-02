@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, Search, Filter, Package } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Search, Filter, Package, CheckSquare, Square } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Game {
   id: number;
@@ -37,6 +38,9 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'featured' | 'bundle' | 'preorder'>('all');
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedGames, setSelectedGames] = useState<Set<number>>(new Set());
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchGames();
@@ -80,6 +84,46 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
     }
   };
 
+  const handleBulkDelete = async () => {
+    setIsDeleting(true);
+    try {
+      // Delete each selected game
+      const deletePromises = Array.from(selectedGames).map(id => 
+        fetch(`/api/admin/games/${id}`, { method: 'DELETE' })
+      );
+      
+      await Promise.all(deletePromises);
+      
+      // Refresh the list and clear selection
+      await fetchGames();
+      setSelectedGames(new Set());
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error('Error deleting games:', error);
+      alert('Failed to delete some games. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleSelectGame = (id: number) => {
+    const newSelected = new Set(selectedGames);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedGames(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedGames.size === filteredGames.length) {
+      setSelectedGames(new Set());
+    } else {
+      setSelectedGames(new Set(filteredGames.map(g => g.id)));
+    }
+  };
+
   const filteredGames = games.filter(game => {
     const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          game.tagline.toLowerCase().includes(searchTerm.toLowerCase());
@@ -91,6 +135,10 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
     
     return matchesSearch && matchesFilter;
   });
+
+  const selectedCount = selectedGames.size;
+  const allSelected = filteredGames.length > 0 && selectedGames.size === filteredGames.length;
+  const someSelected = selectedGames.size > 0 && selectedGames.size < filteredGames.length;
 
   if (loading) {
     return (
@@ -171,15 +219,29 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
           </select>
         </div>
 
-        {/* New Game Button */}
-        <button
-          onClick={onNew}
-          style={adminStyles.button}
-          {...adminStyles.hoverEffects.button}
-        >
-          <Plus size={16} style={{ marginRight: '4px' }} />
-          New Game
-        </button>
+        {/* Action Buttons */}
+        <div style={{ display: 'flex', gap: '12px' }}>
+          {selectedCount > 0 && (
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              style={{
+                ...adminStyles.button,
+                background: '#ef4444',
+              }}
+            >
+              <Trash2 size={16} style={{ marginRight: '4px' }} />
+              Delete ({selectedCount})
+            </button>
+          )}
+          <button
+            onClick={onNew}
+            style={adminStyles.button}
+            {...adminStyles.hoverEffects.button}
+          >
+            <Plus size={16} style={{ marginRight: '4px' }} />
+            New Game
+          </button>
+        </div>
       </div>
 
       {/* Games Table */}
@@ -193,6 +255,20 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
               <tr style={{
                 borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
               }}>
+                <th style={{ ...adminStyles.tableHeader, width: '50px' }}>
+                  <button
+                    onClick={toggleSelectAll}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#fdba74',
+                      cursor: 'pointer',
+                      padding: '4px',
+                    }}
+                  >
+                    {allSelected ? <CheckSquare size={20} /> : someSelected ? <CheckSquare size={20} style={{ opacity: 0.5 }} /> : <Square size={20} />}
+                  </button>
+                </th>
                 <th style={adminStyles.tableHeader}>Image</th>
                 <th style={adminStyles.tableHeader}>Title</th>
                 <th style={adminStyles.tableHeader}>Price</th>
@@ -208,14 +284,33 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                   style={{
                     borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
                     transition: 'background 0.2s',
+                    background: selectedGames.has(game.id) ? 'rgba(249, 115, 22, 0.1)' : 'transparent',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                    if (!selectedGames.has(game.id)) {
+                      e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
+                    if (!selectedGames.has(game.id)) {
+                      e.currentTarget.style.background = 'transparent';
+                    }
                   }}
                 >
+                  <td style={adminStyles.tableCell}>
+                    <button
+                      onClick={() => toggleSelectGame(game.id)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#fdba74',
+                        cursor: 'pointer',
+                        padding: '4px',
+                      }}
+                    >
+                      {selectedGames.has(game.id) ? <CheckSquare size={18} /> : <Square size={18} />}
+                    </button>
+                  </td>
                   <td style={adminStyles.tableCell}>
                     {game.imageUrl ? (
                       <img
@@ -359,6 +454,19 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleBulkDelete}
+        title="Delete Games"
+        message={`Are you sure you want to permanently delete ${selectedCount} ${selectedCount === 1 ? 'game' : 'games'}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isDestructive={true}
+        loading={isDeleting}
+      />
     </>
   );
 }

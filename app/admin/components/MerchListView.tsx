@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, Search, ShoppingBag } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Search, ShoppingBag, CheckSquare, Square } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Merch {
   id: number;
@@ -27,6 +28,9 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [selectedMerch, setSelectedMerch] = useState<Set<number>>(new Set());
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchMerch();
@@ -60,6 +64,46 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
     }
   };
 
+  const handleBulkDelete = async () => {
+    setIsDeleting(true);
+    try {
+      // Delete each selected item
+      const deletePromises = Array.from(selectedMerch).map(id => 
+        fetch(`/api/admin/merch/${id}`, { method: 'DELETE' })
+      );
+      
+      await Promise.all(deletePromises);
+      
+      // Refresh the list and clear selection
+      await fetchMerch();
+      setSelectedMerch(new Set());
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error('Error deleting merchandise:', error);
+      alert('Failed to delete some items. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleSelectMerch = (id: number) => {
+    const newSelected = new Set(selectedMerch);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedMerch(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedMerch.size === filteredMerch.length) {
+      setSelectedMerch(new Set());
+    } else {
+      setSelectedMerch(new Set(filteredMerch.map(m => m.id)));
+    }
+  };
+
   const filteredMerch = merch.filter(item => {
     const matchesSearch = 
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,6 +127,10 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
     };
     return categoryMap[category] || category;
   };
+
+  const selectedCount = selectedMerch.size;
+  const allSelected = filteredMerch.length > 0 && selectedMerch.size === filteredMerch.length;
+  const someSelected = selectedMerch.size > 0 && selectedMerch.size < filteredMerch.length;
 
   if (loading) {
     return (
@@ -153,16 +201,66 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
           </select>
         </div>
 
-        {/* New Merch Button */}
-        <button
-          onClick={onNew}
-          style={adminStyles.button}
-          {...adminStyles.hoverEffects.button}
-        >
-          <Plus size={16} style={{ marginRight: '4px' }} />
-          New Merch
-        </button>
+        {/* Action Buttons */}
+        <div style={{ display: 'flex', gap: '12px' }}>
+          {selectedCount > 0 && (
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              style={{
+                ...adminStyles.button,
+                background: '#ef4444',
+              }}
+            >
+              <Trash2 size={16} style={{ marginRight: '4px' }} />
+              Delete ({selectedCount})
+            </button>
+          )}
+          <button
+            onClick={onNew}
+            style={adminStyles.button}
+            {...adminStyles.hoverEffects.button}
+          >
+            <Plus size={16} style={{ marginRight: '4px' }} />
+            New Merch
+          </button>
+        </div>
       </div>
+
+      {/* Select All Bar */}
+      {filteredMerch.length > 0 && (
+        <div style={{
+          ...adminStyles.section,
+          padding: '12px 24px',
+          marginTop: '-20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          background: 'rgba(249, 115, 22, 0.05)',
+          borderTop: 'none',
+        }}>
+          <button
+            onClick={toggleSelectAll}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#fdba74',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '4px',
+            }}
+          >
+            {allSelected ? <CheckSquare size={20} /> : someSelected ? <CheckSquare size={20} style={{ opacity: 0.5 }} /> : <Square size={20} />}
+            <span>Select All</span>
+          </button>
+          {selectedCount > 0 && (
+            <span style={{ color: '#94a3b8', fontSize: '14px' }}>
+              {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Merch Grid */}
       <div style={adminStyles.section}>
@@ -179,16 +277,38 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
+                position: 'relative',
+                border: selectedMerch.has(item.id) ? '2px solid #fdba74' : '2px solid rgba(249, 115, 22, 0.3)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+                e.currentTarget.style.borderColor = selectedMerch.has(item.id) ? '#fdba74' : 'rgba(249, 115, 22, 0.5)';
                 e.currentTarget.style.boxShadow = '0 4px 20px rgba(249, 115, 22, 0.2)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+                e.currentTarget.style.borderColor = selectedMerch.has(item.id) ? '#fdba74' : 'rgba(249, 115, 22, 0.3)';
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
+              {/* Selection Checkbox */}
+              <button
+                onClick={() => toggleSelectMerch(item.id)}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  left: '12px',
+                  background: 'rgba(30, 41, 59, 0.8)',
+                  border: '2px solid #fdba74',
+                  borderRadius: '6px',
+                  color: '#fdba74',
+                  cursor: 'pointer',
+                  padding: '6px',
+                  zIndex: 1,
+                  backdropFilter: 'blur(4px)',
+                }}
+              >
+                {selectedMerch.has(item.id) ? <CheckSquare size={20} /> : <Square size={20} />}
+              </button>
+
               {/* Image */}
               <div style={{
                 height: '200px',
@@ -301,6 +421,19 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleBulkDelete}
+        title="Delete Merchandise"
+        message={`Are you sure you want to permanently delete ${selectedCount} ${selectedCount === 1 ? 'item' : 'items'}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isDestructive={true}
+        loading={isDeleting}
+      />
     </>
   );
 }
