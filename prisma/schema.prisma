@@ -302,6 +302,18 @@ model User {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @default(now()) @updatedAt
   
+  // Security fields
+  emailVerified    Boolean      @default(false)
+  emailVerifiedAt  DateTime?
+  isBanned         Boolean      @default(false)
+  bannedAt         DateTime?
+  bannedReason     String?
+  isMuted          Boolean      @default(false)
+  mutedUntil       DateTime?
+  trustLevel       Int          @default(0) // 0=new, 1=basic, 2=member, 3=regular, 4=leader
+  flagCount        Int          @default(0)
+  lastFlaggedAt    DateTime?
+  
   // Cult devotion fields
   cultDevotion  Int           @default(0)
   cultLevel     Int           @default(0)
@@ -320,6 +332,8 @@ model User {
   @@index([email])
   @@index([username])
   @@index([role])
+  @@index([trustLevel])
+  @@index([isBanned])
 }
 
 model UserSession {

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/middleware/rate-limit';
 import { logger } from '@/lib/utils/logger';
 import { isProtectedEndpoint, protectEndpoint } from './app/api/middleware/protect-endpoints';
+import { addSecurityHeaders } from '@/lib/middleware/security-headers';
 
 const isProtectedRoute = createRouteMatcher([
   '/admin(.*)',
@@ -38,13 +39,13 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
     if (isProtectedEndpoint(path)) {
       const protectionResponse = protectEndpoint(request);
       if (protectionResponse) {
-        return protectionResponse;
+        return addSecurityHeaders(protectionResponse);
       }
     }
 
     const rateLimitResponse = await rateLimit(request, rateLimitType);
     if (rateLimitResponse) {
-      return rateLimitResponse;
+      return addSecurityHeaders(rateLimitResponse);
     }
 
     // Log API requests
@@ -55,6 +56,13 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
       userAgent: request.headers.get('user-agent'),
     });
   }
+
+  // For successful requests, we need to add security headers
+  // This will be handled by Next.js automatically for most routes
+  // But we can add a custom header to track our middleware
+  const response = NextResponse.next();
+  response.headers.set('X-Middleware-Processed', 'true');
+  return response;
 })
 
 export const config = {
