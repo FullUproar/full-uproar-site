@@ -129,7 +129,7 @@ export default function Navigation() {
                 ))}
                 
                 <SignedOut>
-                  <SignInButton mode="modal">
+                  <Link href="/sign-in">
                     <button style={{
                       background: '#f97316',
                       color: '#111827',
@@ -141,7 +141,7 @@ export default function Navigation() {
                     }}>
                       SIGN IN
                     </button>
-                  </SignInButton>
+                  </Link>
                 </SignedOut>
                 
                 <SignedIn>
@@ -280,7 +280,7 @@ export default function Navigation() {
           ))}
           
           <SignedOut>
-            <SignInButton mode="modal">
+            <Link href="/sign-in" style={{ width: '100%' }} onClick={() => setIsMenuOpen(false)}>
               <button style={{
                 background: '#f97316',
                 color: '#111827',
@@ -293,7 +293,7 @@ export default function Navigation() {
               }}>
                 SIGN IN
               </button>
-            </SignInButton>
+            </Link>
           </SignedOut>
           
           <SignedIn>

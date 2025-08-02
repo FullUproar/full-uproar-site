@@ -22,6 +22,7 @@ import MigrationsView from './components/MigrationsView';
 import DashboardView from './components/DashboardView';
 import TestModesView from './components/TestModesView';
 import UsersListView from './components/UsersListView';
+import UserModerationView from './components/UserModerationView';
 import ComicsListView from './components/ComicsListView';
 import ArtworkListView from './components/ArtworkListView';
 import ArtworkEditForm from './components/ArtworkEditForm';
@@ -50,6 +51,7 @@ type ViewType =
   | 'users-list'
   | 'users-edit'
   | 'users-new'
+  | 'users-moderation'
   | 'diagnostics';
 
 interface ViewState {
@@ -139,6 +141,7 @@ export default function AdminApp() {
       subItems: [
         { label: 'All Users', view: { type: 'users-list' as ViewType } },
         { label: 'New User', view: { type: 'users-new' as ViewType } },
+        { label: 'Moderation', view: { type: 'users-moderation' as ViewType } },
       ]
     },
     {
@@ -300,6 +303,13 @@ export default function AdminApp() {
           <UsersListView 
             onEdit={(user) => navigateTo({ type: 'users-edit', data: user }, `Edit: ${user.displayName || user.username || user.email}`)}
             onNew={() => navigateTo({ type: 'users-new' }, 'New User')}
+          />
+        );
+      
+      case 'users-moderation':
+        return (
+          <UserModerationView 
+            onBack={() => navigateTo({ type: 'users-list' }, 'Users')}
           />
         );
       
