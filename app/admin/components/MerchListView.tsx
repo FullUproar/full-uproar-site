@@ -54,9 +54,59 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
       const url = showArchived ? '/api/admin/merch?showArchived=true' : '/api/admin/merch';
       const response = await fetch(url);
       const data = await response.json();
-      setMerch(data);
+      
+      // Ensure we have an array
+      if (Array.isArray(data)) {
+        // Parse sizes and colors if they're strings
+        const parsedData = data.map(item => {
+          let sizes = [];
+          let colors = [];
+          
+          // Safely parse sizes
+          if (item.sizes) {
+            if (typeof item.sizes === 'string') {
+              try {
+                sizes = JSON.parse(item.sizes);
+              } catch (e) {
+                // If JSON parse fails, try splitting by comma
+                sizes = item.sizes.split(',').map((s: string) => s.trim()).filter((s: string) => s);
+              }
+            } else if (Array.isArray(item.sizes)) {
+              sizes = item.sizes;
+            }
+          }
+          
+          // Safely parse colors
+          if (item.colors) {
+            if (typeof item.colors === 'string') {
+              try {
+                colors = JSON.parse(item.colors);
+              } catch (e) {
+                // If JSON parse fails, try splitting by comma
+                colors = item.colors.split(',').map((c: string) => c.trim()).filter((c: string) => c);
+              }
+            } else if (Array.isArray(item.colors)) {
+              colors = item.colors;
+            }
+          }
+          
+          return {
+            ...item,
+            sizes,
+            colors
+          };
+        });
+        setMerch(parsedData);
+      } else {
+        console.error('Invalid response format:', data);
+        setMerch([]);
+        if (data.error) {
+          alert(data.error);
+        }
+      }
     } catch (error) {
       console.error('Error fetching merch:', error);
+      setMerch([]);
     } finally {
       setLoading(false);
     }

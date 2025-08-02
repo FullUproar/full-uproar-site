@@ -63,9 +63,20 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
       const url = showArchived ? '/api/admin/games?showArchived=true' : '/api/admin/games';
       const response = await fetch(url);
       const data = await response.json();
-      setGames(data);
+      
+      // Ensure we have an array
+      if (Array.isArray(data)) {
+        setGames(data);
+      } else {
+        console.error('Invalid response format:', data);
+        setGames([]);
+        if (data.error) {
+          alert(data.error);
+        }
+      }
     } catch (error) {
       console.error('Error fetching games:', error);
+      setGames([]);
     } finally {
       setLoading(false);
     }
