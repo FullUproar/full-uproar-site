@@ -107,6 +107,17 @@ export const adminStyles = {
     transition: 'transform 0.2s',
     fontSize: '14px',
   },
+  secondaryButton: {
+    padding: '8px 16px',
+    background: 'rgba(30, 41, 59, 0.8)',
+    color: '#fdba74',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    fontSize: '14px',
+  },
   outlineButton: {
     padding: '8px 16px',
     background: 'transparent',
