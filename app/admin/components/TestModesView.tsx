@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, TestTube, Wrench, Shield } from 'lucide-react';
+import { AlertTriangle, TestTube, Wrench, Shield, Trash2 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
 interface TestMode {
@@ -254,6 +254,77 @@ export default function TestModesView() {
               ))
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Clear Test Data Section */}
+      <div style={adminStyles.section}>
+        <h3 style={{ ...adminStyles.sectionTitle, marginBottom: '1.5rem' }}>Clear Test Data</h3>
+        <p style={{ color: '#94a3b8', marginBottom: '1.5rem' }}>
+          Remove test data to allow deletion of games and merchandise
+        </p>
+        
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={async () => {
+              const confirmPhrase = prompt('Type "CLEAR TEST DATA" to confirm deletion of ALL orders:');
+              if (confirmPhrase === 'CLEAR TEST DATA') {
+                try {
+                  const response = await fetch('/api/admin/clear-test-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'orders', confirmPhrase })
+                  });
+                  const result = await response.json();
+                  if (response.ok) {
+                    alert(`Cleared:\n- ${result.results.orders.orders} orders\n- ${result.results.orders.orderItems} order items\n- Reset inventory for ${result.results.orders.inventoryReset + result.results.orders.gameInventoryReset} items`);
+                  } else {
+                    alert(result.error);
+                  }
+                } catch (error) {
+                  alert('Failed to clear test data');
+                }
+              }
+            }}
+            style={{
+              ...adminStyles.button,
+              background: '#dc2626',
+            }}
+          >
+            <Trash2 size={16} style={{ marginRight: '0.5rem' }} />
+            Clear All Orders
+          </button>
+
+          <button
+            onClick={async () => {
+              const confirmPhrase = prompt('Type "CLEAR TEST DATA" to confirm deletion of ALL test data:');
+              if (confirmPhrase === 'CLEAR TEST DATA') {
+                try {
+                  const response = await fetch('/api/admin/clear-test-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'all', confirmPhrase })
+                  });
+                  const result = await response.json();
+                  if (response.ok) {
+                    alert('All test data cleared successfully! Check console for details.');
+                    console.log('Cleared data:', result.results);
+                  } else {
+                    alert(result.error);
+                  }
+                } catch (error) {
+                  alert('Failed to clear test data');
+                }
+              }
+            }}
+            style={{
+              ...adminStyles.button,
+              background: '#991b1b',
+            }}
+          >
+            <Trash2 size={16} style={{ marginRight: '0.5rem' }} />
+            Clear ALL Test Data
+          </button>
         </div>
       </div>
     </>
