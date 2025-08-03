@@ -7,10 +7,7 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.get('featured');
     
     const where: any = { 
-      OR: [
-        { archived: false },
-        { archived: null }
-      ]
+      archived: { not: true }
     };
     if (featured === 'true') where.featured = true;
     

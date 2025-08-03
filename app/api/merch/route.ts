@@ -13,10 +13,7 @@ export async function GET(request: NextRequest) {
     });
     
     const where: any = { 
-      OR: [
-        { archived: false },
-        { archived: null }
-      ]
+      archived: { not: true }
     };
     if (category) where.category = category;
     if (featured === 'true') where.featured = true;
