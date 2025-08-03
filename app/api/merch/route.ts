@@ -12,7 +12,12 @@ export async function GET(request: NextRequest) {
       where: { key: 'printify_enabled' }
     });
     
-    const where: any = {};
+    const where: any = { 
+      OR: [
+        { archived: false },
+        { archived: null }
+      ]
+    };
     if (category) where.category = category;
     if (featured === 'true') where.featured = true;
     

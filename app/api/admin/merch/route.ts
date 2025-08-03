@@ -10,7 +10,12 @@ export async function GET(request: NextRequest) {
     const showArchived = searchParams.get('showArchived') === 'true';
 
     const merch = await prisma.merch.findMany({
-      where: showArchived ? {} : { archived: false },
+      where: showArchived ? {} : { 
+        OR: [
+          { archived: false },
+          { archived: null }
+        ]
+      },
       orderBy: {
         createdAt: 'desc'
       }

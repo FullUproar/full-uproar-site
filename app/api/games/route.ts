@@ -6,7 +6,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const featured = searchParams.get('featured');
     
-    const where: any = {};
+    const where: any = { 
+      OR: [
+        { archived: false },
+        { archived: null }
+      ]
+    };
     if (featured === 'true') where.featured = true;
     
     console.log('Fetching games from database...');

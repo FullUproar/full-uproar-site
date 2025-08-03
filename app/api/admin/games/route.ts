@@ -14,7 +14,12 @@ export async function GET(request: NextRequest) {
     const showArchived = searchParams.get('showArchived') === 'true';
 
     const games = await prisma.game.findMany({
-      where: showArchived ? {} : { archived: false },
+      where: showArchived ? {} : { 
+        OR: [
+          { archived: false },
+          { archived: null }
+        ]
+      },
       orderBy: {
         createdAt: 'desc'
       }
