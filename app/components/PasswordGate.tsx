@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Skull, Eye, EyeOff, Gamepad2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface PasswordGateProps {
   onCorrectPassword: () => void;
@@ -36,54 +37,93 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
   const styles = {
     container: {
       minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #111827, #1f2937)',
+      background: '#0a0a0a',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '1rem'
+      padding: '1rem',
+      position: 'relative' as const,
+      overflow: 'hidden'
+    },
+    backgroundPattern: {
+      position: 'absolute' as const,
+      inset: 0,
+      background: 'radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(253, 186, 116, 0.05) 0%, transparent 50%)',
+      pointerEvents: 'none' as const
     },
     card: {
       background: 'rgba(30, 41, 59, 0.95)',
       backdropFilter: 'blur(10px)',
       borderRadius: '1rem',
       padding: 'clamp(1.5rem, 5vw, 3rem)',
-      maxWidth: '450px',
+      maxWidth: '550px',
       width: '100%',
       textAlign: 'center' as const,
       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.5)'
+      border: '3px solid #f97316',
+      position: 'relative' as const,
+      zIndex: 10
+    },
+    imageContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      gap: '2rem',
+      marginBottom: '2rem',
+      opacity: 0.8
+    },
+    fuglyImage: {
+      borderRadius: '0.5rem',
+      border: '2px solid rgba(249, 115, 22, 0.5)',
+      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
+      transform: 'rotate(-2deg)'
+    },
+    fuglyImage2: {
+      borderRadius: '0.5rem',
+      border: '2px solid rgba(139, 92, 246, 0.5)',
+      boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+      transform: 'rotate(2deg)'
     },
     logoContainer: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: '0.75rem',
-      marginBottom: '1.5rem'
+      marginBottom: '1rem'
     },
     logo: {
-      width: 'clamp(3rem, 8vw, 4rem)',
-      height: 'clamp(3rem, 8vw, 4rem)',
+      width: 'clamp(4rem, 10vw, 5rem)',
+      height: 'clamp(4rem, 10vw, 5rem)',
       background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
+      fontSize: 'clamp(1.5rem, 4vw, 2rem)',
       fontWeight: 900,
       color: 'white',
-      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.4)'
+      boxShadow: '0 8px 20px rgba(249, 115, 22, 0.5)',
+      border: '3px solid #fdba74'
     },
     title: {
-      fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
+      fontSize: 'clamp(2rem, 6vw, 3rem)',
       fontWeight: 900,
+      color: '#f97316',
+      marginBottom: '0.25rem',
+      textShadow: '0 4px 12px rgba(249, 115, 22, 0.5)',
+      letterSpacing: '-0.02em'
+    },
+    brandName: {
+      fontSize: 'clamp(0.875rem, 2vw, 1rem)',
       color: '#fdba74',
-      marginBottom: '0.5rem',
-      textShadow: '0 2px 8px rgba(249, 115, 22, 0.3)'
+      fontWeight: 700,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.1em',
+      marginBottom: '0.5rem'
     },
     subtitle: {
       fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
       color: '#e2e8f0',
-      marginBottom: '2rem',
+      marginBottom: '1.5rem',
       lineHeight: '1.6',
       opacity: 0.9
     },
@@ -163,22 +203,46 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
 
   return (
     <div style={styles.container}>
+      <div style={styles.backgroundPattern} />
       <div style={styles.card}>
+        <div style={styles.imageContainer}>
+          <div style={styles.fuglyImage}>
+            <Image 
+              src="/fugly_shirt.jpg" 
+              alt="Fugly Gaming Gear" 
+              width={120} 
+              height={120}
+              style={{ borderRadius: '0.5rem', display: 'block' }}
+            />
+          </div>
+          <div style={styles.fuglyImage2}>
+            <Image 
+              src="/fugly_shirt copy.jpg" 
+              alt="Fugly Exclusive Merch" 
+              width={120} 
+              height={120}
+              style={{ borderRadius: '0.5rem', display: 'block' }}
+            />
+          </div>
+        </div>
+
         <div style={styles.logoContainer}>
           <div style={styles.logo}>
             FU
           </div>
-          <Gamepad2 size={32} style={styles.gameIcon} />
+          <Gamepad2 size={40} style={styles.gameIcon} />
         </div>
         
+        <div style={styles.brandName}>FULL UPROAR GAMING</div>
+        
         <h1 style={styles.title}>
-          Welcome to Full Uproar
+          Enter the Fugly Zone
         </h1>
         
         <p style={styles.subtitle}>
-          This is Fugly's secret gaming lair!
+          Where gaming gets loud, proud, and unapologetically FUGLY!
           <br />
-          <strong style={{ color: '#fdba74' }}>Early Access Only</strong>
+          <strong style={{ color: '#fdba74' }}>🔥 Early Access Only 🔥</strong>
         </p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -223,8 +287,8 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(249, 115, 22, 0.3)';
             }}
           >
-            <Skull size={20} />
-            Enter the Arena
+            <Skull size={24} />
+            UNLEASH THE FUGLY
           </button>
         </form>
 
@@ -235,7 +299,11 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
         )}
 
         <div style={styles.hint}>
-          Psst... if you're supposed to be here, you know the magic word! 🎮
+          Psst... True gamers know the password! 🎮
+          <br />
+          <span style={{ fontSize: '0.7em', opacity: 0.7 }}>
+            (It's what this site is all about...)
+          </span>
         </div>
       </div>
 
