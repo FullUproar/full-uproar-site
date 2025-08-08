@@ -74,11 +74,34 @@ export default function AdminApp() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<{ label: string; view: ViewState }>>([
     { label: 'Dashboard', view: { type: 'dashboard' } }
   ]);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [isVerifying, setIsVerifying] = useState(true);
 
-  // Basic admin check
+  // Verify admin permissions
   useEffect(() => {
     if (isLoaded && !user) {
       redirect('/');
+    }
+    
+    if (isLoaded && user) {
+      // Verify admin status via API
+      fetch('/api/admin/whoami')
+        .then(res => res.json())
+        .then(data => {
+          if (data.isAdmin || data.isSuperAdmin) {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+            // Redirect non-admins
+            redirect('/');
+          }
+          setIsVerifying(false);
+        })
+        .catch(() => {
+          setIsAdmin(false);
+          setIsVerifying(false);
+          redirect('/');
+        });
     }
   }, [user, isLoaded]);
 
@@ -420,7 +443,7 @@ export default function AdminApp() {
     }
   };
 
-  if (!isLoaded) {
+  if (!isLoaded || isVerifying) {
     return (
       <div style={adminStyles.container}>
         <div style={{ 
@@ -429,7 +452,28 @@ export default function AdminApp() {
           alignItems: 'center', 
           minHeight: '100vh' 
         }}>
-          <div style={{ color: '#fdba74', fontSize: '18px' }}>Loading admin panel...</div>
+          <div style={{ color: '#fdba74', fontSize: '18px' }}>
+            {!isLoaded ? 'Loading admin panel...' : 'Verifying admin permissions...'}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Additional check - shouldn't reach here if not admin, but just in case
+  if (isAdmin === false) {
+    return (
+      <div style={adminStyles.container}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '100vh',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <div style={{ color: '#ef4444', fontSize: '18px' }}>Access Denied</div>
+          <div style={{ color: '#94a3b8', fontSize: '14px' }}>You do not have permission to access the admin panel.</div>
         </div>
       </div>
     );

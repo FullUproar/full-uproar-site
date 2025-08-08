@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 const FooterLogo = dynamic(() => import('./FooterLogo'), { 
   ssr: false,
@@ -22,7 +23,54 @@ export default function GlobalFooter() {
         <p style={{ color: '#9ca3af', fontWeight: 600 }}>
           Professionally ruining game nights since day one
         </p>
-        <p style={{ color: '#6b7280', marginTop: '2rem', fontWeight: 600 }}>
+        
+        <div style={{ 
+          marginTop: '2rem',
+          marginBottom: '2rem',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '2rem',
+          flexWrap: 'wrap'
+        }}>
+          <Link href="/privacy" style={{ 
+            color: '#9ca3af', 
+            textDecoration: 'none',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#f97316'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
+            Privacy Policy
+          </Link>
+          <Link href="/terms" style={{ 
+            color: '#9ca3af', 
+            textDecoration: 'none',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#f97316'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
+            Terms of Service
+          </Link>
+          <Link href="/returns" style={{ 
+            color: '#9ca3af', 
+            textDecoration: 'none',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#f97316'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
+            Returns & Refunds
+          </Link>
+          <a href="mailto:support@fulluproar.com" style={{ 
+            color: '#9ca3af', 
+            textDecoration: 'none',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#f97316'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
+            Contact Support
+          </a>
+        </div>
+        
+        <p style={{ color: '#6b7280', fontWeight: 600 }}>
           © {new Date().getFullYear()} Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.
         </p>
       </div>

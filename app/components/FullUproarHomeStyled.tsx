@@ -80,6 +80,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [countdown, setCountdown] = useState(7);
   const [chaosPhrase, setChaosPhrase] = useState('FRESHLY UNHINGED');
   const [phraseTransform, setPhraseTransform] = useState({ scale: 1, rotation: 0 });
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
 
   // Chaos phrases pool
   const chaosPhrases = [
@@ -96,6 +97,62 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     'WONDERFULLY WRONG',
     'MAJESTICALLY MAD'
   ];
+
+  // Testimonials for featured games
+  const gameTestimonials: Record<string, string[]> = {
+    'Fugly': [
+      '"This game ruined my marriage in the best way possible!" - Sarah, 5 stars',
+      '"I haven\'t spoken to my brother since we played. 10/10 would destroy family again." - Mike',
+      '"The chaos is so beautiful, I cried orange tears." - Anonymous Cultist',
+      '"My therapist says I shouldn\'t play this anymore. I bought three more copies." - Jennifer'
+    ],
+    'Fugly Jr.': [
+      '"My kids love it! They\'ve formed rival gangs. Send help." - Concerned Parent',
+      '"Perfect for teaching children that life is unfair and chaotic!" - Elementary Teacher',
+      '"My 8-year-old is now a master strategist and sociopath. Thanks Fugly!" - Dave',
+      '"The daycare banned it. That\'s how you know it\'s good." - Proud Mom'
+    ],
+    'Fugly: After Dark': [
+      '"We\'re not friends anymore but the memories are worth it." - Former Friend Group',
+      '"Spicier than my relationship drama. And that\'s saying something." - Reality TV Star',
+      '"The police were called. Not related, but worth mentioning." - Brad',
+      '"This game should come with a lawyer\'s contact info." - Legal Expert'
+    ],
+    'default': [
+      '"I don\'t know what I played but I need more of it." - Confused but Happy',
+      '"My life has meaning now. That meaning is chaos." - Philosophy Major',
+      '"Better than therapy and twice as destructive!" - Reformed Gamer',
+      '"I showed this to my therapist and now they need therapy." - Patient Zero'
+    ]
+  };
+
+  // Value propositions for featured games
+  const gameValueProps: Record<string, string[]> = {
+    'Fugly': [
+      '🔥 Destroys 2-6 friendships simultaneously',
+      '💀 Guaranteed table flips or your money back',
+      '🎭 Features 200+ ways to betray your loved ones',
+      '⚡ Average game ends 3 relationships'
+    ],
+    'Fugly Jr.': [
+      '👶 Corrupts young minds efficiently',
+      '🍼 Age-appropriate chaos for 6+',
+      '🎓 Teaches valuable life lessons about betrayal',
+      '🏆 Award-winning* childhood ruiner (*self-awarded)'
+    ],
+    'Fugly: After Dark': [
+      '🌙 NSFW chaos for consenting adults',
+      '🔞 Contains 69% more inappropriate content',
+      '🍷 Best played with poor judgment',
+      '💔 Relationship status: It\'s complicated'
+    ],
+    'default': [
+      '🎲 Pure, unfiltered board game chaos',
+      '😈 Designed by actual demons (probably)',
+      '🏃 Fast-paced fun (running from consequences)',
+      '💯 100% chance of regrettable decisions'
+    ]
+  };
 
   // Initialize chaos phrase with hourly persistence
   useEffect(() => {
@@ -212,6 +269,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               // Random rotation between -5 and 5 degrees, but never 0
               const rotations = [-5, -3, -2, 2, 3, 5];
               setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
+              // Also rotate testimonial
+              setCurrentTestimonialIndex((prev) => (prev + 1) % 4);
               setIsTransitioning(false);
             }, 300);
             
@@ -584,9 +643,23 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     }}>
                       {featuredGame.title}
                     </h2>
-                    <p style={{ color: '#fde68a', marginBottom: '1.5rem', fontSize: '1.125rem' }}>
-                      {featuredGame.description}
+                    <p style={{ color: '#fde68a', marginBottom: '1rem', fontSize: '1.125rem', fontWeight: 'bold' }}>
+                      {featuredGame.description || 'The board game that destroys everything you hold dear.'}
                     </p>
+                    
+                    {/* Value Propositions */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      {(gameValueProps[featuredGame.title] || gameValueProps['default']).map((prop, idx) => (
+                        <div key={idx} style={{ 
+                          color: '#fdba74', 
+                          fontSize: '0.95rem',
+                          marginBottom: '0.5rem',
+                          fontWeight: 'bold'
+                        }}>
+                          {prop}
+                        </div>
+                      ))}
+                    </div>
                     
                     <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
                       <div style={{ textAlign: 'center' }}>
@@ -679,6 +752,25 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                       Fugly Tested!
                     </div>
                   </div>
+                </div>
+                
+                {/* Rotating Testimonial */}
+                <div style={{
+                  marginTop: '2rem',
+                  padding: '1.5rem',
+                  background: 'rgba(249, 115, 22, 0.1)',
+                  borderLeft: '4px solid #f97316',
+                  borderRadius: '0.5rem'
+                }}>
+                  <p style={{
+                    color: '#fde68a',
+                    fontSize: '1rem',
+                    fontStyle: 'italic',
+                    margin: 0,
+                    fontWeight: 'bold'
+                  }}>
+                    {(gameTestimonials[featuredGame.title] || gameTestimonials['default'])[currentTestimonialIndex % 4]}
+                  </p>
                 </div>
                 
                 {/* Game selector dots with countdown */}
