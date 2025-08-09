@@ -55,8 +55,7 @@ export default function Navigation() {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      height: isMobile ? '3.5rem' : '4rem',
-      overflow: 'hidden'
+      height: isMobile ? '3.5rem' : '4rem'
     },
     logo: {
       display: 'flex',
