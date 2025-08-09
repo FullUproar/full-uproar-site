@@ -1,4 +1,4 @@
-# Full Uproar Gaming
+# Full Uproar Games
 
 E-commerce platform for Full Uproar Games - board games, merchandise, and digital content.
 

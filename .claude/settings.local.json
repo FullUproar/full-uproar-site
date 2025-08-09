@@ -58,7 +58,8 @@
       "WebFetch(domain:localhost)",
       "Bash(del /Q prismamigrations20250102000000_add_performance_indexes_migration_lock)",
       "Bash(del nul)",
-      "Bash(timeout 30 npm run build)"
+      "Bash(timeout 30 npm run build)",
+      "Bash(git restore:*)"
     ],
     "deny": []
   }

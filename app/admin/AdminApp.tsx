@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { 
   Package, ShoppingBag, Newspaper, Image, ShoppingCart, Settings, 
   Plus, Edit2, Trash2, Eye, Database, ArrowLeft, Menu, Home,
-  Gamepad2, BookOpen, Palette, DollarSign, Users, TrendingUp,
+  Dices, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
   BarChart3
@@ -176,7 +176,7 @@ export default function AdminApp() {
     {
       id: 'games',
       label: 'Games',
-      icon: <Gamepad2 size={20} />,
+      icon: <Dices size={20} />,
       view: { type: 'games-list' as ViewType },
       color: '#f97316',
       subItems: [

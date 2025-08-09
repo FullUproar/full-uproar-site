@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Skull, Eye, EyeOff, Gamepad2 } from 'lucide-react';
+import { Skull, Eye, EyeOff, Dices } from 'lucide-react';
 import Image from 'next/image';
 
 interface PasswordGateProps {
@@ -209,7 +209,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
           <div style={styles.fuglyImage}>
             <Image 
               src="/fugly_shirt.jpg" 
-              alt="Fugly Gaming Gear" 
+              alt="Fugly Games Gear" 
               width={120} 
               height={120}
               style={{ borderRadius: '0.5rem', display: 'block' }}
@@ -230,7 +230,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
           <div style={styles.logo}>
             FU
           </div>
-          <Gamepad2 size={40} style={styles.gameIcon} />
+          <Dices size={40} style={styles.gameIcon} />
         </div>
         
         <div style={styles.brandName}>FULL UPROAR GAMING</div>

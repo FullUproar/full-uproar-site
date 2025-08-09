@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Gamepad2 } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import { useChaos } from '@/lib/chaos-context';
@@ -685,7 +685,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                         <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{featuredGame.ageRating}</span>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <Gamepad2 style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
+                        <Dices style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
                         <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{(featuredGame as any).category?.toUpperCase() || 'GAME'}</span>
                       </div>
                     </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Skull, Gamepad2 } from 'lucide-react';
+import { Home, Skull, Dices } from 'lucide-react';
 
 export default function NotFound() {
   return (
@@ -106,7 +106,7 @@ export default function NotFound() {
             e.currentTarget.style.background = 'transparent';
             e.currentTarget.style.color = '#f97316';
           }}>
-            <Gamepad2 size={20} />
+            <Dices size={20} />
             BROWSE CHAOS
           </Link>
         </div>

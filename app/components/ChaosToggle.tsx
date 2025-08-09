@@ -56,7 +56,7 @@ export default function ChaosToggle() {
         aria-label="Toggle chaos level"
       >
         {getIcon()}
-        <span style={{ display: 'none', '@media (min-width: 768px)': { display: 'inline' } }}>
+        <span style={{ display: 'inline' }}>
           {getLabel()}
         </span>
       </button>

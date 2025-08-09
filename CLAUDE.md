@@ -1,4 +1,4 @@
-# Full Uproar Gaming E-Commerce Platform
+# Full Uproar Games E-Commerce Platform
 
 ## 🎮 Project Overview
 
