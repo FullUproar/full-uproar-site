@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Gamepad2 } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
+import { useChaos } from '@/lib/chaos-context';
 import DeploymentInfo from './DeploymentInfo';
 import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
@@ -70,11 +71,12 @@ interface FullUproarHomeProps {
 export default function FullUproarHomeStyled({ games, comics, news, merch }: FullUproarHomeProps) {
   const { user } = useUser();
   const { addToCart } = useCartStore();
+  const { chaosLevel } = useChaos();
   const [email, setEmail] = useState('');
   const [activeGame, setActiveGame] = useState(0);
   const [currentComic, setCurrentComic] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [cardRotation, setCardRotation] = useState(1);
+  const [cardRotation, setCardRotation] = useState(chaosLevel === 'off' ? 0 : 1);
   const [isMobile, setIsMobile] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(7);
@@ -267,8 +269,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             setTimeout(() => {
               setActiveGame((current) => (current + 1) % games.length);
               // Random rotation between -5 and 5 degrees, but never 0
-              const rotations = [-5, -3, -2, 2, 3, 5];
-              setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
+              if (chaosLevel !== 'off') {
+                const rotations = chaosLevel === 'full' ? [-5, -3, -2, 2, 3, 5] : [-2, -1, 1, 2];
+                setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
+              }
               // Also rotate testimonial
               setCurrentTestimonialIndex((prev) => (prev + 1) % 4);
               setIsTransitioning(false);
@@ -288,7 +292,11 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const styles = {
     container: {
       minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)'
+      background: chaosLevel === 'off' 
+        ? 'linear-gradient(to bottom, #1f2937, #374151)' 
+        : chaosLevel === 'mild'
+        ? 'linear-gradient(to bottom right, #1f2937, #374151, #f97316)'
+        : 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)'
     },
     nav: {
       position: 'sticky' as const,
@@ -373,14 +381,15 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     },
     badge: {
       display: 'inline-block',
-      background: '#f97316',
-      color: '#111827',
+      background: chaosLevel === 'off' ? '#10b981' : '#f97316',
+      color: chaosLevel === 'off' ? '#fff' : '#111827',
       padding: '0.25rem 0.75rem',
       borderRadius: '50px',
       marginBottom: '0.75rem',
-      transform: 'rotate(-3deg)',
+      transform: chaosLevel === 'off' ? 'rotate(0deg)' : 'rotate(-3deg)',
       fontWeight: 900,
-      fontSize: '1.17rem'
+      fontSize: '1.17rem',
+      transition: 'all 0.3s'
     },
     heroTitle: {
       fontSize: '4rem',
@@ -611,7 +620,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 style={{
                   ...styles.featuredCard,
                   padding: isMobile ? '1.5rem' : '2rem',
-                  transform: isMobile ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`
+                  transform: isMobile || chaosLevel === 'off' ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`,
+                  animation: chaosLevel === 'off' ? 'none' : isTransitioning ? 'chaosShake 0.3s ease-in-out' : 'none'
                 }}
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}>

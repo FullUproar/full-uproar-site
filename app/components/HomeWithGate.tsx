@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import PasswordGate from './PasswordGate';
+import ChaosWarningGate from './ChaosWarningGate';
 import FullUproarHomeStyled from './FullUproarHomeStyled';
 
 export default function HomeWithGate() {
@@ -93,7 +93,7 @@ export default function HomeWithGate() {
   }
 
   if (!isAuthenticated) {
-    return <PasswordGate onCorrectPassword={handleCorrectPassword} />;
+    return <ChaosWarningGate onProceed={handleCorrectPassword} />;
   }
 
   return <FullUproarHomeStyled games={games} comics={comics} news={news} merch={merch} />;
