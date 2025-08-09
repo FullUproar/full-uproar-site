@@ -76,7 +76,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [activeGame, setActiveGame] = useState(0);
   const [currentComic, setCurrentComic] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [cardRotation, setCardRotation] = useState(chaosLevel === 'off' ? 0 : 1);
+  const [cardRotation, setCardRotation] = useState(chaosLevel === 'full' ? 1 : 0);
   const [isMobile, setIsMobile] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(7);
@@ -268,10 +268,12 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             // After shake animation, change game and rotation
             setTimeout(() => {
               setActiveGame((current) => (current + 1) % games.length);
-              // Random rotation between -5 and 5 degrees, but never 0
-              if (chaosLevel !== 'off') {
-                const rotations = chaosLevel === 'full' ? [-5, -3, -2, 2, 3, 5] : [-2, -1, 1, 2];
+              // Random rotation only in full chaos mode
+              if (chaosLevel === 'full') {
+                const rotations = [-5, -3, -2, 2, 3, 5];
                 setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
+              } else {
+                setCardRotation(0); // Keep straight for mild and off modes
               }
               // Also rotate testimonial
               setCurrentTestimonialIndex((prev) => (prev + 1) % 4);
@@ -604,7 +606,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                   🎁 Get exclusive pre-order bonuses and Fugly's seal of approval!
                 </p>
               </div>
-              {!isMobile && (
+              {!isMobile && chaosLevel === 'full' && (
                 <FuglyPointing size={180} style={{ 
                   position: 'absolute', 
                   right: '-20px', 
@@ -620,8 +622,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 style={{
                   ...styles.featuredCard,
                   padding: isMobile ? '1.5rem' : '2rem',
-                  transform: isMobile || chaosLevel === 'off' ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`,
-                  animation: chaosLevel === 'off' ? 'none' : isTransitioning ? 'chaosShake 0.3s ease-in-out' : 'none'
+                  transform: isMobile || chaosLevel !== 'full' ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`,
+                  animation: chaosLevel === 'off' ? 'none' : isTransitioning ? (chaosLevel === 'mild' ? 'mildShake 0.3s ease-in-out' : 'chaosShake 0.3s ease-in-out') : 'none'
                 }}
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}>
@@ -1006,8 +1008,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       {/* Deployment info for logged-in users */}
       <DeploymentInfo isVisible={!!user} />
 
-      {/* Chaos Mode! */}
-      <FuglyChaosMode />
+      {/* Chaos Mode! - Only in full chaos */}
+      {chaosLevel === 'full' && <FuglyChaosMode />}
 
       <style jsx>{`
         @keyframes chaosShake {
@@ -1021,6 +1023,19 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           70% { transform: rotate(${cardRotation + 1}deg) translateX(-1px); }
           80% { transform: rotate(${cardRotation - 1}deg) translateX(1px); }
           90% { transform: rotate(${cardRotation + 2}deg) translateX(0); }
+        }
+
+        @keyframes mildShake {
+          0%, 100% { transform: rotate(0deg) translateX(0); }
+          10% { transform: rotate(2deg) translateX(-1px); }
+          20% { transform: rotate(-2deg) translateX(1px); }
+          30% { transform: rotate(1deg) translateX(-2px); }
+          40% { transform: rotate(-1deg) translateX(2px); }
+          50% { transform: rotate(2deg) translateX(-1px); }
+          60% { transform: rotate(-2deg) translateX(1px); }
+          70% { transform: rotate(1deg) translateX(-1px); }
+          80% { transform: rotate(-1deg) translateX(1px); }
+          90% { transform: rotate(0deg) translateX(0); }
         }
 
         @keyframes tagWobble {
