@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Zap, Heart, Volume2, VolumeX, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { useChaos } from '@/lib/chaos-context';
 
 export default function ChaosToggle() {
   const { chaosLevel, setChaosLevel } = useChaos();
   const [showMenu, setShowMenu] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const getIcon = () => {
     switch(chaosLevel) {
@@ -24,9 +27,38 @@ export default function ChaosToggle() {
     }
   };
 
+  // Calculate dropdown position when menu opens
+  useEffect(() => {
+    if (showMenu && buttonRef.current && dropdownRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const dropdownHeight = 400; // Approximate height of dropdown
+      const windowHeight = window.innerHeight;
+      const spaceBelow = windowHeight - buttonRect.bottom;
+      const spaceAbove = buttonRect.top;
+
+      // If not enough space below and more space above, position dropdown above
+      if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+        setDropdownPosition('top');
+      } else {
+        setDropdownPosition('bottom');
+      }
+
+      // Also check horizontal positioning
+      if (dropdownRef.current) {
+        const dropdownRect = dropdownRef.current.getBoundingClientRect();
+        if (dropdownRect.right > window.innerWidth) {
+          // Adjust position if dropdown goes off screen to the right
+          const overflow = dropdownRect.right - window.innerWidth;
+          dropdownRef.current.style.right = `${overflow + 10}px`;
+        }
+      }
+    }
+  }, [showMenu]);
+
   return (
     <div style={{ position: 'relative' }}>
       <button
+        ref={buttonRef}
         onClick={() => setShowMenu(!showMenu)}
         style={{
           display: 'flex',
@@ -74,16 +106,24 @@ export default function ChaosToggle() {
             }}
             onClick={() => setShowMenu(false)}
           />
-          <div style={{
+          <div 
+            ref={dropdownRef}
+            style={{
             position: 'absolute',
-            top: '100%',
+            ...(dropdownPosition === 'top' ? {
+              bottom: '100%',
+              marginBottom: '0.5rem',
+            } : {
+              top: '100%',
+              marginTop: '0.5rem',
+            }),
             right: 0,
-            marginTop: '0.5rem',
             background: '#1f2937',
             border: '2px solid #f97316',
             borderRadius: '1rem',
             padding: '1rem',
             minWidth: '250px',
+            maxWidth: '90vw',
             zIndex: 999,
             boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
           }}>
