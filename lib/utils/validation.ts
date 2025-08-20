@@ -134,12 +134,23 @@ export function validateQueryParams<T>(
 export function generateSlug(text: string, suffix?: string): string {
   const base = text
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '-')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
     .trim();
   
+  if (base === '' || base === '-') return '';
   return suffix ? `${base}-${suffix}` : base;
+}
+
+// Format price in cents to dollar string
+export function formatPrice(cents: number): string {
+  const dollars = cents / 100;
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(dollars);
 }
 
 // Sanitize input for security

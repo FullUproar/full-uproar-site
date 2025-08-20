@@ -79,6 +79,25 @@ export function sanitizeHtml(
 }
 
 /**
+ * Remove HTML tags and trim whitespace
+ */
+export function sanitizeInput(input: string): string {
+  return input
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .trim();
+}
+
+/**
+ * Sanitize email addresses
+ */
+export function sanitizeEmail(email: string): string {
+  return email
+    .toLowerCase()
+    .replace(/[<>]/g, '')
+    .trim();
+}
+
+/**
  * Escape HTML entities to prevent XSS
  */
 export function escapeHtml(text: string): string {
