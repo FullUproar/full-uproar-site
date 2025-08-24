@@ -9,7 +9,7 @@ import {
   Dices, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
-  BarChart3
+  BarChart3, Shield
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -30,6 +30,7 @@ import ArtworkEditForm from './components/ArtworkEditForm';
 import SettingsView from './components/SettingsView';
 import DiagnosticsView from './components/DiagnosticsView';
 import AnalyticsView from './components/AnalyticsView';
+import ComplianceView from './components/ComplianceView';
 
 type ViewType = 
   | 'dashboard'
@@ -58,7 +59,8 @@ type ViewType =
   | 'users-new'
   | 'users-moderation'
   | 'diagnostics'
-  | 'analytics';
+  | 'analytics'
+  | 'compliance';
 
 interface ViewState {
   type: ViewType;
@@ -251,6 +253,13 @@ export default function AdminApp() {
       view: { type: 'diagnostics' as ViewType },
       color: '#ef4444',
     },
+    {
+      id: 'compliance',
+      label: 'Legal Compliance',
+      icon: <Shield size={20} />,
+      view: { type: 'compliance' as ViewType },
+      color: '#10b981',
+    },
   ];
 
   const [expandedMenuItems, setExpandedMenuItems] = useState<string[]>([]);
@@ -270,6 +279,9 @@ export default function AdminApp() {
       
       case 'analytics':
         return <AnalyticsView />;
+      
+      case 'compliance':
+        return <ComplianceView />;
       
       case 'games-list':
         return (
