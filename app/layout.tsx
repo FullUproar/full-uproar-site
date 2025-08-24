@@ -32,6 +32,45 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Full Uproar - Fugly Approved Games',
   description: 'Game modifiers so chaotic, Fugly approves. Turn any game night into beautiful disaster.',
+  keywords: 'board games, party games, fugly, chaos games, tabletop games, game night, Full Uproar',
+  authors: [{ name: 'Full Uproar Games' }],
+  creator: 'Full Uproar Games',
+  publisher: 'Full Uproar Games',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://fulluproar.com'),
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://fulluproar.com',
+    siteName: 'Full Uproar',
+    title: 'Full Uproar - Fugly Approved Games',
+    description: 'Game modifiers so chaotic, Fugly approves. Turn any game night into beautiful disaster.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Full Uproar - Chaos Games',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Full Uproar - Fugly Approved Games',
+    description: 'Game modifiers so chaotic, Fugly approves. Turn any game night into beautiful disaster.',
+    images: ['/og-image.png'],
+    creator: '@fulluproar',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',

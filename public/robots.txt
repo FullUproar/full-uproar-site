@@ -1,0 +1,52 @@
+# Full Uproar Robots.txt
+# Welcome robots! Please be gentle with our chaotic site.
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Core pages to prioritize
+Allow: /games
+Allow: /merch
+Allow: /comics
+
+# Disallow admin and private areas
+Disallow: /admin
+Disallow: /api/
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /account
+Disallow: /checkout
+Disallow: /order-confirmation
+Disallow: /sso-callback
+Disallow: /test-*
+Disallow: /debug-*
+Disallow: /grant-admin
+Disallow: /admin-setup
+Disallow: /migrate
+
+# Sitemap location
+Sitemap: https://fulluproar.com/sitemap.xml
+
+# Crawl delay (be nice to our server)
+Crawl-delay: 1
+
+# Special instructions for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

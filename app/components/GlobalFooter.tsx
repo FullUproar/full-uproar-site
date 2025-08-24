@@ -59,6 +59,24 @@ export default function GlobalFooter() {
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             Returns & Refunds
           </Link>
+          <Link href="/faq" style={{ 
+            color: '#9ca3af', 
+            textDecoration: 'none',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#f97316'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
+            FAQ
+          </Link>
+          <Link href="/contact" style={{ 
+            color: '#9ca3af', 
+            textDecoration: 'none',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#f97316'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
+            Contact
+          </Link>
           <a href="mailto:support@fulluproar.com" style={{ 
             color: '#9ca3af', 
             textDecoration: 'none',
