@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, Package, Truck, Mail, ArrowRight, Copy } from 'lucide-react';
 import FuglyLogo from '@/app/components/FuglyLogo';
 import Link from 'next/link';
+import { MetaPixelEvents } from '@/app/components/MetaPixel';
 
 interface OrderDetails {
   id: string;
@@ -50,6 +51,21 @@ function OrderConfirmationContent() {
       if (!response.ok) throw new Error('Order not found');
       const data = await response.json();
       setOrder(data);
+      
+      // Track purchase completion with Meta Pixel
+      if (data) {
+        const contentIds = data.items.map((item: any) => `${item.itemType}_${item.id}`);
+        const totalValue = data.totalCents / 100;
+        const numItems = data.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
+        
+        MetaPixelEvents.purchase(
+          totalValue,
+          contentIds,
+          'product',
+          numItems,
+          'USD'
+        );
+      }
     } catch (error) {
       console.error('Error fetching order:', error);
       router.push('/');

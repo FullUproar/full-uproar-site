@@ -9,6 +9,7 @@ import { simulatePayment, TEST_CARDS, formatTestCardDisplay } from '@/lib/paymen
 import dynamic from 'next/dynamic';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
+import { MetaPixelEvents } from '@/app/components/MetaPixel';
 
 // Dynamically import StripeCheckout to avoid SSR issues
 const StripeCheckout = dynamic(() => import('@/app/components/StripeCheckout'), {
@@ -92,10 +93,22 @@ export default function CheckoutPage() {
     if (items.length === 0) {
       router.push('/');
     } else {
+      const cartValue = getTotalPrice();
+      
+      // Track analytics
       analytics.track(AnalyticsEvent.CHECKOUT_START, {
         cartItemCount: items.length,
-        cartValue: getTotalPrice()
+        cartValue: cartValue
       });
+      
+      // Track Meta Pixel checkout initiation
+      const contentIds = items.map(item => `${item.type}_${item.id}`);
+      MetaPixelEvents.initiateCheckout(
+        cartValue / 100,
+        items.reduce((sum, item) => sum + item.quantity, 0),
+        contentIds,
+        'USD'
+      );
     }
   }, [items, router]);
 

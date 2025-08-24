@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShoppingCart, Users, Clock, Heart, Share2, ChevronLeft, ChevronRight, Zap, Package, Star, Skull } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import Link from 'next/link';
 import FuglyLogo from '@/app/components/FuglyLogo';
 import ProductImageGallery from '@/app/components/ProductImageGallery';
+import { MetaPixelEvents } from '@/app/components/MetaPixel';
 
 interface GameImage {
   id: number;
@@ -47,6 +48,17 @@ export default function GameProductClient({ game, similarGames }: GameProductCli
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
+  // Track product view on mount
+  useEffect(() => {
+    MetaPixelEvents.viewContent(
+      `game_${game.id}`,
+      game.title,
+      'product',
+      game.priceCents / 100,
+      'USD'
+    );
+  }, [game]);
+
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart({
@@ -58,6 +70,15 @@ export default function GameProductClient({ game, similarGames }: GameProductCli
         type: 'game'
       });
     }
+    
+    // Track add to cart event
+    MetaPixelEvents.addToCart(
+      `game_${game.id}`,
+      game.title,
+      'product',
+      (game.priceCents * quantity) / 100,
+      'USD'
+    );
   };
 
   const handleShare = () => {

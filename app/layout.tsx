@@ -15,6 +15,8 @@ import GlobalFooter from './components/GlobalFooter'
 import ToastContainer from './components/ToastContainer'
 import AnalyticsProvider from './components/AnalyticsProvider'
 import { ChaosProvider } from '@/lib/chaos-context'
+import MetaPixel from './components/MetaPixel'
+import UniversalTracking from './components/UniversalTracking'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -71,6 +73,17 @@ export default function RootLayout({
           <ChaosProvider>
             <AnalyticsProvider>
               <TestModeBanner />
+              {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
+                <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
+              )}
+              <UniversalTracking 
+                googleAnalyticsId={process.env.NEXT_PUBLIC_GA_ID}
+                googleAdsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}
+                clarityId={process.env.NEXT_PUBLIC_CLARITY_ID}
+                tiktokPixelId={process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID}
+                pinterestTagId={process.env.NEXT_PUBLIC_PINTEREST_TAG_ID}
+                snapchatPixelId={process.env.NEXT_PUBLIC_SNAPCHAT_PIXEL_ID}
+              />
               <main style={{ flex: 1 }}>
                 {children}
               </main>

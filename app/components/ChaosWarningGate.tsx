@@ -12,10 +12,12 @@ interface ChaosWarningGateProps {
 export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
   const [stage, setStage] = useState<'warning' | 'password' | 'complete'>('warning');
   const [acknowledged, setAcknowledged] = useState(false);
-  const { setChaosLevel } = useChaos();
+  const { toggleChaos } = useChaos();
 
-  const handleProceedFromWarning = (level: 'off' | 'mild' | 'full') => {
-    setChaosLevel(level);
+  const handleProceedFromWarning = (enableChaos: boolean) => {
+    if (!enableChaos) {
+      toggleChaos(); // Turn off chaos
+    }
     setStage('password');
   };
 
@@ -103,7 +105,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
           gap: '1rem',
           marginBottom: '2rem'
         }}>
-          <AlertTriangle size={48} style={{ color: '#f97316' }} />
+          <Sparkles size={48} style={{ color: '#f97316' }} />
           <h1 style={{
             fontSize: '2.5rem',
             fontWeight: 900,
@@ -111,9 +113,9 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             margin: 0,
             textTransform: 'uppercase'
           }}>
-            Chaos Warning
+            Buckle Up!
           </h1>
-          <AlertTriangle size={48} style={{ color: '#f97316' }} />
+          <Sparkles size={48} style={{ color: '#f97316' }} />
         </div>
 
         <div style={{
@@ -130,7 +132,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             marginBottom: '1rem',
             lineHeight: 1.4
           }}>
-            ⚠️ WARNING: This website contains:
+            🎮 Get ready for the WILDEST game site you've ever seen!
           </p>
           <ul style={{
             color: '#fde68a',
@@ -140,12 +142,12 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             margin: 0,
             lineHeight: 1.8
           }}>
-            <li>🔥 Aggressive orange color schemes</li>
-            <li>💀 Rapid animations and transitions</li>
-            <li>😈 Rotating, wobbling, and shaking elements</li>
-            <li>🎨 High contrast "fugly" aesthetics</li>
-            <li>📢 Loud visual chaos and mayhem</li>
-            <li>🌀 Potential friendship destruction</li>
+            <li>🔥 Colors so bright they'll make you squint!</li>
+            <li>🎢 Everything moves because why not?!</li>
+            <li>🎪 It's like a carnival and a disco had a baby!</li>
+            <li>🦄 Fugly is our middle name (and we're proud)!</li>
+            <li>🎨 Your eyeballs will do the cha-cha!</li>
+            <li>🚀 May cause spontaneous laughter and/or confusion!</li>
           </ul>
         </div>
 
@@ -158,22 +160,22 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             fontSize: '1rem',
             marginBottom: '1rem'
           }}>
-            Choose your experience level:
+            Pick your adventure style:
           </p>
         </div>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gridTemplateColumns: '1fr 1fr',
           gap: '1rem',
           marginBottom: '2rem'
         }}>
           <button
-            onClick={() => handleProceedFromWarning('full')}
+            onClick={() => handleProceedFromWarning(true)}
             style={{
               background: 'linear-gradient(135deg, #f97316, #ea580c)',
               color: '#111827',
-              padding: '1rem',
+              padding: '1.5rem',
               borderRadius: '0.75rem',
               border: 'none',
               cursor: 'pointer',
@@ -184,38 +186,17 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05) rotate(-2deg)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <Zap size={24} style={{ marginBottom: '0.5rem' }} />
-            <div style={{ fontSize: '1.1rem' }}>FULL CHAOS</div>
-            <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>I fear nothing</div>
+            <Zap size={32} style={{ marginBottom: '0.5rem' }} />
+            <div style={{ fontSize: '1.25rem' }}>LET'S GO WILD!</div>
+            <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Bring on the chaos!</div>
           </button>
 
           <button
-            onClick={() => handleProceedFromWarning('mild')}
-            style={{
-              background: 'linear-gradient(135deg, #fdba74, #fbbf24)',
-              color: '#111827',
-              padding: '1rem',
-              borderRadius: '0.75rem',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              transition: 'transform 0.2s',
-              textAlign: 'center'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            <Eye size={24} style={{ marginBottom: '0.5rem' }} />
-            <div style={{ fontSize: '1.1rem' }}>MILD CHAOS</div>
-            <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>Some restraint</div>
-          </button>
-
-          <button
-            onClick={() => handleProceedFromWarning('off')}
+            onClick={() => handleProceedFromWarning(false)}
             style={{
               background: 'linear-gradient(135deg, #10b981, #059669)',
               color: '#fff',
-              padding: '1rem',
+              padding: '1.5rem',
               borderRadius: '0.75rem',
               border: 'none',
               cursor: 'pointer',
@@ -226,9 +207,9 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <Heart size={24} style={{ marginBottom: '0.5rem' }} />
-            <div style={{ fontSize: '1.1rem' }}>CALM MODE</div>
-            <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>Sensory-friendly</div>
+            <Heart size={32} style={{ marginBottom: '0.5rem' }} />
+            <div style={{ fontSize: '1.25rem' }}>CHILL MODE</div>
+            <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Easy on the eyes</div>
           </button>
         </div>
 
@@ -248,7 +229,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             marginBottom: '0.5rem'
           }}>
             <Shield size={20} />
-            <span>Accessibility Note</span>
+            <span>Quick Note!</span>
           </div>
           <p style={{
             color: '#94a3b8',
@@ -256,9 +237,9 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             margin: 0,
             lineHeight: 1.5
           }}>
-            We genuinely care about accessibility. "Calm Mode" removes animations, 
-            reduces contrast, and provides a peaceful browsing experience. You can 
-            change this anytime using the toggle in the navigation.
+            Hey friend! If all the flashy stuff isn't your vibe, Chill Mode has got your back. 
+            No judgment - some days we all need less chaos. You can flip between modes 
+            anytime with the toggle up top!
           </p>
         </div>
 
@@ -284,7 +265,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
                 cursor: 'pointer'
               }}
             />
-            I understand this site may cause sensory overload or seizures
+            I'm ready for whatever this site throws at me!
           </label>
         </div>
 
