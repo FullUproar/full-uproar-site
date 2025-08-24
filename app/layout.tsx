@@ -17,6 +17,7 @@ import AnalyticsProvider from './components/AnalyticsProvider'
 import { ChaosProvider } from '@/lib/chaos-context'
 import MetaPixel from './components/MetaPixel'
 import UniversalTracking from './components/UniversalTracking'
+import CookieConsent from './components/CookieConsent'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -89,6 +90,7 @@ export default function RootLayout({
               </main>
               <GlobalFooter />
               <ToastContainer />
+              <CookieConsent />
             </AnalyticsProvider>
           </ChaosProvider>
         </body>
