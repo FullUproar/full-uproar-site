@@ -71,12 +71,12 @@ interface FullUproarHomeProps {
 export default function FullUproarHomeStyled({ games, comics, news, merch }: FullUproarHomeProps) {
   const { user } = useUser();
   const { addToCart } = useCartStore();
-  const { chaosLevel } = useChaos();
+  const { chaosEnabled } = useChaos();
   const [email, setEmail] = useState('');
   const [activeGame, setActiveGame] = useState(0);
   const [currentComic, setCurrentComic] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [cardRotation, setCardRotation] = useState(chaosLevel === 'full' ? 1 : 0);
+  const [cardRotation, setCardRotation] = useState(chaosEnabled ? 1 : 0);
   const [isMobile, setIsMobile] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(7);
@@ -269,7 +269,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             setTimeout(() => {
               setActiveGame((current) => (current + 1) % games.length);
               // Random rotation only in full chaos mode
-              if (chaosLevel === 'full') {
+              if (chaosEnabled) {
                 const rotations = [-5, -3, -2, 2, 3, 5];
                 setCardRotation(rotations[Math.floor(Math.random() * rotations.length)]);
               } else {
@@ -294,10 +294,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const styles = {
     container: {
       minHeight: '100vh',
-      background: chaosLevel === 'off' 
+      background: !chaosEnabled 
         ? 'linear-gradient(to bottom, #1f2937, #374151)' 
-        : chaosLevel === 'mild'
-        ? 'linear-gradient(to bottom right, #1f2937, #374151, #f97316)'
         : 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)'
     },
     nav: {
@@ -383,12 +381,12 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     },
     badge: {
       display: 'inline-block',
-      background: chaosLevel === 'off' ? '#10b981' : '#f97316',
-      color: chaosLevel === 'off' ? '#fff' : '#111827',
+      background: !chaosEnabled ? '#10b981' : '#f97316',
+      color: !chaosEnabled ? '#fff' : '#111827',
       padding: '0.25rem 0.75rem',
       borderRadius: '50px',
       marginBottom: '0.75rem',
-      transform: chaosLevel === 'off' ? 'rotate(0deg)' : 'rotate(-3deg)',
+      transform: !chaosEnabled ? 'rotate(0deg)' : 'rotate(-3deg)',
       fontWeight: 900,
       fontSize: '1.17rem',
       transition: 'all 0.3s'
@@ -606,7 +604,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                   🎁 Get exclusive pre-order bonuses and Fugly's seal of approval!
                 </p>
               </div>
-              {!isMobile && chaosLevel === 'full' && (
+              {!isMobile && chaosEnabled && (
                 <FuglyPointing size={180} style={{ 
                   position: 'absolute', 
                   right: '-20px', 
@@ -622,8 +620,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 style={{
                   ...styles.featuredCard,
                   padding: isMobile ? '1.5rem' : '2rem',
-                  transform: isMobile || chaosLevel !== 'full' ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`,
-                  animation: chaosLevel === 'off' ? 'none' : isTransitioning ? (chaosLevel === 'mild' ? 'mildShake 0.3s ease-in-out' : 'chaosShake 0.3s ease-in-out') : 'none'
+                  transform: isMobile || !chaosEnabled ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`,
+                  animation: !chaosEnabled ? 'none' : isTransitioning ? 'chaosShake 0.3s ease-in-out' : 'none'
                 }}
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}>
@@ -1009,7 +1007,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       <DeploymentInfo isVisible={!!user} />
 
       {/* Chaos Mode! - Only in full chaos */}
-      {chaosLevel === 'full' && <FuglyChaosMode />}
+      {chaosEnabled && <FuglyChaosMode />}
 
       <style jsx>{`
         @keyframes chaosShake {
