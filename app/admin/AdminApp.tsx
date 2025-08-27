@@ -9,7 +9,7 @@ import {
   Dices, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
-  BarChart3, Shield
+  BarChart3, Shield, Target
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -34,12 +34,14 @@ import ComplianceView from './components/ComplianceView';
 import PowerDashboard from './components/PowerDashboard';
 import CustomerManagement from './components/CustomerManagement';
 import EmailCampaigns from './components/EmailCampaigns';
+import MarketingWarRoom from './components/MarketingWarRoom';
 
 type ViewType = 
   | 'dashboard'
   | 'power-dashboard'
   | 'customers'
   | 'email-campaigns'
+  | 'marketing-war-room'
   | 'games-list'
   | 'games-edit'
   | 'games-new'
@@ -194,6 +196,14 @@ export default function AdminApp() {
       badge: 'HOT',
     },
     {
+      id: 'marketing-war-room',
+      label: 'War Room',
+      icon: <Target size={20} />,
+      view: { type: 'marketing-war-room' as ViewType },
+      color: '#06b6d4',
+      badge: 'INTEL',
+    },
+    {
       id: 'users',
       label: 'Users',
       icon: <UserCog size={20} />,
@@ -315,6 +325,9 @@ export default function AdminApp() {
       
       case 'email-campaigns':
         return <EmailCampaigns onNavigate={navigateTo} />;
+      
+      case 'marketing-war-room':
+        return <MarketingWarRoom onNavigate={navigateTo} />;
       
       case 'analytics':
         return <AnalyticsView />;

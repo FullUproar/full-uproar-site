@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       select: { role: true }
     });
 
-    if (!adminCheck || (adminCheck.role !== 'admin' && adminCheck.role !== 'superadmin')) {
+    if (!adminCheck || (adminCheck.role !== 'ADMIN' && adminCheck.role !== 'SUPER_ADMIN')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -71,9 +71,9 @@ export async function GET(request: NextRequest) {
 
       return {
         id: customer.id,
-        name: customer.name || `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || 'Unknown',
+        name: customer.displayName || customer.username || customer.email.split('@')[0],
         email: customer.email,
-        phone: customer.phone,
+        phone: null, // User model doesn't have phone field
         createdAt: customer.createdAt,
         lastOrderDate: lastOrderDate ? new Date(lastOrderDate).toISOString() : null,
         totalOrders,
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
         segment,
         role: customer.role,
         emailVerified: customer.emailVerified,
-        hasCompletedOnboarding: customer.hasCompletedOnboarding
+        hasCompletedOnboarding: false // User model doesn't have this field
       };
     });
 

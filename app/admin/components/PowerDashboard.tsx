@@ -264,9 +264,9 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
               borderRadius: '0.5rem',
               padding: '0.5rem'
             }}>
-              {React.cloneElement(card.icon as React.ReactElement, { 
-                style: { color: card.color }
-              })}
+              <div style={{ color: card.color }}>
+                {card.icon}
+              </div>
             </div>
             
             <div style={{ marginBottom: '0.5rem' }}>
@@ -319,7 +319,17 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
             </h3>
             <button
               onClick={() => onNavigate({ type: 'customers' }, 'Customer Management')}
-              style={{ ...adminStyles.link, display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+              style={{ 
+                background: 'transparent',
+                border: 'none',
+                color: '#3b82f6',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                textDecoration: 'underline',
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.25rem' 
+              }}
             >
               View all <ArrowUpRight size={16} />
             </button>
@@ -567,8 +577,11 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
                   {insight.detail}
                 </p>
                 <button style={{
-                  ...adminStyles.link,
+                  background: 'transparent',
+                  border: 'none',
                   color: insight.color,
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
                   fontWeight: 'bold',
                   fontSize: '0.875rem'
                 }}>
