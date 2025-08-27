@@ -9,7 +9,7 @@ import {
   Dices, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
-  BarChart3, Shield, Target, Calculator
+  BarChart3, Shield, Target, Calculator, Crown
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -36,6 +36,7 @@ import CustomerManagement from './components/CustomerManagement';
 import EmailCampaigns from './components/EmailCampaigns';
 import MarketingWarRoom from './components/MarketingWarRoom';
 import ProductIntelligence from './components/ProductIntelligence';
+import FuglyPrime from './components/FuglyPrime';
 
 type ViewType = 
   | 'dashboard'
@@ -44,6 +45,7 @@ type ViewType =
   | 'email-campaigns'
   | 'marketing-war-room'
   | 'product-intelligence'
+  | 'fugly-prime'
   | 'games-list'
   | 'games-edit'
   | 'games-new'
@@ -214,6 +216,14 @@ export default function AdminApp() {
       badge: 'COGS',
     },
     {
+      id: 'fugly-prime',
+      label: 'Fugly Prime',
+      icon: <Crown size={20} />,
+      view: { type: 'fugly-prime' as ViewType },
+      color: '#f97316',
+      badge: 'SUB',
+    },
+    {
       id: 'users',
       label: 'Users',
       icon: <UserCog size={20} />,
@@ -341,6 +351,9 @@ export default function AdminApp() {
       
       case 'product-intelligence':
         return <ProductIntelligence onNavigate={navigateTo} />;
+      
+      case 'fugly-prime':
+        return <FuglyPrime onNavigate={navigateTo} />;
       
       case 'analytics':
         return <AnalyticsView />;
