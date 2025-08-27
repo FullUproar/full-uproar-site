@@ -9,7 +9,7 @@ import {
   Dices, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
-  BarChart3, Shield, Target
+  BarChart3, Shield, Target, Calculator
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -35,6 +35,7 @@ import PowerDashboard from './components/PowerDashboard';
 import CustomerManagement from './components/CustomerManagement';
 import EmailCampaigns from './components/EmailCampaigns';
 import MarketingWarRoom from './components/MarketingWarRoom';
+import ProductIntelligence from './components/ProductIntelligence';
 
 type ViewType = 
   | 'dashboard'
@@ -42,6 +43,7 @@ type ViewType =
   | 'customers'
   | 'email-campaigns'
   | 'marketing-war-room'
+  | 'product-intelligence'
   | 'games-list'
   | 'games-edit'
   | 'games-new'
@@ -204,6 +206,14 @@ export default function AdminApp() {
       badge: 'INTEL',
     },
     {
+      id: 'product-intelligence',
+      label: 'Product Intel',
+      icon: <Calculator size={20} />,
+      view: { type: 'product-intelligence' as ViewType },
+      color: '#14b8a6',
+      badge: 'COGS',
+    },
+    {
       id: 'users',
       label: 'Users',
       icon: <UserCog size={20} />,
@@ -328,6 +338,9 @@ export default function AdminApp() {
       
       case 'marketing-war-room':
         return <MarketingWarRoom onNavigate={navigateTo} />;
+      
+      case 'product-intelligence':
+        return <ProductIntelligence onNavigate={navigateTo} />;
       
       case 'analytics':
         return <AnalyticsView />;
