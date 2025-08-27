@@ -31,9 +31,15 @@ import SettingsView from './components/SettingsView';
 import DiagnosticsView from './components/DiagnosticsView';
 import AnalyticsView from './components/AnalyticsView';
 import ComplianceView from './components/ComplianceView';
+import PowerDashboard from './components/PowerDashboard';
+import CustomerManagement from './components/CustomerManagement';
+import EmailCampaigns from './components/EmailCampaigns';
 
 type ViewType = 
   | 'dashboard'
+  | 'power-dashboard'
+  | 'customers'
+  | 'email-campaigns'
   | 'games-list'
   | 'games-edit'
   | 'games-new'
@@ -164,6 +170,30 @@ export default function AdminApp() {
       color: '#fdba74',
     },
     {
+      id: 'power-dashboard',
+      label: 'Command Center',
+      icon: <TrendingUp size={20} />,
+      view: { type: 'power-dashboard' as ViewType },
+      color: '#10b981',
+      badge: 'NEW',
+    },
+    {
+      id: 'customers',
+      label: 'Customers',
+      icon: <Users size={20} />,
+      view: { type: 'customers' as ViewType },
+      color: '#8b5cf6',
+      badge: 'PRO',
+    },
+    {
+      id: 'email-campaigns',
+      label: 'Email Marketing',
+      icon: <Menu size={20} />,
+      view: { type: 'email-campaigns' as ViewType },
+      color: '#ec4899',
+      badge: 'HOT',
+    },
+    {
       id: 'users',
       label: 'Users',
       icon: <UserCog size={20} />,
@@ -276,6 +306,15 @@ export default function AdminApp() {
     switch (currentView.type) {
       case 'dashboard':
         return <DashboardView onNavigate={navigateTo} />;
+      
+      case 'power-dashboard':
+        return <PowerDashboard onNavigate={navigateTo} />;
+      
+      case 'customers':
+        return <CustomerManagement onNavigate={navigateTo} />;
+      
+      case 'email-campaigns':
+        return <EmailCampaigns onNavigate={navigateTo} />;
       
       case 'analytics':
         return <AnalyticsView />;
