@@ -34,6 +34,33 @@ interface UserSession {
   isActive: boolean;
 }
 
+interface Order {
+  id: number;
+  orderNumber: string;
+  status: string;
+  totalAmount: number;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+  shippingAddress: any;
+  trackingNumber?: string;
+  estimatedDelivery?: string;
+  items: OrderItem[];
+}
+
+interface OrderItem {
+  id: number;
+  quantity: number;
+  priceCents: number;
+  productType: 'game' | 'merchandise';
+  product: {
+    id: number;
+    title?: string;
+    name?: string;
+    imageUrl?: string;
+  } | null;
+}
+
 export default function AccountView() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
@@ -43,6 +70,8 @@ export default function AccountView() {
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
 
   // Profile form state
   const [profileData, setProfileData] = useState({
@@ -77,6 +106,9 @@ export default function AccountView() {
     if (activeTab === 'security' && user) {
       fetchSessions();
     }
+    if (activeTab === 'orders' && user) {
+      fetchOrders();
+    }
   }, [activeTab, user]);
 
   const fetchSessions = async () => {
@@ -91,6 +123,23 @@ export default function AccountView() {
       console.error('Error fetching sessions:', error);
     } finally {
       setLoadingSessions(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    setLoadingOrders(true);
+    try {
+      const response = await fetch('/api/account/orders');
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data);
+      } else {
+        console.error('Failed to fetch orders:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setLoadingOrders(false);
     }
   };
 
@@ -609,82 +658,138 @@ export default function AccountView() {
                     Order History
                   </h2>
 
-                  <div style={{ marginBottom: '24px' }}>
+                  {loadingOrders ? (
+                    <div style={{ textAlign: 'center', padding: '40px' }}>
+                      <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#64748b' }} />
+                      <p style={{ marginTop: '16px', color: '#64748b' }}>Loading orders...</p>
+                    </div>
+                  ) : orders.length === 0 ? (
                     <div style={{
                       background: 'rgba(51, 65, 85, 0.5)',
                       borderRadius: '8px',
-                      padding: '20px',
-                      marginBottom: '16px'
+                      padding: '40px',
+                      textAlign: 'center'
                     }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px' }}>
-                        <div>
-                          <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '4px' }}>
-                            Order #1234
-                          </h3>
-                          <p style={{ fontSize: '14px', color: '#94a3b8' }}>
-                            Placed on December 15, 2024
-                          </p>
-                        </div>
-                        <span style={{
-                          background: 'rgba(16, 185, 129, 0.2)',
-                          color: '#10b981',
-                          padding: '4px 12px',
-                          borderRadius: '6px',
-                          fontSize: '12px',
-                          fontWeight: 'bold'
-                        }}>
-                          Delivered
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <p style={{ fontSize: '14px', marginBottom: '4px' }}>Chaos Cards: Fantasy Edition</p>
-                          <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#fdba74' }}>$24.99</p>
-                        </div>
-                        <button style={styles.secondaryButton}>
-                          <Package size={18} />
-                          View Details
-                        </button>
-                      </div>
+                      <ShoppingBag size={48} style={{ color: '#64748b', marginBottom: '16px' }} />
+                      <h3 style={{ fontSize: '20px', marginBottom: '8px' }}>No orders yet</h3>
+                      <p style={{ color: '#94a3b8', marginBottom: '20px' }}>
+                        Start shopping to see your order history here
+                      </p>
+                      <button
+                        onClick={() => router.push('/games')}
+                        style={styles.button}
+                      >
+                        Browse Games
+                      </button>
                     </div>
+                  ) : (
+                    <div style={{ marginBottom: '24px' }}>
+                      {orders.map((order) => {
+                        const orderDate = new Date(order.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        });
+                        
+                        const getStatusColor = (status: string) => {
+                          switch (status.toLowerCase()) {
+                            case 'delivered':
+                            case 'completed':
+                              return { bg: 'rgba(16, 185, 129, 0.2)', color: '#10b981' };
+                            case 'shipped':
+                            case 'processing':
+                              return { bg: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6' };
+                            case 'pending':
+                              return { bg: 'rgba(251, 191, 36, 0.2)', color: '#fbbf24' };
+                            case 'cancelled':
+                            case 'failed':
+                              return { bg: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' };
+                            default:
+                              return { bg: 'rgba(148, 163, 184, 0.2)', color: '#94a3b8' };
+                          }
+                        };
 
-                    <div style={{
-                      background: 'rgba(51, 65, 85, 0.5)',
-                      borderRadius: '8px',
-                      padding: '20px'
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px' }}>
-                        <div>
-                          <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '4px' }}>
-                            Order #1235
-                          </h3>
-                          <p style={{ fontSize: '14px', color: '#94a3b8' }}>
-                            Placed on December 20, 2024
-                          </p>
-                        </div>
-                        <span style={{
-                          background: 'rgba(59, 130, 246, 0.2)',
-                          color: '#3b82f6',
-                          padding: '4px 12px',
-                          borderRadius: '6px',
-                          fontSize: '12px',
-                          fontWeight: 'bold'
-                        }}>
-                          In Transit
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <p style={{ fontSize: '14px', marginBottom: '4px' }}>Fugly Approved T-Shirt</p>
-                          <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#fdba74' }}>$29.99</p>
-                        </div>
-                        <button style={styles.secondaryButton}>
-                          <Package size={18} />
-                          Track Order
-                        </button>
-                      </div>
+                        const statusColors = getStatusColor(order.status);
+
+                        return (
+                          <div
+                            key={order.id}
+                            style={{
+                              background: 'rgba(51, 65, 85, 0.5)',
+                              borderRadius: '8px',
+                              padding: '20px',
+                              marginBottom: '16px'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px' }}>
+                              <div>
+                                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '4px' }}>
+                                  Order {order.orderNumber}
+                                </h3>
+                                <p style={{ fontSize: '14px', color: '#94a3b8' }}>
+                                  Placed on {orderDate}
+                                </p>
+                              </div>
+                              <span style={{
+                                background: statusColors.bg,
+                                color: statusColors.color,
+                                padding: '4px 12px',
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                textTransform: 'capitalize'
+                              }}>
+                                {order.status}
+                              </span>
+                            </div>
+                            
+                            {order.items.map((item, idx) => (
+                              <div key={item.id} style={{ 
+                                borderTop: idx > 0 ? '1px solid #334155' : 'none',
+                                paddingTop: idx > 0 ? '12px' : '0',
+                                marginTop: idx > 0 ? '12px' : '0'
+                              }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <div>
+                                    <p style={{ fontSize: '14px', marginBottom: '4px' }}>
+                                      {item.product?.title || item.product?.name || 'Unknown Product'} 
+                                      {item.quantity > 1 && ` (x${item.quantity})`}
+                                    </p>
+                                    <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#fdba74' }}>
+                                      ${(item.priceCents / 100).toFixed(2)}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            
+                            <div style={{ 
+                              display: 'flex', 
+                              justifyContent: 'space-between', 
+                              alignItems: 'center',
+                              marginTop: '16px',
+                              paddingTop: '16px',
+                              borderTop: '1px solid #334155'
+                            }}>
+                              <div>
+                                <p style={{ fontSize: '14px', color: '#94a3b8' }}>Total</p>
+                                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#f97316' }}>
+                                  ${(order.totalAmount / 100).toFixed(2)}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => router.push(`/track-order?order=${order.orderNumber}`)}
+                                style={styles.secondaryButton}
+                              >
+                                <Package size={18} />
+                                Track Order
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 

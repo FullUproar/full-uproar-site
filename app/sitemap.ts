@@ -83,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Fetch dynamic game pages
     const games = await prisma.game.findMany({
-      where: { isActive: true },
+      where: { archived: false },
       select: { 
         slug: true, 
         updatedAt: true 
@@ -92,14 +92,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const gamePages: MetadataRoute.Sitemap = games.map((game) => ({
       url: `${baseUrl}/games/${game.slug}`,
-      lastModified: game.updatedAt,
+      lastModified: game.updatedAt || new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
     }));
 
     // Fetch dynamic merchandise pages
-    const merchandise = await prisma.merchandise.findMany({
-      where: { isActive: true },
+    const merchandise = await prisma.merch.findMany({
+      where: { archived: false },
       select: { 
         slug: true, 
         updatedAt: true 
@@ -108,7 +108,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const merchPages: MetadataRoute.Sitemap = merchandise.map((item) => ({
       url: `${baseUrl}/merch/${item.slug}`,
-      lastModified: item.updatedAt,
+      lastModified: item.updatedAt || new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
     }));
