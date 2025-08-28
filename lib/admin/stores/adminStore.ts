@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { User, Employee, Invoice, Product, Order, UserRole } from '../types';
+import { User, Employee, Invoice, Product, Order, UserRole, InvoiceStatus } from '../types';
 import { logger } from '../utils/logger';
 
 // ============================================================================
@@ -534,7 +534,7 @@ export const selectTotalRevenue = (state: AdminState) => {
 };
 
 export const selectPendingInvoices = (state: AdminState) => {
-  return state.invoices.filter((invoice: Invoice) => invoice.status === 'pending');
+  return state.invoices.filter((invoice: Invoice) => invoice.status === InvoiceStatus.SENT || invoice.status === InvoiceStatus.VIEWED || invoice.status === InvoiceStatus.OVERDUE);
 };
 
 export const selectLowStockProducts = (state: AdminState) => {

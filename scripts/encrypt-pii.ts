@@ -186,12 +186,13 @@ class PIIEncryption {
     await prisma.analyticsEvent.create({
       data: {
         eventType: 'PII_ENCRYPTION_MIGRATION',
-        eventName: 'encryption_migration',
-        eventData: JSON.stringify({
+        properties: {
           action: 'PII_ENCRYPTION_MIGRATION',
           status: this.stats.failed === 0 ? 'SUCCESS' : 'PARTIAL',
           metadata: this.stats
-        }),
+        },
+        sessionId: 'system',
+        timestamp: new Date(),
         createdAt: new Date()
       }
     });
