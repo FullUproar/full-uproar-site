@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getShipStation } from '@/lib/shipping/shipstation';
-import { requirePermission } from '@/lib/permissions';
+import { requirePermission } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
     // Check admin permissions
-    await requirePermission(request, 'manage_orders');
+    await requirePermission('admin:access');
 
     const body = await request.json();
     const { weight, dimensions, toAddress, fromZip } = body;
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
             height: dimensions.height,
             units: 'inches',
           } : undefined,
-          residential: toAddress.residential \!== false,
+          residential: toAddress.residential !== false,
         });
 
         allRates.push(...rates.map(rate => ({

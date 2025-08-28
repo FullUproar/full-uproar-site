@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getShipStation, convertOrderToShipStation } from '@/lib/shipping/shipstation';
-import { requirePermission } from '@/lib/permissions';
-import { prisma } from '@/lib/db';
+import { requirePermission } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
     // Check admin permissions
-    await requirePermission(request, 'manage_orders');
+    await requirePermission('admin:access');
 
     const body = await request.json();
     const { orderId, carrierCode, serviceCode, packageCode, weight, dimensions } = body;
