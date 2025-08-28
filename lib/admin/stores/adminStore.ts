@@ -291,7 +291,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           updateEmployee: (id, updates) => set((state) => {
-            const index = state.employees.findIndex(e => e.id === id);
+            const index = state.employees.findIndex((e: Employee) => e.id === id);
             if (index !== -1) {
               Object.assign(state.employees[index], updates);
               logger.info('Employee updated', { employeeId: id, updates });
@@ -299,7 +299,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           deleteEmployee: (id) => set((state) => {
-            state.employees = state.employees.filter(e => e.id !== id);
+            state.employees = state.employees.filter((e: Employee) => e.id !== id);
             state.selectedEmployees = state.selectedEmployees.filter(sid => sid !== id);
             state.pagination.employees.total--;
             logger.info('Employee deleted', { employeeId: id });
@@ -341,7 +341,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           updateInvoice: (id, updates) => set((state) => {
-            const index = state.invoices.findIndex(i => i.id === id);
+            const index = state.invoices.findIndex((i: Invoice) => i.id === id);
             if (index !== -1) {
               Object.assign(state.invoices[index], updates);
               logger.info('Invoice updated', { invoiceId: id, updates });
@@ -349,7 +349,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           deleteInvoice: (id) => set((state) => {
-            state.invoices = state.invoices.filter(i => i.id !== id);
+            state.invoices = state.invoices.filter((i: Invoice) => i.id !== id);
             state.selectedInvoices = state.selectedInvoices.filter(sid => sid !== id);
             state.pagination.invoices.total--;
             logger.info('Invoice deleted', { invoiceId: id });
@@ -391,7 +391,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           updateProduct: (id, updates) => set((state) => {
-            const index = state.products.findIndex(p => p.id === id);
+            const index = state.products.findIndex((p: Product) => p.id === id);
             if (index !== -1) {
               Object.assign(state.products[index], updates);
               logger.info('Product updated', { productId: id, updates });
@@ -399,14 +399,14 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           deleteProduct: (id) => set((state) => {
-            state.products = state.products.filter(p => p.id !== id);
+            state.products = state.products.filter((p: Product) => p.id !== id);
             state.selectedProducts = state.selectedProducts.filter(sid => sid !== id);
             state.pagination.products.total--;
             logger.info('Product deleted', { productId: id });
           }),
 
           updateInventory: (id, quantity) => set((state) => {
-            const product = state.products.find(p => p.id === id);
+            const product = state.products.find((p: Product) => p.id === id);
             if (product) {
               product.stock = quantity;
               logger.info('Inventory updated', { productId: id, quantity });
@@ -420,7 +420,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           updateOrderStatus: (id, status) => set((state) => {
-            const order = state.orders.find(o => o.id === id);
+            const order = state.orders.find((o: Order) => o.id === id);
             if (order) {
               order.status = status;
               logger.info('Order status updated', { orderId: id, status });
@@ -451,14 +451,14 @@ export const useAdminStore = create<AdminState & AdminActions>()(
 
           // Bulk actions
           bulkDeleteEmployees: (ids) => set((state) => {
-            state.employees = state.employees.filter(e => !ids.includes(e.id));
+            state.employees = state.employees.filter((e: Employee) => !ids.includes(e.id));
             state.selectedEmployees = state.selectedEmployees.filter(id => !ids.includes(id));
             state.pagination.employees.total -= ids.length;
             logger.info('Bulk delete employees', { count: ids.length });
           }),
 
           bulkUpdateEmployees: (ids, updates) => set((state) => {
-            state.employees.forEach(employee => {
+            state.employees.forEach((employee: Employee) => {
               if (ids.includes(employee.id)) {
                 Object.assign(employee, updates);
               }
@@ -498,17 +498,23 @@ export const selectFilteredEmployees = (state: AdminState) => {
   const { employees, filters } = state;
   const { search, department, role, status } = filters.employees;
 
-  return employees.filter(employee => {
-    if (search && !employee.name.toLowerCase().includes(search.toLowerCase())) {
+  return employees.filter((employee: Employee) => {
+    // Search in firstName, lastName, or email
+    if (search) {
+      const fullName = `${employee.personalInfo.firstName} ${employee.personalInfo.lastName}`.toLowerCase();
+      const email = employee.personalInfo.email.toLowerCase();
+      const searchLower = search.toLowerCase();
+      if (!fullName.includes(searchLower) && !email.includes(searchLower)) {
+        return false;
+      }
+    }
+    if (department && employee.employment.department !== department) {
       return false;
     }
-    if (department && employee.department !== department) {
+    if (role && employee.employment.position !== role) {
       return false;
     }
-    if (role && employee.role !== role) {
-      return false;
-    }
-    if (status !== 'all' && employee.status !== status) {
+    if (status !== 'all' && employee.employment.status !== status) {
       return false;
     }
     return true;
@@ -528,11 +534,11 @@ export const selectTotalRevenue = (state: AdminState) => {
 };
 
 export const selectPendingInvoices = (state: AdminState) => {
-  return state.invoices.filter(invoice => invoice.status === 'pending');
+  return state.invoices.filter((invoice: Invoice) => invoice.status === 'pending');
 };
 
 export const selectLowStockProducts = (state: AdminState) => {
-  return state.products.filter(product => product.stock < 10);
+  return state.products.filter((product: Product) => product.stock < 10);
 };
 
 // ============================================================================
