@@ -1,130 +1,101 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requirePermission } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { ShippingService } from '@/lib/shipping/shipping-service';
+import { getShipStation, convertOrderToShipStation } from '@/lib/shipping/shipstation';
+import { requirePermission } from '@/lib/permissions';
+import { prisma } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
-    // Check admin permission
-    await requirePermission('admin:access');
+    // Check admin permissions
+    await requirePermission(request, 'manage_orders');
 
-    const { 
-      orderId, 
-      carrier, 
-      service,
-      packageDetails,
-      fromAddress,
-      toAddress 
-    } = await request.json();
+    const body = await request.json();
+    const { orderId, carrierCode, serviceCode, packageCode, weight, dimensions } = body;
 
-    // Validate required fields
-    if (!orderId || !carrier || !service) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
-    // Get order
+    // Get order from database
     const order = await prisma.order.findUnique({
       where: { id: orderId },
-      include: { items: true }
+      include: {
+        items: true,
+      },
     });
 
     if (!order) {
       return NextResponse.json(
-        { error: 'Order not found' },
+        { success: false, error: 'Order not found' },
         { status: 404 }
       );
     }
 
-    // Parse addresses if not provided
-    const from = fromAddress || {
-      name: 'Full Uproar Games',
-      street1: '123 Chaos Street',
-      city: 'Game City',
-      state: 'CA',
-      zip: '90210',
-      country: 'US',
-      email: 'shipping@fulluproar.com'
-    };
-
-    const to = toAddress || ShippingService.parseAddress(order.shippingAddress);
+    // Parse address from the shippingAddress string
+    // For now, we'll need a proper address parser or store structured addresses
+    const addressParts = order.shippingAddress.split(',').map(s => s.trim());
     
-    // Add customer info to address
-    to.name = to.name || order.customerName;
-    to.email = to.email || order.customerEmail;
-    to.phone = to.phone || order.customerPhone;
+    const shipStation = getShipStation();
 
-    // Calculate package details if not provided
-    const pkg = packageDetails || {
-      weight: Math.max(order.items.reduce((sum, item) => {
-        // Estimate weight: 8oz for games, 6oz for merch
-        const itemWeight = item.itemType === 'game' ? 8 : 6;
-        return sum + (itemWeight * item.quantity);
-      }, 0), 4), // Minimum 4oz
-      length: 12,
-      width: 9,
-      height: 3,
-      value: order.totalCents
-    };
+    // First, create/update the order in ShipStation
+    try {
+      const shipStationOrder = convertOrderToShipStation(order);
+      await shipStation.createOrder(shipStationOrder);
+    } catch (error) {
+      console.error('Failed to sync order to ShipStation:', error);
+    }
 
-    // Create shipping label
-    const label = await ShippingService.createLabel(
-      orderId,
-      from,
-      to,
-      pkg,
-      carrier,
-      service
-    );
+    // Create the shipping label
+    const label = await shipStation.createLabel({
+      orderId: order.id,
+      carrierCode,
+      serviceCode,
+      packageCode,
+      shipDate: new Date().toISOString().split('T')[0],
+      weight: {
+        value: weight,
+        units: 'pounds',
+      },
+      dimensions: dimensions ? {
+        length: dimensions.length,
+        width: dimensions.width,
+        height: dimensions.height,
+        units: 'inches',
+      } : undefined,
+      shipTo: {
+        name: order.customerName,
+        street1: addressParts[0] || '',
+        city: addressParts[1] || '',
+        state: addressParts[2] || '',
+        postalCode: addressParts[3] || '',
+        country: 'US',
+        phone: order.customerPhone || '',
+        residential: true,
+      },
+      testLabel: process.env.NODE_ENV !== 'production',
+    });
+
+    // Update order with tracking information
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        trackingNumber: label.trackingNumber,
+        shippingCarrier: carrierCode,
+        shippingMethod: serviceCode,
+        shippingLabelUrl: label.labelData, // This is base64 encoded PDF
+        shippedAt: new Date(),
+        status: 'processing',
+      },
+    });
 
     return NextResponse.json({
       success: true,
-      label,
-      message: `Label created successfully. Tracking: ${label.trackingNumber}`
+      label: {
+        trackingNumber: label.trackingNumber,
+        labelUrl: label.labelData,
+        cost: label.shipmentCost,
+        shipmentId: label.shipmentId,
+      },
     });
   } catch (error: any) {
-    console.error('Error creating shipping label:', error);
+    console.error('Create shipping label error:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to create shipping label' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    // Check admin permission
-    await requirePermission('admin:access');
-
-    const searchParams = request.nextUrl.searchParams;
-    const orderId = searchParams.get('orderId');
-
-    const where = orderId ? { orderId } : {};
-
-    const labels = await prisma.shippingLabel.findMany({
-      where,
-      include: {
-        order: {
-          select: {
-            id: true,
-            customerName: true,
-            status: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      take: 100
-    });
-
-    return NextResponse.json(labels);
-  } catch (error: any) {
-    console.error('Error fetching shipping labels:', error);
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch shipping labels' },
+      { success: false, error: error.message },
       { status: 500 }
     );
   }

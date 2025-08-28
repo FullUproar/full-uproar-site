@@ -1,70 +1,65 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requirePermission } from '@/lib/auth';
-import { ShippingService } from '@/lib/shipping/shipping-service';
+import { getShipStation } from '@/lib/shipping/shipstation';
+import { requirePermission } from '@/lib/permissions';
 
 export async function POST(request: NextRequest) {
   try {
-    // Check admin permission
-    await requirePermission('admin:access');
+    // Check admin permissions
+    await requirePermission(request, 'manage_orders');
 
-    const { 
-      fromAddress,
-      toAddress,
-      packageDetails
-    } = await request.json();
+    const body = await request.json();
+    const { weight, dimensions, toAddress, fromZip } = body;
 
-    // Validate addresses
-    if (!toAddress || !toAddress.zip) {
-      return NextResponse.json(
-        { error: 'Destination address is required' },
-        { status: 400 }
-      );
+    const shipStation = getShipStation();
+
+    // Get rates from multiple carriers
+    const carriers = ['fedex', 'ups', 'usps'];
+    const allRates = [];
+
+    for (const carrierCode of carriers) {
+      try {
+        const rates = await shipStation.getRates({
+          carrierCode,
+          fromPostalCode: fromZip || process.env.WAREHOUSE_ZIP || '10001',
+          toCountry: toAddress.country || 'US',
+          toState: toAddress.state,
+          toPostalCode: toAddress.postalCode,
+          toCity: toAddress.city,
+          weight: {
+            value: weight || 1,
+            units: 'pounds',
+          },
+          dimensions: dimensions ? {
+            length: dimensions.length,
+            width: dimensions.width,
+            height: dimensions.height,
+            units: 'inches',
+          } : undefined,
+          residential: toAddress.residential \!== false,
+        });
+
+        allRates.push(...rates.map(rate => ({
+          ...rate,
+          carrier: carrierCode,
+        })));
+      } catch (error) {
+        console.error(`Failed to get rates from ${carrierCode}:`, error);
+      }
     }
 
-    // Default from address
-    const from = fromAddress || {
-      name: 'Full Uproar Games',
-      street1: '123 Chaos Street',
-      city: 'Game City',
-      state: 'CA',
-      zip: '90210',
-      country: 'US'
-    };
-
-    // Default package if not provided
-    const pkg = packageDetails || {
-      weight: 16, // 1 pound default
-      length: 12,
-      width: 9,
-      height: 3,
-      value: 5000 // $50 default
-    };
-
-    // Get rates from all carriers
-    const rates = await ShippingService.getAllRates(from, toAddress, pkg);
-
-    // Group by carrier
-    const groupedRates = rates.reduce((acc, rate) => {
-      if (!acc[rate.carrier]) {
-        acc[rate.carrier] = [];
-      }
-      acc[rate.carrier].push(rate);
-      return acc;
-    }, {} as Record<string, typeof rates>);
+    // Sort by price
+    allRates.sort((a, b) => a.shipmentCost - b.shipmentCost);
 
     return NextResponse.json({
-      rates,
-      groupedRates,
-      cheapest: rates[0],
-      fastest: rates.reduce((fastest, rate) => 
-        rate.deliveryDays < fastest.deliveryDays ? rate : fastest
-      )
+      success: true,
+      rates: allRates,
     });
   } catch (error: any) {
-    console.error('Error fetching shipping rates:', error);
+    console.error('Get shipping rates error:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch shipping rates' },
+      { success: false, error: error.message },
       { status: 500 }
     );
   }
 }
+EOF < /dev/null

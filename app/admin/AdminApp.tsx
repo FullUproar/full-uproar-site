@@ -43,6 +43,7 @@ import EmployeeHub from './components/EmployeeHub';
 import FinancialIntelligence from './components/FinancialIntelligence';
 import InvoiceSystem from './components/InvoiceSystem';
 import B2BPortal from './components/B2BPortal';
+import FulfillmentCenter from './components/FulfillmentCenter';
 
 type ViewType = 
   | 'dashboard'
@@ -229,6 +230,14 @@ export default function AdminApp() {
           icon: <ShoppingCart size={20} />,
           view: { type: 'orders-list' as ViewType },
           color: '#10b981',
+        },
+        {
+          id: 'fulfillment',
+          label: 'Fulfillment Center',
+          icon: <Package size={20} />,
+          view: { type: 'fulfillment' as ViewType },
+          color: '#f97316',
+          badge: 'SHIP',
         },
         {
           id: 'games',
@@ -563,19 +572,7 @@ export default function AdminApp() {
         );
       
       case 'fulfillment':
-        return (
-          <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
-            <iframe 
-              src="/admin/fulfillment" 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                border: 'none',
-                background: '#111827'
-              }} 
-            />
-          </div>
-        );
+        return <FulfillmentCenter onNavigate={navigateTo} />;
       
       case 'returns':
         return (
