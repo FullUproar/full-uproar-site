@@ -300,7 +300,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
 
           deleteEmployee: (id) => set((state) => {
             state.employees = state.employees.filter((e: Employee) => e.id !== id);
-            state.selectedEmployees = state.selectedEmployees.filter(sid => sid !== id);
+            state.selectedEmployees = state.selectedEmployees.filter((sid: string) => sid !== id);
             state.pagination.employees.total--;
             logger.info('Employee deleted', { employeeId: id });
           }),
@@ -312,7 +312,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           deselectEmployee: (id) => set((state) => {
-            state.selectedEmployees = state.selectedEmployees.filter(sid => sid !== id);
+            state.selectedEmployees = state.selectedEmployees.filter((sid: string) => sid !== id);
           }),
 
           clearEmployeeSelection: () => set((state) => {
@@ -350,7 +350,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
 
           deleteInvoice: (id) => set((state) => {
             state.invoices = state.invoices.filter((i: Invoice) => i.id !== id);
-            state.selectedInvoices = state.selectedInvoices.filter(sid => sid !== id);
+            state.selectedInvoices = state.selectedInvoices.filter((sid: string) => sid !== id);
             state.pagination.invoices.total--;
             logger.info('Invoice deleted', { invoiceId: id });
           }),
@@ -362,7 +362,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           }),
 
           deselectInvoice: (id) => set((state) => {
-            state.selectedInvoices = state.selectedInvoices.filter(sid => sid !== id);
+            state.selectedInvoices = state.selectedInvoices.filter((sid: string) => sid !== id);
           }),
 
           clearInvoiceSelection: () => set((state) => {
@@ -400,7 +400,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
 
           deleteProduct: (id) => set((state) => {
             state.products = state.products.filter((p: Product) => p.id !== id);
-            state.selectedProducts = state.selectedProducts.filter(sid => sid !== id);
+            state.selectedProducts = state.selectedProducts.filter((sid: string) => sid !== id);
             state.pagination.products.total--;
             logger.info('Product deleted', { productId: id });
           }),
@@ -452,7 +452,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           // Bulk actions
           bulkDeleteEmployees: (ids) => set((state) => {
             state.employees = state.employees.filter((e: Employee) => !ids.includes(e.id));
-            state.selectedEmployees = state.selectedEmployees.filter(id => !ids.includes(id));
+            state.selectedEmployees = state.selectedEmployees.filter((id: string) => !ids.includes(id));
             state.pagination.employees.total -= ids.length;
             logger.info('Bulk delete employees', { count: ids.length });
           }),
