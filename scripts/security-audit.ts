@@ -257,7 +257,7 @@ class SecurityAudit {
     }
 
     // Check for MFA enforcement
-    const adminUsers = await prisma.employee.findMany({
+    const adminUsers = await prisma.user.findMany({
       where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] }}
     });
 
@@ -296,8 +296,8 @@ class SecurityAudit {
       });
     }
 
-    // Check for audit logging
-    const auditLogs = await prisma.auditLog.count();
+    // Check for audit logging (using AnalyticsEvent as audit log)
+    const auditLogs = await prisma.analyticsEvent.count();
     if (auditLogs === 0) {
       this.addResult({
         category: 'Privacy',

@@ -31,7 +31,8 @@ class PIIEncryption {
     
     try {
       await this.encryptUsers();
-      await this.encryptEmployees();
+      // Note: No employee table in current schema
+      // await this.encryptEmployees();
       await this.encryptOrders();
       await this.printResults();
       
@@ -101,68 +102,17 @@ class PIIEncryption {
     console.log(`  Processed ${users.length} users`);
   }
 
+  // Note: No employee table in current schema - this method is kept for future use
   private async encryptEmployees(): Promise<void> {
-    console.log('\n👔 Encrypting employee data...');
-    
-    const employees = await prisma.employee.findMany();
-    
-    for (const employee of employees) {
-      this.stats.total++;
-      
-      try {
-        const updates: any = {};
-        let needsUpdate = false;
-        
-        // Encrypt phone
-        if (employee.phone && !this.isEncrypted(employee.phone)) {
-          updates.phone = encryption.encryptPII(employee.phone);
-          needsUpdate = true;
-        }
-        
-        // Encrypt SSN if exists
-        if ((employee as any).ssn && !this.isEncrypted((employee as any).ssn)) {
-          updates.ssn = encryption.encryptPII((employee as any).ssn);
-          updates.ssnMasked = encryption.maskSSN((employee as any).ssn);
-          needsUpdate = true;
-        }
-        
-        // Encrypt salary if exists
-        if ((employee as any).salary && !this.isEncrypted((employee as any).salary.toString())) {
-          updates.salaryEncrypted = encryption.encryptPII((employee as any).salary.toString());
-          needsUpdate = true;
-        }
-        
-        // Encrypt bank account if exists
-        if ((employee as any).bankAccount && !this.isEncrypted((employee as any).bankAccount)) {
-          updates.bankAccount = encryption.encryptPII((employee as any).bankAccount);
-          needsUpdate = true;
-        }
-        
-        if (needsUpdate) {
-          await prisma.employee.update({
-            where: { id: employee.id },
-            data: updates
-          });
-          this.stats.encrypted++;
-          console.log(`  ✓ Encrypted employee ${employee.id}`);
-        } else {
-          this.stats.skipped++;
-        }
-      } catch (error) {
-        this.stats.failed++;
-        console.error(`  ✗ Failed to encrypt employee ${employee.id}:`, error);
-      }
-    }
-    
-    console.log(`  Processed ${employees.length} employees`);
+    console.log('\n👔 Employee encryption skipped - no employee table in schema');
+    // This method would encrypt employee data if the table existed
+    return Promise.resolve();
   }
 
   private async encryptOrders(): Promise<void> {
     console.log('\n📦 Encrypting order data...');
     
-    const orders = await prisma.order.findMany({
-      include: { shippingAddress: true, billingAddress: true }
-    });
+    const orders = await prisma.order.findMany();
     
     for (const order of orders) {
       this.stats.total++;
@@ -177,22 +127,11 @@ class PIIEncryption {
           needsUpdate = true;
         }
         
-        // Encrypt shipping address details
-        if (order.shippingAddress) {
-          const addressUpdates: any = {};
-          let addressNeedsUpdate = false;
-          
-          if (order.shippingAddress.phone && !this.isEncrypted(order.shippingAddress.phone)) {
-            addressUpdates.phone = encryption.encryptPII(order.shippingAddress.phone);
-            addressNeedsUpdate = true;
-          }
-          
-          if (addressNeedsUpdate && order.shippingAddress.id) {
-            await prisma.address.update({
-              where: { id: order.shippingAddress.id },
-              data: addressUpdates
-            });
-          }
+        // Note: shippingAddress is a text field, not a relation
+        // If we need to encrypt addresses, we should store them encrypted in the text field
+        if (order.shippingAddress && !this.isEncrypted(order.shippingAddress)) {
+          updates.shippingAddress = encryption.encryptPII(order.shippingAddress);
+          needsUpdate = true;
         }
         
         // Encrypt credit card last 4 (should be tokenized via Stripe)
@@ -243,13 +182,17 @@ class PIIEncryption {
       console.log('\n⚠️  Some records failed to encrypt. Review logs for details.');
     }
     
-    // Log to audit trail
-    await prisma.auditLog.create({
+    // Log to analytics event (no audit log table)
+    await prisma.analyticsEvent.create({
       data: {
-        action: 'PII_ENCRYPTION_MIGRATION',
-        status: this.stats.failed === 0 ? 'SUCCESS' : 'PARTIAL',
-        metadata: this.stats,
-        timestamp: new Date()
+        eventType: 'PII_ENCRYPTION_MIGRATION',
+        eventName: 'encryption_migration',
+        eventData: JSON.stringify({
+          action: 'PII_ENCRYPTION_MIGRATION',
+          status: this.stats.failed === 0 ? 'SUCCESS' : 'PARTIAL',
+          metadata: this.stats
+        }),
+        createdAt: new Date()
       }
     });
   }
@@ -279,37 +222,22 @@ class PIIEncryption {
           break;
           
         case 'employee':
-          record = await prisma.employee.findUnique({ where: { id: recordId } });
-          if (record) {
-            return {
-              ...record,
-              phone: record.phone ? 
-                encryption.decryptPII(record.phone) : null,
-              ssn: (record as any).ssn ? 
-                encryption.decryptPII((record as any).ssn) : null,
-              salary: (record as any).salaryEncrypted ? 
-                parseFloat(encryption.decryptPII((record as any).salaryEncrypted)) : null,
-              bankAccount: (record as any).bankAccount ? 
-                encryption.decryptPII((record as any).bankAccount) : null
-            };
-          }
+          // No employee table in current schema
+          console.log('Employee table does not exist in current schema');
+          return null;
           break;
           
         case 'order':
           record = await prisma.order.findUnique({ 
-            where: { id: recordId },
-            include: { shippingAddress: true }
+            where: { id: recordId }
           });
           if (record) {
             return {
               ...record,
-              customerPhone: (record as any).customerPhone ? 
-                encryption.decryptPII((record as any).customerPhone) : null,
-              shippingAddress: record.shippingAddress ? {
-                ...record.shippingAddress,
-                phone: record.shippingAddress.phone ? 
-                  encryption.decryptPII(record.shippingAddress.phone) : null
-              } : null
+              customerPhone: record.customerPhone ? 
+                encryption.decryptPII(record.customerPhone) : null,
+              shippingAddress: record.shippingAddress && this.isEncrypted(record.shippingAddress) ? 
+                encryption.decryptPII(record.shippingAddress) : record.shippingAddress
             };
           }
           break;
