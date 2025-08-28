@@ -159,7 +159,16 @@ export default function AdminApp() {
       // Determine parent for sub-views
       const viewTypePrefix = view.type.split('-')[0]; // e.g., 'games' from 'games-edit'
       const viewTypeSuffix = view.type.split('-')[1]; // e.g., 'edit' from 'games-edit'
-      const parentItem = menuItems.find(item => item.id === viewTypePrefix);
+      
+      // Find parent item across all sections
+      let parentItem: any = null;
+      for (const section of menuSections) {
+        const found = section.items.find(item => item.id === viewTypePrefix);
+        if (found) {
+          parentItem = found;
+          break;
+        }
+      }
       
       // Only add parent breadcrumb if this is actually a sub-view (edit/new/detail)
       if (parentItem && viewTypeSuffix && viewTypeSuffix !== 'list') {
@@ -178,202 +187,271 @@ export default function AdminApp() {
     }
   };
 
-  const menuItems = [
+  // Organized menu sections
+  const menuSections = [
     {
-      id: 'dashboard',
-      label: 'Dashboard',
-      icon: <Home size={20} />,
-      view: { type: 'dashboard' as ViewType },
-      color: '#fdba74',
-    },
-    {
-      id: 'power-dashboard',
-      label: 'Command Center',
-      icon: <TrendingUp size={20} />,
-      view: { type: 'power-dashboard' as ViewType },
-      color: '#10b981',
-      badge: 'NEW',
-    },
-    {
-      id: 'customers',
-      label: 'Customers',
-      icon: <Users size={20} />,
-      view: { type: 'customers' as ViewType },
-      color: '#8b5cf6',
-      badge: 'PRO',
-    },
-    {
-      id: 'email-campaigns',
-      label: 'Email Marketing',
-      icon: <Menu size={20} />,
-      view: { type: 'email-campaigns' as ViewType },
-      color: '#ec4899',
-      badge: 'HOT',
-    },
-    {
-      id: 'marketing-war-room',
-      label: 'War Room',
-      icon: <Target size={20} />,
-      view: { type: 'marketing-war-room' as ViewType },
-      color: '#06b6d4',
-      badge: 'INTEL',
-    },
-    {
-      id: 'product-intelligence',
-      label: 'Product Intel',
-      icon: <Calculator size={20} />,
-      view: { type: 'product-intelligence' as ViewType },
-      color: '#14b8a6',
-      badge: 'COGS',
-    },
-    {
-      id: 'fugly-prime',
-      label: 'Fugly Prime',
-      icon: <Crown size={20} />,
-      view: { type: 'fugly-prime' as ViewType },
-      color: '#f97316',
-      badge: 'SUB',
-    },
-    {
-      id: 'operator-manual',
-      label: 'Training Hub',
-      icon: <GraduationCap size={20} />,
-      view: { type: 'operator-manual' as ViewType },
-      color: '#22d3ee',
-      badge: 'DOCS',
-    },
-    {
-      id: 'employee-hub',
-      label: 'Employee Hub',
-      icon: <Briefcase size={20} />,
-      view: { type: 'employee-hub' as ViewType },
-      color: '#a855f7',
-      badge: 'HR',
-    },
-    {
-      id: 'financial-intelligence',
-      label: 'Financials',
-      icon: <Landmark size={20} />,
-      view: { type: 'financial-intelligence' as ViewType },
-      color: '#10b981',
-      badge: 'CFO',
-    },
-    {
-      id: 'invoice-system',
-      label: 'Invoicing',
-      icon: <FileText size={20} />,
-      view: { type: 'invoice-system' as ViewType },
-      color: '#3b82f6',
-      badge: 'PAY',
-    },
-    {
-      id: 'b2b-portal',
-      label: 'B2B Portal',
-      icon: <Building size={20} />,
-      view: { type: 'b2b-portal' as ViewType },
-      color: '#8b5cf6',
-      badge: 'B2B',
-    },
-    {
-      id: 'users',
-      label: 'Users',
-      icon: <UserCog size={20} />,
-      view: { type: 'users-list' as ViewType },
-      color: '#3b82f6',
-      subItems: [
-        { label: 'All Users', view: { type: 'users-list' as ViewType } },
-        { label: 'New User', view: { type: 'users-new' as ViewType } },
-        { label: 'Moderation', view: { type: 'users-moderation' as ViewType } },
+      id: 'overview',
+      label: 'Overview',
+      expanded: true, // Default expanded
+      items: [
+        {
+          id: 'dashboard',
+          label: 'Dashboard',
+          icon: <Home size={20} />,
+          view: { type: 'dashboard' as ViewType },
+          color: '#fdba74',
+        },
+        {
+          id: 'power-dashboard',
+          label: 'Command Center',
+          icon: <TrendingUp size={20} />,
+          view: { type: 'power-dashboard' as ViewType },
+          color: '#10b981',
+          badge: 'NEW',
+        },
+        {
+          id: 'analytics',
+          label: 'Analytics',
+          icon: <BarChart3 size={20} />,
+          view: { type: 'analytics' as ViewType },
+          color: '#06b6d4',
+        },
       ]
     },
     {
-      id: 'games',
-      label: 'Games',
-      icon: <Dices size={20} />,
-      view: { type: 'games-list' as ViewType },
-      color: '#f97316',
-      subItems: [
-        { label: 'All Games', view: { type: 'games-list' as ViewType } },
-        { label: 'New Game', view: { type: 'games-new' as ViewType } },
+      id: 'commerce',
+      label: 'E-Commerce',
+      expanded: true,
+      items: [
+        {
+          id: 'orders',
+          label: 'Orders',
+          icon: <ShoppingCart size={20} />,
+          view: { type: 'orders-list' as ViewType },
+          color: '#10b981',
+        },
+        {
+          id: 'games',
+          label: 'Games',
+          icon: <Dices size={20} />,
+          view: { type: 'games-list' as ViewType },
+          color: '#f97316',
+          subItems: [
+            { label: 'All Games', view: { type: 'games-list' as ViewType } },
+            { label: 'New Game', view: { type: 'games-new' as ViewType } },
+          ]
+        },
+        {
+          id: 'merch',
+          label: 'Merchandise',
+          icon: <ShoppingBag size={20} />,
+          view: { type: 'merch-list' as ViewType },
+          color: '#8b5cf6',
+          subItems: [
+            { label: 'All Merch', view: { type: 'merch-list' as ViewType } },
+            { label: 'New Merch', view: { type: 'merch-new' as ViewType } },
+          ]
+        },
+        {
+          id: 'product-intelligence',
+          label: 'Product Intel',
+          icon: <Calculator size={20} />,
+          view: { type: 'product-intelligence' as ViewType },
+          color: '#14b8a6',
+          badge: 'COGS',
+        },
       ]
     },
     {
-      id: 'merch',
-      label: 'Merchandise',
-      icon: <ShoppingBag size={20} />,
-      view: { type: 'merch-list' as ViewType },
-      color: '#8b5cf6',
-      subItems: [
-        { label: 'All Merch', view: { type: 'merch-list' as ViewType } },
-        { label: 'New Merch', view: { type: 'merch-new' as ViewType } },
+      id: 'crm',
+      label: 'Customer Relations',
+      expanded: false,
+      items: [
+        {
+          id: 'customers',
+          label: 'Customers',
+          icon: <Users size={20} />,
+          view: { type: 'customers' as ViewType },
+          color: '#8b5cf6',
+          badge: 'PRO',
+        },
+        {
+          id: 'email-campaigns',
+          label: 'Email Marketing',
+          icon: <Menu size={20} />,
+          view: { type: 'email-campaigns' as ViewType },
+          color: '#ec4899',
+          badge: 'HOT',
+        },
+        {
+          id: 'marketing-war-room',
+          label: 'War Room',
+          icon: <Target size={20} />,
+          view: { type: 'marketing-war-room' as ViewType },
+          color: '#06b6d4',
+          badge: 'INTEL',
+        },
+        {
+          id: 'fugly-prime',
+          label: 'Fugly Prime',
+          icon: <Crown size={20} />,
+          view: { type: 'fugly-prime' as ViewType },
+          color: '#f97316',
+          badge: 'SUB',
+        },
       ]
     },
     {
-      id: 'orders',
-      label: 'Orders',
-      icon: <ShoppingCart size={20} />,
-      view: { type: 'orders-list' as ViewType },
-      color: '#10b981',
+      id: 'finance',
+      label: 'Finance & Billing',
+      expanded: false,
+      items: [
+        {
+          id: 'financial-intelligence',
+          label: 'Financials',
+          icon: <Landmark size={20} />,
+          view: { type: 'financial-intelligence' as ViewType },
+          color: '#10b981',
+          badge: 'CFO',
+        },
+        {
+          id: 'invoice-system',
+          label: 'Invoicing',
+          icon: <FileText size={20} />,
+          view: { type: 'invoice-system' as ViewType },
+          color: '#3b82f6',
+          badge: 'PAY',
+        },
+        {
+          id: 'b2b-portal',
+          label: 'B2B Portal',
+          icon: <Building size={20} />,
+          view: { type: 'b2b-portal' as ViewType },
+          color: '#8b5cf6',
+          badge: 'B2B',
+        },
+      ]
     },
     {
-      id: 'analytics',
-      label: 'Analytics',
-      icon: <BarChart3 size={20} />,
-      view: { type: 'analytics' as ViewType },
-      color: '#06b6d4',
+      id: 'hr',
+      label: 'Human Resources',
+      expanded: false,
+      items: [
+        {
+          id: 'employee-hub',
+          label: 'Employee Hub',
+          icon: <Briefcase size={20} />,
+          view: { type: 'employee-hub' as ViewType },
+          color: '#a855f7',
+          badge: 'HR',
+        },
+        {
+          id: 'operator-manual',
+          label: 'Training Hub',
+          icon: <GraduationCap size={20} />,
+          view: { type: 'operator-manual' as ViewType },
+          color: '#22d3ee',
+          badge: 'DOCS',
+        },
+      ]
     },
     {
-      id: 'comics',
-      label: 'Comics',
-      icon: <BookOpen size={20} />,
-      view: { type: 'comics-list' as ViewType },
-      color: '#3b82f6',
+      id: 'content',
+      label: 'Content Management',
+      expanded: false,
+      items: [
+        {
+          id: 'comics',
+          label: 'Comics',
+          icon: <BookOpen size={20} />,
+          view: { type: 'comics-list' as ViewType },
+          color: '#3b82f6',
+        },
+        {
+          id: 'artwork',
+          label: 'Artwork',
+          icon: <Palette size={20} />,
+          view: { type: 'artwork-list' as ViewType },
+          color: '#ec4899',
+        },
+      ]
     },
     {
-      id: 'artwork',
-      label: 'Artwork',
-      icon: <Palette size={20} />,
-      view: { type: 'artwork-list' as ViewType },
-      color: '#ec4899',
+      id: 'users-section',
+      label: 'User Management',
+      expanded: false,
+      items: [
+        {
+          id: 'users',
+          label: 'Users',
+          icon: <UserCog size={20} />,
+          view: { type: 'users-list' as ViewType },
+          color: '#3b82f6',
+          subItems: [
+            { label: 'All Users', view: { type: 'users-list' as ViewType } },
+            { label: 'New User', view: { type: 'users-new' as ViewType } },
+            { label: 'Moderation', view: { type: 'users-moderation' as ViewType } },
+          ]
+        },
+      ]
     },
     {
-      id: 'migrations',
-      label: 'Migrations',
-      icon: <Database size={20} />,
-      view: { type: 'migrations' as ViewType },
-      color: '#6366f1',
-    },
-    {
-      id: 'settings',
-      label: 'Settings',
-      icon: <Settings size={20} />,
-      view: { type: 'settings' as ViewType },
-      color: '#94a3b8',
-    },
-    {
-      id: 'test-modes',
-      label: 'Test Modes',
-      icon: <TestTube size={20} />,
-      view: { type: 'test-modes' as ViewType },
-      color: '#f97316',
-    },
-    {
-      id: 'diagnostics',
-      label: 'System Health',
-      icon: <Heart size={20} />,
-      view: { type: 'diagnostics' as ViewType },
-      color: '#ef4444',
-    },
-    {
-      id: 'compliance',
-      label: 'Legal Compliance',
-      icon: <Shield size={20} />,
-      view: { type: 'compliance' as ViewType },
-      color: '#10b981',
+      id: 'system',
+      label: 'System & Settings',
+      expanded: false,
+      items: [
+        {
+          id: 'settings',
+          label: 'Settings',
+          icon: <Settings size={20} />,
+          view: { type: 'settings' as ViewType },
+          color: '#94a3b8',
+        },
+        {
+          id: 'migrations',
+          label: 'Migrations',
+          icon: <Database size={20} />,
+          view: { type: 'migrations' as ViewType },
+          color: '#6366f1',
+        },
+        {
+          id: 'test-modes',
+          label: 'Test Modes',
+          icon: <TestTube size={20} />,
+          view: { type: 'test-modes' as ViewType },
+          color: '#f97316',
+        },
+        {
+          id: 'diagnostics',
+          label: 'System Health',
+          icon: <Heart size={20} />,
+          view: { type: 'diagnostics' as ViewType },
+          color: '#ef4444',
+        },
+        {
+          id: 'compliance',
+          label: 'Legal Compliance',
+          icon: <Shield size={20} />,
+          view: { type: 'compliance' as ViewType },
+          color: '#10b981',
+        },
+      ]
     },
   ];
 
+  // Track expanded sections and menu items
+  const [expandedSections, setExpandedSections] = useState<string[]>(
+    menuSections.filter(s => s.expanded).map(s => s.id)
+  );
   const [expandedMenuItems, setExpandedMenuItems] = useState<string[]>([]);
+
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev => 
+      prev.includes(sectionId)
+        ? prev.filter(id => id !== sectionId)
+        : [...prev, sectionId]
+    );
+  };
 
   const toggleMenuItem = (itemId: string) => {
     setExpandedMenuItems(prev => 
@@ -711,103 +789,168 @@ export default function AdminApp() {
 
         {/* Menu Items */}
         <nav style={{ flex: 1, padding: '12px', overflowY: 'auto' }}>
-          {menuItems.map((item) => (
-            <div key={item.id}>
-              <button
-                onClick={() => {
-                  navigateTo(item.view, item.label);
-                  if (item.subItems) {
-                    toggleMenuItem(item.id);
-                  }
-                  if (isMobile) {
-                    setMobileMenuOpen(false);
-                  }
-                }}
-                style={{
-                  width: '100%',
-                  padding: sidebarCollapsed ? '12px' : '12px 16px',
-                  background: currentView.type.startsWith(item.id) 
-                    ? 'rgba(249, 115, 22, 0.2)' 
-                    : 'transparent',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: currentView.type.startsWith(item.id) ? '#fdba74' : '#e2e8f0',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  marginBottom: '4px',
-                  justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
-                }}
-                onMouseEnter={(e) => {
-                  if (!currentView.type.startsWith(item.id)) {
-                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-                    e.currentTarget.style.color = '#fde68a';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!currentView.type.startsWith(item.id)) {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = '#e2e8f0';
-                  }
-                }}
-              >
-                <div style={{ color: item.color }}>
-                  {item.icon}
-                </div>
-                {!sidebarCollapsed && (
-                  <>
-                    <span style={{ flex: 1, textAlign: 'left', fontWeight: '500' }}>
-                      {item.label}
-                    </span>
-                    {item.subItems && (
-                      <ChevronRight 
-                        size={16} 
-                        style={{
-                          transform: expandedMenuItems.includes(item.id) ? 'rotate(90deg)' : 'rotate(0)',
-                          transition: 'transform 0.2s',
-                        }}
-                      />
-                    )}
-                  </>
-                )}
-              </button>
+          {menuSections.map((section) => (
+            <div key={section.id} style={{ marginBottom: '12px' }}>
+              {/* Section Header */}
+              {!sidebarCollapsed && (
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#94a3b8',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#fdba74';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#94a3b8';
+                  }}
+                >
+                  <ChevronRight 
+                    size={14} 
+                    style={{
+                      transform: expandedSections.includes(section.id) ? 'rotate(90deg)' : 'rotate(0)',
+                      transition: 'transform 0.2s',
+                    }}
+                  />
+                  <span>{section.label}</span>
+                </button>
+              )}
 
-              {/* Sub Items */}
-              {!sidebarCollapsed && item.subItems && expandedMenuItems.includes(item.id) && (
-                <div style={{ marginLeft: '32px', marginTop: '4px' }}>
-                  {item.subItems.map((subItem, index) => (
-                    <button
-                      key={index}
-                      onClick={() => navigateTo(subItem.view, subItem.label)}
-                      style={{
-                        width: '100%',
-                        padding: '8px 16px',
-                        background: currentView.type === subItem.view.type 
-                          ? 'rgba(249, 115, 22, 0.15)' 
-                          : 'transparent',
-                        border: 'none',
-                        borderRadius: '6px',
-                        color: currentView.type === subItem.view.type ? '#fdba74' : '#94a3b8',
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        marginBottom: '2px',
-                        fontSize: '14px',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#fde68a';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (currentView.type !== subItem.view.type) {
-                          e.currentTarget.style.color = '#94a3b8';
-                        }
-                      }}
-                    >
-                      {subItem.label}
-                    </button>
+              {/* Section Items */}
+              {(sidebarCollapsed || expandedSections.includes(section.id)) && (
+                <div style={{ marginTop: sidebarCollapsed ? 0 : '4px' }}>
+                  {section.items.map((item) => (
+                    <div key={item.id}>
+                      <button
+                        onClick={() => {
+                          navigateTo(item.view, item.label);
+                          if (item.subItems) {
+                            toggleMenuItem(item.id);
+                          }
+                          if (isMobile) {
+                            setMobileMenuOpen(false);
+                          }
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: sidebarCollapsed ? '10px' : '10px 12px',
+                          paddingLeft: sidebarCollapsed ? '10px' : '28px',
+                          background: currentView.type.startsWith(item.id) 
+                            ? 'rgba(249, 115, 22, 0.2)' 
+                            : 'transparent',
+                          border: 'none',
+                          borderRadius: '8px',
+                          color: currentView.type.startsWith(item.id) ? '#fdba74' : '#e2e8f0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          marginBottom: '2px',
+                          justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!currentView.type.startsWith(item.id)) {
+                            e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                            e.currentTarget.style.color = '#fde68a';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!currentView.type.startsWith(item.id)) {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.color = '#e2e8f0';
+                          }
+                        }}
+                      >
+                        <div style={{ color: item.color, flexShrink: 0 }}>
+                          {item.icon}
+                        </div>
+                        {!sidebarCollapsed && (
+                          <>
+                            <span style={{ flex: 1, textAlign: 'left', fontWeight: '500' }}>
+                              {item.label}
+                            </span>
+                            {item.badge && (
+                              <span style={{
+                                fontSize: '10px',
+                                padding: '2px 6px',
+                                background: item.color,
+                                color: '#0a0a0a',
+                                borderRadius: '4px',
+                                fontWeight: 'bold',
+                              }}>
+                                {item.badge}
+                              </span>
+                            )}
+                            {item.subItems && (
+                              <ChevronRight 
+                                size={16} 
+                                style={{
+                                  transform: expandedMenuItems.includes(item.id) ? 'rotate(90deg)' : 'rotate(0)',
+                                  transition: 'transform 0.2s',
+                                }}
+                              />
+                            )}
+                          </>
+                        )}
+                      </button>
+
+                      {/* Sub Items */}
+                      {!sidebarCollapsed && item.subItems && expandedMenuItems.includes(item.id) && (
+                        <div style={{ marginLeft: '48px', marginTop: '2px' }}>
+                          {item.subItems.map((subItem, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                navigateTo(subItem.view, subItem.label);
+                                if (isMobile) {
+                                  setMobileMenuOpen(false);
+                                }
+                              }}
+                              style={{
+                                width: '100%',
+                                padding: '8px 12px',
+                                background: currentView.type === subItem.view.type 
+                                  ? 'rgba(249, 115, 22, 0.15)' 
+                                  : 'transparent',
+                                border: 'none',
+                                borderRadius: '6px',
+                                color: currentView.type === subItem.view.type ? '#fdba74' : '#94a3b8',
+                                display: 'flex',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                marginBottom: '2px',
+                                fontSize: '13px',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.color = '#fde68a';
+                              }}
+                              onMouseLeave={(e) => {
+                                if (currentView.type !== subItem.view.type) {
+                                  e.currentTarget.style.color = '#94a3b8';
+                                }
+                              }}
+                            >
+                              {subItem.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               )}
