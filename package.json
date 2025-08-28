@@ -21,7 +21,12 @@
     "test:all": "npm run test:unit && npm run test",
     "test:seed": "ts-node scripts/seed-test-data.ts",
     "test:clean": "ts-node scripts/clean-test-data.ts",
-    "test:reset": "npm run test:clean && npm run test:seed"
+    "test:reset": "npm run test:clean && npm run test:seed",
+    "backup:database": "ts-node scripts/backup-database.ts",
+    "backup:restore": "ts-node scripts/backup-database.ts restore",
+    "backup:test": "ts-node scripts/test-recovery.ts",
+    "security:audit": "ts-node scripts/security-audit.ts",
+    "security:encrypt": "ts-node scripts/encrypt-pii.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.12.8",

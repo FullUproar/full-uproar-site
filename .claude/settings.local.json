@@ -60,7 +60,8 @@
       "Bash(del nul)",
       "Bash(timeout 30 npm run build)",
       "Bash(git restore:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(npm run test:unit:*)"
     ],
     "deny": []
   }

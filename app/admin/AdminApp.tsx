@@ -9,7 +9,8 @@ import {
   Dices, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
-  BarChart3, Shield, Target, Calculator, Crown
+  BarChart3, Shield, Target, Calculator, Crown, GraduationCap, Briefcase,
+  Landmark, FileText, Building
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -37,6 +38,11 @@ import EmailCampaigns from './components/EmailCampaigns';
 import MarketingWarRoom from './components/MarketingWarRoom';
 import ProductIntelligence from './components/ProductIntelligence';
 import FuglyPrime from './components/FuglyPrime';
+import OperatorManual from './components/OperatorManual';
+import EmployeeHub from './components/EmployeeHub';
+import FinancialIntelligence from './components/FinancialIntelligence';
+import InvoiceSystem from './components/InvoiceSystem';
+import B2BPortal from './components/B2BPortal';
 
 type ViewType = 
   | 'dashboard'
@@ -46,6 +52,11 @@ type ViewType =
   | 'marketing-war-room'
   | 'product-intelligence'
   | 'fugly-prime'
+  | 'operator-manual'
+  | 'employee-hub'
+  | 'financial-intelligence'
+  | 'invoice-system'
+  | 'b2b-portal'
   | 'games-list'
   | 'games-edit'
   | 'games-new'
@@ -224,6 +235,46 @@ export default function AdminApp() {
       badge: 'SUB',
     },
     {
+      id: 'operator-manual',
+      label: 'Training Hub',
+      icon: <GraduationCap size={20} />,
+      view: { type: 'operator-manual' as ViewType },
+      color: '#22d3ee',
+      badge: 'DOCS',
+    },
+    {
+      id: 'employee-hub',
+      label: 'Employee Hub',
+      icon: <Briefcase size={20} />,
+      view: { type: 'employee-hub' as ViewType },
+      color: '#a855f7',
+      badge: 'HR',
+    },
+    {
+      id: 'financial-intelligence',
+      label: 'Financials',
+      icon: <Landmark size={20} />,
+      view: { type: 'financial-intelligence' as ViewType },
+      color: '#10b981',
+      badge: 'CFO',
+    },
+    {
+      id: 'invoice-system',
+      label: 'Invoicing',
+      icon: <FileText size={20} />,
+      view: { type: 'invoice-system' as ViewType },
+      color: '#3b82f6',
+      badge: 'PAY',
+    },
+    {
+      id: 'b2b-portal',
+      label: 'B2B Portal',
+      icon: <Building size={20} />,
+      view: { type: 'b2b-portal' as ViewType },
+      color: '#8b5cf6',
+      badge: 'B2B',
+    },
+    {
       id: 'users',
       label: 'Users',
       icon: <UserCog size={20} />,
@@ -354,6 +405,21 @@ export default function AdminApp() {
       
       case 'fugly-prime':
         return <FuglyPrime onNavigate={navigateTo} />;
+      
+      case 'operator-manual':
+        return <OperatorManual onNavigate={navigateTo} />;
+      
+      case 'employee-hub':
+        return <EmployeeHub onNavigate={navigateTo} />;
+      
+      case 'financial-intelligence':
+        return <FinancialIntelligence onNavigate={navigateTo} />;
+      
+      case 'invoice-system':
+        return <InvoiceSystem onNavigate={navigateTo} />;
+      
+      case 'b2b-portal':
+        return <B2BPortal onNavigate={navigateTo} />;
       
       case 'analytics':
         return <AnalyticsView />;
