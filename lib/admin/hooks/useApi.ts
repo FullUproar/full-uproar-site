@@ -163,7 +163,7 @@ export function useMutation<T, D = any>(
         error: {
           code: 'MUTATION_ERROR',
           message: 'Mutation failed',
-          details: err,
+          details: err as Record<string, any>,
         },
       };
     } finally {
