@@ -66,8 +66,8 @@ export class EncryptionService {
       // Generate random IV for each encryption
       const iv = crypto.randomBytes(16);
       
-      // Create cipher
-      const cipher = crypto.createCipheriv(this.algorithm, key, iv);
+      // Create cipher (cast to CipherGCM for GCM-specific methods)
+      const cipher = crypto.createCipheriv(this.algorithm, key, iv) as crypto.CipherGCM;
       
       // Encrypt the data
       const encrypted = Buffer.concat([
@@ -107,12 +107,12 @@ export class EncryptionService {
       const iv = Buffer.from(encryptedData.iv, 'base64');
       const authTag = Buffer.from(encryptedData.authTag, 'base64');
       
-      // Create decipher
+      // Create decipher (cast to DecipherGCM for GCM-specific methods)
       const decipher = crypto.createDecipheriv(
         encryptedData.algorithm || this.algorithm,
         key,
         iv
-      );
+      ) as crypto.DecipherGCM;
       
       // Set auth tag for GCM mode
       decipher.setAuthTag(authTag);
