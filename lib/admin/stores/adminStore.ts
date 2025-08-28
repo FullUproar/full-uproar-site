@@ -408,7 +408,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
           updateInventory: (id, quantity) => set((state) => {
             const product = state.products.find((p: Product) => p.id === id);
             if (product) {
-              product.stock = quantity;
+              product.inventory.available = quantity;
               logger.info('Inventory updated', { productId: id, quantity });
             }
           }),
@@ -530,7 +530,7 @@ export const selectPaginatedEmployees = (state: AdminState) => {
 };
 
 export const selectTotalRevenue = (state: AdminState) => {
-  return state.orders.reduce((total, order) => total + order.total, 0);
+  return state.orders.reduce((total, order) => total + order.amounts.total.amount, 0);
 };
 
 export const selectPendingInvoices = (state: AdminState) => {
@@ -538,7 +538,7 @@ export const selectPendingInvoices = (state: AdminState) => {
 };
 
 export const selectLowStockProducts = (state: AdminState) => {
-  return state.products.filter((product: Product) => product.stock < 10);
+  return state.products.filter((product: Product) => product.inventory.available < 10);
 };
 
 // ============================================================================
