@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { User, Employee, Invoice, Product, Order } from '../types';
+import { User, Employee, Invoice, Product, Order, UserRole } from '../types';
 import { logger } from '../utils/logger';
 
 // ============================================================================
@@ -256,7 +256,7 @@ export const useAdminStore = create<AdminState & AdminActions>()(
 
           hasPermission: (permission) => {
             const { permissions, currentUser } = get();
-            if (currentUser?.role === 'super_admin') return true;
+            if (currentUser?.role === UserRole.SUPER_ADMIN) return true;
             return permissions.includes(permission);
           },
 
