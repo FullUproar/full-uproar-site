@@ -49,7 +49,7 @@ export function useApi<T>(
 
     try {
       const response = await api.get<T>(endpoint, {
-        cache: options.cache,
+        cacheConfig: options.cache,
         retry: options.retry,
       });
 
@@ -223,7 +223,7 @@ export function usePaginated<T>(
     try {
       const url = `${endpoint}?page=${page}&pageSize=${pageSize}`;
       const response = await api.get<PaginatedResponse<T>>(url, {
-        cache: options.cache,
+        cacheConfig: options.cache,
         retry: options.retry,
       });
 
@@ -322,7 +322,7 @@ export function useInfiniteScroll<T>(
     try {
       const url = `${endpoint}?page=${page}&pageSize=${pageSize}`;
       const response = await api.get<PaginatedResponse<T>>(url, {
-        cache: options.cache,
+        cacheConfig: options.cache,
         retry: options.retry,
       });
 
@@ -446,7 +446,7 @@ export function useSearch<T>(
     try {
       const endpoint = `${baseEndpoint}?q=${encodeURIComponent(searchQuery)}`;
       const response = await api.get<T>(endpoint, {
-        cache: options.cache,
+        cacheConfig: options.cache,
         retry: options.retry,
       });
 

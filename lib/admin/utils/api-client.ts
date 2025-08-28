@@ -12,7 +12,7 @@ interface RequestConfig extends RequestInit {
     backoff?: boolean;
   };
   timeout?: number;
-  cache?: {
+  cacheConfig?: {
     ttl?: number; // Time to live in ms
     key?: string;
   };
@@ -160,7 +160,7 @@ class ApiClient {
     const url = this.buildUrl(endpoint);
     
     // Check cache for GET requests
-    if (method === 'GET' && config?.cache) {
+    if (method === 'GET' && config?.cacheConfig) {
       const cached = this.getFromCache(endpoint);
       if (cached) {
         logger.debug(`Cache hit for: ${endpoint}`, { requestId });
@@ -185,8 +185,8 @@ class ApiClient {
       const result = await requestPromise;
       
       // Cache successful GET responses
-      if (method === 'GET' && result.success && config?.cache) {
-        this.saveToCache(endpoint, result.data, config.cache.ttl);
+      if (method === 'GET' && result.success && config?.cacheConfig) {
+        this.saveToCache(endpoint, result.data, config.cacheConfig.ttl);
       }
       
       return result;
