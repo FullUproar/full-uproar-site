@@ -234,7 +234,7 @@ export class EncryptionService {
   async encryptFile(buffer: Buffer): Promise<Buffer> {
     const iv = crypto.randomBytes(16);
     const key = this.keys.get(this.currentKeyVersion)!;
-    const cipher = crypto.createCipheriv(this.algorithm, key, iv);
+    const cipher = crypto.createCipheriv(this.algorithm, key, iv) as crypto.CipherGCM;
     
     const encrypted = Buffer.concat([
       cipher.update(buffer),
@@ -266,7 +266,7 @@ export class EncryptionService {
       throw new Error(`Key version ${keyVersion} not found`);
     }
     
-    const decipher = crypto.createDecipheriv(this.algorithm, key, iv);
+    const decipher = crypto.createDecipheriv(this.algorithm, key, iv) as crypto.DecipherGCM;
     decipher.setAuthTag(authTag);
     
     return Buffer.concat([
