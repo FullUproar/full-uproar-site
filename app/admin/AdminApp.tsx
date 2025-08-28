@@ -10,7 +10,7 @@ import {
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
   BarChart3, Shield, Target, Calculator, Crown, GraduationCap, Briefcase,
-  Landmark, FileText, Building
+  Landmark, FileText, Building, Zap
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -29,6 +29,7 @@ import ComicsListView from './components/ComicsListView';
 import ArtworkListView from './components/ArtworkListView';
 import ArtworkEditForm from './components/ArtworkEditForm';
 import SettingsView from './components/SettingsView';
+import IntegrationsManager from './components/IntegrationsManager';
 import DiagnosticsView from './components/DiagnosticsView';
 import AnalyticsView from './components/AnalyticsView';
 import ComplianceView from './components/ComplianceView';
@@ -76,6 +77,7 @@ type ViewType =
   | 'artwork-edit'
   | 'artwork-new'
   | 'migrations'
+  | 'integrations'
   | 'settings'
   | 'test-modes'
   | 'users-list'
@@ -410,6 +412,13 @@ export default function AdminApp() {
       expanded: false,
       items: [
         {
+          id: 'integrations',
+          label: 'Integrations',
+          icon: <Zap size={20} />,
+          view: { type: 'integrations' as ViewType },
+          color: '#fbbf24',
+        },
+        {
           id: 'settings',
           label: 'Settings',
           icon: <Settings size={20} />,
@@ -660,6 +669,9 @@ export default function AdminApp() {
             onSave={() => navigateTo({ type: 'artwork-list' }, 'Artwork')}
           />
         );
+      
+      case 'integrations':
+        return <IntegrationsManager />;
       
       case 'settings':
         return <SettingsView />;

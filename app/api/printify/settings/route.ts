@@ -1,90 +1,106 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requirePermission } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const settings = await prisma.settings.findMany({
-      where: {
-        key: {
-          in: ['printify_api_key', 'printify_shop_id', 'printify_enabled']
-        }
-      }
+    // Check if Printify is configured
+    const apiKeySetting = await prisma.settings.findUnique({
+      where: { key: 'printify_api_key' }
+    });
+    
+    const shopIdSetting = await prisma.settings.findUnique({
+      where: { key: 'printify_shop_id' }
     });
 
-    // Convert to object format
-    const settingsObj = settings.reduce((acc, setting) => {
-      // Mask API key for security
-      if (setting.key === 'printify_api_key' && setting.value) {
-        acc[setting.key] = setting.value.substring(0, 10) + '...' + setting.value.substring(setting.value.length - 4);
-        acc['printify_api_key_set'] = true;
-      } else {
-        acc[setting.key] = setting.value;
-      }
-      return acc;
-    }, {} as Record<string, string | boolean>);
+    // Count products from Printify
+    const productCount = await prisma.merch.count({
+      where: { isPrintify: true }
+    });
 
-    return NextResponse.json(settingsObj);
+    return NextResponse.json({
+      configured: !!(apiKeySetting?.value && shopIdSetting?.value),
+      shopId: shopIdSetting?.value ? shopIdSetting.value.substring(0, 4) + '****' : null,
+      productCount,
+      hasApiKey: !!apiKeySetting?.value,
+      hasShopId: !!shopIdSetting?.value
+    });
   } catch (error) {
     console.error('Error fetching Printify settings:', error);
-    return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch Printify settings' },
+      { status: 500 }
+    );
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
+    // Check admin permissions
+    await requirePermission('admin:access');
+
     const body = await request.json();
-    
-    // Update each setting
-    const updates = [];
-    
-    if (body.printify_api_key && !body.printify_api_key.includes('...')) {
-      // Only update if it's not the masked version
-      updates.push(
-        prisma.settings.upsert({
-          where: { key: 'printify_api_key' },
-          update: { value: body.printify_api_key },
-          create: { 
-            key: 'printify_api_key', 
-            value: body.printify_api_key,
-            description: 'Printify API Key'
-          }
-        })
-      );
+    const { apiToken, shopId } = body;
+
+    // Save API token if provided
+    if (apiToken) {
+      await prisma.settings.upsert({
+        where: { key: 'printify_api_key' },
+        update: { value: apiToken },
+        create: {
+          key: 'printify_api_key',
+          value: apiToken,
+          description: 'Printify API Key for POD integration'
+        }
+      });
     }
-    
-    if (body.printify_shop_id !== undefined) {
-      updates.push(
-        prisma.settings.upsert({
-          where: { key: 'printify_shop_id' },
-          update: { value: body.printify_shop_id },
-          create: { 
-            key: 'printify_shop_id', 
-            value: body.printify_shop_id,
-            description: 'Printify Shop ID'
-          }
-        })
-      );
+
+    // Save shop ID if provided
+    if (shopId) {
+      await prisma.settings.upsert({
+        where: { key: 'printify_shop_id' },
+        update: { value: shopId },
+        create: {
+          key: 'printify_shop_id',
+          value: shopId,
+          description: 'Printify Shop ID for POD integration'
+        }
+      });
     }
-    
-    if (body.printify_enabled !== undefined) {
-      updates.push(
-        prisma.settings.upsert({
-          where: { key: 'printify_enabled' },
-          update: { value: String(body.printify_enabled) },
-          create: { 
-            key: 'printify_enabled', 
-            value: String(body.printify_enabled),
-            description: 'Enable Printify Integration'
+
+    // Test the connection by trying to fetch shops
+    if (apiToken) {
+      try {
+        const testResponse = await fetch('https://api.printify.com/v1/shops.json', {
+          headers: {
+            'Authorization': `Bearer ${apiToken}`,
+            'Content-Type': 'application/json'
           }
-        })
-      );
+        });
+
+        if (!testResponse.ok) {
+          throw new Error('Invalid API credentials');
+        }
+
+        const shops = await testResponse.json();
+        console.log('Successfully connected to Printify. Available shops:', shops);
+      } catch (error) {
+        return NextResponse.json(
+          { error: 'Failed to connect to Printify. Please check your API token.' },
+          { status: 400 }
+        );
+      }
     }
-    
-    await Promise.all(updates);
-    
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error updating Printify settings:', error);
-    return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Printify settings saved successfully'
+    });
+  } catch (error: any) {
+    console.error('Error saving Printify settings:', error);
+    return NextResponse.json(
+      { error: 'Failed to save Printify settings', details: error.message },
+      { status: 500 }
+    );
   }
 }

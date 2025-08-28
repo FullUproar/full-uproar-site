@@ -61,7 +61,8 @@
       "Bash(timeout 30 npm run build)",
       "Bash(git restore:*)",
       "Bash(git pull:*)",
-      "Bash(npm run test:unit:*)"
+      "Bash(npm run test:unit:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }
