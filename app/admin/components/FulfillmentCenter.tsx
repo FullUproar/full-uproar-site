@@ -243,7 +243,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
         <div style={{ display: 'flex', gap: '12px' }}>
           <button
             onClick={fetchOrders}
-            style={adminStyles.buttonPrimary}
+            style={adminStyles.primaryButton}
           >
             <RefreshCw size={20} />
             Refresh
@@ -251,7 +251,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
           {selectedOrders.length > 0 && (
             <button
               onClick={bulkPrintPackingSlips}
-              style={adminStyles.buttonPrimary}
+              style={adminStyles.primaryButton}
             >
               <Printer size={20} />
               Print Packing Slips ({selectedOrders.length})
@@ -373,7 +373,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
 
               <button
                 onClick={() => fetchShippingRates(selectedOrder)}
-                style={{ ...adminStyles.buttonPrimary, marginTop: '12px', width: '100%' }}
+                style={{ ...adminStyles.primaryButton, marginTop: '12px', width: '100%' }}
               >
                 <DollarSign size={18} />
                 Get Shipping Rates
@@ -434,7 +434,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
                 onClick={generateLabel}
                 disabled={printingLabel}
                 style={{
-                  ...adminStyles.buttonPrimary,
+                  ...adminStyles.primaryButton,
                   width: '100%',
                   padding: '16px',
                   fontSize: '16px',

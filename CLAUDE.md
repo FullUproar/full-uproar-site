@@ -141,6 +141,17 @@ STRIPE_WEBHOOK_SECRET    - For webhook verification
 DISCORD_WEBHOOK_URL      - Order notifications
 ```
 
+## 🔧 IMPORTANT BUILD PRACTICES
+
+### ALWAYS Build Locally First
+**CRITICAL**: Before pushing any code changes to GitHub/Vercel, you MUST:
+1. Run `npm run build` locally first
+2. Fix all TypeScript/build errors locally
+3. Only push to GitHub after successful local build
+4. The Vercel deployment turnaround time is too long for debugging
+
+This saves significant time and prevents broken deployments.
+
 ## 📋 Common Tasks
 
 ### Adding New Products
