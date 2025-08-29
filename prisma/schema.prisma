@@ -333,6 +333,13 @@ model User {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @default(now()) @updatedAt
   
+  // Customer Membership
+  membershipTier     MembershipTier  @default(FREE)
+  membershipExpiry   DateTime?       // NULL = no expiry, for subscriptions
+  membershipStarted  DateTime?       // When they first got a paid tier
+  employeeDiscount   Int            @default(0) // Percentage discount for employees
+  lifetimeValue      Int            @default(0) // Total spent in cents
+  
   // Payment
   stripeCustomerId String?   @unique
   
@@ -629,6 +636,14 @@ enum UserRole {
   INTERN
   USER
   GUEST
+}
+
+enum MembershipTier {
+  FREE          // Basic registered user
+  FUGLY_PRIME   // Premium subscription
+  VIP           // High-value customers
+  CREATOR       // Community content creators
+  BETA_TESTER   // Early access group
 }
 
 model ShippingLabel {
