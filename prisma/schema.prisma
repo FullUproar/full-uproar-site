@@ -332,6 +332,9 @@ model User {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @default(now()) @updatedAt
   
+  // Payment
+  stripeCustomerId String?   @unique
+  
   // Security fields
   emailVerified    Boolean      @default(false)
   emailVerifiedAt  DateTime?
@@ -357,6 +360,8 @@ model User {
   permissions       Permission[]
   profile           UserProfile?
   sessions          UserSession[]
+  addresses         UserAddress[]
+  paymentMethods    UserPaymentMethod[]
   orders            Order[]
   returns           Return[]
   supportTickets    SupportTicket[]
@@ -429,6 +434,58 @@ model Permission {
   @@unique([userId, resource, action])
   @@index([userId])
   @@index([resource])
+}
+
+model UserAddress {
+  id            String   @id @default(cuid())
+  userId        String
+  nickname      String?  // e.g., "Home", "Work", "Mom's House"
+  isDefault     Boolean  @default(false)
+  
+  // Address fields
+  fullName      String
+  phone         String?
+  street        String
+  apartment     String?
+  city          String
+  state         String
+  zipCode       String
+  country       String   @default("US")
+  
+  // Metadata
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+  lastUsedAt    DateTime?
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([isDefault])
+}
+
+model UserPaymentMethod {
+  id                String   @id @default(cuid())
+  userId            String
+  stripePaymentId   String   @unique // Stripe payment method ID
+  type              String   // "card", "bank", etc.
+  isDefault         Boolean  @default(false)
+  
+  // Display info (from Stripe, never store actual card numbers)
+  brand             String?  // "visa", "mastercard", etc.
+  last4             String?  // Last 4 digits only
+  expMonth          Int?
+  expYear           Int?
+  
+  // Metadata
+  nickname          String?  // User-defined name like "Personal Card"
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+  lastUsedAt        DateTime?
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([isDefault])
 }
 
 model MessageBoard {
