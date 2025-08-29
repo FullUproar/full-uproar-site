@@ -326,7 +326,8 @@ model User {
   avatarUrl     String?
   bio           String?
   favoriteQuote String?
-  role          UserRole      @default(USER)
+  role          UserRole      @default(USER) // Primary role for backwards compatibility
+  roles         UserRoleAssignment[] // Multiple roles support
   isActive      Boolean       @default(true)
   lastLogin     DateTime?
   createdAt     DateTime      @default(now())
@@ -434,6 +435,21 @@ model Permission {
   @@unique([userId, resource, action])
   @@index([userId])
   @@index([resource])
+}
+
+model UserRoleAssignment {
+  id         String    @id @default(cuid())
+  userId     String
+  role       UserRole
+  assignedBy String?
+  assignedAt DateTime  @default(now())
+  expiresAt  DateTime?
+  notes      String?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, role])
+  @@index([userId])
+  @@index([role])
 }
 
 model UserAddress {
@@ -599,9 +615,18 @@ enum PlayTime {
 }
 
 enum UserRole {
-  SUPER_ADMIN
-  ADMIN
+  GOD           // Absolute power - for info@fulluproar.com
+  SUPER_ADMIN   // Full system access
+  ADMIN         // Standard admin
+  HR            // Human Resources
+  PRODUCT_MANAGER
+  MARKETING
+  CUSTOMER_SERVICE
+  WAREHOUSE
+  ACCOUNTING
+  CONTENT_CREATOR
   MODERATOR
+  INTERN
   USER
   GUEST
 }

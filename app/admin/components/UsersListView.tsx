@@ -133,11 +133,20 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
 
   const getRoleBadge = (role: UserRole) => {
     const roleStyles: Record<UserRole, React.CSSProperties> = {
+      GOD: { backgroundColor: '#fbbf24', color: 'black' },
       SUPER_ADMIN: { backgroundColor: '#dc2626', color: 'white' },
       ADMIN: { backgroundColor: '#f97316', color: 'white' },
-      MODERATOR: { backgroundColor: '#8b5cf6', color: 'white' },
-      USER: { backgroundColor: '#3b82f6', color: 'white' },
-      GUEST: { backgroundColor: '#6b7280', color: 'white' }
+      HR: { backgroundColor: '#3b82f6', color: 'white' },
+      PRODUCT_MANAGER: { backgroundColor: '#8b5cf6', color: 'white' },
+      MARKETING: { backgroundColor: '#10b981', color: 'white' },
+      CUSTOMER_SERVICE: { backgroundColor: '#06b6d4', color: 'white' },
+      WAREHOUSE: { backgroundColor: '#6366f1', color: 'white' },
+      ACCOUNTING: { backgroundColor: '#f59e0b', color: 'white' },
+      CONTENT_CREATOR: { backgroundColor: '#ec4899', color: 'white' },
+      MODERATOR: { backgroundColor: '#14b8a6', color: 'white' },
+      INTERN: { backgroundColor: '#94a3b8', color: 'white' },
+      USER: { backgroundColor: '#64748b', color: 'white' },
+      GUEST: { backgroundColor: '#475569', color: 'white' }
     };
 
     return (
