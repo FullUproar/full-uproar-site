@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import MerchProductClient from './MerchProductClient';
+import MerchProductStyled from './MerchProductStyled';
 
 interface MerchPageProps {
   params: Promise<{ slug: string }>;
@@ -75,7 +75,7 @@ export default async function MerchPage({ params }: MerchPageProps) {
   const similarMerch = await getSimilarMerch(merch);
 
   return (
-    <MerchProductClient 
+    <MerchProductStyled 
       merch={merch} 
       similarMerch={similarMerch}
     />
