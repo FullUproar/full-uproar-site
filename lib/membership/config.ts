@@ -66,23 +66,24 @@ export const MEMBERSHIP_BENEFITS: Record<MembershipTier, MembershipBenefits> = {
     color: '#f97316',
     icon: '👑',
     benefits: {
-      freeShipping: true,
-      discountPercent: 15,
+      freeShipping: false,
+      freeShippingThreshold: 7500, // Free shipping over $75
+      discountPercent: 10,
       earlyAccess: true,
       exclusiveMerch: true,
       prioritySupport: true,
       digitalDownloads: 'unlimited',
-      monthlyCredits: 500, // $5 in store credit
+      monthlyCredits: 0, // Removed monthly credits to break even
       specialBadge: true,
       forumAccess: 'premium',
       betaFeatures: true,
       eventInvites: true,
-      customTitle: 'Prime Fugly'
+      customTitle: 'Prime Member'
     },
     pricing: {
-      monthly: 999, // $9.99/month
-      yearly: 9999, // $99.99/year
-      savings: 'Save $20/year'
+      monthly: 666, // $6.66/month
+      yearly: 6900, // $69.00/year
+      savings: 'Save $10.92/year'
     }
   },
   
@@ -225,6 +226,20 @@ export function isShippingFree(
   }
   
   return false;
+}
+
+/**
+ * Get shipping discount for Fugly Prime members
+ */
+export function getShippingRate(
+  tier: MembershipTier,
+  standardRate: number // in cents
+): number {
+  if (tier === MembershipTier.FUGLY_PRIME) {
+    // Flat $3.99 shipping for Prime members
+    return Math.min(399, standardRate);
+  }
+  return standardRate;
 }
 
 /**

@@ -228,10 +228,12 @@ export default function MembershipManagement() {
               <div style={{ fontSize: '0.75rem', color: '#e2e8f0' }}>
                 <div>• {benefits.benefits.discountPercent}% discount</div>
                 {benefits.benefits.freeShipping && <div>• Free shipping</div>}
-                {benefits.benefits.earlyAccess && <div>• Early access</div>}
-                {benefits.benefits.monthlyCredits > 0 && (
-                  <div>• ${(benefits.benefits.monthlyCredits / 100).toFixed(2)} monthly credits</div>
+                {benefits.benefits.freeShippingThreshold && (
+                  <div>• Free shipping over ${(benefits.benefits.freeShippingThreshold / 100).toFixed(0)}</div>
                 )}
+                {tier === 'FUGLY_PRIME' && <div>• $3.99 flat rate shipping</div>}
+                {benefits.benefits.earlyAccess && <div>• Early access</div>}
+                {benefits.benefits.exclusiveMerch && <div>• Exclusive items</div>}
               </div>
               {benefits.pricing && (
                 <div style={{ 
