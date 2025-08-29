@@ -37,7 +37,7 @@ interface Merch {
   tags: string | null;
   images: MerchImage[];
   inventory: Inventory[];
-  isPrintify?: boolean;
+  isPrintify?: boolean | null;
   totalStock?: number;
 }
 
