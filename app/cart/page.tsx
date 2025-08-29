@@ -8,6 +8,7 @@ import { useCartStore } from '@/lib/cartStore';
 import Navigation from '../components/Navigation';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
+import TrustBadges from '@/app/components/TrustBadges';
 
 export default function CartPage() {
   const router = useRouter();
@@ -394,6 +395,9 @@ export default function CartPage() {
               }}>
                 Free shipping on orders over $50
               </p>
+              
+              {/* Trust Badge */}
+              <TrustBadges variant="compact" />
             </div>
           </div>
         )}

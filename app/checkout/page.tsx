@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
+import TrustBadges from '@/app/components/TrustBadges';
 
 // Dynamically import StripeCheckout to avoid SSR issues
 const StripeCheckout = dynamic(() => import('@/app/components/StripeCheckout'), {
@@ -640,6 +641,9 @@ export default function CheckoutPage() {
                     PAY FOR THE CHAOS
                   </h2>
                   
+                  {/* Trust Badge */}
+                  <TrustBadges variant="compact" />
+                  
                   {/* Order Summary */}
                   <div style={{
                     background: '#111827',
@@ -898,6 +902,27 @@ export default function CheckoutPage() {
                       Test card type: {formatTestCardDisplay(form.cardDetails.number)}
                     </div>
                   )}
+
+                  {/* Security Notice */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem',
+                    background: 'rgba(16, 185, 129, 0.05)',
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(16, 185, 129, 0.2)',
+                    marginBottom: '1rem'
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
+                      <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                      <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold' }}>
+                      Your payment info is encrypted and secure • Powered by Stripe
+                    </span>
+                  </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <button
