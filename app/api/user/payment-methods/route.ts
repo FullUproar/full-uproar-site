@@ -53,12 +53,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      const { user: clerkUser } = await auth();
+      const { sessionClaims } = await auth();
       user = await prisma.user.create({
         data: {
           clerkId: userId,
-          email: clerkUser?.emailAddresses[0]?.emailAddress || '',
-          displayName: clerkUser?.fullName || clerkUser?.firstName || 'User'
+          email: sessionClaims?.email as string || '',
+          displayName: sessionClaims?.fullName as string || 'User'
         }
       });
     }
