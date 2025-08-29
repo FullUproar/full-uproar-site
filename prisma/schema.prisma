@@ -60,6 +60,7 @@ model Game {
   title               String
   tagline             String?
   description         String
+  story               String?        @db.Text
   priceCents          Int
   players             String
   timeToPlay          String
