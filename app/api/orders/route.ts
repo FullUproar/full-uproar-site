@@ -76,36 +76,69 @@ export async function POST(request: NextRequest) {
           priceCents: game.priceCents
         });
       } else if (item.itemType === 'merch') {
-        const inventory = await prisma.inventory.findFirst({
-          where: {
-            merchId: item.merchId,
-            size: item.merchSize || null
-          },
-          include: { merch: true }
+        // First check if the merch item exists
+        const merch = await prisma.merch.findUnique({
+          where: { id: item.merchId }
         });
         
-        if (!inventory) {
-          return NextResponse.json({ error: `Merch item not found` }, { status: 400 });
+        if (!merch) {
+          return NextResponse.json({ error: `Merchandise item ${item.merchId} not found` }, { status: 400 });
         }
         
-        // Check stock (skip for Printify POD items)
-        if (!inventory.merch.isPrintify) {
+        // For POD items, we don't need inventory records
+        if (merch.isPrintify) {
+          subtotalCents += merch.priceCents * item.quantity;
+          orderItems.push({
+            itemType: 'merch',
+            merchId: item.merchId,
+            merchSize: item.merchSize,
+            quantity: item.quantity,
+            priceCents: merch.priceCents
+          });
+        } else {
+          // For regular inventory items, check inventory
+          const inventory = await prisma.inventory.findFirst({
+            where: {
+              merchId: item.merchId,
+              size: item.merchSize || null
+            }
+          });
+          
+          if (!inventory) {
+            // If no inventory record exists, check if it's a non-sized item
+            if (!item.merchSize) {
+              // Create an inventory record for non-sized items if it doesn't exist
+              const newInventory = await prisma.inventory.create({
+                data: {
+                  merchId: item.merchId,
+                  size: null,
+                  quantity: 0,
+                  reserved: 0
+                }
+              });
+              return NextResponse.json({ 
+                error: `No stock available for ${merch.name}` 
+              }, { status: 400 });
+            }
+            return NextResponse.json({ error: `Size ${item.merchSize} not available for ${merch.name}` }, { status: 400 });
+          }
+          
           const availableStock = inventory.quantity - inventory.reserved;
           if (availableStock < item.quantity) {
             return NextResponse.json({ 
-              error: `Insufficient stock for ${inventory.merch.name}${item.merchSize ? ` (${item.merchSize})` : ''}. Available: ${availableStock}` 
+              error: `Insufficient stock for ${merch.name}${item.merchSize ? ` (${item.merchSize})` : ''}. Available: ${availableStock}` 
             }, { status: 400 });
           }
+          
+          subtotalCents += merch.priceCents * item.quantity;
+          orderItems.push({
+            itemType: 'merch',
+            merchId: item.merchId,
+            merchSize: item.merchSize,
+            quantity: item.quantity,
+            priceCents: merch.priceCents
+          });
         }
-        
-        subtotalCents += inventory.merch.priceCents * item.quantity;
-        orderItems.push({
-          itemType: 'merch',
-          merchId: item.merchId,
-          merchSize: item.merchSize,
-          quantity: item.quantity,
-          priceCents: inventory.merch.priceCents
-        });
       }
     }
     
@@ -148,13 +181,14 @@ export async function POST(request: NextRequest) {
       }
     });
     
-    // Reserve inventory for merch items (skip Printify POD items)
-    for (const item of body.items) {
-      if (item.itemType === 'merch') {
+    // Reserve inventory for merch items (skip Printify POD items) and reduce game stock
+    for (const item of orderItems) {
+      if (item.itemType === 'merch' && item.merchId) {
         const merch = await prisma.merch.findUnique({
           where: { id: item.merchId }
         });
         
+        // Only reserve inventory for non-POD items
         if (!merch?.isPrintify) {
           await prisma.inventory.updateMany({
             where: {
@@ -168,7 +202,7 @@ export async function POST(request: NextRequest) {
             }
           });
         }
-      } else if (item.itemType === 'game') {
+      } else if (item.itemType === 'game' && item.gameId) {
         // Reduce game stock
         await prisma.game.update({
           where: { id: item.gameId },
