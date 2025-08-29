@@ -35,6 +35,7 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [showRoleMenu, setShowRoleMenu] = useState<string | null>(null);
+  const [dropdownDirection, setDropdownDirection] = useState<'down' | 'up'>('down');
 
   useEffect(() => {
     fetchUsers();
@@ -176,23 +177,44 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
       <div style={{ width: '100%' }}>
         <div style={adminStyles.header}>
           <h1 style={adminStyles.title}>User Management</h1>
-          <PermissionGate resource="users" action="create">
-            <button
-              onClick={onNew}
-              style={{
-                ...adminStyles.primaryButton,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              <UserPlus size={18} />
-              Add User
-            </button>
-          </PermissionGate>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <PermissionGate resource="users:roles" action="update">
+              <button
+                onClick={() => window.location.href = '/admin#roles'}
+                style={{
+                  ...adminStyles.secondaryButton,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <Shield size={18} />
+                Manage Roles
+              </button>
+            </PermissionGate>
+            <PermissionGate resource="users" action="create">
+              <button
+                onClick={onNew}
+                style={{
+                  ...adminStyles.primaryButton,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <UserPlus size={18} />
+                Add User
+              </button>
+            </PermissionGate>
+          </div>
         </div>
 
-      <div style={adminStyles.section}>
+      <div style={{ 
+        ...adminStyles.section,
+        minHeight: 'calc(100vh - 200px)',
+        position: 'relative',
+        overflow: 'visible'
+      }}>
         {/* Search and Filters */}
         <div style={{ 
           display: 'flex', 
@@ -219,9 +241,18 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
             style={adminStyles.select}
           >
             <option value="ALL">All Roles</option>
+            <option value="GOD">God</option>
             <option value="SUPER_ADMIN">Super Admin</option>
             <option value="ADMIN">Admin</option>
+            <option value="HR">HR</option>
+            <option value="PRODUCT_MANAGER">Product Manager</option>
+            <option value="MARKETING">Marketing</option>
+            <option value="CUSTOMER_SERVICE">Customer Service</option>
+            <option value="WAREHOUSE">Warehouse</option>
+            <option value="ACCOUNTING">Accounting</option>
+            <option value="CONTENT_CREATOR">Content Creator</option>
             <option value="MODERATOR">Moderator</option>
+            <option value="INTERN">Intern</option>
             <option value="USER">User</option>
             <option value="GUEST">Guest</option>
           </select>
@@ -349,10 +380,23 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
                     </div>
                   </td>
                   <td style={adminStyles.tableCell}>
-                    <div style={{ position: 'relative' }}>
+                    <div style={{ position: 'relative' }} data-user-id={user.id}>
                       {getRoleBadge(user.role)}
                       <button
-                        onClick={() => setShowRoleMenu(showRoleMenu === user.id ? null : user.id)}
+                        onClick={(e) => {
+                          // Check if dropdown would go off screen
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const spaceBelow = window.innerHeight - rect.bottom;
+                          const dropdownHeight = Object.values(UserRole).length * 40; // Approximate height
+                          
+                          if (spaceBelow < dropdownHeight && rect.top > dropdownHeight) {
+                            setDropdownDirection('up');
+                          } else {
+                            setDropdownDirection('down');
+                          }
+                          
+                          setShowRoleMenu(showRoleMenu === user.id ? null : user.id);
+                        }}
                         style={{
                           background: 'transparent',
                           border: 'none',
@@ -367,17 +411,32 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
                       </button>
                       {showRoleMenu === user.id && (
                         <div style={{
-                          position: 'absolute',
-                          top: '100%',
-                          left: 0,
+                          position: 'fixed',
+                          ...(dropdownDirection === 'up' ? {
+                            bottom: `${window.innerHeight - (document.querySelector(`[data-user-id="${user.id}"]`)?.getBoundingClientRect().top || 0)}px`
+                          } : {
+                            top: `${(document.querySelector(`[data-user-id="${user.id}"]`)?.getBoundingClientRect().bottom || 0) + 4}px`
+                          }),
+                          left: `${document.querySelector(`[data-user-id="${user.id}"]`)?.getBoundingClientRect().left || 0}px`,
                           background: '#1e293b',
                           border: '1px solid #334155',
                           borderRadius: '8px',
                           padding: '8px',
-                          zIndex: 10,
-                          minWidth: '150px',
-                          marginTop: '4px'
+                          zIndex: 9999,
+                          minWidth: '180px',
+                          maxHeight: '400px',
+                          overflowY: 'auto',
+                          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.5)'
                         }}>
+                          <div style={{ 
+                            marginBottom: '8px', 
+                            paddingBottom: '8px', 
+                            borderBottom: '1px solid #334155',
+                            fontSize: '12px',
+                            color: '#94a3b8'
+                          }}>
+                            Select Role
+                          </div>
                           {Object.values(UserRole).map(role => (
                             <button
                               key={role}

@@ -25,6 +25,7 @@ import DashboardView from './components/DashboardView';
 import TestModesView from './components/TestModesView';
 import UsersListView from './components/UsersListView';
 import UserModerationView from './components/UserModerationView';
+import RolesManagement from './components/RolesManagement';
 import ComicsListView from './components/ComicsListView';
 import ArtworkListView from './components/ArtworkListView';
 import ArtworkEditForm from './components/ArtworkEditForm';
@@ -84,6 +85,7 @@ type ViewType =
   | 'users-edit'
   | 'users-new'
   | 'users-moderation'
+  | 'roles'
   | 'diagnostics'
   | 'analytics'
   | 'compliance';
@@ -400,6 +402,7 @@ export default function AdminApp() {
           color: '#3b82f6',
           subItems: [
             { label: 'All Users', view: { type: 'users-list' as ViewType } },
+            { label: 'Roles & Permissions', view: { type: 'roles' as ViewType } },
             { label: 'New User', view: { type: 'users-new' as ViewType } },
             { label: 'Moderation', view: { type: 'users-moderation' as ViewType } },
           ]
@@ -636,6 +639,9 @@ export default function AdminApp() {
             onBack={() => navigateTo({ type: 'users-list' }, 'Users')}
           />
         );
+      
+      case 'roles':
+        return <RolesManagement />;
       
       case 'comics-list':
         return (
