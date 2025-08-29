@@ -21,7 +21,14 @@ async function getMerch(slug: string) {
     notFound();
   }
 
-  return merch;
+  // Add totalStock for POD products
+  const merchWithStock = {
+    ...merch,
+    totalStock: merch.isPrintify ? 999 : 
+      merch.inventory.reduce((sum, inv) => sum + (inv.quantity - inv.reserved), 0)
+  };
+
+  return merchWithStock;
 }
 
 async function getSimilarMerch(currentMerch: any) {

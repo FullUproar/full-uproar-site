@@ -37,6 +37,8 @@ interface Merch {
   tags: string | null;
   images: MerchImage[];
   inventory: Inventory[];
+  isPrintify?: boolean;
+  totalStock?: number;
 }
 
 interface MerchProductClientProps {
@@ -57,11 +59,14 @@ export default function MerchProductClient({ merch, similarMerch }: MerchProduct
 
   // Get stock for selected size
   const getStockForSize = (size: string) => {
+    // POD products always have stock
+    if (merch.isPrintify) return 999;
+    
     const inv = merch.inventory.find(i => i.size === size);
     return inv ? inv.quantity - inv.reserved : 0;
   };
 
-  const currentStock = selectedSize ? getStockForSize(selectedSize) : 0;
+  const currentStock = selectedSize ? getStockForSize(selectedSize) : (merch.totalStock || 0);
 
   const handleAddToCart = () => {
     if (availableSizes.length > 0 && !selectedSize) {
