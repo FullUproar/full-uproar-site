@@ -31,6 +31,15 @@ export async function GET(request: NextRequest) {
     
     // Calculate total stock for each item
     const merchWithStock = merch.map(item => {
+      // POD products (Printify) have unlimited stock
+      if (item.isPrintify) {
+        return {
+          ...item,
+          totalStock: 999 // Show as always in stock
+        };
+      }
+      
+      // Regular products use actual inventory
       const totalStock = item.inventory.reduce((sum, inv) => sum + (inv.quantity - inv.reserved), 0);
       return {
         ...item,
