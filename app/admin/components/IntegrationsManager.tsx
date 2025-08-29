@@ -47,9 +47,12 @@ export default function IntegrationsManager() {
   const checkIntegrationStatus = async () => {
     setLoading(true);
     try {
-      // Check Stripe status
-      const stripeMode = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.includes('pk_live') ? 'live' : 'test';
-      const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+      // Check Stripe status from environment variables
+      // Note: These are set at build time, not runtime
+      const envPublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+      const stripeMode = envPublishableKey?.includes('pk_live') ? 'live' : 
+                        envPublishableKey?.includes('pk_test') ? 'test' : 'not_configured';
+      const stripeConfigured = !!envPublishableKey;
 
       // Check Printify status
       const printifyResponse = await fetch('/api/printify/settings');
@@ -205,70 +208,78 @@ export default function IntegrationsManager() {
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <p style={{ color: '#94a3b8', marginBottom: '16px' }}>
-            {status.stripe.configured 
-              ? `Stripe is configured in ${status.stripe.mode} mode. You can update your keys below.`
-              : 'Configure your Stripe API keys to accept payments.'}
-          </p>
-
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <div>
-              <label style={{ color: '#e2e8f0', fontSize: '14px', display: 'block', marginBottom: '4px' }}>
-                Publishable Key (starts with pk_)
-              </label>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <input
-                  type={showStripeKey ? 'text' : 'password'}
-                  value={stripeKeys.publishable}
-                  onChange={(e) => setStripeKeys({ ...stripeKeys, publishable: e.target.value })}
-                  placeholder="pk_live_..."
-                  style={adminStyles.input}
-                />
-                <button
-                  onClick={() => setShowStripeKey(!showStripeKey)}
-                  style={adminStyles.secondaryButton}
-                >
-                  {showStripeKey ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
+          {status.stripe.configured ? (
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '8px',
+              padding: '12px',
+              marginBottom: '16px'
+            }}>
+              <p style={{ color: '#10b981', margin: 0, fontWeight: '500' }}>
+                ✓ Stripe is configured in {status.stripe.mode} mode
+              </p>
+              <p style={{ color: '#94a3b8', margin: '4px 0 0 0', fontSize: '14px' }}>
+                Keys are loaded from environment variables
+              </p>
+            </div>
+          ) : (
+            <div style={{
+              background: 'rgba(251, 191, 36, 0.1)',
+              border: '1px solid rgba(251, 191, 36, 0.3)',
+              borderRadius: '8px',
+              padding: '12px',
+              marginBottom: '16px'
+            }}>
+              <p style={{ color: '#fbbf24', margin: 0, fontWeight: '500' }}>
+                ⚠️ Stripe keys must be added to environment variables
+              </p>
+              <p style={{ color: '#94a3b8', margin: '8px 0', fontSize: '14px' }}>
+                Add these to your <code style={{ color: '#fdba74' }}>.env.local</code> file locally or Vercel dashboard:
+              </p>
+              <div style={{
+                background: 'rgba(0, 0, 0, 0.5)',
+                padding: '12px',
+                borderRadius: '4px',
+                fontFamily: 'monospace',
+                fontSize: '12px',
+                color: '#e2e8f0'
+              }}>
+                NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_KEY<br />
+                STRIPE_SECRET_KEY=sk_live_YOUR_KEY<br />
+                STRIPE_WEBHOOK_SECRET=whsec_YOUR_WEBHOOK_SECRET
               </div>
+              <p style={{ color: '#94a3b8', margin: '8px 0 0 0', fontSize: '12px' }}>
+                After adding, restart your dev server or redeploy to Vercel
+              </p>
             </div>
+          )}
 
-            <div>
-              <label style={{ color: '#e2e8f0', fontSize: '14px', display: 'block', marginBottom: '4px' }}>
-                Secret Key (starts with sk_)
-              </label>
-              <input
-                type="password"
-                value={stripeKeys.secret}
-                onChange={(e) => setStripeKeys({ ...stripeKeys, secret: e.target.value })}
-                placeholder="sk_live_..."
-                style={adminStyles.input}
-              />
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-            <button
-              onClick={saveStripeKeys}
-              disabled={saving || (!stripeKeys.publishable && !stripeKeys.secret)}
-              style={{
-                ...adminStyles.primaryButton,
-                opacity: saving || (!stripeKeys.publishable && !stripeKeys.secret) ? 0.5 : 1
-              }}
-            >
-              <Settings size={18} />
-              Save Stripe Keys
-            </button>
-            {status.stripe.configured && (
+          {status.stripe.configured && (
+            <div style={{ display: 'flex', gap: '12px' }}>
               <button
                 onClick={testStripeConnection}
-                style={adminStyles.secondaryButton}
+                style={adminStyles.primaryButton}
               >
                 <TestTube size={18} />
-                Test Connection
+                Test Stripe Connection
               </button>
-            )}
-          </div>
+              <a
+                href="/test-stripe"
+                target="_blank"
+                style={{
+                  ...adminStyles.secondaryButton,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <CreditCard size={18} />
+                Test Payment Page
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Quick Links */}

@@ -62,7 +62,8 @@
       "Bash(git restore:*)",
       "Bash(git pull:*)",
       "Bash(npm run test:unit:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(npx next:*)"
     ],
     "deny": []
   }
