@@ -647,6 +647,30 @@ enum MembershipTier {
   BETA_TESTER   // Early access group
 }
 
+model ImpossibleMerch {
+  id              Int       @id @default(autoincrement())
+  title           String
+  slug            String    @unique
+  tagline         String?   // "The breakfast of champions who hate mornings"
+  description     String    @db.Text
+  impossiblePrice String    // "$999.99" or "Your Soul" or "3 Easy Payments of Your Dignity"
+  imageUrl        String?
+  category        String?   // "Food", "Vehicles", "Weapons", "Services"
+  warning         String?   // "Not FDA Approved" or "May Cause Interdimensional Travel"
+  ingredients     String?   @db.Text // For food items
+  features        String?   @db.Text // Bullet points of ridiculous features
+  legalDisclaimer String?   @db.Text // "Full Uproar is not responsible for..."
+  stockStatus     String    @default("IMPOSSIBLE") // "IMPOSSIBLE", "SOLD_OUT_FOREVER", "DISCONTINUED_BY_PHYSICS"
+  rejectionReason String?   // What happens when they try to buy
+  isActive        Boolean   @default(true)
+  sortOrder       Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([slug])
+  @@index([isActive])
+}
+
 model ShippingLabel {
   id             Int       @id @default(autoincrement())
   orderId        String
