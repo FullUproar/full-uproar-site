@@ -11,6 +11,7 @@ import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import TrustBadges from '@/app/components/TrustBadges';
+import SMSOptIn from '@/app/components/SMSOptIn';
 
 // Dynamically import StripeCheckout to avoid SSR issues
 const StripeCheckout = dynamic(() => import('@/app/components/StripeCheckout'), {
@@ -445,6 +446,46 @@ export default function CheckoutPage() {
                     {errors.phone && (
                       <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors.phone}</p>
                     )}
+                  </div>
+
+                  {/* SMS Opt-In */}
+                  <div style={{ 
+                    marginTop: '1.5rem',
+                    padding: '1.5rem',
+                    background: 'rgba(249, 115, 22, 0.05)',
+                    borderRadius: '0.75rem',
+                    border: '2px solid rgba(249, 115, 22, 0.2)'
+                  }}>
+                    <h3 style={{ 
+                      fontSize: '1.125rem', 
+                      fontWeight: 'bold', 
+                      color: '#f97316',
+                      marginBottom: '1rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      📱 Get Exclusive SMS Deals
+                    </h3>
+                    <p style={{ 
+                      fontSize: '0.875rem', 
+                      color: '#fdba74',
+                      marginBottom: '1rem',
+                      lineHeight: '1.5'
+                    }}>
+                      Be the first to know about new games, exclusive discounts, and limited-time offers! 
+                      SMS subscribers save an average of 20% more than email-only subscribers.
+                    </p>
+                    <SMSOptIn 
+                      context="checkout"
+                      email={form.customerEmail}
+                      onConsent={(phone) => {
+                        // Update the phone number in the form when they consent to SMS
+                        if (!form.phone) {
+                          setForm({ ...form, phone });
+                        }
+                      }}
+                    />
                   </div>
 
                   <button
