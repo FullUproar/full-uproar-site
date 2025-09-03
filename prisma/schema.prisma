@@ -344,6 +344,17 @@ model User {
   // Payment
   stripeCustomerId String?   @unique
   
+  // SMS Consent & Marketing
+  phoneNumber        String?      @unique
+  smsConsent         Boolean      @default(false)
+  smsConsentDate     DateTime?    // When they opted in
+  smsConsentIP       String?      // IP address when consented
+  smsConsentMethod   String?      // "checkout", "account", "campaign"
+  smsOptOutDate      DateTime?    // When they opted out (if applicable)
+  smsVerified        Boolean      @default(false)
+  smsVerificationCode String?     // Temporary code for verification
+  marketingConsent   Boolean      @default(false) // General marketing consent
+  
   // Security fields
   emailVerified    Boolean      @default(false)
   emailVerifiedAt  DateTime?
@@ -645,6 +656,42 @@ enum MembershipTier {
   VIP           // High-value customers
   CREATOR       // Community content creators
   BETA_TESTER   // Early access group
+}
+
+model SMSConsentLog {
+  id              String    @id @default(cuid())
+  userId          String
+  phoneNumber     String
+  action          String    // "opt_in", "opt_out", "verify", "update"
+  consentGiven    Boolean
+  ipAddress       String?
+  userAgent       String?
+  method          String?   // "checkout", "account", "api", "sms_reply"
+  message         String?   // The opt-in message shown to user
+  timestamp       DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([phoneNumber])
+  @@index([timestamp])
+}
+
+model SMSMessage {
+  id              String    @id @default(cuid())
+  userId          String?
+  phoneNumber     String
+  message         String    @db.Text
+  direction       String    // "outbound" or "inbound"
+  status          String    // "pending", "sent", "delivered", "failed"
+  twilioSid       String?   @unique
+  twilioStatus    String?
+  errorMessage    String?
+  campaignId      String?   // Link to marketing campaign
+  sentAt          DateTime  @default(now())
+  deliveredAt     DateTime?
+  
+  @@index([userId])
+  @@index([phoneNumber])
+  @@index([twilioSid])
 }
 
 model ImpossibleMerch {
