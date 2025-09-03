@@ -1,12 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// PUBLIC ENDPOINT - No authentication required (for Twilio compliance)
+// Protected endpoint for Twilio TCPA compliance verification
+// Requires a secret token that you provide to Twilio
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ phone: string }> }
 ) {
   try {
+    // Verify the secret token (can be passed as query param or header)
+    const token = request.nextUrl.searchParams.get('token') ||
+                  request.headers.get('x-consent-token');
+    
+    const CONSENT_PROOF_TOKEN = process.env.SMS_CONSENT_PROOF_TOKEN;
+    
+    // If no token is configured, require authentication
+    if (!CONSENT_PROOF_TOKEN) {
+      return NextResponse.json({
+        error: 'Consent proof endpoint not configured. Please set SMS_CONSENT_PROOF_TOKEN environment variable.',
+        status: 'configuration_error'
+      }, { status: 500 });
+    }
+    
+    // Verify the token matches
+    if (!token || token !== CONSENT_PROOF_TOKEN) {
+      return NextResponse.json({
+        error: 'Unauthorized',
+        message: 'Invalid or missing authentication token',
+        status: 'unauthorized'
+      }, { status: 401 });
+    }
+    
     const { phone } = await params;
     
     // Clean the phone number (remove special characters, ensure it starts with +1)
