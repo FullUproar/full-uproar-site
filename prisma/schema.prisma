@@ -608,6 +608,11 @@ enum GameCategory {
   GAME
   MOD
   EXPANSION
+  TTRPG
+  BOARD_GAME
+  CARD_GAME
+  DICE_GAME
+  PARTY_GAME
 }
 
 enum PlayerCount {
