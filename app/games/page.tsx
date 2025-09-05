@@ -123,13 +123,14 @@ export default function GamesPage() {
         {/* Featured Section - Chaos Engine */}
         {selectedCategory === 'MOD' && (
           <div style={{
-            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.05))',
+            background: 'linear-gradient(135deg, #0a0a0a, #1a1a1a)',
             borderRadius: '1.5rem',
             padding: '3rem',
             marginBottom: '4rem',
             border: '3px solid #f97316',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(249, 115, 22, 0.1)'
           }}>
             {/* Background Pattern */}
             <div style={{
@@ -138,7 +139,7 @@ export default function GamesPage() {
               left: 0,
               right: 0,
               bottom: 0,
-              opacity: 0.1,
+              opacity: 0.03,
               background: `repeating-linear-gradient(
                 45deg,
                 transparent,
@@ -192,49 +193,72 @@ export default function GamesPage() {
                 alignItems: 'center',
                 marginBottom: '2rem'
               }}>
-                <div style={{ textAlign: 'center' }}>
-                  <Shield style={{ width: '4rem', height: '4rem', color: '#f97316', margin: '0 auto 0.5rem' }} />
-                  <h3 style={{ color: '#fbbf24', fontSize: '1.125rem', fontWeight: 'bold' }}>Universal</h3>
-                  <p style={{ color: '#fde68a', fontSize: '0.875rem' }}>Works with ANY game</p>
-                </div>
-                
-                <div style={{
-                  background: 'rgba(0, 0, 0, 0.5)',
+                <div style={{ 
+                  textAlign: 'center',
+                  background: 'rgba(0, 0, 0, 0.6)',
                   borderRadius: '1rem',
                   padding: '1.5rem',
                   border: '2px solid rgba(249, 115, 22, 0.5)'
                 }}>
+                  <Shield style={{ width: '4rem', height: '4rem', color: '#f97316', margin: '0 auto 0.5rem' }} />
+                  <h3 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 900 }}>Universal</h3>
+                  <p style={{ color: '#ffffff', fontSize: '0.875rem' }}>Works with ANY game</p>
+                </div>
+                
+                <div style={{
+                  background: 'rgba(0, 0, 0, 0.9)',
+                  borderRadius: '1rem',
+                  padding: '2rem',
+                  border: '2px solid #f97316',
+                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(249, 115, 22, 0.1)'
+                }}>
                   <h2 style={{ 
                     color: '#f97316', 
-                    fontSize: '1.5rem', 
-                    fontWeight: 'bold',
+                    fontSize: '1.75rem', 
+                    fontWeight: 900,
                     marginBottom: '1rem',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    textShadow: '0 2px 10px rgba(249, 115, 22, 0.5)'
                   }}>
                     What is the Chaos Engine?
                   </h2>
                   <p style={{ 
-                    color: '#fde68a', 
+                    color: '#ffffff', 
                     fontSize: '1.125rem',
-                    lineHeight: '1.6',
-                    marginBottom: '1rem'
+                    lineHeight: '1.7',
+                    marginBottom: '1rem',
+                    textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)'
                   }}>
-                    The Chaos Engine is our revolutionary game modification system. These aren't expansions or new games - they're <strong style={{ color: '#f97316' }}>universal game modifiers</strong> that transform ANY game you already own into something completely new and insane.
+                    The Chaos Engine is our revolutionary game modification system. These aren't expansions or new games - they're <strong style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(249, 115, 22, 0.5)' }}>universal game modifiers</strong> that transform ANY game you already own into something completely new and insane.
                   </p>
                   <p style={{ 
-                    color: '#fdba74', 
-                    fontSize: '1rem',
+                    color: '#fbbf24', 
+                    fontSize: '1.125rem',
                     fontStyle: 'italic',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    marginTop: '1.5rem',
+                    padding: '1rem',
+                    background: 'rgba(249, 115, 22, 0.1)',
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(249, 115, 22, 0.3)'
                   }}>
                     "Why buy 100 new games when you can make the games you have 100x more fun?"
                   </p>
                 </div>
 
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ 
+                  textAlign: 'center',
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  borderRadius: '1rem',
+                  padding: '1.5rem',
+                  border: '2px solid rgba(249, 115, 22, 0.5)'
+                }}>
                   <Sparkles style={{ width: '4rem', height: '4rem', color: '#f97316', margin: '0 auto 0.5rem' }} />
-                  <h3 style={{ color: '#fbbf24', fontSize: '1.125rem', fontWeight: 'bold' }}>Transformative</h3>
-                  <p style={{ color: '#fde68a', fontSize: '0.875rem' }}>Fresh chaos every time</p>
+                  <h3 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 900 }}>Transformative</h3>
+                  <p style={{ color: '#ffffff', fontSize: '0.875rem' }}>Fresh chaos every time</p>
                 </div>
               </div>
 
@@ -252,14 +276,15 @@ export default function GamesPage() {
                   { icon: '🏃', text: 'Even works with sports!' }
                 ].map((feature, i) => (
                   <div key={i} style={{
-                    background: 'rgba(249, 115, 22, 0.1)',
+                    background: 'rgba(0, 0, 0, 0.7)',
                     borderRadius: '0.75rem',
                     padding: '1rem',
                     textAlign: 'center',
-                    border: '2px solid rgba(249, 115, 22, 0.3)'
+                    border: '2px solid #f97316',
+                    boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
                   }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{feature.icon}</div>
-                    <p style={{ color: '#fde68a', fontSize: '0.875rem', fontWeight: 'bold' }}>{feature.text}</p>
+                    <p style={{ color: '#ffffff', fontSize: '0.875rem', fontWeight: 'bold' }}>{feature.text}</p>
                   </div>
                 ))}
               </div>
