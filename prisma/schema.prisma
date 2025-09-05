@@ -110,6 +110,7 @@ model Game {
   inventory           GameInventory?
   orderItems          OrderItem[]
   reviews             Review[]
+  designComponents    DesignComponent[]
 }
 
 model Comic {
@@ -615,6 +616,18 @@ enum GameCategory {
   PARTY_GAME
 }
 
+enum ComponentType {
+  CARD_FACE
+  BOX
+  INSTRUCTIONS
+}
+
+enum ComponentStatus {
+  IN_DRAFT
+  READY_FOR_REVIEW
+  READY_FOR_PRINT
+}
+
 enum PlayerCount {
   SINGLE
   TWO
@@ -697,6 +710,36 @@ model SMSMessage {
   @@index([userId])
   @@index([phoneNumber])
   @@index([twilioSid])
+}
+
+model DesignComponent {
+  id              String    @id @default(cuid())
+  gameId          Int
+  game            Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  type            String    // ComponentType enum: CARD_FACE, BOX, INSTRUCTIONS
+  name            String    // e.g., "Hack Your Deck card face 001"
+  description     String?   @db.Text
+  
+  status          String    @default("IN_DRAFT") // ComponentStatus enum
+  
+  // Preview image (lightweight PNG for admin panel)
+  previewUrl      String?
+  
+  // Tracking
+  notes           String?   @db.Text
+  sortOrder       Int       @default(0)
+  
+  // Metadata
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastReviewedAt  DateTime?
+  approvedBy      String?   // User ID who approved
+  
+  @@index([gameId])
+  @@index([type])
+  @@index([status])
+  @@index([sortOrder])
 }
 
 model ImpossibleMerch {

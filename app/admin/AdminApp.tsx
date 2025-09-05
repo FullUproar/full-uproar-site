@@ -47,6 +47,7 @@ import FinancialIntelligence from './components/FinancialIntelligence';
 import InvoiceSystem from './components/InvoiceSystem';
 import B2BPortal from './components/B2BPortal';
 import FulfillmentCenter from './components/FulfillmentCenter';
+import DesignComponentsView from './components/DesignComponentsView';
 
 type ViewType = 
   | 'dashboard'
@@ -64,6 +65,7 @@ type ViewType =
   | 'games-list'
   | 'games-edit'
   | 'games-new'
+  | 'design-components'
   | 'merch-list'
   | 'merch-edit'
   | 'merch-new'
@@ -254,6 +256,7 @@ export default function AdminApp() {
           subItems: [
             { label: 'All Games', view: { type: 'games-list' as ViewType } },
             { label: 'New Game', view: { type: 'games-new' as ViewType } },
+            { label: 'Design Components', view: { type: 'design-components' as ViewType } },
           ]
         },
         {
@@ -553,6 +556,9 @@ export default function AdminApp() {
             onCancel={() => navigateTo({ type: 'games-list' }, 'Games')}
           />
         );
+      
+      case 'design-components':
+        return <DesignComponentsView />;
       
       case 'merch-list':
         return (
