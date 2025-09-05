@@ -4,10 +4,7 @@ import { requirePermission } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    const hasPermission = await requirePermission('products', 'write');
-    if (!hasPermission) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requirePermission('products', 'write');
 
     const body = await request.json();
     const { gameId, type, count, prefix } = body;

@@ -8,10 +8,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const hasPermission = await requirePermission('products', 'write');
-    if (!hasPermission) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requirePermission('products', 'write');
 
     const { id } = await params;
     const body = await request.json();
@@ -60,10 +57,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const hasPermission = await requirePermission('products', 'delete');
-    if (!hasPermission) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requirePermission('products', 'delete');
 
     const { id } = await params;
 

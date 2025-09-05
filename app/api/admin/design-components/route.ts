@@ -4,10 +4,7 @@ import { requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const hasPermission = await requirePermission('products', 'read');
-    if (!hasPermission) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requirePermission('products', 'read');
 
     const searchParams = request.nextUrl.searchParams;
     const gameId = searchParams.get('gameId');
@@ -58,10 +55,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const hasPermission = await requirePermission('products', 'write');
-    if (!hasPermission) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requirePermission('products', 'write');
 
     const body = await request.json();
     const { gameId, type, name, description, status, previewUrl, notes, sortOrder } = body;
