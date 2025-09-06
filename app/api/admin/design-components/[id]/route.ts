@@ -43,10 +43,14 @@ export async function PATCH(
     });
 
     return NextResponse.json(component);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating design component:', error);
     return NextResponse.json(
-      { error: 'Failed to update design component' },
+      { 
+        error: 'Failed to update design component',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        code: error.code
+      },
       { status: 500 }
     );
   }
@@ -66,10 +70,14 @@ export async function DELETE(
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting design component:', error);
     return NextResponse.json(
-      { error: 'Failed to delete design component' },
+      { 
+        error: 'Failed to delete design component',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        code: error.code
+      },
       { status: 500 }
     );
   }
