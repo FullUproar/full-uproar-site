@@ -38,8 +38,8 @@ export async function checkPermission(
   const user = await getCurrentUser();
   if (!user) return false
 
-  // Super admins have all permissions
-  if (user.role === UserRole.SUPER_ADMIN) return true
+  // God and Super admins have all permissions
+  if (user.role === UserRole.GOD || user.role === UserRole.SUPER_ADMIN) return true
 
   // If no action specified, check for any permission on the resource
   if (!action) {
@@ -110,6 +110,7 @@ function getRolePermissions(role: UserRole) {
         { resource: 'users', action: 'create' },
         { resource: 'users', action: 'update' },
         { resource: 'users', action: 'delete' },
+        { resource: 'products', action: '*' },
         { resource: 'games', action: '*' },
         { resource: 'merch', action: '*' },
         { resource: 'orders', action: '*' },
