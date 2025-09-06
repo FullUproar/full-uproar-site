@@ -70,6 +70,21 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Test database connection first
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+    } catch (dbError: any) {
+      console.error('Database connection test failed in POST:', dbError);
+      return NextResponse.json(
+        { 
+          error: 'Database connection failed',
+          details: dbError.message,
+          code: dbError.code
+        },
+        { status: 500 }
+      );
+    }
+    
     await requirePermission('products', 'write');
 
     const body = await request.json();
@@ -89,10 +104,14 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(component);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating design component:', error);
     return NextResponse.json(
-      { error: 'Failed to create design component' },
+      { 
+        error: 'Failed to create design component',
+        details: error.message,
+        code: error.code
+      },
       { status: 500 }
     );
   }

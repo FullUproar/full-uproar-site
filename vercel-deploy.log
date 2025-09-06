@@ -1,0 +1,11 @@
+Vercel CLI 41.3.0
+Retrieving project…
+Deploying shawns-projects-b61cab3a/full-uproar-site
+Uploading [--------------------] (0.0B/92B)
+Uploading [====================] (92.0B/92B)
+Inspect: https://vercel.com/shawns-projects-b61cab3a/full-uproar-site/4FycptQpznCVtn36UcbbCkra4qi1 [3s]
+Production: https://full-uproar-site-45bvtmgmr-shawns-projects-b61cab3a.vercel.app [3s]
+https://full-uproar-site-45bvtmgmr-shawns-projects-b61cab3a.vercel.appQueued
+Building
+Error: Command "npm run build" exited with 1
+Error: Check your logs at https://full-uproar-site-45bvtmgmr-shawns-projects-b61cab3a.vercel.app/_logs or run `vercel logs full-uproar-site-45bvtmgmr-shawns-projects-b61cab3a.vercel.app`
