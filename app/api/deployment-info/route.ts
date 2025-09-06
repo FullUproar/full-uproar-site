@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+// Deployment info endpoint to fix console errors
 export async function GET() {
   try {
     // Get deployment info from Vercel environment variables
