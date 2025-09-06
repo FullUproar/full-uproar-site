@@ -8,7 +8,8 @@ export async function GET() {
       branch: process.env.VERCEL_GIT_COMMIT_REF || 'local',
       deployedAt: process.env.VERCEL_GIT_COMMIT_DATE || new Date().toISOString(),
       url: process.env.VERCEL_URL || 'localhost',
-      region: process.env.VERCEL_REGION || 'local'
+      region: process.env.VERCEL_REGION || 'local',
+      timestamp: new Date().toISOString()
     };
 
     return NextResponse.json(deploymentData);
