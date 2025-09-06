@@ -2,15 +2,19 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import GameLandingPage from './GameLandingPage';
 
-export async function generateStaticParams() {
-  const games = await prisma.game.findMany({
-    select: { slug: true }
-  });
+// Temporarily disable static generation to avoid connection limit issues
+// TODO: Re-enable with Prisma Accelerate or connection pooling
+export const dynamic = 'force-dynamic';
+
+// export async function generateStaticParams() {
+//   const games = await prisma.game.findMany({
+//     select: { slug: true }
+//   });
   
-  return games.map((game) => ({
-    slug: game.slug
-  }));
-}
+//   return games.map((game) => ({
+//     slug: game.slug
+//   }));
+// }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
