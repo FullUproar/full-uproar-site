@@ -213,15 +213,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Debug log
-  console.log('FullUproarHomeStyled received games:', games.length, games);
-  
-  // Show alert for debugging on client side
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      console.log('Client side debug - games:', games.length, games);
-    }
-  }, [games]);
+  // Remove debug logs that were causing console spam
+  // These were firing on every render (every second due to countdown timer)
 
   const handleAddToCart = (game: Game) => {
     addToCart({
