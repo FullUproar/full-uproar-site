@@ -4,6 +4,17 @@ import { requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
+    // Test if Prisma can connect
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+    } catch (dbError: any) {
+      console.error('Database connection failed:', dbError);
+      return NextResponse.json(
+        { error: 'Database connection failed', code: dbError.code },
+        { status: 500 }
+      );
+    }
+    
     await requirePermission('products', 'read');
 
     const searchParams = request.nextUrl.searchParams;
@@ -44,10 +55,14 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(components);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching design components:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch design components' },
+      { 
+        error: 'Failed to fetch design components',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        code: error.code
+      },
       { status: 500 }
     );
   }
