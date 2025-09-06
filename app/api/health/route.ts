@@ -138,7 +138,11 @@ export async function GET(request: NextRequest) {
   const isBasic = request.nextUrl.searchParams.get('basic') === 'true';
   
   if (isBasic) {
-    return NextResponse.json({ status: 'ok' }, { status: 200 });
+    return NextResponse.json({ 
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      prismaModels: Object.keys(prisma).filter(k => !k.startsWith('$') && !k.startsWith('_'))
+    }, { status: 200 });
   }
 
   // Detailed health check
