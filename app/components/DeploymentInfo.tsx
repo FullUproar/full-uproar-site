@@ -16,13 +16,23 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
   const [hasNewDeployment, setHasNewDeployment] = useState(false);
   const [initialSha, setInitialSha] = useState<string | null>(null);
   const [deploymentTimes, setDeploymentTimes] = useState<Record<string, string>>({});
+  const [endpointExists, setEndpointExists] = useState(true);
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && endpointExists) {
       const fetchDeploymentInfo = () => {
         fetch('/api/deployment-info')
-          .then(res => res.json())
+          .then(res => {
+            // If the endpoint doesn't exist, stop trying
+            if (res.status === 404) {
+              setEndpointExists(false);
+              return null;
+            }
+            return res.json();
+          })
           .then(data => {
+            if (!data) return; // Skip if no data (404 case)
+            
             if (initialSha === null) {
               setInitialSha(data.sha);
             } else if (data.sha !== initialSha && data.sha !== deploymentData?.sha) {
@@ -43,17 +53,22 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
               deployedAt: deploymentTimes[data.sha] || data.deployedAt
             });
           })
-          .catch(console.error);
+          .catch(() => {
+            // Silently fail - the endpoint might not exist in production yet
+            setEndpointExists(false);
+          });
       };
 
       // Initial fetch
       fetchDeploymentInfo();
 
-      // Refresh every 15 seconds
-      const refreshInterval = setInterval(fetchDeploymentInfo, 15000);
-      return () => clearInterval(refreshInterval);
+      // Only set up interval if endpoint exists
+      if (endpointExists) {
+        const refreshInterval = setInterval(fetchDeploymentInfo, 15000);
+        return () => clearInterval(refreshInterval);
+      }
     }
-  }, [isVisible, initialSha, deploymentData?.sha, deploymentTimes]);
+  }, [isVisible, initialSha, deploymentData?.sha, deploymentTimes, endpointExists]);
 
   useEffect(() => {
     if (deploymentData?.deployedAt) {
