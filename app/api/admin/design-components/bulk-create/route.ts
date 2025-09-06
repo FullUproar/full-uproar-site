@@ -4,6 +4,22 @@ import { requirePermission } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    // Test if Prisma can connect and knows about DesignComponent
+    try {
+      await prisma.$queryRaw`SELECT 1 FROM "DesignComponent" LIMIT 1`;
+    } catch (dbError: any) {
+      console.error('DesignComponent table check failed:', dbError);
+      return NextResponse.json(
+        { 
+          error: 'Database table check failed', 
+          details: process.env.NODE_ENV === 'development' ? dbError.message : undefined,
+          code: dbError.code,
+          table: 'DesignComponent'
+        },
+        { status: 500 }
+      );
+    }
+    
     await requirePermission('products', 'write');
 
     const body = await request.json();
@@ -45,10 +61,14 @@ export async function POST(request: NextRequest) {
       count: result.count,
       message: `Created ${result.count} components`
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error bulk creating design components:', error);
     return NextResponse.json(
-      { error: 'Failed to create design components' },
+      { 
+        error: 'Failed to create design components',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        code: error.code
+      },
       { status: 500 }
     );
   }
