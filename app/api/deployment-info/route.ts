@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     // Get deployment info from Vercel environment variables
+    // Updated: 2025-01-06 to trigger deployment
     const deploymentData = {
       sha: (process.env.VERCEL_GIT_COMMIT_SHA || 'local').substring(0, 8),
       branch: process.env.VERCEL_GIT_COMMIT_REF || 'local',
