@@ -4,23 +4,39 @@ import { requirePermission } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('[BulkCreate] Request received');
+    
+    // Check authentication first
+    try {
+      await requirePermission('products', 'write');
+      console.log('[BulkCreate] Authentication passed');
+    } catch (authError: any) {
+      console.error('[BulkCreate] Authentication failed:', authError);
+      return NextResponse.json(
+        { 
+          error: 'Authentication failed',
+          details: authError.message
+        },
+        { status: 401 }
+      );
+    }
+    
     // Test if Prisma can connect and knows about DesignComponent
     try {
       await prisma.$queryRaw`SELECT 1 FROM "DesignComponent" LIMIT 1`;
+      console.log('[BulkCreate] Database table check passed');
     } catch (dbError: any) {
-      console.error('DesignComponent table check failed:', dbError);
+      console.error('[BulkCreate] Database table check failed:', dbError);
       return NextResponse.json(
         { 
           error: 'Database table check failed', 
-          details: process.env.NODE_ENV === 'development' ? dbError.message : undefined,
+          details: dbError.message,
           code: dbError.code,
           table: 'DesignComponent'
         },
         { status: 500 }
       );
     }
-    
-    await requirePermission('products', 'write');
 
     const body = await request.json();
     const { gameId, type, count, prefix } = body;

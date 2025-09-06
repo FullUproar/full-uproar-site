@@ -4,23 +4,30 @@ import { requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    // Test if Prisma can connect
+    // Log the request for debugging
+    console.log('[DesignComponents GET] Request received');
+    
+    // Check authentication
     try {
-      await prisma.$queryRaw`SELECT 1`;
-    } catch (dbError: any) {
-      console.error('Database connection failed:', dbError);
+      await requirePermission('products', 'read');
+      console.log('[DesignComponents GET] Authentication passed');
+    } catch (authError: any) {
+      console.error('[DesignComponents GET] Authentication failed:', authError);
       return NextResponse.json(
-        { error: 'Database connection failed', code: dbError.code },
-        { status: 500 }
+        { 
+          error: 'Authentication failed',
+          details: authError.message
+        },
+        { status: 401 }
       );
     }
-    
-    await requirePermission('products', 'read');
 
     const searchParams = request.nextUrl.searchParams;
     const gameId = searchParams.get('gameId');
     const type = searchParams.get('type');
     const status = searchParams.get('status');
+
+    console.log('[DesignComponents GET] Query params:', { gameId, type, status });
 
     const where: any = {};
     
@@ -36,17 +43,10 @@ export async function GET(request: NextRequest) {
       where.status = status;
     }
 
+    console.log('[DesignComponents GET] Querying with where:', where);
+
     const components = await prisma.designComponent.findMany({
       where,
-      include: {
-        game: {
-          select: {
-            id: true,
-            title: true,
-            slug: true
-          }
-        }
-      },
       orderBy: [
         { type: 'asc' },
         { sortOrder: 'asc' },
@@ -54,14 +54,22 @@ export async function GET(request: NextRequest) {
       ]
     });
 
+    console.log('[DesignComponents GET] Found components:', components.length);
+
     return NextResponse.json(components);
   } catch (error: any) {
-    console.error('Error fetching design components:', error);
+    console.error('[DesignComponents GET] Error:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
+    
     return NextResponse.json(
       { 
         error: 'Failed to fetch design components',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
-        code: error.code
+        details: error.message,
+        code: error.code,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       },
       { status: 500 }
     );

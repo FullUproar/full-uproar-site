@@ -64,7 +64,8 @@
       "Bash(npm run test:unit:*)",
       "Bash(touch:*)",
       "Bash(npx next:*)",
-      "Bash(del \"C:\\Full Uproar\\full-uproar-site\\app\\admin\\sms-consents\\page.tsx\")"
+      "Bash(del \"C:\\Full Uproar\\full-uproar-site\\app\\admin\\sms-consents\\page.tsx\")",
+      "Bash(timeout:*)"
     ],
     "deny": []
   }
