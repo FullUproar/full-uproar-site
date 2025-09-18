@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Card Template Preview Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .controls {
+            flex: 1;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .preview {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            border: 3px solid #f97316;
+            border-radius: 8px;
+            background: white;
+            max-width: 100%;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fde68a;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 5px;
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+        input[type="range"] {
+            width: calc(100% - 50px);
+        }
+        .range-value {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+        }
+        button {
+            background: #f97316;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #fb923c;
+        }
+        .anchor-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            width: 120px;
+        }
+        .anchor-btn {
+            width: 35px;
+            height: 35px;
+            background: #444;
+            border: 2px solid #666;
+            color: #fff;
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .anchor-btn.active {
+            background: #f97316;
+            color: #000;
+            border-color: #f97316;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: #f97316; text-align: center;">Card Template Preview System</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <h2>Card Content</h2>
+            
+            <div class="control-group">
+                <label>Title Text:</label>
+                <input type="text" id="titleText" value="HACK YOUR DECK" />
+            </div>
+            
+            <div class="control-group">
+                <label>Body Text:</label>
+                <textarea id="bodyText" rows="4">Draw 3 cards, then discard 2 cards. Your opponents must do the same.</textarea>
+            </div>
+            
+            <h2>Title Settings</h2>
+            
+            <div class="control-group">
+                <label>Position X: <span class="range-value" id="titleXValue">50</span>%</label>
+                <input type="range" id="titleX" min="0" max="100" value="50" />
+            </div>
+            
+            <div class="control-group">
+                <label>Position Y: <span class="range-value" id="titleYValue">15</span>%</label>
+                <input type="range" id="titleY" min="0" max="100" value="15" />
+            </div>
+            
+            <div class="control-group">
+                <label>Anchor Point:</label>
+                <div class="anchor-grid" id="titleAnchor">
+                    <button class="anchor-btn" data-h="left" data-v="top">↖</button>
+                    <button class="anchor-btn" data-h="center" data-v="top">↑</button>
+                    <button class="anchor-btn" data-h="right" data-v="top">↗</button>
+                    <button class="anchor-btn" data-h="left" data-v="middle">←</button>
+                    <button class="anchor-btn active" data-h="center" data-v="middle">●</button>
+                    <button class="anchor-btn" data-h="right" data-v="middle">→</button>
+                    <button class="anchor-btn" data-h="left" data-v="bottom">↙</button>
+                    <button class="anchor-btn" data-h="center" data-v="bottom">↓</button>
+                    <button class="anchor-btn" data-h="right" data-v="bottom">↘</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>Font Size: <span class="range-value" id="titleSizeValue">24</span>pt</label>
+                <input type="range" id="titleSize" min="8" max="48" value="24" />
+            </div>
+            
+            <div class="control-group">
+                <label>Font Weight:</label>
+                <select id="titleWeight">
+                    <option value="normal">Normal</option>
+                    <option value="bold" selected>Bold</option>
+                    <option value="900">Black</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Color:</label>
+                <input type="color" id="titleColor" value="#000000" />
+            </div>
+            
+            <h2>Body Settings</h2>
+            
+            <div class="control-group">
+                <label>Position Y: <span class="range-value" id="bodyYValue">50</span>%</label>
+                <input type="range" id="bodyY" min="0" max="100" value="50" />
+            </div>
+            
+            <div class="control-group">
+                <label>Max Width: <span class="range-value" id="bodyWidthValue">80</span>%</label>
+                <input type="range" id="bodyWidth" min="20" max="100" value="80" />
+            </div>
+            
+            <div class="control-group">
+                <label>Font Size: <span class="range-value" id="bodySizeValue">16</span>pt</label>
+                <input type="range" id="bodySize" min="8" max="32" value="16" />
+            </div>
+            
+            <div class="control-group">
+                <label>Line Height: <span class="range-value" id="bodyLineHeightValue">1.5</span></label>
+                <input type="range" id="bodyLineHeight" min="10" max="25" value="15" step="1" />
+            </div>
+            
+            <div class="control-group">
+                <button onclick="exportCard()">Export as PNG</button>
+                <button onclick="resetTemplate()">Reset</button>
+            </div>
+        </div>
+        
+        <div class="preview">
+            <h2>Live Preview</h2>
+            <canvas id="cardCanvas" width="825" height="1125"></canvas>
+            <p style="color: #666; font-size: 12px;">2.75" × 3.75" at 300 DPI</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('cardCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Card dimensions (2.75" x 3.75" at 300 DPI)
+        const CARD_WIDTH = 825;
+        const CARD_HEIGHT = 1125;
+        
+        // Current template state
+        let template = {
+            title: {
+                text: 'HACK YOUR DECK',
+                x: 50,
+                y: 15,
+                anchorH: 'center',
+                anchorV: 'middle',
+                fontSize: 24,
+                fontWeight: 'bold',
+                color: '#000000'
+            },
+            body: {
+                text: 'Draw 3 cards, then discard 2 cards. Your opponents must do the same.',
+                x: 50,
+                y: 50,
+                maxWidth: 80,
+                fontSize: 16,
+                lineHeight: 1.5,
+                color: '#000000'
+            }
+        };
+        
+        // Background image
+        const bgImage = new Image();
+        bgImage.src = 'data:image/svg+xml,' + encodeURIComponent(`
+            <svg width="825" height="1125" xmlns="http://www.w3.org/2000/svg">
+                <rect width="825" height="1125" fill="#f0f0f0"/>
+                <rect x="40" y="40" width="745" height="1045" fill="none" stroke="#ddd" stroke-width="2"/>
+            </svg>
+        `);
+        
+        function renderCard() {
+            // Clear canvas
+            ctx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+            
+            // Draw background
+            ctx.drawImage(bgImage, 0, 0);
+            
+            // Render title
+            renderTitle();
+            
+            // Render body
+            renderBody();
+        }
+        
+        function renderTitle() {
+            const t = template.title;
+            const x = (CARD_WIDTH * t.x) / 100;
+            const y = (CARD_HEIGHT * t.y) / 100;
+            
+            ctx.save();
+            
+            // Set font
+            ctx.font = `${t.fontWeight} ${t.fontSize * 3}px Arial`;
+            ctx.fillStyle = t.color;
+            
+            // Set alignment based on anchor
+            ctx.textAlign = t.anchorH;
+            ctx.textBaseline = t.anchorV;
+            
+            // Draw text
+            ctx.fillText(t.text, x, y);
+            
+            ctx.restore();
+        }
+        
+        function renderBody() {
+            const b = template.body;
+            const x = (CARD_WIDTH * 50) / 100; // Always centered horizontally
+            const y = (CARD_HEIGHT * b.y) / 100;
+            const maxWidth = (CARD_WIDTH * b.maxWidth) / 100;
+            
+            ctx.save();
+            
+            // Set font
+            ctx.font = `${b.fontSize * 3}px Arial`;
+            ctx.fillStyle = b.color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            
+            // Word wrap
+            const words = b.text.split(' ');
+            const lines = [];
+            let currentLine = '';
+            
+            for (const word of words) {
+                const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                const metrics = ctx.measureText(testLine);
+                
+                if (metrics.width > maxWidth && currentLine) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            lines.push(currentLine);
+            
+            // Draw wrapped text
+            const lineHeight = b.fontSize * 3 * b.lineHeight;
+            lines.forEach((line, index) => {
+                ctx.fillText(line, x, y + (index * lineHeight));
+            });
+            
+            ctx.restore();
+        }
+        
+        // Event listeners
+        document.getElementById('titleText').addEventListener('input', (e) => {
+            template.title.text = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('bodyText').addEventListener('input', (e) => {
+            template.body.text = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('titleX').addEventListener('input', (e) => {
+            template.title.x = parseInt(e.target.value);
+            document.getElementById('titleXValue').textContent = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('titleY').addEventListener('input', (e) => {
+            template.title.y = parseInt(e.target.value);
+            document.getElementById('titleYValue').textContent = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('titleSize').addEventListener('input', (e) => {
+            template.title.fontSize = parseInt(e.target.value);
+            document.getElementById('titleSizeValue').textContent = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('titleWeight').addEventListener('change', (e) => {
+            template.title.fontWeight = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('titleColor').addEventListener('input', (e) => {
+            template.title.color = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('bodyY').addEventListener('input', (e) => {
+            template.body.y = parseInt(e.target.value);
+            document.getElementById('bodyYValue').textContent = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('bodyWidth').addEventListener('input', (e) => {
+            template.body.maxWidth = parseInt(e.target.value);
+            document.getElementById('bodyWidthValue').textContent = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('bodySize').addEventListener('input', (e) => {
+            template.body.fontSize = parseInt(e.target.value);
+            document.getElementById('bodySizeValue').textContent = e.target.value;
+            renderCard();
+        });
+        
+        document.getElementById('bodyLineHeight').addEventListener('input', (e) => {
+            template.body.lineHeight = parseInt(e.target.value) / 10;
+            document.getElementById('bodyLineHeightValue').textContent = (parseInt(e.target.value) / 10).toFixed(1);
+            renderCard();
+        });
+        
+        // Anchor point buttons
+        document.querySelectorAll('#titleAnchor .anchor-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#titleAnchor .anchor-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                template.title.anchorH = btn.dataset.h;
+                template.title.anchorV = btn.dataset.v;
+                renderCard();
+            });
+        });
+        
+        function exportCard() {
+            const link = document.createElement('a');
+            link.download = 'card-preview.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        function resetTemplate() {
+            document.getElementById('titleX').value = 50;
+            document.getElementById('titleY').value = 15;
+            document.getElementById('titleSize').value = 24;
+            document.getElementById('bodyY').value = 50;
+            document.getElementById('bodyWidth').value = 80;
+            document.getElementById('bodySize').value = 16;
+            document.getElementById('bodyLineHeight').value = 15;
+            
+            template.title.x = 50;
+            template.title.y = 15;
+            template.title.fontSize = 24;
+            template.body.y = 50;
+            template.body.maxWidth = 80;
+            template.body.fontSize = 16;
+            template.body.lineHeight = 1.5;
+            
+            renderCard();
+        }
+        
+        // Initial render
+        bgImage.onload = () => {
+            renderCard();
+        };
+    </script>
+</body>
+</html>

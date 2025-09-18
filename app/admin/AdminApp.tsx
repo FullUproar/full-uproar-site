@@ -48,6 +48,7 @@ import InvoiceSystem from './components/InvoiceSystem';
 import B2BPortal from './components/B2BPortal';
 import FulfillmentCenter from './components/FulfillmentCenter';
 import DesignComponentsView from './components/DesignComponentsView';
+import SiteIssuesPage from './site-issues/page';
 
 type ViewType = 
   | 'dashboard'
@@ -92,7 +93,8 @@ type ViewType =
   | 'memberships'
   | 'diagnostics'
   | 'analytics'
-  | 'compliance';
+  | 'compliance'
+  | 'site-issues';
 
 interface ViewState {
   type: ViewType;
@@ -462,6 +464,13 @@ export default function AdminApp() {
           view: { type: 'compliance' as ViewType },
           color: '#10b981',
         },
+        {
+          id: 'site-issues',
+          label: 'Site Issues',
+          icon: <AlertCircle size={20} />,
+          view: { type: 'site-issues' as ViewType },
+          color: '#f59e0b',
+        },
       ]
     },
   ];
@@ -531,6 +540,9 @@ export default function AdminApp() {
       
       case 'compliance':
         return <ComplianceView />;
+      
+      case 'site-issues':
+        return <SiteIssuesPage />;
       
       case 'games-list':
         return (
