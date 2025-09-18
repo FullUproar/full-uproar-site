@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { adminStyles } from '../styles/adminStyles';
-import { useToast } from '@/lib/hooks/useToast';
+import { useToastStore } from '@/lib/toastStore';
 
 interface GitHubIssue {
   id: number;
@@ -25,7 +25,7 @@ export default function SiteIssuesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newIssue, setNewIssue] = useState({ title: '', description: '' });
   const [creating, setCreating] = useState(false);
-  const { addToast } = useToast();
+  const addToast = useToastStore((state) => state.addToast);
   const [lastSync, setLastSync] = useState<Date | null>(null);
   const [syncing, setSyncing] = useState(false);
 
@@ -38,10 +38,10 @@ export default function SiteIssuesPage() {
       const data = await response.json();
       setIssues(data.issues);
       setLastSync(new Date());
-      addToast('Issues synced with GitHub', 'success');
+      addToast({ message: 'Issues synced with GitHub', type: 'success' });
     } catch (error) {
       console.error('Error fetching issues:', error);
-      addToast('Failed to fetch issues', 'error');
+      addToast({ message: 'Failed to fetch issues', type: 'error' });
     } finally {
       setLoading(false);
       setSyncing(false);
@@ -58,7 +58,7 @@ export default function SiteIssuesPage() {
   // Create new issue
   const handleCreateIssue = async () => {
     if (!newIssue.title) {
-      addToast('Title is required', 'error');
+      addToast({ message: 'Title is required', type: 'error' });
       return;
     }
 
@@ -76,13 +76,13 @@ export default function SiteIssuesPage() {
       }
 
       const data = await response.json();
-      addToast('Issue created successfully', 'success');
+      addToast({ message: 'Issue created successfully', type: 'success' });
       setShowCreateModal(false);
       setNewIssue({ title: '', description: '' });
       fetchIssues(); // Refresh list
     } catch (error: any) {
       console.error('Error creating issue:', error);
-      addToast(error.message || 'Failed to create issue', 'error');
+      addToast({ message: error.message || 'Failed to create issue', type: 'error' });
     } finally {
       setCreating(false);
     }
@@ -104,11 +104,11 @@ export default function SiteIssuesPage() {
         throw new Error(error.error || 'Failed to update issue');
       }
 
-      addToast(`Issue ${newState === 'open' ? 'reopened' : 'closed'} successfully`, 'success');
+      addToast({ message: `Issue ${newState === 'open' ? 'reopened' : 'closed'} successfully`, type: 'success' });
       fetchIssues(); // Refresh list
     } catch (error: any) {
       console.error('Error updating issue:', error);
-      addToast(error.message || 'Failed to update issue', 'error');
+      addToast({ message: error.message || 'Failed to update issue', type: 'error' });
     }
   };
 
