@@ -248,7 +248,8 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
         originY: 'center',
       });
       
-      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+      canvas.backgroundImage = img;
+      canvas.renderAll();
     };
     reader.readAsDataURL(e.target.files[0]);
   };
@@ -262,13 +263,25 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
 
   const bringForward = () => {
     if (!canvas || !selectedObject) return;
-    canvas.bringForward(selectedObject);
+    const objects = canvas.getObjects();
+    const index = objects.indexOf(selectedObject);
+    if (index < objects.length - 1) {
+      canvas.remove(selectedObject);
+      canvas.insertAt(index + 1, selectedObject);
+      canvas.setActiveObject(selectedObject);
+    }
     canvas.renderAll();
   };
 
   const sendBackward = () => {
     if (!canvas || !selectedObject) return;
-    canvas.sendBackwards(selectedObject);
+    const objects = canvas.getObjects();
+    const index = objects.indexOf(selectedObject);
+    if (index > 0) {
+      canvas.remove(selectedObject);
+      canvas.insertAt(index - 1, selectedObject);
+      canvas.setActiveObject(selectedObject);
+    }
     canvas.renderAll();
   };
 

@@ -119,7 +119,9 @@ export default function SiteIssuesPage() {
   if (loading) {
     return (
       <div style={adminStyles.container}>
-        <div style={adminStyles.loadingState}>Loading issues...</div>
+        <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7280' }}>
+          Loading issues...
+        </div>
       </div>
     );
   }
@@ -274,7 +276,7 @@ export default function SiteIssuesPage() {
       </div>
 
       {issues.length === 0 && (
-        <div style={adminStyles.emptyState}>
+        <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7280' }}>
           <p>No {filter !== 'all' ? filter : ''} issues found</p>
           <button
             onClick={() => setShowCreateModal(true)}
@@ -287,9 +289,34 @@ export default function SiteIssuesPage() {
 
       {/* Create Issue Modal */}
       {showCreateModal && (
-        <div style={adminStyles.modal}>
-          <div style={adminStyles.modalContent}>
-            <h2 style={adminStyles.modalTitle}>Create New Issue</h2>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: '#1a1a1a',
+            border: '2px solid #f97316',
+            borderRadius: '8px',
+            padding: '2rem',
+            maxWidth: '600px',
+            width: '90%',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}>
+            <h2 style={{
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              color: '#f97316',
+              marginBottom: '1rem'
+            }}>Create New Issue</h2>
             
             <div style={{ marginBottom: '1rem' }}>
               <label style={adminStyles.label}>Title *</label>
@@ -316,7 +343,7 @@ export default function SiteIssuesPage() {
               Note: This will create an issue in the FullUproar/full-uproar-site GitHub repository
             </div>
 
-            <div style={adminStyles.modalActions}>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
               <button
                 onClick={() => {
                   setShowCreateModal(false);
