@@ -214,20 +214,19 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
     if (!canvas || !e.target.files?.[0]) return;
     
     const reader = new FileReader();
-    reader.onload = (event) => {
-      fabric.Image.fromURL(event.target?.result as string, (img) => {
-        // Scale image to fit card
-        const scale = Math.min(cardDimensions.width / img.width!, cardDimensions.height / img.height!) * 0.5;
-        img.scale(scale);
-        img.set({
-          left: cardDimensions.width / 2,
-          top: cardDimensions.height / 2,
-          originX: 'center',
-          originY: 'center',
-        });
-        canvas.add(img);
-        canvas.renderAll();
+    reader.onload = async (event) => {
+      const img = await fabric.Image.fromURL(event.target?.result as string);
+      // Scale image to fit card
+      const scale = Math.min(cardDimensions.width / img.width!, cardDimensions.height / img.height!) * 0.5;
+      img.scale(scale);
+      img.set({
+        left: cardDimensions.width / 2,
+        top: cardDimensions.height / 2,
+        originX: 'center',
+        originY: 'center',
       });
+      canvas.add(img);
+      canvas.renderAll();
     };
     reader.readAsDataURL(e.target.files[0]);
   };
@@ -237,19 +236,19 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
     if (!canvas || !e.target.files?.[0]) return;
     
     const reader = new FileReader();
-    reader.onload = (event) => {
-      fabric.Image.fromURL(event.target?.result as string, (img) => {
-        // Scale to cover entire card
-        const scale = Math.max(cardDimensions.width / img.width!, cardDimensions.height / img.height!);
-        img.scale(scale);
-        
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-          left: cardDimensions.width / 2,
-          top: cardDimensions.height / 2,
-          originX: 'center',
-          originY: 'center',
-        });
+    reader.onload = async (event) => {
+      const img = await fabric.Image.fromURL(event.target?.result as string);
+      // Scale to cover entire card
+      const scale = Math.max(cardDimensions.width / img.width!, cardDimensions.height / img.height!);
+      img.scale(scale);
+      img.set({
+        left: cardDimensions.width / 2,
+        top: cardDimensions.height / 2,
+        originX: 'center',
+        originY: 'center',
       });
+      
+      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
     };
     reader.readAsDataURL(e.target.files[0]);
   };
