@@ -46,8 +46,40 @@ export default function UserManagementPage() {
       const response = await fetch('/api/admin/users');
       if (response.ok) {
         const data = await response.json();
-        setUsers(data.users);
-        setStats(data.stats);
+        console.log('Fetched users data:', data);
+
+        // Handle both array and object response formats
+        if (Array.isArray(data)) {
+          // Old format: just array of users
+          setUsers(data);
+          setStats({
+            total: data.length,
+            admins: data.filter((u: User) =>
+              u.role === 'GOD' ||
+              u.role === 'SUPER_ADMIN' ||
+              u.role === 'ADMIN'
+            ).length,
+            users: data.filter((u: User) => u.role === 'USER').length,
+            verified: data.filter((u: User) => u.emailVerified).length,
+          });
+        } else if (data.users && Array.isArray(data.users)) {
+          // New format: object with users and stats
+          setUsers(data.users);
+          setStats(data.stats || {
+            total: data.users.length,
+            admins: data.users.filter((u: User) =>
+              u.role === 'GOD' ||
+              u.role === 'SUPER_ADMIN' ||
+              u.role === 'ADMIN'
+            ).length,
+            users: data.users.filter((u: User) => u.role === 'USER').length,
+            verified: data.users.filter((u: User) => u.emailVerified).length,
+          });
+        } else {
+          console.error('Unexpected data format:', data);
+          setUsers([]);
+          setStats({ total: 0, admins: 0, users: 0, verified: 0 });
+        }
       } else {
         toast({
           title: 'Error',
@@ -140,7 +172,7 @@ export default function UserManagementPage() {
   };
 
   // Filter users based on search and role
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = Array.isArray(users) ? users.filter(user => {
     const matchesSearch = searchTerm === '' ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -149,7 +181,7 @@ export default function UserManagementPage() {
     const matchesRole = roleFilter === 'ALL' || user.role === roleFilter;
 
     return matchesSearch && matchesRole;
-  });
+  }) : [];
 
   const getRoleColor = (role: string) => {
     switch (role) {
