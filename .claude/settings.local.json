@@ -66,7 +66,8 @@
       "Bash(npx next:*)",
       "Bash(del \"C:\\Full Uproar\\full-uproar-site\\app\\admin\\sms-consents\\page.tsx\")",
       "Bash(timeout:*)",
-      "Bash(start chrome:*)"
+      "Bash(start chrome:*)",
+      "WebFetch(domain:clerk.com)"
     ],
     "deny": []
   }

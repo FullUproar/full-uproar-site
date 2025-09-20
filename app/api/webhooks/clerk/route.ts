@@ -31,19 +31,23 @@ export async function POST(req: Request) {
   const payload = await req.json()
   const body = JSON.stringify(payload)
 
-  // Check if webhook secret exists
-  if (!process.env.CLERK_WEBHOOK_SECRET) {
-    console.error('[CLERK WEBHOOK] CLERK_WEBHOOK_SECRET not found in environment');
+  // Check if webhook secret exists - try both possible env vars
+  const webhookSecret = process.env.CLERK_WEBHOOK_SIGNING_SECRET || process.env.CLERK_WEBHOOK_SECRET;
+
+  if (!webhookSecret) {
+    console.error('[CLERK WEBHOOK] No webhook secret found in environment');
+    console.error('[CLERK WEBHOOK] Checked: CLERK_WEBHOOK_SIGNING_SECRET and CLERK_WEBHOOK_SECRET');
     return new Response('Server configuration error', {
       status: 500
     })
   }
 
-  console.log('[CLERK WEBHOOK] Secret length:', process.env.CLERK_WEBHOOK_SECRET.length);
-  console.log('[CLERK WEBHOOK] Secret prefix:', process.env.CLERK_WEBHOOK_SECRET.substring(0, 10) + '...');
+  console.log('[CLERK WEBHOOK] Using secret from:', process.env.CLERK_WEBHOOK_SIGNING_SECRET ? 'CLERK_WEBHOOK_SIGNING_SECRET' : 'CLERK_WEBHOOK_SECRET');
+  console.log('[CLERK WEBHOOK] Secret length:', webhookSecret.length);
+  console.log('[CLERK WEBHOOK] Secret prefix:', webhookSecret.substring(0, 10) + '...');
 
   // Create a new Svix instance with your secret.
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
+  const wh = new Webhook(webhookSecret)
 
   let evt: WebhookEvent
 
