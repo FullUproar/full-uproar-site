@@ -4,16 +4,24 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 
 export async function POST(req: Request) {
-  console.log('Clerk webhook called');
-  
+  console.log('[CLERK WEBHOOK] ========================================');
+  console.log('[CLERK WEBHOOK] Called at:', new Date().toISOString());
+
   // Get the headers
   const headerPayload = await headers()
   const svix_id = headerPayload.get("svix-id")
   const svix_timestamp = headerPayload.get("svix-timestamp")
   const svix_signature = headerPayload.get("svix-signature")
 
+  console.log('[CLERK WEBHOOK] Headers present:', {
+    svix_id: !!svix_id,
+    svix_timestamp: !!svix_timestamp,
+    svix_signature: !!svix_signature
+  });
+
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
+    console.error('[CLERK WEBHOOK] Missing required headers');
     return new Response('Error occured -- no svix headers', {
       status: 400
     })
@@ -23,8 +31,19 @@ export async function POST(req: Request) {
   const payload = await req.json()
   const body = JSON.stringify(payload)
 
+  // Check if webhook secret exists
+  if (!process.env.CLERK_WEBHOOK_SECRET) {
+    console.error('[CLERK WEBHOOK] CLERK_WEBHOOK_SECRET not found in environment');
+    return new Response('Server configuration error', {
+      status: 500
+    })
+  }
+
+  console.log('[CLERK WEBHOOK] Secret length:', process.env.CLERK_WEBHOOK_SECRET.length);
+  console.log('[CLERK WEBHOOK] Secret prefix:', process.env.CLERK_WEBHOOK_SECRET.substring(0, 10) + '...');
+
   // Create a new Svix instance with your secret.
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!)
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 
   let evt: WebhookEvent
 
@@ -35,9 +54,14 @@ export async function POST(req: Request) {
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     }) as WebhookEvent
+    console.log('[CLERK WEBHOOK] Signature verified successfully');
   } catch (err) {
-    console.error('Error verifying webhook:', err)
-    return new Response('Error occured', {
+    console.error('[CLERK WEBHOOK] Signature verification failed:', err);
+    console.error('[CLERK WEBHOOK] Error details:', {
+      message: err instanceof Error ? err.message : 'Unknown error',
+      name: err instanceof Error ? err.name : 'Unknown'
+    });
+    return new Response('Error verifying webhook signature', {
       status: 400
     })
   }
