@@ -15,7 +15,7 @@ export async function GET() {
     const email = clerkUser.emailAddresses[0]?.emailAddress || '';
 
     // Determine role based on email
-    let role = UserRole.USER;
+    let role: UserRole = UserRole.USER;
     if (email.toLowerCase() === 'info@fulluproar.com') {
       role = UserRole.GOD;
     } else if (email.toLowerCase() === 'annika@fulluproar.com') {
