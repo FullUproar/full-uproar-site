@@ -168,7 +168,7 @@ export default function WebhookTestPage() {
 
       {/* Webhook Configuration Status */}
       <div style={adminStyles.card}>
-        <h2 style={adminStyles.cardTitle}>Webhook Configuration</h2>
+        <h2 style={adminStyles.sectionTitle}>Webhook Configuration</h2>
         <div style={{ marginBottom: '20px' }}>
           <p style={{ marginBottom: '10px' }}>
             <strong>Secret Configured:</strong>{' '}
@@ -190,7 +190,7 @@ export default function WebhookTestPage() {
           )}
         </div>
 
-        <h3 style={{ ...adminStyles.cardTitle, fontSize: '18px', marginTop: '20px' }}>
+        <h3 style={{ ...adminStyles.sectionTitle, fontSize: '18px', marginTop: '20px' }}>
           Webhook Endpoints
         </h3>
         <div style={{
@@ -222,12 +222,12 @@ export default function WebhookTestPage() {
 
       {/* Database Status */}
       <div style={adminStyles.card}>
-        <h2 style={adminStyles.cardTitle}>Database Users</h2>
+        <h2 style={adminStyles.sectionTitle}>Database Users</h2>
         <p style={{ marginBottom: '20px' }}>
           <strong>Total Users:</strong> {webhookInfo?.database.totalUsers || 0}
         </p>
 
-        <h3 style={{ ...adminStyles.cardTitle, fontSize: '18px' }}>Recent Users</h3>
+        <h3 style={{ ...adminStyles.sectionTitle, fontSize: '18px' }}>Recent Users</h3>
         <div style={adminStyles.tableContainer}>
           <table style={adminStyles.table}>
             <thead>
@@ -268,7 +268,7 @@ export default function WebhookTestPage() {
 
       {/* Manual User Creation */}
       <div style={adminStyles.card}>
-        <h2 style={adminStyles.cardTitle}>Manual User Creation</h2>
+        <h2 style={adminStyles.sectionTitle}>Manual User Creation</h2>
         <p style={{ marginBottom: '20px', color: '#9ca3af' }}>
           Create a user manually if webhook failed
         </p>
@@ -302,7 +302,7 @@ export default function WebhookTestPage() {
         </div>
 
         <div style={{ borderTop: '1px solid #374151', paddingTop: '20px', marginTop: '20px' }}>
-          <h3 style={{ ...adminStyles.cardTitle, fontSize: '18px' }}>Quick Actions</h3>
+          <h3 style={{ ...adminStyles.sectionTitle, fontSize: '18px' }}>Quick Actions</h3>
           <button
             onClick={testSyncMe}
             style={{
