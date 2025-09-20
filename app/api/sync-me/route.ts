@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { UserRole } from '@prisma/client';
 
 export async function GET() {
   try {
@@ -14,11 +15,11 @@ export async function GET() {
     const email = clerkUser.emailAddresses[0]?.emailAddress || '';
 
     // Determine role based on email
-    let role = 'USER';
+    let role = UserRole.USER;
     if (email.toLowerCase() === 'info@fulluproar.com') {
-      role = 'GOD';
+      role = UserRole.GOD;
     } else if (email.toLowerCase() === 'annika@fulluproar.com') {
-      role = 'ADMIN';
+      role = UserRole.ADMIN;
     }
 
     // Check if user exists
