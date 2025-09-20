@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
     console.log(`[Fix User Sync] Looking for user: ${email}`);
 
     // Get Clerk user
-    const clerkUsers = await clerkClient.users.getUserList({
+    const clerk = await clerkClient();
+    const clerkUsers = await clerk.users.getUserList({
       emailAddress: [email]
     });
 
@@ -113,7 +114,8 @@ export async function GET(req: NextRequest) {
     }
 
     // Check Clerk
-    const clerkUsers = await clerkClient.users.getUserList({
+    const clerk = await clerkClient();
+    const clerkUsers = await clerk.users.getUserList({
       emailAddress: [email]
     });
 
