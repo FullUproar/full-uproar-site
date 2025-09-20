@@ -136,6 +136,36 @@ export default function WebhookTestPage() {
     }
   };
 
+  const checkDiagnostics = async () => {
+    try {
+      const response = await fetch('/api/webhooks/clerk-diagnostic');
+      const data = await response.json();
+
+      if (data.comparison?.missingInDatabase?.length > 0) {
+        toast({
+          title: 'Missing Users Found',
+          description: `${data.comparison.missingInDatabase.length} Clerk users not in database`,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'All Synced',
+          description: 'All Clerk users are in the database',
+        });
+      }
+
+      console.log('Diagnostic data:', data);
+      window.open('/api/webhooks/clerk-diagnostic', '_blank');
+    } catch (error) {
+      console.error('Error checking diagnostics:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to check diagnostics',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div style={adminStyles.container}>
@@ -318,9 +348,19 @@ export default function WebhookTestPage() {
             style={{
               ...adminStyles.button,
               backgroundColor: '#6366f1',
+              marginRight: '10px'
             }}
           >
             View Sync Status
+          </button>
+          <button
+            onClick={checkDiagnostics}
+            style={{
+              ...adminStyles.button,
+              backgroundColor: '#ef4444',
+            }}
+          >
+            Run Full Diagnostic
           </button>
         </div>
       </div>
