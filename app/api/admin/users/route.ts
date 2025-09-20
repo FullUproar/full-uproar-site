@@ -4,28 +4,30 @@ import { requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    await requirePermission('users', 'read');
+    await requirePermission('admin', 'read');
 
     const users = await prisma.user.findMany({
-      include: {
-        profile: {
-          select: {
-            location: true,
-            favoriteGame: true
-          }
-        },
-        _count: {
-          select: {
-            posts: true
-          }
-        }
-      },
       orderBy: {
         createdAt: 'desc'
       }
     });
 
-    return NextResponse.json(users);
+    // Calculate stats
+    const stats = {
+      total: users.length,
+      admins: users.filter(u =>
+        u.role === 'GOD' ||
+        u.role === 'SUPER_ADMIN' ||
+        u.role === 'ADMIN'
+      ).length,
+      users: users.filter(u => u.role === 'USER').length,
+      verified: users.filter(u => u.emailVerified).length,
+    };
+
+    return NextResponse.json({
+      users,
+      stats
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
     if (error instanceof Error && error.message === 'Unauthorized') {
