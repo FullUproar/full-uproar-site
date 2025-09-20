@@ -37,3 +37,26 @@ export const useToastStore = create<ToastState>((set) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
     })),
 }));
+
+// Convenience hook for toast notifications
+export const useToast = () => {
+  const addToast = useToastStore((state) => state.addToast);
+
+  return {
+    toast: (options: { title?: string; description?: string; variant?: 'default' | 'destructive' }) => {
+      const message = options.title
+        ? options.description
+          ? `${options.title}: ${options.description}`
+          : options.title
+        : options.description || '';
+
+      const type = options.variant === 'destructive' ? 'error' : 'success';
+
+      addToast({
+        message,
+        type,
+        duration: 3000
+      });
+    }
+  };
+};

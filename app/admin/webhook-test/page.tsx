@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { adminStyles } from '@/styles/admin';
-import { useToast } from '@/components/ui/use-toast';
+import { adminStyles } from '../styles/adminStyles';
+import { useToast } from '@/lib/toastStore';
 
 interface WebhookInfo {
   webhookConfig: {
