@@ -38,9 +38,9 @@ export async function POST(req: Request) {
           // Determine role based on email
           let role = existingUser.role;
           if (email.toLowerCase() === 'info@fulluproar.com' && existingUser.role !== 'GOD') {
-            role = UserRole.GOD;
+            role = UserRole.GOD as UserRole;
           } else if (email.toLowerCase() === 'annika@fulluproar.com' && existingUser.role !== 'ADMIN' && existingUser.role !== 'GOD') {
-            role = UserRole.ADMIN;
+            role = UserRole.ADMIN as UserRole;
           }
 
           await prisma.user.update({
@@ -57,11 +57,11 @@ export async function POST(req: Request) {
         }
       } else {
         // Create new user
-        let role = UserRole.USER;
+        let role: UserRole = UserRole.USER;
         if (email.toLowerCase() === 'info@fulluproar.com') {
-          role = UserRole.GOD;
+          role = UserRole.GOD as UserRole;
         } else if (email.toLowerCase() === 'annika@fulluproar.com') {
-          role = UserRole.ADMIN;
+          role = UserRole.ADMIN as UserRole;
         }
 
         const newUser = await prisma.user.create({
