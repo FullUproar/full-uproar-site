@@ -45,13 +45,13 @@ export async function POST(req: NextRequest) {
         }
 
         // Determine role based on email
-        let role = UserRole.USER;
+        let role: any = UserRole.USER;
         if (email.toLowerCase() === 'info@fulluproar.com') {
-          role = UserRole.GOD;
+          role = 'GOD';
         } else if (email.toLowerCase() === 'annika@fulluproar.com') {
-          role = UserRole.ADMIN;
+          role = 'ADMIN';
         } else if (email.toLowerCase() === 'ethan@fulluproar.com') {
-          role = UserRole.ADMIN;
+          role = 'ADMIN';
         }
 
         if (!dbClerkIds.has(clerkUser.id)) {
