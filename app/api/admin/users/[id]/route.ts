@@ -5,13 +5,13 @@ import { clerkClient } from '@clerk/nextjs/server';
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await requirePermission('admin', 'write');
 
     const resolvedParams = await params;
-    const userId = resolvedParams.userId;
+    const userId = resolvedParams.id;
     const body = await req.json();
 
     // Update user role
@@ -43,13 +43,13 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await requirePermission('admin', 'write');
 
     const resolvedParams = await params;
-    const userId = resolvedParams.userId;
+    const userId = resolvedParams.id;
 
     // Get user to find Clerk ID
     const user = await prisma.user.findUnique({

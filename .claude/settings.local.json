@@ -67,7 +67,8 @@
       "Bash(del \"C:\\Full Uproar\\full-uproar-site\\app\\admin\\sms-consents\\page.tsx\")",
       "Bash(timeout:*)",
       "Bash(start chrome:*)",
-      "WebFetch(domain:clerk.com)"
+      "WebFetch(domain:clerk.com)",
+      "Bash(del \"C:\\Full Uproar\\full-uproar-site\\app\\api\\admin\\users\\[userId]\\route.ts\")"
     ],
     "deny": []
   }
