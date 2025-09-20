@@ -139,9 +139,22 @@ export default function WebhookTestPage() {
   if (loading) {
     return (
       <div style={adminStyles.container}>
-        <div style={adminStyles.loadingContainer}>
-          <div style={adminStyles.loadingSpinner}></div>
-          <p>Loading webhook info...</p>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '400px'
+        }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '3px solid rgba(249, 115, 22, 0.2)',
+            borderTopColor: '#f97316',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <p style={{ marginTop: '20px', color: '#fdba74' }}>Loading webhook info...</p>
         </div>
       </div>
     );
