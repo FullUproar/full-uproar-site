@@ -36,8 +36,9 @@ export async function GET(request: NextRequest) {
         role: dbUser.role,
         createdAt: dbUser.createdAt
       } : null,
-      isAdmin: dbUser?.role === 'ADMIN',
-      isSuperAdmin: dbUser?.role === 'SUPER_ADMIN'
+      isAdmin: dbUser?.role === 'ADMIN' || dbUser?.role === 'GOD',
+      isSuperAdmin: dbUser?.role === 'SUPER_ADMIN' || dbUser?.role === 'GOD',
+      isGod: dbUser?.role === 'GOD'
     });
   } catch (error) {
     console.error('Whoami error:', error);

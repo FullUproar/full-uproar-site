@@ -53,8 +53,9 @@ export async function POST(req: Request) {
       const email = email_addresses[0].email_address;
       console.log('Creating user:', email);
       
-      // Automatically grant admin role to info@fulluproar.com
-      const isAdminEmail = email.toLowerCase() === 'info@fulluproar.com';
+      // Automatically grant admin role to specific emails
+      const adminEmails = ['info@fulluproar.com', 'annika@fulluproar.com'];
+      const isAdminEmail = adminEmails.includes(email.toLowerCase());
       
       const newUser = await prisma.user.create({
         data: {
@@ -83,8 +84,9 @@ export async function POST(req: Request) {
     try {
       const email = email_addresses[0].email_address;
       
-      // Check if this is the admin email
-      const isAdminEmail = email.toLowerCase() === 'info@fulluproar.com';
+      // Check if this is an admin email
+      const adminEmails = ['info@fulluproar.com', 'annika@fulluproar.com'];
+      const isAdminEmail = adminEmails.includes(email.toLowerCase());
       
       // Get current user to check their role
       const currentUser = await prisma.user.findUnique({
