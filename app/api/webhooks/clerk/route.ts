@@ -70,7 +70,20 @@ export async function POST(req: Request) {
   const eventType = evt.type
   console.log('[CLERK WEBHOOK] ========================================');
   console.log('[CLERK WEBHOOK] Event type:', eventType);
-  console.log('[CLERK WEBHOOK] Event data:', JSON.stringify(evt.data, null, 2));
+
+  // Skip email events - we only care about user events
+  if (eventType.startsWith('email.')) {
+    console.log('[CLERK WEBHOOK] Skipping email event');
+    return new Response('Email event ignored', { status: 200 });
+  }
+
+  // Skip session events unless it's for tracking last login
+  if (eventType.startsWith('session.') && eventType !== 'session.created') {
+    console.log('[CLERK WEBHOOK] Skipping session event');
+    return new Response('Session event ignored', { status: 200 });
+  }
+
+  console.log('[CLERK WEBHOOK] Processing event data:', JSON.stringify(evt.data, null, 2));
 
   if (eventType === 'user.created') {
     const { id, email_addresses, username, first_name, last_name, image_url } = evt.data
