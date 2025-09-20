@@ -166,6 +166,46 @@ export default function WebhookTestPage() {
     }
   };
 
+  const syncAllUsers = async () => {
+    if (!confirm('This will sync all Clerk users to the database. Continue?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/sync-all-users', {
+        method: 'POST',
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: 'Sync Complete',
+          description: `Created ${data.summary.created} users, Updated ${data.summary.updated} roles`,
+        });
+
+        // Show details if any users were created
+        if (data.details.created.length > 0) {
+          console.log('Created users:', data.details.created);
+        }
+
+        fetchWebhookInfo(); // Refresh the list
+      } else {
+        toast({
+          title: 'Sync Failed',
+          description: data.error || 'Failed to sync users',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Error syncing all users:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to sync users',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div style={adminStyles.container}>
@@ -358,9 +398,19 @@ export default function WebhookTestPage() {
             style={{
               ...adminStyles.button,
               backgroundColor: '#ef4444',
+              marginRight: '10px'
             }}
           >
             Run Full Diagnostic
+          </button>
+          <button
+            onClick={syncAllUsers}
+            style={{
+              ...adminStyles.button,
+              backgroundColor: '#8b5cf6',
+            }}
+          >
+            Sync All Missing Users
           </button>
         </div>
       </div>
