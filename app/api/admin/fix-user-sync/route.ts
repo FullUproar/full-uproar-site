@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { clerkClient } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 import { requirePermission } from '@/lib/auth';
+import { UserRole } from '@prisma/client';
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,11 +42,11 @@ export async function POST(req: NextRequest) {
     });
 
     // Determine role based on email
-    let role = 'USER';
+    let role: UserRole = UserRole.USER;
     if (email.toLowerCase() === 'info@fulluproar.com') {
-      role = 'GOD';  // Give GOD role to info@fulluproar.com for full access
+      role = UserRole.GOD;  // Give GOD role to info@fulluproar.com for full access
     } else if (email.toLowerCase() === 'annika@fulluproar.com') {
-      role = 'ADMIN';
+      role = UserRole.ADMIN;
     }
 
     if (!dbUser) {
