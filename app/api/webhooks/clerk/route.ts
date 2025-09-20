@@ -44,19 +44,35 @@ export async function POST(req: Request) {
 
   // Handle the webhook
   const eventType = evt.type
-  console.log('Clerk webhook event type:', eventType);
+  console.log('[CLERK WEBHOOK] ========================================');
+  console.log('[CLERK WEBHOOK] Event type:', eventType);
+  console.log('[CLERK WEBHOOK] Event data:', JSON.stringify(evt.data, null, 2));
 
   if (eventType === 'user.created') {
     const { id, email_addresses, username, first_name, last_name, image_url } = evt.data
 
     try {
       const email = email_addresses[0].email_address;
-      console.log('Creating user:', email);
-      
-      // Automatically grant admin role to specific emails
-      const adminEmails = ['info@fulluproar.com', 'annika@fulluproar.com'];
-      const isAdminEmail = adminEmails.includes(email.toLowerCase());
-      
+      console.log('[CLERK WEBHOOK] Creating user:', email);
+
+      // Check if user already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { clerkId: id }
+      });
+
+      if (existingUser) {
+        console.log('[CLERK WEBHOOK] User already exists:', existingUser.email);
+        return new Response('User already exists', { status: 200 });
+      }
+
+      // Determine role based on email
+      let role = 'USER';
+      if (email.toLowerCase() === 'info@fulluproar.com') {
+        role = 'GOD';
+      } else if (email.toLowerCase() === 'annika@fulluproar.com') {
+        role = 'ADMIN';
+      }
+
       const newUser = await prisma.user.create({
         data: {
           clerkId: id,
@@ -64,16 +80,17 @@ export async function POST(req: Request) {
           username: username || undefined,
           displayName: first_name && last_name ? `${first_name} ${last_name}` : undefined,
           avatarUrl: image_url || undefined,
-          role: isAdminEmail ? 'ADMIN' : 'USER',
+          role: role as any,
           cultDevotion: 0,
           cultLevel: 0,
           achievementPoints: 0
         }
       });
-      
-      console.log('User created:', newUser.email, 'Role:', newUser.role);
+
+      console.log('[CLERK WEBHOOK] User created:', newUser.email, 'Role:', newUser.role);
+      console.log('[CLERK WEBHOOK] ========================================');
     } catch (error) {
-      console.error('Error creating user:', error)
+      console.error('[CLERK WEBHOOK] Error creating user:', error)
       return new Response('Error creating user', { status: 500 })
     }
   }
@@ -83,34 +100,69 @@ export async function POST(req: Request) {
 
     try {
       const email = email_addresses[0].email_address;
-      
-      // Check if this is an admin email
-      const adminEmails = ['info@fulluproar.com', 'annika@fulluproar.com'];
-      const isAdminEmail = adminEmails.includes(email.toLowerCase());
-      
+      console.log('[CLERK WEBHOOK] Updating user:', email);
+
       // Get current user to check their role
       const currentUser = await prisma.user.findUnique({
         where: { clerkId: id }
       });
-      
+
+      if (!currentUser) {
+        console.log('[CLERK WEBHOOK] User not found for update, creating instead');
+        // User doesn't exist, create them
+        let role = 'USER';
+        if (email.toLowerCase() === 'info@fulluproar.com') {
+          role = 'GOD';
+        } else if (email.toLowerCase() === 'annika@fulluproar.com') {
+          role = 'ADMIN';
+        }
+
+        const newUser = await prisma.user.create({
+          data: {
+            clerkId: id,
+            email: email,
+            username: username || undefined,
+            displayName: first_name && last_name ? `${first_name} ${last_name}` : undefined,
+            avatarUrl: image_url || undefined,
+            role: role as any,
+            cultDevotion: 0,
+            cultLevel: 0,
+            achievementPoints: 0
+          }
+        });
+        console.log('[CLERK WEBHOOK] User created from update event:', newUser.email, 'Role:', newUser.role);
+        return new Response('User created', { status: 200 });
+      }
+
+      // Determine role based on email
+      let role = currentUser.role;
+      if (email.toLowerCase() === 'info@fulluproar.com' && currentUser.role !== 'GOD') {
+        role = 'GOD';
+      } else if (email.toLowerCase() === 'annika@fulluproar.com' && currentUser.role !== 'ADMIN' && currentUser.role !== 'GOD') {
+        role = 'ADMIN';
+      }
+
       const updateData: any = {
         email: email,
         username: username || undefined,
         displayName: first_name && last_name ? `${first_name} ${last_name}` : undefined,
         avatarUrl: image_url || undefined,
       };
-      
-      // Update role to admin if this is the admin email and they're not already an admin
-      if (isAdminEmail && currentUser && currentUser.role !== 'ADMIN') {
-        updateData.role = 'ADMIN';
+
+      // Update role if it changed
+      if (role !== currentUser.role) {
+        updateData.role = role;
+        console.log('[CLERK WEBHOOK] Updating user role from', currentUser.role, 'to', role);
       }
-      
+
       await prisma.user.update({
         where: { clerkId: id },
         data: updateData
-      })
+      });
+
+      console.log('[CLERK WEBHOOK] User updated successfully');
     } catch (error) {
-      console.error('Error updating user:', error)
+      console.error('[CLERK WEBHOOK] Error updating user:', error)
       return new Response('Error updating user', { status: 500 })
     }
   }
