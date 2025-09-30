@@ -14,7 +14,8 @@ export default function CartPage() {
   const router = useRouter();
   const { items, updateQuantity, removeFromCart, getTotalPrice, getTotalItems, clearCart } = useCartStore();
   const [mounted, setMounted] = useState(false);
-  
+  const [isMobile, setIsMobile] = useState(false);
+
   useAnalytics();
 
   useEffect(() => {
@@ -23,6 +24,14 @@ export default function CartPage() {
       cartItemCount: getTotalItems(),
       cartValue: getTotalPrice()
     });
+
+    // Check for mobile on mount and window resize
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const handleCheckout = () => {
@@ -116,9 +125,14 @@ export default function CartPage() {
             </Link>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '3rem', alignItems: 'start' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : '1fr auto',
+            gap: isMobile ? '1.5rem' : '3rem',
+            alignItems: 'start'
+          }}>
             {/* Cart Items */}
-            <div style={{ background: '#1f2937', borderRadius: '1rem', padding: '2rem', border: '4px solid #fb923c' }}>
+            <div style={{ background: '#1f2937', borderRadius: '1rem', padding: isMobile ? '1rem' : '2rem', border: '4px solid #fb923c' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fdba74', marginBottom: '2rem' }}>
                 Cart Items ({getTotalItems()})
               </h2>
@@ -290,10 +304,10 @@ export default function CartPage() {
             <div style={{
               background: '#1f2937',
               borderRadius: '1rem',
-              padding: '2rem',
+              padding: isMobile ? '1rem' : '2rem',
               border: '4px solid #fb923c',
-              minWidth: '350px',
-              position: 'sticky',
+              minWidth: isMobile ? 'auto' : '350px',
+              position: isMobile ? 'static' : 'sticky',
               top: '2rem'
             }}>
               <h2 style={{ 

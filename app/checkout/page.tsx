@@ -89,20 +89,32 @@ export default function CheckoutPage() {
     }
   });
 
-  // Redirect if cart is empty
+  // Load persisted form data and redirect if cart is empty
   useEffect(() => {
     setMounted(true);
+
+    // Restore form data from sessionStorage if available
+    const savedForm = sessionStorage.getItem('checkout_form');
+    if (savedForm) {
+      try {
+        const parsedForm = JSON.parse(savedForm);
+        setForm(parsedForm);
+      } catch (error) {
+        console.error('Failed to restore form data:', error);
+      }
+    }
+
     if (items.length === 0) {
       router.push('/');
     } else {
       const cartValue = getTotalPrice();
-      
+
       // Track analytics
       analytics.track(AnalyticsEvent.CHECKOUT_START, {
         cartItemCount: items.length,
         cartValue: cartValue
       });
-      
+
       // Track Meta Pixel checkout initiation
       const contentIds = items.map(item => `${item.type}_${item.id}`);
       MetaPixelEvents.initiateCheckout(
@@ -113,6 +125,13 @@ export default function CheckoutPage() {
       );
     }
   }, [items, router]);
+
+  // Persist form data to sessionStorage whenever it changes
+  useEffect(() => {
+    if (mounted) {
+      sessionStorage.setItem('checkout_form', JSON.stringify(form));
+    }
+  }, [form, mounted]);
 
   const subtotal = getTotalPrice();
   const shipping = subtotal > 5000 ? 0 : 999; // Free shipping over $50
@@ -228,8 +247,9 @@ export default function CheckoutPage() {
         return;
       }
 
-      // Clear cart and redirect to success page
+      // Clear cart, form data, and redirect to success page
       clearCart();
+      sessionStorage.removeItem('checkout_form');
       router.push(`/order-confirmation?orderId=${order.id}`);
     } catch (error) {
       console.error('Checkout error:', error);

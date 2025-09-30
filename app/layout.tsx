@@ -18,6 +18,7 @@ import { ChaosProvider } from '@/lib/chaos-context'
 import MetaPixel from './components/MetaPixel'
 import UniversalTracking from './components/UniversalTracking'
 import CookieConsent from './components/CookieConsent'
+import ErrorBoundary from './components/ErrorBoundary'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -110,28 +111,30 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           style={{ margin: 0, padding: 0, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
         >
-          <ChaosProvider>
-            <AnalyticsProvider>
-              <TestModeBanner />
-              {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
-                <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
-              )}
-              <UniversalTracking 
-                googleAnalyticsId={process.env.NEXT_PUBLIC_GA_ID}
-                googleAdsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}
-                clarityId={process.env.NEXT_PUBLIC_CLARITY_ID}
-                tiktokPixelId={process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID}
-                pinterestTagId={process.env.NEXT_PUBLIC_PINTEREST_TAG_ID}
-                snapchatPixelId={process.env.NEXT_PUBLIC_SNAPCHAT_PIXEL_ID}
-              />
-              <main style={{ flex: 1 }}>
-                {children}
-              </main>
-              <GlobalFooter />
-              <ToastContainer />
-              <CookieConsent />
-            </AnalyticsProvider>
-          </ChaosProvider>
+          <ErrorBoundary>
+            <ChaosProvider>
+              <AnalyticsProvider>
+                <TestModeBanner />
+                {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
+                  <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
+                )}
+                <UniversalTracking
+                  googleAnalyticsId={process.env.NEXT_PUBLIC_GA_ID}
+                  googleAdsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}
+                  clarityId={process.env.NEXT_PUBLIC_CLARITY_ID}
+                  tiktokPixelId={process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID}
+                  pinterestTagId={process.env.NEXT_PUBLIC_PINTEREST_TAG_ID}
+                  snapchatPixelId={process.env.NEXT_PUBLIC_SNAPCHAT_PIXEL_ID}
+                />
+                <main style={{ flex: 1 }}>
+                  {children}
+                </main>
+                <GlobalFooter />
+                <ToastContainer />
+                <CookieConsent />
+              </AnalyticsProvider>
+            </ChaosProvider>
+          </ErrorBoundary>
         </body>
       </html>
     </ClerkProvider>

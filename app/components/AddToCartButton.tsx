@@ -1,19 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check, AlertCircle } from 'lucide-react';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
 
 interface AddToCartButtonProps {
-  onClick: () => void;
+  onClick: () => void | Promise<void>;
   disabled?: boolean;
   size?: 'small' | 'medium' | 'large';
   className?: string;
+  onError?: (error: Error) => void;
 }
 
-export default function AddToCartButton({ onClick, disabled = false, size = 'medium', className = '' }: AddToCartButtonProps) {
+export default function AddToCartButton({ onClick, disabled = false, size = 'medium', className = '', onError }: AddToCartButtonProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,22 +25,40 @@ export default function AddToCartButton({ onClick, disabled = false, size = 'med
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (isAdding || disabled) return;
-    
+
     setIsAdding(true);
-    onClick();
-    
-    // Show success state
-    setTimeout(() => {
-      setShowSuccess(true);
-      setIsAdding(false);
-      
-      // Reset after animation
+    setShowError(false);
+
+    try {
+      await onClick();
+
+      // Show success state
       setTimeout(() => {
-        setShowSuccess(false);
-      }, 1500);
-    }, 300);
+        setShowSuccess(true);
+        setIsAdding(false);
+
+        // Reset after animation
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 1500);
+      }, 300);
+    } catch (error) {
+      // Show error state
+      setShowError(true);
+      setIsAdding(false);
+
+      // Call error handler if provided
+      if (onError && error instanceof Error) {
+        onError(error);
+      }
+
+      // Reset error state after 3 seconds
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
   };
 
   const sizeStyles = {
@@ -92,12 +112,12 @@ export default function AddToCartButton({ onClick, disabled = false, size = 'med
       
       <button
         onClick={handleClick}
-        disabled={disabled || isAdding || showSuccess}
+        disabled={disabled || isAdding || showSuccess || showError}
         className={`cart-button ${className}`}
         {...getTestId(TestId.PRODUCT_CARD_ADD_TO_CART)}
         style={{
-          background: showSuccess ? '#10b981' : disabled ? '#6b7280' : '#f97316',
-          color: showSuccess ? 'white' : '#111827',
+          background: showSuccess ? '#10b981' : showError ? '#ef4444' : disabled ? '#6b7280' : '#f97316',
+          color: showSuccess || showError ? 'white' : '#111827',
           padding: currentSize.padding,
           fontSize: currentSize.fontSize,
           borderRadius: '50px',
@@ -113,13 +133,13 @@ export default function AddToCartButton({ onClick, disabled = false, size = 'med
           opacity: disabled ? 0.5 : 1,
         }}
         onMouseEnter={(e) => {
-          if (!disabled && !isAdding && !showSuccess) {
+          if (!disabled && !isAdding && !showSuccess && !showError) {
             e.currentTarget.style.transform = 'scale(1.05)';
             e.currentTarget.style.background = '#ea580c';
           }
         }}
         onMouseLeave={(e) => {
-          if (!disabled && !isAdding && !showSuccess) {
+          if (!disabled && !isAdding && !showSuccess && !showError) {
             e.currentTarget.style.transform = 'scale(1)';
             e.currentTarget.style.background = '#f97316';
           }
@@ -130,10 +150,15 @@ export default function AddToCartButton({ onClick, disabled = false, size = 'med
             <Check size={currentSize.iconSize} className="success-icon" />
             ADDED!
           </>
+        ) : showError ? (
+          <>
+            <AlertCircle size={currentSize.iconSize} />
+            ERROR
+          </>
         ) : (
           <>
-            <ShoppingCart 
-              size={currentSize.iconSize} 
+            <ShoppingCart
+              size={currentSize.iconSize}
               style={{
                 animation: isAdding ? 'shake 0.3s ease-out' : 'none',
               }}
