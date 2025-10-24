@@ -128,6 +128,7 @@ model NewsPost {
   excerpt   String
   content   String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model EmailSubscriber {

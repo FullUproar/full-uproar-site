@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
-import { 
+import {
   MessageSquare, Users, TrendingUp, Clock, Pin, Lock,
-  Search, Filter, Plus, ChevronRight, Eye, MessageCircle
+  Plus, ChevronRight, Eye, MessageCircle
 } from 'lucide-react';
 
 interface MessageBoard {
@@ -36,6 +36,10 @@ interface MessageThread {
   postCount: number;
   lastPostAt: string;
   createdAt: string;
+  board?: {
+    slug: string;
+    name: string;
+  };
 }
 
 export default function ForumView() {
@@ -44,7 +48,6 @@ export default function ForumView() {
   const [popularThreads, setPopularThreads] = useState<MessageThread[]>([]);
   const [recentThreads, setRecentThreads] = useState<MessageThread[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Add CSS animation for floating emojis
   useEffect(() => {
@@ -258,23 +261,11 @@ export default function ForumView() {
       </section>
       
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
-        {/* Search Bar */}
-        <div style={styles.searchBar}>
-          <Search size={20} style={{ color: '#94a3b8' }} />
-          <input
-            type="text"
-            placeholder="Search threads..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              flex: 1,
-              background: 'transparent',
-              border: 'none',
-              color: '#e2e8f0',
-              fontSize: '16px',
-              outline: 'none'
-            }}
-          />
+        {/* Action Bar */}
+        <div style={{
+          ...styles.searchBar,
+          justifyContent: 'flex-end'
+        }}>
           <button
             onClick={() => router.push('/forum/new-thread')}
             style={{
@@ -424,7 +415,7 @@ export default function ForumView() {
             {popularThreads.map((thread) => (
               <Link
                 key={thread.id}
-                href={`/forum/thread/${thread.slug}`}
+                href={`/forum/${thread.board?.slug || 'general'}/${thread.slug}`}
                 style={styles.threadRow}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(30, 41, 59, 0.8)';
@@ -469,7 +460,7 @@ export default function ForumView() {
             {recentThreads.map((thread) => (
               <Link
                 key={thread.id}
-                href={`/forum/thread/${thread.slug}`}
+                href={`/forum/${thread.board?.slug || 'general'}/${thread.slug}`}
                 style={styles.threadRow}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(30, 41, 59, 0.8)';

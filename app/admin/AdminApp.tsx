@@ -28,6 +28,8 @@ import UserModerationView from './components/UserModerationView';
 import RolesManagement from './components/RolesManagement';
 import MembershipManagement from './components/MembershipManagement';
 import ComicsListView from './components/ComicsListView';
+import NewsListView from './components/NewsListView';
+import NewsEditForm from './components/NewsEditForm';
 import ArtworkListView from './components/ArtworkListView';
 import ArtworkEditForm from './components/ArtworkEditForm';
 import SettingsView from './components/SettingsView';
@@ -78,6 +80,9 @@ type ViewType =
   | 'comics-list'
   | 'comics-edit'
   | 'comics-new'
+  | 'news-list'
+  | 'news-edit'
+  | 'news-new'
   | 'artwork-list'
   | 'artwork-edit'
   | 'artwork-new'
@@ -381,6 +386,13 @@ export default function AdminApp() {
       expanded: false,
       items: [
         {
+          id: 'news',
+          label: 'News',
+          icon: <Newspaper size={20} />,
+          view: { type: 'news-list' as ViewType },
+          color: '#f97316',
+        },
+        {
           id: 'comics',
           label: 'Comics',
           icon: <BookOpen size={20} />,
@@ -674,7 +686,32 @@ export default function AdminApp() {
             onNew={() => navigateTo({ type: 'comics-new' }, 'New Comic')}
           />
         );
-      
+
+      case 'news-list':
+        return (
+          <NewsListView
+            onEdit={(post) => navigateTo({ type: 'news-edit', data: post }, `Edit: ${post.title}`)}
+            onNew={() => navigateTo({ type: 'news-new' }, 'New News Post')}
+          />
+        );
+
+      case 'news-new':
+        return (
+          <NewsEditForm
+            onBack={() => navigateTo({ type: 'news-list' }, 'News')}
+            onSave={() => navigateTo({ type: 'news-list' }, 'News')}
+          />
+        );
+
+      case 'news-edit':
+        return (
+          <NewsEditForm
+            post={currentView.data}
+            onBack={() => navigateTo({ type: 'news-list' }, 'News')}
+            onSave={() => navigateTo({ type: 'news-list' }, 'News')}
+          />
+        );
+
       case 'artwork-list':
         return (
           <ArtworkListView

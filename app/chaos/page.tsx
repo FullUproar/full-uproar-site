@@ -47,10 +47,11 @@ export default function ChaosPage() {
 
   const fetchNews = async () => {
     try {
-      const response = await fetch('/api/news');
+      const response = await fetch('/api/news?limit=20');
       if (response.ok) {
         const data = await response.json();
-        setNews(Array.isArray(data) ? data : []);
+        // Handle both old array format and new pagination format
+        setNews(Array.isArray(data) ? data : data.news || []);
       }
     } catch (error) {
       console.error('Failed to fetch news:', error);

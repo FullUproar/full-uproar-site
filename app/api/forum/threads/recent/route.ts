@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
       take: 5,
       include: {
-        _count: { select: { posts: true } }
+        _count: { select: { posts: true } },
+        board: { select: { slug: true, name: true } }
       }
     });
 

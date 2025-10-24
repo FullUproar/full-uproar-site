@@ -30,7 +30,7 @@ export default function Navigation() {
     { href: '/', label: 'HOME' },
     { href: '/games', label: 'GAMES' },
     { href: '/merch', label: 'MERCH' },
-    { href: '/comics', label: 'COMICS' },
+    // { href: '/comics', label: 'COMICS' }, // Deferred for launch
     { href: '/forum', label: 'FORUM' },
     { href: '/chaos', label: 'CHAOS' },
     { href: '/cult', label: 'CULT' },
