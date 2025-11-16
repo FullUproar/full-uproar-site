@@ -11,6 +11,8 @@ export default function ChaosUnleashedLanding() {
   const [sequence, setSequence] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [showCTA, setShowCTA] = useState(false);
+  const [fadeOutText, setFadeOutText] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
 
   const textSequence = [
     { text: "GAME NIGHT", delay: 800 },
@@ -36,10 +38,22 @@ export default function ChaosUnleashedLanding() {
       timers.push(timer);
     });
 
+    // Fade out text after FUGLY appears
+    const fadeTimer = setTimeout(() => {
+      setFadeOutText(true);
+    }, 5200);
+    timers.push(fadeTimer);
+
+    // Show Fugly logo (Cheshire cat style)
+    const logoTimer = setTimeout(() => {
+      setShowLogo(true);
+    }, 6000);
+    timers.push(logoTimer);
+
     // Show final CTA
     const ctaTimer = setTimeout(() => {
       setShowCTA(true);
-    }, 5800);
+    }, 7500);
     timers.push(ctaTimer);
 
     return () => timers.forEach(t => clearTimeout(t));
@@ -82,6 +96,26 @@ export default function ChaosUnleashedLanding() {
     textContainer: {
       position: 'relative' as const,
       zIndex: 10,
+      opacity: fadeOutText ? 0 : 1,
+      transition: 'opacity 1s ease-out',
+    },
+    fuglyLogoContainer: {
+      position: 'absolute' as const,
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '80vw',
+      maxWidth: '600px',
+      opacity: showLogo ? 1 : 0,
+      transform: showLogo ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0.8)',
+      transition: 'all 1.5s ease-out',
+      zIndex: 15,
+    },
+    fuglyImage: {
+      width: '100%',
+      height: 'auto',
+      filter: 'drop-shadow(0 0 40px rgba(249, 115, 22, 0.8)) drop-shadow(0 0 80px rgba(249, 115, 22, 0.4))',
+      animation: showLogo ? 'cheshireFade 2s ease-out' : 'none',
     },
     impactText: {
       fontSize: 'clamp(3rem, 15vw, 10rem)',
@@ -221,17 +255,15 @@ export default function ChaosUnleashedLanding() {
             FUGLY!
           </div>
         )}
+      </div>
 
-        {showCTA && (
-          <div
-            style={{
-              ...styles.logoText,
-              animation: 'fadeIn 1s ease-in',
-            }}
-          >
-            FUGLY
-          </div>
-        )}
+      {/* Fugly Logo - Cheshire Cat Style */}
+      <div style={styles.fuglyLogoContainer}>
+        <img
+          src="/fugly-logo.png"
+          alt="Fugly Logo"
+          style={styles.fuglyImage}
+        />
       </div>
 
       {/* CTA Section */}
@@ -331,6 +363,34 @@ export default function ChaosUnleashedLanding() {
         /* Screen shake effect */
         body.shake {
           animation: shake 0.5s;
+        }
+
+        /* Cheshire Cat fade - starts invisible, gradually appears */
+        @keyframes cheshireFade {
+          0% {
+            opacity: 0;
+            filter: brightness(0) drop-shadow(0 0 0px rgba(249, 115, 22, 0));
+          }
+          20% {
+            opacity: 0.1;
+            filter: brightness(0.3) drop-shadow(0 0 10px rgba(249, 115, 22, 0.2));
+          }
+          40% {
+            opacity: 0.3;
+            filter: brightness(0.5) drop-shadow(0 0 20px rgba(249, 115, 22, 0.4));
+          }
+          60% {
+            opacity: 0.6;
+            filter: brightness(0.8) drop-shadow(0 0 30px rgba(249, 115, 22, 0.6));
+          }
+          80% {
+            opacity: 0.9;
+            filter: brightness(1) drop-shadow(0 0 40px rgba(249, 115, 22, 0.8));
+          }
+          100% {
+            opacity: 1;
+            filter: brightness(1) drop-shadow(0 0 40px rgba(249, 115, 22, 0.8)) drop-shadow(0 0 80px rgba(249, 115, 22, 0.4));
+          }
         }
       `}</style>
     </div>
