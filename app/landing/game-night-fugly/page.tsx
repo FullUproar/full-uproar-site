@@ -38,22 +38,22 @@ export default function ChaosUnleashedLanding() {
       timers.push(timer);
     });
 
-    // Fade out text after FUGLY appears
+    // Fade out text after FUGLY appears (longer pause to read)
     const fadeTimer = setTimeout(() => {
       setFadeOutText(true);
-    }, 5200);
+    }, 6800);
     timers.push(fadeTimer);
 
     // Show Fugly logo (Cheshire cat style)
     const logoTimer = setTimeout(() => {
       setShowLogo(true);
-    }, 6000);
+    }, 8000);
     timers.push(logoTimer);
 
     // Show final CTA
     const ctaTimer = setTimeout(() => {
       setShowCTA(true);
-    }, 7500);
+    }, 10500);
     timers.push(ctaTimer);
 
     return () => timers.forEach(t => clearTimeout(t));
@@ -104,17 +104,23 @@ export default function ChaosUnleashedLanding() {
       top: '50%',
       left: '50%',
       width: '80vw',
-      maxWidth: '600px',
+      maxWidth: '800px',
       opacity: showLogo ? 1 : 0,
       transform: showLogo ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0.8)',
-      transition: 'all 1.5s ease-out',
+      transition: 'opacity 2s ease-out, transform 2s ease-out',
       zIndex: 15,
+      textAlign: 'center' as const,
     },
-    fuglyImage: {
-      width: '100%',
-      height: 'auto',
-      filter: 'drop-shadow(0 0 40px rgba(249, 115, 22, 0.8)) drop-shadow(0 0 80px rgba(249, 115, 22, 0.4))',
-      animation: showLogo ? 'cheshireFade 2s ease-out' : 'none',
+    fuglyLogoText: {
+      fontSize: 'clamp(5rem, 20vw, 16rem)',
+      fontWeight: 900,
+      color: '#f97316',
+      textTransform: 'uppercase' as const,
+      lineHeight: 1,
+      letterSpacing: '0.1em',
+      WebkitTextStroke: '4px #000',
+      textShadow: '0 0 40px rgba(249, 115, 22, 0.8), 0 0 80px rgba(249, 115, 22, 0.4), 0 0 120px rgba(249, 115, 22, 0.2)',
+      animation: showLogo ? 'cheshireFade 2.5s ease-out' : 'none',
     },
     impactText: {
       fontSize: 'clamp(3rem, 15vw, 10rem)',
@@ -258,11 +264,9 @@ export default function ChaosUnleashedLanding() {
 
       {/* Fugly Logo - Cheshire Cat Style */}
       <div style={styles.fuglyLogoContainer}>
-        <img
-          src="/fugly-logo.png"
-          alt="Fugly Logo"
-          style={styles.fuglyImage}
-        />
+        <div style={styles.fuglyLogoText}>
+          FUGLY
+        </div>
       </div>
 
       {/* CTA Section */}
