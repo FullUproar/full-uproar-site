@@ -103,7 +103,6 @@ export default function ChaosUnleashedLanding() {
       position: 'absolute' as const,
       top: '50%',
       left: '50%',
-      transform: 'translate(-50%, -50%)',
       width: '80vw',
       maxWidth: '600px',
       opacity: showLogo ? 1 : 0,
