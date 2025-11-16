@@ -13,11 +13,11 @@ export default function ChaosUnleashedLanding() {
   const [showCTA, setShowCTA] = useState(false);
 
   const textSequence = [
-    { text: "THIS", delay: 500 },
-    { text: "GAME NIGHT", delay: 1200 },
-    { text: "IS ABOUT TO GET", delay: 2000 },
-    { text: "ABSOLUTELY", delay: 2800 },
-    { text: "FUCKED", delay: 3400, isExplosion: true },
+    { text: "THIS", delay: 800 },
+    { text: "GAME NIGHT", delay: 2000 },
+    { text: "IS ABOUT TO GET", delay: 3400 },
+    { text: "ABSOLUTELY", delay: 4800 },
+    { text: "FUCKED", delay: 6000, isExplosion: true },
   ];
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function ChaosUnleashedLanding() {
     // Show final CTA
     const ctaTimer = setTimeout(() => {
       setShowCTA(true);
-    }, 4500);
+    }, 7200);
     timers.push(ctaTimer);
 
     return () => timers.forEach(t => clearTimeout(t));
@@ -149,25 +149,6 @@ export default function ChaosUnleashedLanding() {
       alignItems: 'center',
       gap: '15px',
       animation: 'pulse 2s ease-in-out infinite',
-    },
-    secondaryButton: {
-      background: 'transparent',
-      color: '#fdba74',
-      fontSize: 'clamp(0.9rem, 2vw, 1.2rem)',
-      fontWeight: 700,
-      padding: '12px 30px',
-      border: '2px solid #fdba74',
-      borderRadius: '50px',
-      cursor: 'pointer',
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.05em',
-      transition: 'all 0.3s ease',
-    },
-    price: {
-      color: '#10b981',
-      fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
-      fontWeight: 700,
-      marginTop: '10px',
     },
     backgroundGlow: {
       position: 'absolute' as const,
@@ -283,23 +264,6 @@ export default function ChaosUnleashedLanding() {
           >
             UNLEASH CHAOS
             <ArrowRight size={28} />
-          </button>
-
-          <div style={styles.price}>
-            Starting at $16.99
-          </div>
-
-          <button
-            onClick={() => router.push('/')}
-            style={styles.secondaryButton}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(253, 186, 116, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}
-          >
-            Browse All Games
           </button>
         </div>
       )}
