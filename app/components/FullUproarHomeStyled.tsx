@@ -288,9 +288,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const styles = {
     container: {
       minHeight: '100vh',
-      background: !chaosEnabled 
-        ? 'linear-gradient(to bottom, #1f2937, #374151)' 
-        : 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)'
+      background: !chaosEnabled
+        ? 'linear-gradient(to bottom, #1f2937, #374151)'
+        : `linear-gradient(to bottom right, #003a49, #111827, ${colors.chaosOrange})`
     },
     nav: {
       position: 'sticky' as const,
