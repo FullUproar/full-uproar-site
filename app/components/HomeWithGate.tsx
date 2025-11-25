@@ -13,11 +13,9 @@ export default function HomeWithGate() {
   const [loading, setLoading] = useState(true);
 
   // Check if already authenticated on load
+  // TEMPORARY: Bypass gate for UX review - remove this line to restore gate
   useEffect(() => {
-    const authStatus = sessionStorage.getItem('fugly-auth');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
-    }
+    setIsAuthenticated(true);
     setLoading(false);
   }, []);
 
