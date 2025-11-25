@@ -5,6 +5,7 @@ import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices } from 'lucide-re
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import { useChaos } from '@/lib/chaos-context';
+import { colors, colorsRgba } from '@/lib/colors';
 import DeploymentInfo from './DeploymentInfo';
 import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
