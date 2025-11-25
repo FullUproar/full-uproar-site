@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import { useChaos } from '@/lib/chaos-context';
@@ -84,6 +84,35 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [chaosPhrase, setChaosPhrase] = useState('FRESHLY UNHINGED');
   const [phraseTransform, setPhraseTransform] = useState({ scale: 1, rotation: 0 });
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(800);
+
+  // Scroll tracking for hero shrink effect
+  useEffect(() => {
+    setViewportHeight(window.innerHeight);
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    const handleResize = () => {
+      setViewportHeight(window.innerHeight);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Calculate hero shrink based on scroll
+  const maxScroll = 300; // Pixels of scroll before hero is fully shrunk
+  const scrollProgress = Math.min(scrollY / maxScroll, 1);
+  const heroScale = 1 - scrollProgress * 0.15; // Shrink to 85%
+  const heroOpacity = 1 - scrollProgress * 0.4; // Fade to 60%
+  const contentOpacity = scrollProgress > 0.1 ? 1 : 0; // Content fades in after scroll starts
 
   // Chaos phrases pool
   const chaosPhrases = [
@@ -362,13 +391,39 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     },
     heroSection: {
       position: 'relative' as const,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      minHeight: 'calc(100vh - 4rem)', // Full viewport minus nav
+      display: 'flex',
+      flexDirection: 'column' as const,
+      justifyContent: 'center',
+      alignItems: 'center',
+      transform: `scale(${heroScale})`,
+      opacity: heroOpacity,
+      transition: 'transform 0.1s ease-out, opacity 0.1s ease-out',
     },
     heroContainer: {
       maxWidth: '80rem',
       margin: '0 auto',
-      padding: '5rem 1rem',
-      position: 'relative' as const
+      padding: isMobile ? '2rem 1rem' : '3rem 1rem',
+      position: 'relative' as const,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    scrollIndicator: {
+      position: 'absolute' as const,
+      bottom: '2rem',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      gap: '0.5rem',
+      color: '#fdba74',
+      opacity: scrollY > 50 ? 0 : 1,
+      transition: 'opacity 0.3s ease',
+      cursor: 'pointer',
     },
     textCenter: {
       textAlign: 'center' as const
@@ -584,7 +639,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 fontSize: isMobile ? '1.1rem' : '1.5rem',
                 textDecoration: 'none',
                 boxShadow: '0 10px 30px rgba(249, 115, 22, 0.4)',
-                marginBottom: '2rem',
+                marginBottom: '0',
                 transition: 'all 0.3s',
                 textTransform: 'uppercase' as const,
                 letterSpacing: '0.05em'
@@ -600,9 +655,35 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             >
               Browse Our Games <ArrowRight size={isMobile ? 20 : 24} />
             </a>
-            
-            {/* Email Capture */}
-            <div style={{ position: 'relative', marginBottom: '2rem' }}>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div
+          style={styles.scrollIndicator}
+          onClick={() => window.scrollTo({ top: viewportHeight * 0.6, behavior: 'smooth' })}
+        >
+          <span style={{ fontSize: '0.875rem', fontWeight: 'bold', letterSpacing: '0.1em' }}>SCROLL FOR CHAOS</span>
+          <ChevronDown
+            size={32}
+            style={{
+              animation: 'bounce 2s infinite',
+            }}
+          />
+        </div>
+      </section>
+
+      {/* Below-Hero Content - Stays visible as hero shrinks */}
+      <section style={{
+        position: 'relative',
+        zIndex: 10,
+        background: 'rgba(17, 24, 39, 0.95)',
+        paddingTop: '3rem',
+        paddingBottom: '3rem',
+      }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+          {/* Email Capture */}
+          <div style={{ position: 'relative', marginBottom: '2rem', textAlign: 'center' }}>
               <div style={styles.emailForm}>
                 <form onSubmit={handleEmailSubmit} style={{
                   ...styles.emailContainer,
@@ -640,10 +721,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                   transform: 'translateY(-75%)'
                 }} />
               )}
-            </div>
+          </div>
 
-            {/* Featured Game */}
-            {featuredGame && (
+          {/* Featured Game */}
+          {featuredGame && (
               <div 
                 style={{
                   ...styles.featuredCard,
@@ -859,7 +940,6 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 </div>
               </div>
             )}
-          </div>
         </div>
       </section>
 
