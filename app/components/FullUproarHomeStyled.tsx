@@ -552,9 +552,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               ...styles.heroTitle,
               fontSize: isMobile ? '2.5rem' : '4rem'
             }}>
-              <div style={styles.orangeText}>GAMES AND MODS</div>
-              <div style={styles.lightOrangeText}>SO CHAOTIC</div>
-              <div style={styles.gradientText}>FUGLY APPROVES</div>
+              <div style={styles.orangeText}>CHAOTIC TABLETOP GAMES</div>
+              <div style={styles.lightOrangeText}>FOR WEIRD GAME NIGHTS</div>
+              <div style={styles.gradientText}>FUGLY APPROVED ✓</div>
             </h1>
             
             <p style={{
@@ -562,9 +562,40 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               fontSize: isMobile ? '1rem' : '1.25rem',
               padding: isMobile ? '0 1rem' : '0'
             }}>
-              Turn ANY game night into a beautiful disaster with our chaos-inducing card decks.
-              <br /><span style={{ fontSize: isMobile ? '0.875rem' : '1rem', marginTop: '0.5rem', color: '#fdba74' }}>Warning: Friendships may not survive. Worth it.</span>
+              We make games that turn friendships into beautiful disasters. You're welcome.
             </p>
+
+            {/* Primary CTA */}
+            <a
+              href="/games"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                background: '#f97316',
+                color: '#111827',
+                padding: isMobile ? '1rem 2rem' : '1.25rem 3rem',
+                borderRadius: '50px',
+                fontWeight: 900,
+                fontSize: isMobile ? '1.1rem' : '1.5rem',
+                textDecoration: 'none',
+                boxShadow: '0 10px 30px rgba(249, 115, 22, 0.4)',
+                marginBottom: '2rem',
+                transition: 'all 0.3s',
+                textTransform: 'uppercase' as const,
+                letterSpacing: '0.05em'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 15px 40px rgba(249, 115, 22, 0.6)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.4)';
+              }}
+            >
+              Browse Our Games <ArrowRight size={isMobile ? 20 : 24} />
+            </a>
             
             {/* Email Capture */}
             <div style={{ position: 'relative', marginBottom: '2rem' }}>
