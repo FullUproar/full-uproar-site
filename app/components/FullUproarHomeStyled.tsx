@@ -107,12 +107,15 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     };
   }, []);
 
-  // Calculate hero shrink based on scroll
-  const maxScroll = 300; // Pixels of scroll before hero is fully shrunk
-  const scrollProgress = Math.min(scrollY / maxScroll, 1);
-  const heroScale = 1 - scrollProgress * 0.15; // Shrink to 85%
-  const heroOpacity = 1 - scrollProgress * 0.4; // Fade to 60%
-  const contentOpacity = scrollProgress > 0.1 ? 1 : 0; // Content fades in after scroll starts
+  // Calculate hero fade based on scroll - content fades as below-content scrolls up
+  const heroFadeStart = 100; // Start fading after 100px scroll
+  const heroFadeEnd = viewportHeight * 0.5; // Fully faded by half viewport scroll
+  const heroOpacity = scrollY < heroFadeStart
+    ? 1
+    : Math.max(1 - (scrollY - heroFadeStart) / (heroFadeEnd - heroFadeStart), 0);
+
+  // Scale content slightly as it fades for dramatic effect
+  const heroContentScale = 1 - Math.min(scrollY / heroFadeEnd, 1) * 0.1; // Shrink to 90%
 
   // Chaos phrases pool
   const chaosPhrases = [
@@ -397,9 +400,14 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       flexDirection: 'column' as const,
       justifyContent: 'center',
       alignItems: 'center',
-      transform: `scale(${heroScale})`,
+      // No transform on the section itself - it stays full size
+    },
+    heroContent: {
+      // This is what fades/scales as you scroll
       opacity: heroOpacity,
-      transition: 'transform 0.1s ease-out, opacity 0.1s ease-out',
+      transform: `scale(${heroContentScale})`,
+      transition: 'opacity 0.1s ease-out, transform 0.1s ease-out',
+      pointerEvents: heroOpacity < 0.3 ? 'none' as const : 'auto' as const,
     },
     heroContainer: {
       maxWidth: '80rem',
@@ -413,17 +421,18 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     },
     scrollIndicator: {
       position: 'absolute' as const,
-      bottom: '2rem',
+      bottom: isMobile ? '2rem' : '3rem',
       left: '50%',
       transform: 'translateX(-50%)',
       display: 'flex',
       flexDirection: 'column' as const,
       alignItems: 'center',
-      gap: '0.5rem',
-      color: '#fdba74',
-      opacity: scrollY > 50 ? 0 : 1,
+      gap: '0.75rem',
+      color: colors.chaosOrange,
+      opacity: scrollY > 80 ? 0 : 1,
       transition: 'opacity 0.3s ease',
       cursor: 'pointer',
+      textShadow: '0 0 20px rgba(255, 117, 0, 0.5)',
     },
     textCenter: {
       textAlign: 'center' as const
@@ -597,89 +606,104 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     <div style={styles.container}>
       <Navigation />
 
-      {/* Hero Section */}
+      {/* Hero Section - Full viewport welcome mat */}
       <section style={styles.heroSection}>
-        <div style={styles.heroContainer}>
-          <div style={styles.textCenter}>
-            <div style={{
-              ...styles.badge,
-              transform: `rotate(${phraseTransform.rotation}deg) scale(${phraseTransform.scale})`,
-              transition: 'none' // No transition to make it feel like it was always this way
-            }}>{chaosPhrase}</div>
-
-            <h1 style={{
-              ...styles.heroTitle,
-              fontSize: isMobile ? '2.5rem' : '4rem'
-            }}>
-              <div style={styles.orangeText}>CHAOTIC PARTY GAMES</div>
-              <div style={styles.lightOrangeText}>FOR WEIRD GAME NIGHTS</div>
-              <div style={styles.coralText}>FUGLY APPROVED ✓</div>
-            </h1>
-            
-            <p style={{
-              ...styles.heroSubtitle,
-              fontSize: isMobile ? '1rem' : '1.25rem',
-              padding: isMobile ? '0 1rem' : '0'
-            }}>
-              We make games that turn friendships into beautiful disasters. You're welcome.
-            </p>
-
-            {/* Primary CTA */}
-            <a
-              href="/games"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                background: '#FF7500',
-                color: '#111827',
-                padding: isMobile ? '1rem 2rem' : '1.25rem 3rem',
-                borderRadius: '50px',
-                fontWeight: 900,
+        {/* Hero content wrapper - this fades/scales on scroll */}
+        <div style={styles.heroContent}>
+          <div style={styles.heroContainer}>
+            <div style={styles.textCenter}>
+              <div style={{
+                ...styles.badge,
+                transform: `rotate(${phraseTransform.rotation}deg) scale(${phraseTransform.scale})`,
+                transition: 'none',
                 fontSize: isMobile ? '1.1rem' : '1.5rem',
-                textDecoration: 'none',
-                boxShadow: '0 10px 30px rgba(249, 115, 22, 0.4)',
-                marginBottom: '0',
-                transition: 'all 0.3s',
-                textTransform: 'uppercase' as const,
-                letterSpacing: '0.05em'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05)';
-                e.currentTarget.style.boxShadow = '0 15px 40px rgba(249, 115, 22, 0.6)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.4)';
-              }}
-            >
-              Browse Our Games <ArrowRight size={isMobile ? 20 : 24} />
-            </a>
+                padding: '0.5rem 1.25rem',
+              }}>{chaosPhrase}</div>
+
+              <h1 style={{
+                ...styles.heroTitle,
+                fontSize: isMobile ? '2.75rem' : '5rem',
+                marginBottom: '1.5rem',
+              }}>
+                <div style={styles.orangeText}>CHAOTIC PARTY GAMES</div>
+                <div style={styles.lightOrangeText}>FOR WEIRD GAME NIGHTS</div>
+                <div style={styles.coralText}>FUGLY APPROVED ✓</div>
+              </h1>
+
+              <p style={{
+                ...styles.heroSubtitle,
+                fontSize: isMobile ? '1.1rem' : '1.4rem',
+                padding: isMobile ? '0 1rem' : '0',
+                maxWidth: '38rem',
+              }}>
+                We make games that turn friendships into beautiful disasters. You're welcome.
+              </p>
+
+              {/* Primary CTA */}
+              <a
+                href="/games"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  background: '#FF7500',
+                  color: '#111827',
+                  padding: isMobile ? '1rem 2rem' : '1.25rem 3.5rem',
+                  borderRadius: '50px',
+                  fontWeight: 900,
+                  fontSize: isMobile ? '1.1rem' : '1.5rem',
+                  textDecoration: 'none',
+                  boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
+                  transition: 'all 0.3s',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(255, 117, 0, 0.7)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
+                }}
+              >
+                Browse Our Games <ArrowRight size={isMobile ? 24 : 28} />
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator - Bigger and Bolder */}
         <div
           style={styles.scrollIndicator}
-          onClick={() => window.scrollTo({ top: viewportHeight * 0.6, behavior: 'smooth' })}
+          onClick={() => window.scrollTo({ top: viewportHeight * 0.7, behavior: 'smooth' })}
         >
-          <span style={{ fontSize: '0.875rem', fontWeight: 'bold', letterSpacing: '0.1em' }}>SCROLL FOR CHAOS</span>
+          <span style={{
+            fontSize: isMobile ? '1rem' : '1.25rem',
+            fontWeight: 900,
+            letterSpacing: '0.15em',
+          }}>
+            SCROLL FOR CHAOS
+          </span>
           <ChevronDown
-            size={32}
+            size={isMobile ? 40 : 52}
+            strokeWidth={2.5}
             style={{
-              animation: 'bounce 2s infinite',
+              animation: 'bounce 1.5s infinite',
+              filter: 'drop-shadow(0 0 8px rgba(255, 117, 0, 0.5))',
             }}
           />
         </div>
       </section>
 
-      {/* Below-Hero Content - Stays visible as hero shrinks */}
+      {/* Below-Hero Content */}
       <section style={{
         position: 'relative',
         zIndex: 10,
-        background: 'rgba(17, 24, 39, 0.95)',
-        paddingTop: '3rem',
+        background: '#111827', // Solid background, no transparency
+        paddingTop: '4rem',
         paddingBottom: '3rem',
+        marginTop: '-2rem', // Slight overlap to prevent gap
       }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
           {/* Email Capture */}
