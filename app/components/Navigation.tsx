@@ -40,9 +40,9 @@ export default function Navigation() {
     nav: {
       position: 'sticky' as const,
       top: 0,
-      zIndex: 50,
+      zIndex: 100, // High z-index to stay above accelerated scroll content
       backdropFilter: 'blur(12px)',
-      background: 'rgba(17, 24, 39, 0.9)',
+      background: 'rgba(17, 24, 39, 0.95)', // Slightly more opaque
       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
       borderBottom: '4px solid #FF7500'
     },
@@ -225,13 +225,13 @@ export default function Navigation() {
           top: '3.5rem',
           left: 0,
           right: 0,
-          background: 'rgba(17, 24, 39, 0.95)',
+          background: 'rgba(17, 24, 39, 0.98)',
           borderBottom: '4px solid #FF7500',
           padding: '1rem',
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
-          zIndex: 50,
+          zIndex: 100, // Match nav z-index
           backdropFilter: 'blur(12px)'
         }}>
           {navLinks.map((link) => (
