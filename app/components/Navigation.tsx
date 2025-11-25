@@ -44,7 +44,7 @@ export default function Navigation() {
       backdropFilter: 'blur(12px)',
       background: 'rgba(17, 24, 39, 0.9)',
       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      borderBottom: '4px solid #f97316'
+      borderBottom: '4px solid #FF7500'
     },
     navContainer: {
       maxWidth: '80rem',
@@ -65,7 +65,7 @@ export default function Navigation() {
     logoText: {
       fontWeight: 900,
       fontSize: isMobile ? '1.25rem' : '1.5rem',
-      color: '#f97316'
+      color: '#FF7500'
     },
     logoSubtext: {
       fontSize: isMobile ? '0.625rem' : '0.75rem',
@@ -86,7 +86,7 @@ export default function Navigation() {
       borderBottom: '2px solid transparent'
     },
     activeNavLink: {
-      borderBottomColor: '#f97316'
+      borderBottomColor: '#FF7500'
     }
   };
 
@@ -122,7 +122,7 @@ export default function Navigation() {
                 <SignedOut>
                   <Link href="/sign-in">
                     <button style={{
-                      background: '#f97316',
+                      background: '#FF7500',
                       color: '#111827',
                       padding: '0.5rem 1rem',
                       borderRadius: '0.5rem',
@@ -158,7 +158,7 @@ export default function Navigation() {
                         accordionTriggerButton: "text-orange-400 hover:text-orange-300",
                       },
                       variables: {
-                        colorPrimary: "#f97316",
+                        colorPrimary: "#FF7500",
                         colorText: "#fdba74",
                         colorTextOnPrimaryBackground: "#111827",
                         colorTextSecondary: "#94a3b8",
@@ -208,7 +208,7 @@ export default function Navigation() {
                   border: 'none',
                   cursor: 'pointer',
                   padding: '0.5rem',
-                  color: '#f97316'
+                  color: '#FF7500'
                 }}
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -226,7 +226,7 @@ export default function Navigation() {
           left: 0,
           right: 0,
           background: 'rgba(17, 24, 39, 0.95)',
-          borderBottom: '4px solid #f97316',
+          borderBottom: '4px solid #FF7500',
           padding: '1rem',
           display: 'flex',
           flexDirection: 'column',
@@ -242,7 +242,7 @@ export default function Navigation() {
                 ...styles.navLink, 
                 display: 'block', 
                 padding: '0.5rem',
-                ...(pathname === link.href ? { color: '#f97316' } : {})
+                ...(pathname === link.href ? { color: '#FF7500' } : {})
               }} 
               onClick={() => setIsMenuOpen(false)}
             >
@@ -253,7 +253,7 @@ export default function Navigation() {
           <SignedOut>
             <Link href="/sign-in" style={{ width: '100%' }} onClick={() => setIsMenuOpen(false)}>
               <button style={{
-                background: '#f97316',
+                background: '#FF7500',
                 color: '#111827',
                 padding: '0.75rem',
                 borderRadius: '0.5rem',

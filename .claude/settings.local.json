@@ -68,7 +68,11 @@
       "Bash(timeout:*)",
       "Bash(start chrome:*)",
       "WebFetch(domain:clerk.com)",
-      "Bash(del \"C:\\Full Uproar\\full-uproar-site\\app\\api\\admin\\users\\[userId]\\route.ts\")"
+      "Bash(del \"C:\\Full Uproar\\full-uproar-site\\app\\api\\admin\\users\\[userId]\\route.ts\")",
+      "Bash(gh run view:*)",
+      "Bash(npm test:*)",
+      "Bash(xargs ls:*)",
+      "Bash(beautiful disasters. You 're welcome.\"\n- Added prominent \"Browse Our Games\" CTA button before email signup\n- Keeps brand personality while immediately communicating what we sell\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": []
   }

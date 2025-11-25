@@ -298,7 +298,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       backdropFilter: 'blur(12px)',
       background: 'rgba(17, 24, 39, 0.9)',
       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      borderBottom: '4px solid #f97316'
+      borderBottom: '4px solid #FF7500'
     },
     navContainer: {
       maxWidth: '80rem',
@@ -320,7 +320,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     logoCircle: {
       width: '3rem',
       height: '3rem',
-      background: '#f97316',
+      background: '#FF7500',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
@@ -332,7 +332,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     logoText: {
       fontWeight: 900,
       fontSize: '1.5rem',
-      color: '#f97316'
+      color: '#FF7500'
     },
     logoSubtext: {
       fontSize: '0.75rem',
@@ -374,7 +374,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     },
     badge: {
       display: 'inline-block',
-      background: !chaosEnabled ? '#10b981' : '#f97316',
+      background: !chaosEnabled ? '#10b981' : '#FF7500',
       color: !chaosEnabled ? '#fff' : '#111827',
       padding: '0.25rem 0.75rem',
       borderRadius: '50px',
@@ -391,13 +391,13 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       lineHeight: 1.1
     },
     orangeText: {
-      color: '#f97316'
+      color: '#FF7500'
     },
     lightOrangeText: {
       color: '#fdba74'
     },
     gradientText: {
-      background: 'linear-gradient(to right, #ef4444, #f97316)',
+      background: 'linear-gradient(to right, #ef4444, #FF7500)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
@@ -421,7 +421,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       padding: '0.5rem',
       display: 'flex',
       alignItems: 'center',
-      border: '4px solid #f97316'
+      border: '4px solid #FF7500'
     },
     emailInput: {
       flex: 1,
@@ -433,7 +433,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       border: 'none'
     },
     emailButton: {
-      background: '#f97316',
+      background: '#FF7500',
       color: '#111827',
       padding: '0.5rem 1.5rem',
       borderRadius: '50px',
@@ -453,7 +453,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       padding: '2rem',
       maxWidth: '64rem',
       margin: '0 auto',
-      border: '4px solid #f97316',
+      border: '4px solid #FF7500',
       transform: `rotate(${cardRotation}deg)`,
       transition: 'transform 0.3s',
       animation: isTransitioning ? 'chaosShake 0.3s ease-in-out' : 'none'
@@ -466,7 +466,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       fontSize: '3rem',
       fontWeight: 900,
       marginBottom: '1rem',
-      color: '#f97316',
+      color: '#FF7500',
       textAlign: 'center' as const
     },
     sectionSubtitle: {
@@ -502,7 +502,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      color: '#f97316',
+      color: '#FF7500',
       fontSize: '2rem',
       fontWeight: 'bold'
     },
@@ -520,10 +520,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     gamePrice: {
       fontSize: '1.875rem',
       fontWeight: 900,
-      color: '#f97316'
+      color: '#FF7500'
     },
     buyButton: {
-      background: '#f97316',
+      background: '#FF7500',
       color: '#111827',
       padding: '0.75rem 1.5rem',
       borderRadius: '50px',
@@ -572,7 +572,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.75rem',
-                background: '#f97316',
+                background: '#FF7500',
                 color: '#111827',
                 padding: isMobile ? '1rem 2rem' : '1.25rem 3rem',
                 borderRadius: '50px',
@@ -697,19 +697,19 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     
                     <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
                       <div style={{ textAlign: 'center' }}>
-                        <Users style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
+                        <Users style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#FF7500' }} />
                         <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{featuredGame.players}</span>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <Calendar style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
+                        <Calendar style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#FF7500' }} />
                         <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{featuredGame.timeToPlay}</span>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <Skull style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
+                        <Skull style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#FF7500' }} />
                         <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{featuredGame.ageRating}</span>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <Dices style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#f97316' }} />
+                        <Dices style={{ height: '1.5rem', width: '1.5rem', margin: '0 auto 0.25rem auto', color: '#FF7500' }} />
                         <span style={{ fontWeight: 'bold', color: '#fde68a' }}>{(featuredGame as any).category?.toUpperCase() || 'GAME'}</span>
                       </div>
                     </div>
@@ -719,7 +719,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                       <a 
                         href={`/games/${featuredGame.slug || featuredGame.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                         style={{
-                          background: '#f97316',
+                          background: '#FF7500',
                           color: '#111827',
                           padding: '1rem 2rem',
                           borderRadius: '50px',
@@ -750,7 +750,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#f97316',
+                      color: '#FF7500',
                       fontSize: '4rem',
                       fontWeight: 'bold',
                       overflow: 'hidden'
@@ -793,7 +793,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                   marginTop: '2rem',
                   padding: '1.5rem',
                   background: 'rgba(249, 115, 22, 0.1)',
-                  borderLeft: '4px solid #f97316',
+                  borderLeft: '4px solid #FF7500',
                   borderRadius: '0.5rem'
                 }}>
                   <p style={{
@@ -822,7 +822,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                           height: '0.75rem',
                           borderRadius: '50px',
                           border: 'none',
-                          background: index === activeGame ? '#f97316' : '#6b7280',
+                          background: index === activeGame ? '#FF7500' : '#6b7280',
                           cursor: 'pointer',
                           transition: 'all 0.3s'
                         }}
@@ -867,7 +867,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           
           <div style={styles.gameGrid}>
             {games.length === 0 && (
-              <div style={{ padding: '2rem', textAlign: 'center', color: '#f97316', fontSize: '1.5rem' }}>
+              <div style={{ padding: '2rem', textAlign: 'center', color: '#FF7500', fontSize: '1.5rem' }}>
                 No featured games found!
               </div>
             )}
@@ -934,7 +934,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     position: 'absolute',
                     top: '-0.75rem',
                     right: '-0.75rem',
-                    background: 'linear-gradient(to right, #f97316, #ef4444)',
+                    background: 'linear-gradient(to right, #FF7500, #ef4444)',
                     color: 'white',
                     fontSize: '0.75rem',
                     padding: '0.75rem',
