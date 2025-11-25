@@ -117,6 +117,11 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   // Scale content slightly as it fades for dramatic effect
   const heroContentScale = 1 - Math.min(scrollY / heroFadeEnd, 1) * 0.1; // Shrink to 90%
 
+  // Below-hero content scrolls up faster - as if the shrinking hero is pulling it up
+  // This creates the effect of content "catching up" to fill the shrinking hero space
+  const scrollProgress = Math.min(scrollY / heroFadeEnd, 1);
+  const belowHeroLift = scrollProgress * (viewportHeight * 0.4); // Extra lift = 40% of viewport as hero fades
+
   // Chaos phrases pool
   const chaosPhrases = [
     'FRESHLY UNHINGED',
@@ -696,15 +701,19 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
         </div>
       </section>
 
-      {/* Below-Hero Content */}
-      <section style={{
+      {/* All Below-Hero Content - scrolls up faster as hero shrinks */}
+      <div style={{
         position: 'relative',
         zIndex: 10,
-        background: '#111827', // Solid background, no transparency
-        paddingTop: '4rem',
-        paddingBottom: '3rem',
-        marginTop: '-2rem', // Slight overlap to prevent gap
+        transform: `translateY(-${belowHeroLift}px)`, // Accelerated scroll - pulled up by shrinking hero
+        transition: 'transform 0.05s ease-out',
       }}>
+        {/* Featured Section */}
+        <section style={{
+          background: '#111827', // Solid background
+          paddingTop: '4rem',
+          paddingBottom: '3rem',
+        }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
           {/* Email Capture */}
           <div style={{ position: 'relative', marginBottom: '2rem', textAlign: 'center' }}>
@@ -1134,7 +1143,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           </div>
         </section>
       )}
-      
+      </div>{/* End of accelerated scroll wrapper */}
+
       {/* Deployment info for logged-in users */}
       <DeploymentInfo isVisible={!!user} />
 
