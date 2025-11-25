@@ -2,12 +2,33 @@
  * Full Uproar Brand Colors
  *
  * Central color definitions for consistent branding across the site.
- * Primary orange is Pantone 2018C (sRGB equivalent).
+ * Official Pantone colors with sRGB equivalents provided by Pantone.
  */
 
 export const colors = {
-  // Primary Brand Colors
-  primary: '#FF7500',           // Pantone 2018C - Main orange
+  // ============================================
+  // OFFICIAL PANTONE BRAND COLORS
+  // ============================================
+
+  // Pantone 2018 C — Primary Chaos Orange
+  // RGB: 255, 117, 0 | LAB: 68.40, 54.35, 88.71 | CMYK: 0, 54, 100, 0
+  // Role: Primary brand color, CTA color, core identity highlight
+  chaosOrange: '#FF7500',
+
+  // Pantone 2006 C — Golden Chaos
+  // RGB: 235, 188, 78 | LAB: 79.26, 9.66, 60.43 | CMYK: 0, 20, 75, 0
+  // Role: Secondary accent, illustration highlight tone, warm contrast
+  goldenChaos: '#EBBC4E',
+
+  // Pantone 7417 C — Warm Chaos Coral
+  // RGB: 224, 79, 57 | LAB: 55.48, 59.93, 45.74 | CMYK: 0, 65, 75, 0
+  // Role: Tertiary accent, soft UI highlights, comic backgrounds
+  chaosCoral: '#E04F39',
+
+  // ============================================
+  // LEGACY/UTILITY COLORS (aliased for compatibility)
+  // ============================================
+  primary: '#FF7500',           // Alias for chaosOrange
   primaryLight: '#fdba74',      // Light orange/peach for accents
   primaryDark: '#ea580c',       // Darker orange for hover states
 

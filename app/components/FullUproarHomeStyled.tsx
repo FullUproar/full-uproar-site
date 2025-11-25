@@ -392,13 +392,16 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       lineHeight: 1.1
     },
     orangeText: {
-      color: '#FF7500'
+      color: colors.chaosOrange  // Pantone 2018C - #FF7500
     },
     lightOrangeText: {
-      color: '#fdba74'
+      color: colors.goldenChaos  // Pantone 2006C - #EBBC4E
+    },
+    coralText: {
+      color: colors.chaosCoral   // Pantone 7417C - #E04F39
     },
     gradientText: {
-      background: 'linear-gradient(to right, #ef4444, #FF7500)',
+      background: `linear-gradient(to right, ${colors.chaosCoral}, ${colors.chaosOrange})`,
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
@@ -555,7 +558,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             }}>
               <div style={styles.orangeText}>CHAOTIC PARTY GAMES</div>
               <div style={styles.lightOrangeText}>FOR WEIRD GAME NIGHTS</div>
-              <div style={styles.gradientText}>FUGLY APPROVED ✓</div>
+              <div style={styles.coralText}>FUGLY APPROVED ✓</div>
             </h1>
             
             <p style={{
