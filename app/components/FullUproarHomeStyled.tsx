@@ -552,7 +552,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               ...styles.heroTitle,
               fontSize: isMobile ? '2.5rem' : '4rem'
             }}>
-              <div style={styles.orangeText}>CHAOTIC TABLETOP GAMES</div>
+              <div style={styles.orangeText}>CHAOTIC PARTY GAMES</div>
               <div style={styles.lightOrangeText}>FOR WEIRD GAME NIGHTS</div>
               <div style={styles.gradientText}>FUGLY APPROVED ✓</div>
             </h1>
