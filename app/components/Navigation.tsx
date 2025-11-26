@@ -27,6 +27,7 @@ export default function Navigation() {
   }, []);
 
   const navLinks = [
+    { href: '/about', label: 'ABOUT' },
     { href: '/shop', label: 'SHOP' },      // Combined Games + Merch
     { href: '/forum', label: 'FORUM' },
     { href: '/fugly', label: 'FUGLY' },    // Combined Cult + Chaos → "The Cult of Fugly" + "Fuglyverse"
