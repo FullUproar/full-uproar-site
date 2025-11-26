@@ -400,7 +400,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     heroSection: {
       position: 'relative' as const,
       overflow: 'hidden',
-      minHeight: 'calc(100vh - 4rem)', // Full viewport minus nav
+      minHeight: '100vh', // Full viewport
+      paddingTop: '4rem', // Space for fixed nav
       display: 'flex',
       flexDirection: 'column' as const,
       justifyContent: 'center',

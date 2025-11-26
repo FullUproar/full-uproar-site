@@ -38,8 +38,10 @@ export default function Navigation() {
 
   const styles = {
     nav: {
-      position: 'sticky' as const,
+      position: 'fixed' as const,
       top: 0,
+      left: 0,
+      right: 0,
       zIndex: 100, // High z-index to stay above accelerated scroll content
       backdropFilter: 'blur(12px)',
       background: 'rgba(17, 24, 39, 0.95)', // Slightly more opaque
