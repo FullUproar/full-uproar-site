@@ -27,13 +27,9 @@ export default function Navigation() {
   }, []);
 
   const navLinks = [
-    { href: '/', label: 'HOME' },
-    { href: '/games', label: 'GAMES' },
-    { href: '/merch', label: 'MERCH' },
-    // { href: '/comics', label: 'COMICS' }, // Deferred for launch
+    { href: '/shop', label: 'SHOP' },      // Combined Games + Merch
     { href: '/forum', label: 'FORUM' },
-    { href: '/chaos', label: 'CHAOS' },
-    { href: '/cult', label: 'CULT' },
+    { href: '/fugly', label: 'FUGLY' },    // Combined Cult + Chaos → "The Cult of Fugly" + "Fuglyverse"
   ];
 
   const styles = {
