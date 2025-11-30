@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown, Heart, ShieldCheck, Truck, X, Sparkles, MessageCircle, Trophy, Image } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown, Heart, ShieldCheck, Truck, X, Sparkles, MessageCircle, Trophy } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import { useChaos } from '@/lib/chaos-context';
@@ -86,6 +86,17 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(800);
+  // Icon lookup function to avoid storing components in arrays (causes build issues)
+  const getChaosFeedIcon = (iconName: string, size: number, color: string) => {
+    switch (iconName) {
+      case 'messageCircle': return <MessageCircle size={size} color={color} />;
+      case 'trophy': return <Trophy size={size} color={color} />;
+      case 'sparkles': return <Sparkles size={size} color={color} />;
+      case 'zap': return <Zap size={size} color={color} />;
+      default: return <Sparkles size={size} color={color} />;
+    }
+  };
+
   const [selectedFeedItem, setSelectedFeedItem] = useState<{
     id: number;
     type: 'quote' | 'challenge' | 'lore';
@@ -93,19 +104,11 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     content: string;
     subtitle: string;
     color: string;
-    icon: any;
+    iconName: string;
   } | null>(null);
 
   // Chaos Feed - Static placeholder content
-  const chaosFeedItems: Array<{
-    id: number;
-    type: 'quote' | 'challenge' | 'lore';
-    title: string;
-    content: string;
-    subtitle: string;
-    color: string;
-    icon: any;
-  }> = [
+  const chaosFeedItems = [
     {
       id: 1,
       type: 'quote' as const,
@@ -113,7 +116,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       content: "\"If no one flips the table, did you even play a game?\"",
       subtitle: "— Fugly, probably",
       color: '#FF7500',
-      icon: MessageCircle,
+      iconName: 'messageCircle',
     },
     {
       id: 2,
@@ -122,7 +125,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       content: "Whoever can hold their breath longest gets +2 points. No, we don't make the rules. (We do.)",
       subtitle: "Use this in your next game",
       color: '#fbbf24',
-      icon: Trophy,
+      iconName: 'trophy',
     },
     {
       id: 3,
@@ -131,7 +134,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       content: "Legend says Fugly was born when a perfectly balanced game met a drunk rule-reader at 2 AM.",
       subtitle: "Origin Story #1",
       color: '#ef4444',
-      icon: Sparkles,
+      iconName: 'sparkles',
     },
     {
       id: 4,
@@ -140,7 +143,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       content: "\"That's not in the rules.\" \"The rules are a suggestion.\" \"YOU'RE a suggestion.\"",
       subtitle: "Actual conversation",
       color: '#a855f7',
-      icon: MessageCircle,
+      iconName: 'messageCircle',
     },
     {
       id: 5,
@@ -149,7 +152,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       content: "Next person to say \"that's not fair\" has to narrate their moves in a British accent for 3 turns.",
       subtitle: "Optional house rule",
       color: '#10b981',
-      icon: Zap,
+      iconName: 'zap',
     },
     {
       id: 6,
@@ -158,7 +161,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       content: "The average Full Uproar game night generates 47 accusations of cheating. All unproven. All deserved.",
       subtitle: "Totally real statistic",
       color: '#FF7500',
-      icon: Sparkles,
+      iconName: 'sparkles',
     },
   ];
 
@@ -933,9 +936,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               msOverflowStyle: 'none',
               scrollbarWidth: 'thin',
             }}>
-              {chaosFeedItems.map((item, index) => {
-                const IconComponent = item.icon;
-                return (
+              {chaosFeedItems.map((item, index) => (
                   <div
                     key={item.id}
                     onClick={() => setSelectedFeedItem(item)}
@@ -977,7 +978,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
-                        <IconComponent size={16} color={item.color} />
+                        {getChaosFeedIcon(item.iconName, 16, item.color)}
                       </div>
                       <span style={{
                         fontSize: '0.75rem',
@@ -1012,8 +1013,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                       {item.subtitle}
                     </p>
                   </div>
-                );
-              })}
+              ))}
             </div>
           </div>
         </section>
@@ -1678,10 +1678,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-                {(() => {
-                  const IconComp = selectedFeedItem.icon;
-                  return <IconComp size={24} color={selectedFeedItem.color} />;
-                })()}
+                {getChaosFeedIcon(selectedFeedItem.iconName, 24, selectedFeedItem.color)}
               </div>
               <div>
                 <h3 style={{
