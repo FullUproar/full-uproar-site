@@ -1,19 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ChaosWarningGate from './ChaosWarningGate';
+// import ChaosWarningGate from './ChaosWarningGate'; // Temporarily disabled
 import FullUproarHomeStyled from './FullUproarHomeStyled';
 
+// TEMP: Set to false to re-enable the chaos/passcode gate
+const BYPASS_GATE = true;
+
 export default function HomeWithGate() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(BYPASS_GATE);
   const [games, setGames] = useState<any[]>([]);
   const [comics, setComics] = useState<any[]>([]);
   const [news, setNews] = useState<any[]>([]);
   const [merch, setMerch] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!BYPASS_GATE);
 
-  // Check if already authenticated on load
+  // Check if already authenticated on load (skipped if BYPASS_GATE is true)
   useEffect(() => {
+    if (BYPASS_GATE) {
+      setLoading(false);
+      return;
+    }
     const authStatus = sessionStorage.getItem('fugly-auth');
     if (authStatus === 'true') {
       setIsAuthenticated(true);
@@ -92,9 +99,10 @@ export default function HomeWithGate() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <ChaosWarningGate onProceed={handleCorrectPassword} />;
-  }
+  // TEMP: Gate bypassed - uncomment below to re-enable
+  // if (!isAuthenticated) {
+  //   return <ChaosWarningGate onProceed={handleCorrectPassword} />;
+  // }
 
   return <FullUproarHomeStyled games={games} comics={comics} news={news} merch={merch} />;
 }
