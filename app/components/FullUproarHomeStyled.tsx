@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown, Heart, ShieldCheck, Truck } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown, Heart, ShieldCheck, Truck, X, Sparkles, MessageCircle, Trophy, Image } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import { useChaos } from '@/lib/chaos-context';
@@ -86,6 +86,81 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(800);
+  const [selectedFeedItem, setSelectedFeedItem] = useState<{
+    id: number;
+    type: 'quote' | 'challenge' | 'lore';
+    title: string;
+    content: string;
+    subtitle: string;
+    color: string;
+    icon: any;
+  } | null>(null);
+
+  // Chaos Feed - Static placeholder content
+  const chaosFeedItems: Array<{
+    id: number;
+    type: 'quote' | 'challenge' | 'lore';
+    title: string;
+    content: string;
+    subtitle: string;
+    color: string;
+    icon: any;
+  }> = [
+    {
+      id: 1,
+      type: 'quote' as const,
+      title: "Fugly's Wisdom",
+      content: "\"If no one flips the table, did you even play a game?\"",
+      subtitle: "— Fugly, probably",
+      color: '#FF7500',
+      icon: MessageCircle,
+    },
+    {
+      id: 2,
+      type: 'challenge' as const,
+      title: "Tie-Breaker of the Day",
+      content: "Whoever can hold their breath longest gets +2 points. No, we don't make the rules. (We do.)",
+      subtitle: "Use this in your next game",
+      color: '#fbbf24',
+      icon: Trophy,
+    },
+    {
+      id: 3,
+      type: 'lore' as const,
+      title: "Fuglyverse Lore",
+      content: "Legend says Fugly was born when a perfectly balanced game met a drunk rule-reader at 2 AM.",
+      subtitle: "Origin Story #1",
+      color: '#ef4444',
+      icon: Sparkles,
+    },
+    {
+      id: 4,
+      type: 'quote' as const,
+      title: "Overheard at Game Night",
+      content: "\"That's not in the rules.\" \"The rules are a suggestion.\" \"YOU'RE a suggestion.\"",
+      subtitle: "Actual conversation",
+      color: '#a855f7',
+      icon: MessageCircle,
+    },
+    {
+      id: 5,
+      type: 'challenge' as const,
+      title: "Chaos Challenge",
+      content: "Next person to say \"that's not fair\" has to narrate their moves in a British accent for 3 turns.",
+      subtitle: "Optional house rule",
+      color: '#10b981',
+      icon: Zap,
+    },
+    {
+      id: 6,
+      type: 'lore' as const,
+      title: "Did You Know?",
+      content: "The average Full Uproar game night generates 47 accusations of cheating. All unproven. All deserved.",
+      subtitle: "Totally real statistic",
+      color: '#FF7500',
+      icon: Sparkles,
+    },
+  ];
 
   // Scroll tracking for hero shrink effect
   useEffect(() => {
@@ -821,6 +896,128 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           </div>
         </div>
 
+        {/* Chaos Feed - Entertainment Strip */}
+        <section style={{
+          background: '#111827',
+          padding: isMobile ? '2rem 0' : '2.5rem 0',
+          borderBottom: '1px solid #1f2937',
+        }}>
+          <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{
+                fontSize: isMobile ? '1.5rem' : '2rem',
+                fontWeight: 900,
+                color: '#FF7500',
+                marginBottom: '0.25rem',
+              }}>
+                CHAOS FEED
+              </h2>
+              <p style={{
+                fontSize: isMobile ? '0.9rem' : '1rem',
+                color: '#9ca3af',
+                fontWeight: 500,
+              }}>
+                Fresh nonsense from the Fuglyverse.
+              </p>
+            </div>
+
+            {/* Horizontal Scrolling Feed */}
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              overflowX: 'auto',
+              paddingBottom: '0.5rem',
+              scrollSnapType: 'x mandatory',
+              WebkitOverflowScrolling: 'touch',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'thin',
+            }}>
+              {chaosFeedItems.map((item, index) => {
+                const IconComponent = item.icon;
+                return (
+                  <div
+                    key={item.id}
+                    onClick={() => setSelectedFeedItem(item)}
+                    style={{
+                      flex: '0 0 auto',
+                      width: isMobile ? '280px' : '320px',
+                      background: 'rgba(31, 41, 55, 0.8)',
+                      border: `2px solid ${item.color}33`,
+                      borderRadius: '1rem',
+                      padding: '1.25rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      scrollSnapAlign: 'start',
+                      transform: `rotate(${index % 2 === 0 ? '-0.5' : '0.5'}deg)`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px) rotate(0deg)';
+                      e.currentTarget.style.borderColor = item.color;
+                      e.currentTarget.style.boxShadow = `0 8px 24px ${item.color}20`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = `rotate(${index % 2 === 0 ? '-0.5' : '0.5'}deg)`;
+                      e.currentTarget.style.borderColor = `${item.color}33`;
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    {/* Card Header */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      marginBottom: '0.75rem',
+                    }}>
+                      <div style={{
+                        background: `${item.color}20`,
+                        borderRadius: '0.5rem',
+                        padding: '0.375rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                        <IconComponent size={16} color={item.color} />
+                      </div>
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        color: item.color,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                      }}>
+                        {item.title}
+                      </span>
+                    </div>
+
+                    {/* Content */}
+                    <p style={{
+                      color: '#fde68a',
+                      fontSize: '0.95rem',
+                      lineHeight: 1.5,
+                      marginBottom: '0.75rem',
+                      fontWeight: 500,
+                      minHeight: '3.5rem',
+                    }}>
+                      {item.content}
+                    </p>
+
+                    {/* Subtitle */}
+                    <p style={{
+                      color: '#6b7280',
+                      fontSize: '0.75rem',
+                      fontStyle: 'italic',
+                      margin: 0,
+                    }}>
+                      {item.subtitle}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* Featured Section */}
         <section style={{
           background: '#111827', // Solid background
@@ -1414,6 +1611,123 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
         </section>
       )}
       </div>{/* End of accelerated scroll wrapper */}
+
+      {/* Chaos Feed Modal */}
+      {selectedFeedItem && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.9)',
+            zIndex: 200,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+          }}
+          onClick={() => setSelectedFeedItem(null)}
+        >
+          <div
+            style={{
+              background: '#1f2937',
+              border: `3px solid ${selectedFeedItem.color}`,
+              borderRadius: '1.5rem',
+              padding: isMobile ? '1.5rem' : '2.5rem',
+              maxWidth: '500px',
+              width: '100%',
+              position: 'relative',
+              boxShadow: `0 20px 60px ${selectedFeedItem.color}30`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedFeedItem(null)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: 'none',
+                borderRadius: '50%',
+                padding: '0.5rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <X size={20} color="#9ca3af" />
+            </button>
+
+            {/* Modal Header */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              marginBottom: '1.5rem',
+            }}>
+              <div style={{
+                background: `${selectedFeedItem.color}20`,
+                borderRadius: '0.75rem',
+                padding: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                {(() => {
+                  const IconComp = selectedFeedItem.icon;
+                  return <IconComp size={24} color={selectedFeedItem.color} />;
+                })()}
+              </div>
+              <div>
+                <h3 style={{
+                  color: selectedFeedItem.color,
+                  fontWeight: 900,
+                  fontSize: '1.25rem',
+                  margin: 0,
+                }}>
+                  {selectedFeedItem.title}
+                </h3>
+                <span style={{
+                  fontSize: '0.75rem',
+                  color: '#6b7280',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                }}>
+                  {selectedFeedItem.type}
+                </span>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <p style={{
+              color: '#fde68a',
+              fontSize: isMobile ? '1.125rem' : '1.35rem',
+              lineHeight: 1.6,
+              marginBottom: '1.5rem',
+              fontWeight: 500,
+            }}>
+              {selectedFeedItem.content}
+            </p>
+
+            {/* Modal Subtitle */}
+            <p style={{
+              color: '#9ca3af',
+              fontSize: '0.9rem',
+              fontStyle: 'italic',
+              margin: 0,
+              paddingTop: '1rem',
+              borderTop: '1px solid #374151',
+            }}>
+              {selectedFeedItem.subtitle}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Deployment info for logged-in users */}
       <DeploymentInfo isVisible={!!user} />
