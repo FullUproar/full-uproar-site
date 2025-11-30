@@ -19,6 +19,7 @@ import MetaPixel from './components/MetaPixel'
 import UniversalTracking from './components/UniversalTracking'
 import CookieConsent from './components/CookieConsent'
 import ErrorBoundary from './components/ErrorBoundary'
+import { OrganizationSchema, WebSiteSchema } from './components/StructuredData'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -107,7 +108,11 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-      <body
+        <head>
+          <OrganizationSchema />
+          <WebSiteSchema />
+        </head>
+        <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           style={{ margin: 0, padding: 0, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
         >
