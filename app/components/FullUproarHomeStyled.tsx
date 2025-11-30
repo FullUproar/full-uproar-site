@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown, Heart, ShieldCheck, Truck } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import { useChaos } from '@/lib/chaos-context';
@@ -754,10 +754,77 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
         transform: `translateY(-${belowHeroLift}px)`, // Accelerated scroll - pulled up by shrinking hero
         transition: 'transform 0.05s ease-out',
       }}>
+        {/* Legitimacy Strip - Subtle trust anchors */}
+        <div style={{
+          background: '#0a0a0a',
+          borderTop: '1px solid #1f2937',
+          borderBottom: '1px solid #1f2937',
+          padding: isMobile ? '1rem 0.5rem' : '1.25rem 1rem',
+        }}>
+          <div style={{
+            maxWidth: '64rem',
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: isMobile ? '0.875rem' : '3rem',
+          }}>
+            {/* Item 1 */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: '#9ca3af',
+              fontSize: isMobile ? '0.8rem' : '0.875rem',
+              fontWeight: 500,
+            }}>
+              <Heart size={isMobile ? 14 : 16} style={{ opacity: 0.7 }} />
+              <span>Built by lifelong game-night nerds</span>
+            </div>
+
+            {/* Separator - desktop only */}
+            {!isMobile && (
+              <div style={{ width: '1px', height: '1rem', background: '#374151' }} />
+            )}
+
+            {/* Item 2 */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: '#9ca3af',
+              fontSize: isMobile ? '0.8rem' : '0.875rem',
+              fontWeight: 500,
+            }}>
+              <ShieldCheck size={isMobile ? 14 : 16} style={{ opacity: 0.7 }} />
+              <span>Secure checkout + hassle-free returns</span>
+            </div>
+
+            {/* Separator - desktop only */}
+            {!isMobile && (
+              <div style={{ width: '1px', height: '1rem', background: '#374151' }} />
+            )}
+
+            {/* Item 3 */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: '#9ca3af',
+              fontSize: isMobile ? '0.8rem' : '0.875rem',
+              fontWeight: 500,
+            }}>
+              <Truck size={isMobile ? 14 : 16} style={{ opacity: 0.7 }} />
+              <span>Fast shipping from the Midwest</span>
+            </div>
+          </div>
+        </div>
+
         {/* Featured Section */}
         <section style={{
           background: '#111827', // Solid background
-          paddingTop: '4rem',
+          paddingTop: '3rem',
           paddingBottom: '3rem',
         }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
