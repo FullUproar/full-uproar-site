@@ -628,53 +628,98 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
 
               <h1 style={{
                 ...styles.heroTitle,
-                fontSize: isMobile ? '2.75rem' : '5rem',
+                fontSize: isMobile ? '2.25rem' : '4rem',
                 marginBottom: '1.5rem',
+                lineHeight: 1.15,
               }}>
-                <div style={styles.orangeText}>CHAOTIC PARTY GAMES</div>
-                <div style={styles.lightOrangeText}>FOR WEIRD GAME NIGHTS</div>
-                <div style={styles.coralText}>FUGLY APPROVED ✓</div>
+                <div style={styles.orangeText}>Chaotic party games</div>
+                <div style={styles.lightOrangeText}>that hack your game night.</div>
               </h1>
 
               <p style={{
                 ...styles.heroSubtitle,
-                fontSize: isMobile ? '1.1rem' : '1.4rem',
-                padding: isMobile ? '0 1rem' : '0',
-                maxWidth: '38rem',
+                fontSize: isMobile ? '1.05rem' : '1.35rem',
+                padding: isMobile ? '0 0.5rem' : '0',
+                maxWidth: '42rem',
+                lineHeight: 1.6,
               }}>
-                We make games that turn friendships into beautiful disasters. You're welcome.
+                We make hilarious standalone games and game-mod decks that plug into the games you already own.
               </p>
 
-              {/* Primary CTA */}
-              <a
-                href="/games"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  background: '#FF7500',
-                  color: '#111827',
-                  padding: isMobile ? '1rem 2rem' : '1.25rem 3.5rem',
-                  borderRadius: '50px',
-                  fontWeight: 900,
-                  fontSize: isMobile ? '1.1rem' : '1.5rem',
-                  textDecoration: 'none',
-                  boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
-                  transition: 'all 0.3s',
-                  textTransform: 'uppercase' as const,
-                  letterSpacing: '0.05em'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(255, 117, 0, 0.7)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
-                }}
-              >
-                Browse Our Games <ArrowRight size={isMobile ? 24 : 28} />
-              </a>
+              {/* CTA Buttons */}
+              <div style={{
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                alignItems: 'center',
+                gap: isMobile ? '1rem' : '1.25rem',
+              }}>
+                {/* Primary CTA */}
+                <a
+                  href="/shop"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    background: '#FF7500',
+                    color: '#111827',
+                    padding: isMobile ? '1rem 2rem' : '1.25rem 2.5rem',
+                    borderRadius: '50px',
+                    fontWeight: 900,
+                    fontSize: isMobile ? '1rem' : '1.25rem',
+                    textDecoration: 'none',
+                    boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
+                    transition: 'all 0.3s',
+                    textTransform: 'uppercase' as const,
+                    letterSpacing: '0.03em'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.style.boxShadow = '0 15px 50px rgba(255, 117, 0, 0.7)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
+                  }}
+                >
+                  Browse Game-Mod Decks <ArrowRight size={isMobile ? 20 : 24} />
+                </a>
+
+                {/* Secondary CTA - Ghost Button */}
+                <button
+                  onClick={() => {
+                    const element = document.getElementById('how-it-works');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    background: 'transparent',
+                    color: '#fde68a',
+                    padding: isMobile ? '0.875rem 1.75rem' : '1.125rem 2rem',
+                    borderRadius: '50px',
+                    fontWeight: 700,
+                    fontSize: isMobile ? '1rem' : '1.125rem',
+                    border: '2px solid #fde68a',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(253, 230, 138, 0.1)';
+                    e.currentTarget.style.borderColor = '#FF7500';
+                    e.currentTarget.style.color = '#FF7500';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderColor = '#fde68a';
+                    e.currentTarget.style.color = '#fde68a';
+                  }}
+                >
+                  How It Works
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -974,6 +1019,163 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 </div>
               </div>
             )}
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" style={{
+        background: 'linear-gradient(to bottom, #1f2937, #111827)',
+        padding: isMobile ? '3rem 1rem' : '4rem 1rem',
+      }}>
+        <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: isMobile ? '2rem' : '2.5rem',
+            fontWeight: 900,
+            color: '#FF7500',
+            textAlign: 'center',
+            marginBottom: '0.75rem'
+          }}>
+            HOW GAME-MOD DECKS WORK
+          </h2>
+          <p style={{
+            fontSize: isMobile ? '1rem' : '1.125rem',
+            color: '#fdba74',
+            textAlign: 'center',
+            marginBottom: '2.5rem',
+            fontWeight: 600
+          }}>
+            Three steps to hack any game night
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gap: isMobile ? '1.5rem' : '2rem',
+          }}>
+            {/* Step 1 */}
+            <div style={{
+              background: 'rgba(255, 117, 0, 0.1)',
+              border: '3px solid #FF7500',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              textAlign: 'center',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-1rem',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: '#FF7500',
+                color: '#111827',
+                width: '2.5rem',
+                height: '2.5rem',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: '1.25rem'
+              }}>1</div>
+              <div style={{ fontSize: '3rem', marginBottom: '0.75rem', marginTop: '0.5rem' }}>🎲</div>
+              <h3 style={{ color: '#fde68a', fontWeight: 900, fontSize: '1.25rem', marginBottom: '0.5rem' }}>
+                Pick Any Game
+              </h3>
+              <p style={{ color: '#e2e8f0', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Grab a game you already own—board game, card game, party game, whatever.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div style={{
+              background: 'rgba(251, 191, 36, 0.1)',
+              border: '3px solid #fbbf24',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              textAlign: 'center',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-1rem',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: '#fbbf24',
+                color: '#111827',
+                width: '2.5rem',
+                height: '2.5rem',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: '1.25rem'
+              }}>2</div>
+              <div style={{ fontSize: '3rem', marginBottom: '0.75rem', marginTop: '0.5rem' }}>🃏</div>
+              <h3 style={{ color: '#fde68a', fontWeight: 900, fontSize: '1.25rem', marginBottom: '0.5rem' }}>
+                Add a Mod Deck
+              </h3>
+              <p style={{ color: '#e2e8f0', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Draw mod cards that introduce wild new rules, challenges, and chaos triggers.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div style={{
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '3px solid #ef4444',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              textAlign: 'center',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-1rem',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: '#ef4444',
+                color: '#fff',
+                width: '2.5rem',
+                height: '2.5rem',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: '1.25rem'
+              }}>3</div>
+              <div style={{ fontSize: '3rem', marginBottom: '0.75rem', marginTop: '0.5rem' }}>🔥</div>
+              <h3 style={{ color: '#fde68a', fontWeight: 900, fontSize: '1.25rem', marginBottom: '0.5rem' }}>
+                Unleash Chaos
+              </h3>
+              <p style={{ color: '#e2e8f0', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Watch as your "normal" game night transforms into legendary chaos.
+              </p>
+            </div>
+          </div>
+
+          {/* CTA after explainer */}
+          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+            <a
+              href="/shop"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: '#FF7500',
+                color: '#111827',
+                padding: '0.875rem 2rem',
+                borderRadius: '50px',
+                fontWeight: 900,
+                fontSize: '1rem',
+                textDecoration: 'none',
+                transition: 'all 0.3s',
+              }}
+            >
+              See All Game-Mod Decks <ArrowRight size={18} />
+            </a>
+          </div>
         </div>
       </section>
 
