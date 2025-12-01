@@ -108,21 +108,51 @@ export function AdminElevationProvider({ children }: { children: ReactNode }) {
   };
 
   const handleClose = () => {
-    setShowModal(false);
-    if (requiresSetup) {
-      // Remember that user dismissed the setup prompt for this session
+    // Only allow closing if it's just the setup prompt (not required elevation)
+    if (requiresSetup && !state.totpEnabled) {
+      setShowModal(false);
       sessionStorage.setItem('admin_2fa_setup_dismissed', 'true');
     }
+    // If 2FA is enabled but not elevated, don't allow closing
   };
+
+  // Determine if we should block access
+  const shouldBlockAccess = state.isAdmin && state.totpEnabled && !state.isElevated && !state.loading;
 
   return (
     <AdminElevationContext.Provider value={{ state, checkElevation, requireElevation, deElevate }}>
-      {children}
+      {/* Only render admin content if elevated OR if 2FA isn't enabled yet */}
+      {state.loading ? (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          background: '#0a0a0a',
+          color: '#94a3b8',
+        }}>
+          Loading...
+        </div>
+      ) : shouldBlockAccess ? (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          background: '#0a0a0a',
+          color: '#94a3b8',
+        }}>
+          {/* Empty - modal will show on top */}
+        </div>
+      ) : (
+        children
+      )}
       <AdminElevationModal
-        isOpen={showModal}
+        isOpen={showModal || shouldBlockAccess}
         onClose={handleClose}
         onElevated={handleElevated}
         requiresSetup={requiresSetup}
+        canDismiss={requiresSetup && !state.totpEnabled}
       />
     </AdminElevationContext.Provider>
   );

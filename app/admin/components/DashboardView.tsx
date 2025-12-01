@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Package, ShoppingBag, ShoppingCart, DollarSign, Users, TrendingUp,
+import {
+  Package, ShoppingBag, ShoppingCart, DollarSign, TrendingUp,
   Plus, Gamepad2, BookOpen, Palette, Database, Settings, MessageSquare,
-  Truck, RotateCcw, Box, HelpCircle, BarChart3
+  RotateCcw, Box, HelpCircle, BarChart3
 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import DeploymentInfo from '../../components/DeploymentInfo';
@@ -155,29 +155,16 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       title: 'Total Revenue',
       value: `$${stats.totalRevenue.toFixed(2)}`,
       icon: <DollarSign size={20} />,
-      change: '+12.5%',
-      positive: true,
     },
     {
       title: 'Active Products',
       value: stats.totalGames + stats.totalMerch,
       icon: <Package size={20} />,
-      change: '+8 this month',
-      positive: true,
     },
     {
       title: 'Total Orders',
       value: stats.totalOrders,
       icon: <ShoppingCart size={20} />,
-      change: '+23.1%',
-      positive: true,
-    },
-    {
-      title: 'Site Visitors',
-      value: '1,234',
-      icon: <Users size={20} />,
-      change: '+5.7%',
-      positive: true,
     },
   ];
 
@@ -296,16 +283,6 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                   }}>
                     {stat.icon}
                   </div>
-                </div>
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '4px',
-                  fontSize: '13px',
-                  color: stat.positive ? '#86efac' : '#fca5a5',
-                }}>
-                  <TrendingUp size={14} />
-                  {stat.change}
                 </div>
               </div>
             ))}

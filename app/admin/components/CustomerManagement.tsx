@@ -338,33 +338,29 @@ export default function CustomerManagement({ onNavigate }: { onNavigate: (view: 
     try {
       const response = await fetch('/api/admin/customers');
       const data = await response.json();
-      
-      // Mock enhanced customer data for demo
-      const enhancedCustomers = data.map((user: any) => ({
+
+      // Map real customer data - enhanced fields will be populated when we have order data
+      const mappedCustomers = Array.isArray(data) ? data.map((user: any) => ({
         id: user.id,
         name: user.name || 'Unknown Customer',
         email: user.email,
         phone: user.phone,
         createdAt: user.createdAt,
-        lastOrderDate: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        totalOrders: Math.floor(Math.random() * 20) + 1,
-        totalSpent: Math.random() * 2000 + 100,
-        averageOrderValue: Math.random() * 200 + 50,
-        lifetime: Math.random() * 5000 + 500,
-        segment: ['Champions', 'Loyal', 'Potential', 'New', 'At Risk'][Math.floor(Math.random() * 5)],
-        tags: ['VIP', 'Early Adopter', 'Frequent Buyer', 'Newsletter'].filter(() => Math.random() > 0.5),
-        riskScore: Math.floor(Math.random() * 100),
-        loyaltyPoints: Math.floor(Math.random() * 1000),
-        preferredProducts: ['Fugly', 'Chaos Cards', 'Merch'].filter(() => Math.random() > 0.5),
-        communicationPreference: ['email', 'sms', 'both'][Math.floor(Math.random() * 3)],
-        location: {
-          city: ['New York', 'Los Angeles', 'Chicago', 'Houston'][Math.floor(Math.random() * 4)],
-          state: ['NY', 'CA', 'IL', 'TX'][Math.floor(Math.random() * 4)],
-          country: 'USA'
-        }
-      }));
-      
-      setCustomers(enhancedCustomers);
+        lastOrderDate: user.lastOrderDate || null,
+        totalOrders: user.orderCount || 0,
+        totalSpent: user.totalSpent || 0,
+        averageOrderValue: user.orderCount > 0 ? (user.totalSpent || 0) / user.orderCount : 0,
+        lifetime: user.totalSpent || 0,
+        segment: 'New', // Segmentation feature coming soon
+        tags: [],
+        riskScore: 0,
+        loyaltyPoints: 0,
+        preferredProducts: [],
+        communicationPreference: 'email',
+        location: undefined
+      })) : [];
+
+      setCustomers(mappedCustomers);
     } catch (error) {
       console.error('Error fetching customers:', error);
     } finally {

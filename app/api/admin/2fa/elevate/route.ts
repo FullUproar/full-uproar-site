@@ -25,14 +25,30 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const { code } = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
+    const { code } = body;
 
     if (!code || typeof code !== 'string' || code.length !== 6) {
       return NextResponse.json({ error: 'Invalid code format' }, { status: 400 });
     }
 
     // Decrypt and verify
-    const secret = decryptSecret(user.totpSecret);
+    let secret;
+    try {
+      secret = decryptSecret(user.totpSecret);
+    } catch (e: any) {
+      console.error('Decryption error:', e?.message);
+      return NextResponse.json({
+        error: 'Failed to decrypt 2FA secret. The encryption key may have changed.',
+      }, { status: 500 });
+    }
+
     const isValid = verifyTOTP(secret, code);
 
     if (!isValid) {
@@ -53,8 +69,8 @@ export async function POST(request: NextRequest) {
       elevatedUntil,
       message: 'Admin session elevated for 3 hours',
     });
-  } catch (error) {
-    console.error('Error elevating session:', error);
+  } catch (error: any) {
+    console.error('Error elevating session:', error?.message || error);
     return NextResponse.json({ error: 'Failed to elevate session' }, { status: 500 });
   }
 }

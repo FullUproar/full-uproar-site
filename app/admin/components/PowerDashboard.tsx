@@ -1,37 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Package,
-  Target, Zap, Award, AlertTriangle, Activity, BarChart3, PieChart,
-  ArrowUpRight, ArrowDownRight, Minus, Clock, Calendar, Filter,
-  Mail, MessageSquare, Sparkles, Brain, Rocket, Globe, Star
+import {
+  TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart,
+  Award, AlertTriangle, Activity, ArrowUpRight,
+  Mail, Sparkles, Brain, Rocket
 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
-
-interface MetricCard {
-  title: string;
-  value: string | number;
-  change: number;
-  changeLabel: string;
-  icon: React.ReactNode;
-  color: string;
-  sparkline?: number[];
-}
 
 interface CustomerSegment {
   name: string;
   count: number;
   value: number;
   growth: number;
-}
-
-interface ProductPerformance {
-  name: string;
-  sales: number;
-  revenue: number;
-  velocity: number;
-  stockLevel: number;
 }
 
 export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any, label: string) => void }) {
@@ -45,16 +26,8 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
     marketing: { emailOpen: 0, clickThrough: 0, campaigns: 0 },
   });
 
-  // Real-time counter animation
-  const [realtimeRevenue, setRealtimeRevenue] = useState(0);
-  
   useEffect(() => {
     fetchDashboardData();
-    // Simulate real-time revenue updates
-    const interval = setInterval(() => {
-      setRealtimeRevenue(prev => prev + Math.random() * 100);
-    }, 5000);
-    return () => clearInterval(interval);
   }, [dateRange]);
 
   const fetchDashboardData = async () => {
@@ -83,113 +56,65 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
   };
 
   const processMetrics = (orders: any, users: any, products: any, analytics: any) => {
-    // Calculate key metrics
-    const totalRevenue = orders.orders?.reduce((sum: number, order: any) => 
+    // Calculate key metrics from real data
+    const totalRevenue = orders.orders?.reduce((sum: number, order: any) =>
       sum + (order.totalCents / 100), 0) || 0;
-    
-    const newCustomers = users.filter((u: any) => {
+
+    const newCustomers = Array.isArray(users) ? users.filter((u: any) => {
       const createdDate = new Date(u.createdAt);
       const daysAgo = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
       return daysAgo <= 30;
-    }).length;
+    }).length : 0;
+
+    const totalUsers = Array.isArray(users) ? users.length : 0;
+    const orderCount = orders.orders?.length || 0;
 
     setMetrics({
       revenue: {
         current: totalRevenue,
-        previous: totalRevenue * 0.8, // Mock previous period
-        target: totalRevenue * 1.2,
-        growth: 25,
       },
       customers: {
-        total: users.length,
+        total: totalUsers,
         new: newCustomers,
-        returning: users.length - newCustomers,
-        churn: 2.3,
-        lifetime: 487,
+        returning: totalUsers - newCustomers,
       },
       orders: {
-        count: orders.orders?.length || 0,
-        value: totalRevenue / (orders.orders?.length || 1),
-        conversion: 3.4,
-        abandoned: 127,
+        count: orderCount,
+        value: orderCount > 0 ? totalRevenue / orderCount : 0,
       },
       products: products,
-      marketing: {
-        emailOpen: 24.7,
-        clickThrough: 3.2,
-        campaigns: 5,
-        roi: 4.2,
-      },
     });
-
-    setRealtimeRevenue(totalRevenue);
   };
 
-  const kpiCards: MetricCard[] = [
+  const kpiCards = [
     {
       title: "Total Revenue",
-      value: `$${realtimeRevenue.toFixed(2)}`,
-      change: 25.4,
-      changeLabel: "vs last period",
+      value: `$${(metrics.revenue?.current || 0).toFixed(2)}`,
       icon: <DollarSign size={24} />,
       color: "#10b981",
-      sparkline: [30, 45, 28, 65, 78, 92, 88, 102]
     },
     {
-      title: "Active Customers",
-      value: metrics.customers.total,
-      change: 12.3,
-      changeLabel: "new this month",
+      title: "Total Customers",
+      value: metrics.customers?.total || 0,
       icon: <Users size={24} />,
       color: "#3b82f6",
     },
     {
-      title: "Conversion Rate",
-      value: `${metrics.orders.conversion}%`,
-      change: 0.8,
-      changeLabel: "improvement",
-      icon: <Target size={24} />,
+      title: "Total Orders",
+      value: metrics.orders?.count || 0,
+      icon: <ShoppingCart size={24} />,
       color: "#8b5cf6",
     },
     {
       title: "Avg Order Value",
-      value: `$${(metrics.orders.value || 0).toFixed(2)}`,
-      change: -2.1,
-      changeLabel: "needs attention",
+      value: `$${(metrics.orders?.value || 0).toFixed(2)}`,
       icon: <ShoppingCart size={24} />,
       color: "#f59e0b",
     },
   ];
 
-  const customerSegments: CustomerSegment[] = [
-    { name: "Champions", count: 45, value: 28900, growth: 15 },
-    { name: "Loyal", count: 123, value: 45600, growth: 8 },
-    { name: "Potential", count: 89, value: 12300, growth: 32 },
-    { name: "New", count: 234, value: 8900, growth: 45 },
-    { name: "At Risk", count: 67, value: 23400, growth: -12 },
-  ];
-
-  const renderSparkline = (data: number[]) => {
-    const max = Math.max(...data);
-    const width = 100;
-    const height = 30;
-    const points = data.map((value, index) => {
-      const x = (index / (data.length - 1)) * width;
-      const y = height - (value / max) * height;
-      return `${x},${y}`;
-    }).join(' ');
-
-    return (
-      <svg width={width} height={height} style={{ marginTop: '8px' }}>
-        <polyline
-          fill="none"
-          stroke="#10b981"
-          strokeWidth="2"
-          points={points}
-        />
-      </svg>
-    );
-  };
+  // Customer segments - will be populated when segmentation feature is built
+  const customerSegments: CustomerSegment[] = [];
 
   return (
     <div style={adminStyles.container}>
@@ -269,7 +194,7 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
               </div>
             </div>
             
-            <div style={{ marginBottom: '0.5rem' }}>
+            <div>
               <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.25rem' }}>
                 {card.title}
               </p>
@@ -277,24 +202,6 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
                 {card.value}
               </h3>
             </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {card.change > 0 ? (
-                <TrendingUp size={16} style={{ color: '#10b981' }} />
-              ) : card.change < 0 ? (
-                <TrendingDown size={16} style={{ color: '#ef4444' }} />
-              ) : (
-                <Minus size={16} style={{ color: '#94a3b8' }} />
-              )}
-              <span style={{ 
-                fontSize: '0.875rem',
-                color: card.change > 0 ? '#10b981' : card.change < 0 ? '#ef4444' : '#94a3b8'
-              }}>
-                {Math.abs(card.change)}% {card.changeLabel}
-              </span>
-            </div>
-            
-            {card.sparkline && renderSparkline(card.sparkline)}
           </div>
         ))}
       </div>
@@ -335,7 +242,18 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
             </button>
           </div>
           
-          {customerSegments.map((segment, index) => (
+          {customerSegments.length === 0 ? (
+            <div style={{
+              padding: '2rem',
+              textAlign: 'center',
+              color: '#64748b',
+              background: '#1e293b',
+              borderRadius: '0.5rem',
+            }}>
+              <Users size={32} style={{ marginBottom: '0.5rem', opacity: 0.5 }} />
+              <p>Customer segmentation coming soon</p>
+            </div>
+          ) : customerSegments.map((segment, index) => (
             <div key={index} style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -351,12 +269,12 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
                   height: '40px',
                   borderRadius: '50%',
                   background: `linear-gradient(135deg, ${
-                    segment.growth > 20 ? '#10b981' : 
-                    segment.growth > 0 ? '#3b82f6' : 
+                    segment.growth > 20 ? '#10b981' :
+                    segment.growth > 0 ? '#3b82f6' :
                     '#ef4444'
                   } 0%, ${
-                    segment.growth > 20 ? '#059669' : 
-                    segment.growth > 0 ? '#2563eb' : 
+                    segment.growth > 20 ? '#059669' :
+                    segment.growth > 0 ? '#2563eb' :
                     '#dc2626'
                   } 100%)`,
                   display: 'flex',
@@ -374,12 +292,12 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
                   </p>
                 </div>
               </div>
-              
+
               <div style={{ textAlign: 'right' }}>
                 <p style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>
                   ${segment.value.toLocaleString()}
                 </p>
-                <p style={{ 
+                <p style={{
                   fontSize: '0.875rem',
                   color: segment.growth > 0 ? '#10b981' : '#ef4444',
                   display: 'flex',
@@ -444,7 +362,7 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
               }}
             >
               <AlertTriangle size={20} />
-              Low Stock Alerts (3)
+              Low Stock Alerts
             </button>
             
             <button
@@ -472,61 +390,36 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
       }}>
         {/* Real-time Activity */}
         <div style={adminStyles.card}>
-          <h3 style={{ 
-            fontSize: '1.25rem', 
-            fontWeight: 'bold', 
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
             marginBottom: '1.5rem',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
           }}>
             <Activity size={20} style={{ color: '#10b981' }} />
-            Live Activity Feed
+            Activity Feed
           </h3>
-          
-          <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-            {[
-              { time: '2 min ago', action: 'New order', detail: 'Fugly Complete Bundle - $89.99', icon: <ShoppingCart size={16} /> },
-              { time: '5 min ago', action: 'Customer signup', detail: 'jane.doe@email.com', icon: <Users size={16} /> },
-              { time: '12 min ago', action: 'Review posted', detail: '5 stars for Chaos Cards', icon: <Star size={16} /> },
-              { time: '23 min ago', action: 'Cart abandoned', detail: '$124.50 - Send recovery email?', icon: <AlertTriangle size={16} /> },
-              { time: '45 min ago', action: 'Campaign opened', detail: 'Holiday Sale - 67% open rate', icon: <Mail size={16} /> },
-            ].map((event, index) => (
-              <div key={index} style={{
-                display: 'flex',
-                gap: '1rem',
-                padding: '0.75rem',
-                borderLeft: '2px solid #3b82f6',
-                marginBottom: '0.75rem',
-                background: 'rgba(59, 130, 246, 0.05)',
-                borderRadius: '0 0.5rem 0.5rem 0'
-              }}>
-                <div style={{ 
-                  color: '#3b82f6',
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  padding: '0.5rem',
-                  borderRadius: '0.5rem',
-                  height: 'fit-content'
-                }}>
-                  {event.icon}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>{event.action}</p>
-                  <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.25rem' }}>
-                    {event.detail}
-                  </p>
-                  <p style={{ fontSize: '0.75rem', color: '#64748b' }}>{event.time}</p>
-                </div>
-              </div>
-            ))}
+
+          <div style={{
+            padding: '2rem',
+            textAlign: 'center',
+            color: '#64748b',
+            background: '#1e293b',
+            borderRadius: '0.5rem',
+          }}>
+            <Activity size={32} style={{ marginBottom: '0.5rem', opacity: 0.5 }} />
+            <p>No recent activity</p>
+            <p style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>Activity tracking coming soon</p>
           </div>
         </div>
 
         {/* AI Insights */}
         <div style={adminStyles.card}>
-          <h3 style={{ 
-            fontSize: '1.25rem', 
-            fontWeight: 'bold', 
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
             marginBottom: '1.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -535,60 +428,17 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
             <Sparkles size={20} style={{ color: '#8b5cf6' }} />
             AI-Powered Insights
           </h3>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {[
-              {
-                type: 'opportunity',
-                title: 'Cross-sell opportunity detected',
-                detail: 'Customers who buy Fugly also purchase expansion packs 73% of the time',
-                action: 'Create bundle',
-                color: '#10b981'
-              },
-              {
-                type: 'warning',
-                title: 'Churn risk identified',
-                detail: '12 VIP customers haven\'t purchased in 60+ days',
-                action: 'Send win-back email',
-                color: '#f59e0b'
-              },
-              {
-                type: 'trend',
-                title: 'Trending product category',
-                detail: 'Party games sales up 145% this month',
-                action: 'Increase inventory',
-                color: '#3b82f6'
-              },
-            ].map((insight, index) => (
-              <div key={index} style={{
-                padding: '1rem',
-                background: `linear-gradient(135deg, ${insight.color}10 0%, transparent 100%)`,
-                borderLeft: `3px solid ${insight.color}`,
-                borderRadius: '0 0.5rem 0.5rem 0'
-              }}>
-                <h4 style={{ 
-                  fontWeight: 'bold', 
-                  marginBottom: '0.5rem',
-                  color: insight.color 
-                }}>
-                  {insight.title}
-                </h4>
-                <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.75rem' }}>
-                  {insight.detail}
-                </p>
-                <button style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: insight.color,
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  fontWeight: 'bold',
-                  fontSize: '0.875rem'
-                }}>
-                  {insight.action} →
-                </button>
-              </div>
-            ))}
+
+          <div style={{
+            padding: '2rem',
+            textAlign: 'center',
+            color: '#64748b',
+            background: '#1e293b',
+            borderRadius: '0.5rem',
+          }}>
+            <Sparkles size={32} style={{ marginBottom: '0.5rem', opacity: 0.5 }} />
+            <p>AI insights coming soon</p>
+            <p style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>Requires more order data</p>
           </div>
         </div>
       </div>

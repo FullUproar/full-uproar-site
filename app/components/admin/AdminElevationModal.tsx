@@ -8,6 +8,7 @@ interface AdminElevationModalProps {
   onClose: () => void;
   onElevated: () => void;
   requiresSetup?: boolean;
+  canDismiss?: boolean;
 }
 
 export default function AdminElevationModal({
@@ -15,6 +16,7 @@ export default function AdminElevationModal({
   onClose,
   onElevated,
   requiresSetup = false,
+  canDismiss = false,
 }: AdminElevationModalProps) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
@@ -148,7 +150,7 @@ export default function AdminElevationModal({
         padding: '1rem',
       }}
       onClick={(e) => {
-        if (e.target === e.currentTarget) {
+        if (e.target === e.currentTarget && canDismiss) {
           onClose();
         }
       }}
@@ -165,21 +167,23 @@ export default function AdminElevationModal({
           position: 'relative',
         }}
       >
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            background: 'transparent',
-            border: 'none',
-            color: '#9ca3af',
-            cursor: 'pointer',
-            padding: '0.5rem',
-          }}
-        >
-          <X size={24} />
-        </button>
+        {canDismiss && (
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: '1rem',
+              right: '1rem',
+              background: 'transparent',
+              border: 'none',
+              color: '#9ca3af',
+              cursor: 'pointer',
+              padding: '0.5rem',
+            }}
+          >
+            <X size={24} />
+          </button>
+        )}
 
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <Shield size={48} style={{ color: '#f97316', margin: '0 auto 1rem' }} />
