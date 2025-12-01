@@ -25,7 +25,9 @@ export async function requireAdmin(): Promise<AdminCheckResult> {
     select: { id: true, role: true, email: true }
   });
 
-  if (!user || user.role !== 'ADMIN') {
+  // Allow ADMIN, SUPER_ADMIN, and GOD roles
+  const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
+  if (!user || !adminRoles.includes(user.role)) {
     return {
       authorized: false,
       response: NextResponse.json({ error: 'Admin access required' }, { status: 403 })
