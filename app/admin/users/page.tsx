@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { adminStyles } from '../styles/adminStyles';
 import { useToast } from '@/lib/toastStore';
 import { UserRole } from '@prisma/client';
+import { Shield, X, Copy, Check } from 'lucide-react';
 
 interface User {
   id: string;
@@ -14,6 +15,7 @@ interface User {
   avatarUrl?: string;
   role: UserRole;
   emailVerified?: boolean;
+  totpEnabled?: boolean;
   cultDevotion: number;
   cultLevel: number;
   achievementPoints: number;
@@ -36,6 +38,17 @@ export default function UserManagementPage() {
     verified: 0
   });
   const { toast } = useToast();
+
+  // 2FA provisioning state
+  const [twoFAModalOpen, setTwoFAModalOpen] = useState(false);
+  const [twoFALoading, setTwoFALoading] = useState(false);
+  const [twoFAData, setTwoFAData] = useState<{
+    qrCode: string;
+    secret: string;
+    userEmail: string;
+    userName: string;
+  } | null>(null);
+  const [secretCopied, setSecretCopied] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -168,6 +181,58 @@ export default function UserManagementPage() {
         description: 'Failed to delete user',
         variant: 'destructive',
       });
+    }
+  };
+
+  // Provision 2FA for a user
+  const provision2FA = async (userId: string) => {
+    setTwoFALoading(true);
+    try {
+      const response = await fetch('/api/admin/2fa/provision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setTwoFAData({
+          qrCode: data.qrCode,
+          secret: data.secret,
+          userEmail: data.userEmail,
+          userName: data.userName,
+        });
+        setTwoFAModalOpen(true);
+        setEditModalOpen(false);
+        toast({
+          title: 'Success',
+          description: '2FA provisioned. Share the QR code securely.',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to provision 2FA',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Error provisioning 2FA:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to provision 2FA',
+        variant: 'destructive',
+      });
+    } finally {
+      setTwoFALoading(false);
+    }
+  };
+
+  const copySecret = async () => {
+    if (twoFAData?.secret) {
+      await navigator.clipboard.writeText(twoFAData.secret);
+      setSecretCopied(true);
+      setTimeout(() => setSecretCopied(false), 2000);
     }
   };
 
@@ -562,6 +627,57 @@ export default function UserManagementPage() {
                 )}
               </div>
 
+              {/* 2FA Provisioning for admin users with @fulluproar.com */}
+              {['ADMIN', 'SUPER_ADMIN', 'GOD'].includes(selectedUser.role) &&
+               selectedUser.email.endsWith('@fulluproar.com') &&
+               !selectedUser.totpEnabled && (
+                <div style={{
+                  marginBottom: '20px',
+                  padding: '15px',
+                  background: 'rgba(139, 92, 246, 0.1)',
+                  border: '1px solid #8b5cf6',
+                  borderRadius: '8px',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                    <Shield size={20} style={{ color: '#8b5cf6' }} />
+                    <span style={{ color: '#c4b5fd', fontWeight: 'bold' }}>2FA Not Configured</span>
+                  </div>
+                  <p style={{ fontSize: '13px', color: '#9ca3af', marginBottom: '10px' }}>
+                    This admin needs 2FA to access the admin panel. Generate a setup QR code to share with them securely.
+                  </p>
+                  <button
+                    onClick={() => provision2FA(selectedUser.id)}
+                    disabled={twoFALoading}
+                    style={{
+                      ...adminStyles.button,
+                      backgroundColor: '#8b5cf6',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <Shield size={16} />
+                    {twoFALoading ? 'Generating...' : 'Generate 2FA Setup'}
+                  </button>
+                </div>
+              )}
+
+              {selectedUser.totpEnabled && (
+                <div style={{
+                  marginBottom: '20px',
+                  padding: '10px 15px',
+                  background: 'rgba(34, 197, 94, 0.1)',
+                  border: '1px solid #22c55e',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                }}>
+                  <Shield size={18} style={{ color: '#22c55e' }} />
+                  <span style={{ color: '#86efac', fontSize: '14px' }}>2FA Enabled</span>
+                </div>
+              )}
+
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'space-between' }}>
                 <button
                   onClick={() => deleteUser(selectedUser.id)}
@@ -596,6 +712,141 @@ export default function UserManagementPage() {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2FA QR Code Modal */}
+      {twoFAModalOpen && twoFAData && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1001,
+        }}>
+          <div style={{
+            backgroundColor: '#1a1a2e',
+            borderRadius: '12px',
+            padding: '30px',
+            maxWidth: '450px',
+            width: '90%',
+            border: '2px solid #8b5cf6',
+            boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.25)',
+            position: 'relative',
+          }}>
+            <button
+              onClick={() => {
+                setTwoFAModalOpen(false);
+                setTwoFAData(null);
+                fetchUsers();
+              }}
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                background: 'transparent',
+                border: 'none',
+                color: '#9ca3af',
+                cursor: 'pointer',
+              }}
+            >
+              <X size={24} />
+            </button>
+
+            <div style={{ textAlign: 'center' }}>
+              <Shield size={48} style={{ color: '#8b5cf6', marginBottom: '15px' }} />
+              <h2 style={{ color: '#fde68a', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '10px' }}>
+                2FA Setup for {twoFAData.userName}
+              </h2>
+              <p style={{ color: '#9ca3af', fontSize: '14px', marginBottom: '20px' }}>
+                Share this QR code securely with the user. This is shown only once.
+              </p>
+
+              <div style={{
+                background: '#fff',
+                padding: '15px',
+                borderRadius: '8px',
+                display: 'inline-block',
+                marginBottom: '20px',
+              }}>
+                <img
+                  src={twoFAData.qrCode}
+                  alt="2FA QR Code"
+                  style={{ width: '200px', height: '200px' }}
+                />
+              </div>
+
+              <p style={{ color: '#9ca3af', fontSize: '13px', marginBottom: '10px' }}>
+                Or share this secret manually:
+              </p>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                background: '#374151',
+                padding: '10px 15px',
+                borderRadius: '6px',
+                marginBottom: '20px',
+              }}>
+                <code style={{
+                  flex: 1,
+                  color: '#fde68a',
+                  fontSize: '13px',
+                  wordBreak: 'break-all',
+                }}>
+                  {twoFAData.secret}
+                </code>
+                <button
+                  onClick={copySecret}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: secretCopied ? '#22c55e' : '#9ca3af',
+                    cursor: 'pointer',
+                    padding: '5px',
+                  }}
+                >
+                  {secretCopied ? <Check size={18} /> : <Copy size={18} />}
+                </button>
+              </div>
+
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid #ef4444',
+                borderRadius: '6px',
+                padding: '12px',
+                marginBottom: '20px',
+              }}>
+                <p style={{ color: '#fca5a5', fontSize: '13px', fontWeight: 'bold' }}>
+                  This QR code will NOT be shown again.
+                </p>
+                <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '5px' }}>
+                  Make sure the user has scanned it before closing this modal.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setTwoFAModalOpen(false);
+                  setTwoFAData(null);
+                  fetchUsers();
+                }}
+                style={{
+                  ...adminStyles.button,
+                  backgroundColor: '#8b5cf6',
+                  width: '100%',
+                }}
+              >
+                Done - User Has Scanned It
+              </button>
             </div>
           </div>
         </div>
