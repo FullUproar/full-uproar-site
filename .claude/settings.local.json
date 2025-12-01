@@ -14,7 +14,12 @@
       "Bash(ren:*)",
       "Bash(ren \"logo_full.png.png\" \"logo_full.png\")",
       "Bash(git checkout:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(dir:*)",
+      "Bash(npx prisma db push)"
     ],
     "deny": [],
     "ask": []

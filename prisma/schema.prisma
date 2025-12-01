@@ -368,6 +368,12 @@ model User {
   trustLevel       Int          @default(0) // 0=new, 1=basic, 2=member, 3=regular, 4=leader
   flagCount        Int          @default(0)
   lastFlaggedAt    DateTime?
+
+  // Admin 2FA (TOTP) fields
+  totpSecret          String?      // Encrypted TOTP secret for authenticator apps
+  totpEnabled         Boolean      @default(false)
+  totpVerifiedAt      DateTime?    // When 2FA setup was completed
+  adminElevatedUntil  DateTime?    // Session elevation expiry (null = not elevated)
   
   // Cult devotion fields
   cultDevotion  Int           @default(0)
