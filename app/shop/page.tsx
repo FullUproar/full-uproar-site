@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
-import GlobalFooter from '../components/GlobalFooter';
 import { ShoppingCart, Calendar, Users, Play, Package, Sparkles, Dice1, Map, Zap, Shield, Shuffle, Trophy, Filter, Tag, Gamepad2, Shirt } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import AddToCartButton from '../components/AddToCartButton';
@@ -774,8 +773,6 @@ export default function ShopPage() {
           </>
         )}
       </div>
-
-      <GlobalFooter />
     </div>
   );
 }
