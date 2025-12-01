@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
 
     const { searchParams } = new URL(request.url);
     const showArchived = searchParams.get('showArchived') === 'true';
@@ -31,11 +28,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
 
     const data = await request.json();
     
