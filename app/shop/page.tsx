@@ -390,6 +390,8 @@ export default function ShopPage() {
                       transition: 'all 0.3s',
                       cursor: 'pointer',
                       position: 'relative',
+                      display: 'flex',
+                      flexDirection: 'column',
                       transform: hoveredGame === game.id ? 'translateY(-10px) scale(1.02)' : 'translateY(0)',
                       boxShadow: hoveredGame === game.id
                         ? '0 20px 40px rgba(255, 117, 0, 0.4)'
@@ -426,8 +428,8 @@ export default function ShopPage() {
                       </div>
                     )}
 
-                    <Link href={`/games/${game.slug}`} style={{ textDecoration: 'none' }}>
-                      <div style={{ padding: '1.5rem', paddingBottom: '0' }}>
+                    <Link href={`/games/${game.slug}`} style={{ textDecoration: 'none', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ padding: '1.5rem', paddingBottom: '0', flex: 1, display: 'flex', flexDirection: 'column' }}>
                         {game.imageUrl && (
                           <img
                             src={game.imageUrl}
@@ -443,40 +445,49 @@ export default function ShopPage() {
                         )}
 
                         <h3 style={{
-                          fontSize: '1.25rem',
+                          fontSize: '1.125rem',
                           fontWeight: 900,
                           color: '#FF7500',
                           marginBottom: '0.5rem',
-                          textTransform: 'uppercase'
+                          textTransform: 'uppercase',
+                          minHeight: '2.75rem',
+                          lineHeight: '1.2',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
                         }}>
                           {game.title}
                         </h3>
 
-                        {game.tagline && (
-                          <p style={{
-                            fontSize: '0.875rem',
-                            color: '#fbbf24',
-                            marginBottom: '0.5rem',
-                            fontStyle: 'italic'
-                          }}>
-                            "{game.tagline}"
-                          </p>
-                        )}
+                        <p style={{
+                          fontSize: '0.8125rem',
+                          color: '#fbbf24',
+                          marginBottom: '0.5rem',
+                          fontStyle: 'italic',
+                          minHeight: '1.25rem',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {game.tagline ? `"${game.tagline}"` : '\u00A0'}
+                        </p>
 
                         <p style={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.8125rem',
                           color: '#e2e8f0',
                           marginBottom: '1rem',
                           height: '2.5rem',
                           overflow: 'hidden',
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical'
+                          WebkitBoxOrient: 'vertical',
+                          flex: 1
                         }}>
                           {game.description}
                         </p>
 
-                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem', marginTop: 'auto' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                             <Users style={{ width: '0.875rem', height: '0.875rem', color: '#fdba74' }} />
                             <span style={{ fontSize: '0.75rem', color: '#fde68a' }}>{game.players}</span>
@@ -487,7 +498,7 @@ export default function ShopPage() {
                           </div>
                         </div>
 
-                        <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#FF7500', marginBottom: '1rem' }}>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF7500', marginBottom: '0.5rem' }}>
                           ${(game.priceCents / 100).toFixed(2)}
                         </div>
                       </div>
