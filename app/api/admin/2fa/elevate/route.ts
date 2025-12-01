@@ -43,9 +43,11 @@ export async function POST(request: NextRequest) {
     try {
       secret = decryptSecret(user.totpSecret);
     } catch (e: any) {
-      console.error('Decryption error:', e?.message);
+      const keySet = !!process.env.TOTP_ENCRYPTION_KEY;
+      const keyLength = process.env.TOTP_ENCRYPTION_KEY?.length || 0;
+      console.error('Decryption error:', e?.message, 'Key set:', keySet, 'Key length:', keyLength);
       return NextResponse.json({
-        error: 'Failed to decrypt 2FA secret. The encryption key may have changed.',
+        error: `Failed to decrypt 2FA secret. Key configured: ${keySet}, length: ${keyLength}`,
       }, { status: 500 });
     }
 
