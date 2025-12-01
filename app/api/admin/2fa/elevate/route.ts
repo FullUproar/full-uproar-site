@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       elevatedUntil,
-      message: 'Admin session elevated for 30 minutes',
+      message: 'Admin session elevated for 3 hours',
     });
   } catch (error) {
     console.error('Error elevating session:', error);

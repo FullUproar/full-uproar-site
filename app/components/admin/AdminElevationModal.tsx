@@ -136,7 +136,9 @@ export default function AdminElevationModal({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -390,7 +392,7 @@ export default function AdminElevationModal({
               {loading ? 'Verifying...' : 'Verify & Continue'}
             </button>
             <p style={{ color: '#6b7280', fontSize: '0.75rem', textAlign: 'center', marginTop: '1rem' }}>
-              Session will remain elevated for 30 minutes
+              Session will remain elevated for 3 hours
             </p>
           </div>
         )}

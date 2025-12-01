@@ -86,9 +86,9 @@ export function isElevationValid(elevatedUntil: Date | null): boolean {
   return new Date() < new Date(elevatedUntil);
 }
 
-// Get elevation expiry time (30 minutes from now)
+// Get elevation expiry time (180 minutes / 3 hours from now)
 export function getElevationExpiry(): Date {
   const expiry = new Date();
-  expiry.setMinutes(expiry.getMinutes() + 30);
+  expiry.setMinutes(expiry.getMinutes() + 180);
   return expiry;
 }
