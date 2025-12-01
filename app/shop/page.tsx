@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
 import { ShoppingCart, Calendar, Users, Play, Package, Sparkles, Dice1, Map, Zap, Shield, Shuffle, Trophy, Filter, Tag, Gamepad2, Shirt } from 'lucide-react';
@@ -53,22 +54,54 @@ const gameCategories = [
   { id: 'PARTY_GAME', name: 'Party Games', icon: Trophy, description: 'Group chaos generators', color: '#ec4899' }
 ];
 
-export default function ShopPage() {
+function ShopContent() {
   const { addToCart } = useCartStore();
-  const [activeTab, setActiveTab] = useState<ShopTab>('games');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Initialize state from URL params for refresh robustness
+  const tabFromUrl = searchParams.get('tab') as ShopTab | null;
+  const categoryFromUrl = searchParams.get('category');
+
+  const [activeTab, setActiveTab] = useState<ShopTab>(tabFromUrl === 'merch' ? 'merch' : 'games');
 
   // Games state
   const [games, setGames] = useState<Game[]>([]);
   const [gamesLoading, setGamesLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('MOD');
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryFromUrl || 'MOD');
   const [hoveredGame, setHoveredGame] = useState<number | null>(null);
 
   // Merch state
   const [merch, setMerch] = useState<MerchItem[]>([]);
   const [merchLoading, setMerchLoading] = useState(true);
-  const [merchFilter, setMerchFilter] = useState<'all' | string>('all');
+  const [merchFilter, setMerchFilter] = useState<'all' | string>(categoryFromUrl || 'all');
   const [merchCategories, setMerchCategories] = useState<string[]>([]);
   const [hoveredMerch, setHoveredMerch] = useState<number | null>(null);
+
+  // Update URL when state changes (for refresh persistence)
+  const updateUrl = useCallback((newTab: ShopTab, newCategory?: string) => {
+    const params = new URLSearchParams();
+    params.set('tab', newTab);
+    if (newCategory && newCategory !== 'all') {
+      params.set('category', newCategory);
+    }
+    router.replace(`/shop?${params.toString()}`, { scroll: false });
+  }, [router]);
+
+  // Handlers that update both state and URL
+  const handleTabChange = useCallback((tab: ShopTab) => {
+    setActiveTab(tab);
+    updateUrl(tab, tab === 'games' ? selectedCategory : merchFilter);
+  }, [updateUrl, selectedCategory, merchFilter]);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    if (activeTab === 'games') {
+      setSelectedCategory(category);
+    } else {
+      setMerchFilter(category);
+    }
+    updateUrl(activeTab, category);
+  }, [activeTab, updateUrl]);
 
   useAnalytics();
 
@@ -176,7 +209,7 @@ export default function ShopPage() {
             marginBottom: '2rem'
           }}>
             <button
-              onClick={() => setActiveTab('games')}
+              onClick={() => handleTabChange('games')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -203,7 +236,7 @@ export default function ShopPage() {
               GAMES
             </button>
             <button
-              onClick={() => setActiveTab('merch')}
+              onClick={() => handleTabChange('merch')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -309,7 +342,7 @@ export default function ShopPage() {
                 return (
                   <button
                     key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
+                    onClick={() => handleCategoryChange(category.id)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -575,7 +608,7 @@ export default function ShopPage() {
               flexWrap: 'wrap'
             }}>
               <button
-                onClick={() => setMerchFilter('all')}
+                onClick={() => handleCategoryChange('all')}
                 style={{
                   background: merchFilter === 'all' ? '#a855f7' : 'transparent',
                   color: merchFilter === 'all' ? '#111827' : '#c4b5fd',
@@ -595,7 +628,7 @@ export default function ShopPage() {
               {merchCategories.map((category) => (
                 <button
                   key={category}
-                  onClick={() => setMerchFilter(category)}
+                  onClick={() => handleCategoryChange(category)}
                   style={{
                     background: merchFilter === category ? '#a855f7' : 'transparent',
                     color: merchFilter === category ? '#111827' : '#c4b5fd',
@@ -785,5 +818,28 @@ export default function ShopPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Wrapper component with Suspense for useSearchParams
+export default function ShopPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', background: '#0a0a0a' }}>
+        <Navigation />
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '60vh',
+          color: '#f97316',
+          fontSize: '1.5rem'
+        }}>
+          Loading shop...
+        </div>
+      </div>
+    }>
+      <ShopContent />
+    </Suspense>
   );
 }
