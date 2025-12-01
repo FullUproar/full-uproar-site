@@ -40,21 +40,30 @@ export async function POST(request: NextRequest) {
 
     // Decrypt and verify
     let secret;
+    const keySet = !!process.env.TOTP_ENCRYPTION_KEY;
+    const keyLength = process.env.TOTP_ENCRYPTION_KEY?.length || 0;
+    const keyFirst4 = process.env.TOTP_ENCRYPTION_KEY?.slice(0, 4) || 'none';
+
+    console.log('[2FA DEBUG] Attempting elevation for:', user.email);
+    console.log('[2FA DEBUG] Code received:', code, 'length:', code.length);
+    console.log('[2FA DEBUG] Key configured:', keySet, 'length:', keyLength, 'starts with:', keyFirst4);
+    console.log('[2FA DEBUG] Stored secret starts with:', user.totpSecret?.slice(0, 20));
+
     try {
       secret = decryptSecret(user.totpSecret);
+      console.log('[2FA DEBUG] Decryption SUCCESS, secret starts with:', secret.slice(0, 4));
     } catch (e: any) {
-      const keySet = !!process.env.TOTP_ENCRYPTION_KEY;
-      const keyLength = process.env.TOTP_ENCRYPTION_KEY?.length || 0;
-      console.error('Decryption error:', e?.message, 'Key set:', keySet, 'Key length:', keyLength);
+      console.error('[2FA DEBUG] Decryption FAILED:', e?.message);
       return NextResponse.json({
-        error: `Failed to decrypt 2FA secret. Key configured: ${keySet}, length: ${keyLength}`,
+        error: `Failed to decrypt 2FA secret. Key configured: ${keySet}, length: ${keyLength}, starts: ${keyFirst4}`,
       }, { status: 500 });
     }
 
     const isValid = verifyTOTP(secret, code);
+    console.log('[2FA DEBUG] TOTP verification result:', isValid);
 
     if (!isValid) {
-      return NextResponse.json({ error: 'Invalid authentication code' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid authentication code. Check your authenticator app.' }, { status: 400 });
     }
 
     // Elevate session
