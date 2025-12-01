@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
-import { ShoppingCart, Package, Filter, Tag } from 'lucide-react';
+import { ShoppingCart, Package, Filter, Tag, Lock, Sparkles } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
+
+const MERCH_ACCESS_CODE = 'fuglyonly';
+const MERCH_ACCESS_KEY = 'merch_early_access';
 
 interface MerchItem {
   id: number;
@@ -28,9 +31,38 @@ export default function MerchPage() {
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
 
+  // Access gate state
+  const [hasAccess, setHasAccess] = useState(false);
+  const [accessCode, setAccessCode] = useState('');
+  const [accessError, setAccessError] = useState('');
+  const [checkingAccess, setCheckingAccess] = useState(true);
+
+  // Check for existing access on mount
   useEffect(() => {
-    fetchMerch();
-  }, [filter]);
+    const storedAccess = sessionStorage.getItem(MERCH_ACCESS_KEY);
+    if (storedAccess === 'granted') {
+      setHasAccess(true);
+    }
+    setCheckingAccess(false);
+  }, []);
+
+  // Handle access code submission
+  const handleAccessSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (accessCode.toLowerCase().trim() === MERCH_ACCESS_CODE) {
+      sessionStorage.setItem(MERCH_ACCESS_KEY, 'granted');
+      setHasAccess(true);
+      setAccessError('');
+    } else {
+      setAccessError('Invalid access code. Nice try though!');
+    }
+  };
+
+  useEffect(() => {
+    if (hasAccess) {
+      fetchMerch();
+    }
+  }, [filter, hasAccess]);
 
   const fetchMerch = async () => {
     try {
@@ -56,10 +88,149 @@ export default function MerchPage() {
     }
   };
 
+  // Show loading state while checking access
+  if (checkingAccess) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937, #6b21a8)' }}>
+        <Navigation />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+          <div style={{ fontSize: '1.5rem', color: '#a855f7' }}>Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access gate if user doesn't have access
+  if (!hasAccess) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937, #6b21a8)' }}>
+        <Navigation />
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '70vh',
+          padding: '2rem'
+        }}>
+          <div style={{
+            background: 'rgba(31, 41, 55, 0.95)',
+            border: '4px solid #8b5cf6',
+            borderRadius: '1.5rem',
+            padding: '3rem',
+            maxWidth: '500px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.25)'
+          }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <Lock size={64} style={{ color: '#a855f7', margin: '0 auto' }} />
+            </div>
+            <h1 style={{
+              fontSize: '2.5rem',
+              fontWeight: 900,
+              color: '#a855f7',
+              marginBottom: '0.5rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }}>
+              EARLY ACCESS ONLY
+            </h1>
+            <p style={{
+              fontSize: '1.125rem',
+              color: '#c4b5fd',
+              marginBottom: '2rem',
+              fontWeight: 500
+            }}>
+              Fugly's Swag Shop is currently in early access. Enter your access code to browse exclusive merch.
+            </p>
+
+            <form onSubmit={handleAccessSubmit}>
+              <div style={{ marginBottom: '1rem' }}>
+                <input
+                  type="password"
+                  value={accessCode}
+                  onChange={(e) => {
+                    setAccessCode(e.target.value);
+                    setAccessError('');
+                  }}
+                  placeholder="Enter access code..."
+                  style={{
+                    width: '100%',
+                    padding: '1rem 1.5rem',
+                    fontSize: '1.125rem',
+                    background: '#374151',
+                    border: '2px solid #6b7280',
+                    borderRadius: '0.75rem',
+                    color: '#f9fafb',
+                    textAlign: 'center',
+                    outline: 'none',
+                    transition: 'border-color 0.2s'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#8b5cf6'}
+                  onBlur={(e) => e.target.style.borderColor = '#6b7280'}
+                />
+              </div>
+
+              {accessError && (
+                <p style={{
+                  color: '#f87171',
+                  fontSize: '0.875rem',
+                  marginBottom: '1rem',
+                  fontWeight: 600
+                }}>
+                  {accessError}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  background: '#8b5cf6',
+                  color: '#111827',
+                  padding: '1rem 2rem',
+                  fontSize: '1.125rem',
+                  fontWeight: 900,
+                  borderRadius: '50px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  textTransform: 'uppercase'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                  e.currentTarget.style.background = '#7c3aed';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.background = '#8b5cf6';
+                }}
+              >
+                <Sparkles size={20} /> UNLOCK THE SWAG
+              </button>
+            </form>
+
+            <p style={{
+              fontSize: '0.875rem',
+              color: '#9ca3af',
+              marginTop: '2rem'
+            }}>
+              Don't have a code? Stay tuned for public launch!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937, #6b21a8)' }}>
       <Navigation />
-      
+
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '3rem 1rem' }}>
         <h1 style={{
           fontSize: '4rem',
