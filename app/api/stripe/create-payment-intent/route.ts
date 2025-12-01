@@ -3,9 +3,32 @@ import { stripe } from '@/lib/stripe';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
+// Store is not yet open for orders - set to true when ready to launch
+const STORE_OPEN = false;
+
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
+
+    // Check if store is open (allow admins to bypass for testing)
+    if (!STORE_OPEN) {
+      let isAdmin = false;
+
+      if (userId) {
+        const user = await prisma.user.findUnique({
+          where: { clerkId: userId },
+          select: { role: true }
+        });
+        isAdmin = user?.role === 'ADMIN';
+      }
+
+      if (!isAdmin) {
+        return NextResponse.json({
+          error: 'Store coming soon! Our game mods launch Spring 2026.'
+        }, { status: 503 });
+      }
+    }
+
     const { orderId, amount, currency = 'usd' } = await request.json();
 
     // Verify order exists and belongs to the user (if authenticated)

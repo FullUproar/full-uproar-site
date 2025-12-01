@@ -12,7 +12,8 @@
       "Bash(move \"logo.png.png\" \"logo.png\")",
       "Bash(move \"logo_full.png.png\" \"logo_full.png\")",
       "Bash(ren:*)",
-      "Bash(ren \"logo_full.png.png\" \"logo_full.png\")"
+      "Bash(ren \"logo_full.png.png\" \"logo_full.png\")",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

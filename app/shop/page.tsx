@@ -498,18 +498,21 @@ export default function ShopPage() {
                       {game.stock > 0 ? (
                         <AddToCartButton onClick={() => handleAddGameToCart(game)} disabled={game.stock === 0} />
                       ) : (
-                        <button disabled style={{
+                        <div style={{
                           width: '100%',
                           padding: '0.875rem',
-                          background: '#374151',
-                          color: '#6b7280',
+                          background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+                          border: '2px solid #f97316',
                           borderRadius: '0.5rem',
-                          fontWeight: 'bold',
-                          border: 'none',
-                          cursor: 'not-allowed'
+                          textAlign: 'center'
                         }}>
-                          Out of Stock
-                        </button>
+                          <div style={{ color: '#f97316', fontWeight: 900, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                            COMING SPRING 2026
+                          </div>
+                          <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
+                            Join the chaos soon
+                          </div>
+                        </div>
                       )}
                     </div>
 

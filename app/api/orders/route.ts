@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { auth } from '@clerk/nextjs/server';
+
+// Store is not yet open for orders - set to true when ready to launch
+const STORE_OPEN = false;
 
 // Order management API routes
 
@@ -38,9 +42,29 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if store is open (allow admins to bypass for testing)
+    if (!STORE_OPEN) {
+      const { userId } = await auth();
+      let isAdmin = false;
+
+      if (userId) {
+        const user = await prisma.user.findUnique({
+          where: { clerkId: userId },
+          select: { role: true }
+        });
+        isAdmin = user?.role === 'ADMIN';
+      }
+
+      if (!isAdmin) {
+        return NextResponse.json({
+          error: 'Store coming soon! Our game mods launch Spring 2026.'
+        }, { status: 503 });
+      }
+    }
+
     const body = await request.json();
     console.log('Order API received:', JSON.stringify(body, null, 2));
-    
+
     // Validate required fields
     if (!body.customerEmail || !body.customerName || !body.shippingAddress || !body.items || !Array.isArray(body.items)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });

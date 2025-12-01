@@ -20,6 +20,7 @@ import UniversalTracking from './components/UniversalTracking'
 import CookieConsent from './components/CookieConsent'
 import ErrorBoundary from './components/ErrorBoundary'
 import { OrganizationSchema, WebSiteSchema } from './components/StructuredData'
+import ComingSoonBanner from './components/ComingSoonBanner'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -120,6 +121,7 @@ export default function RootLayout({
             <ChaosProvider>
               <AnalyticsProvider>
                 <TestModeBanner />
+                <ComingSoonBanner />
                 {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
                   <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
                 )}

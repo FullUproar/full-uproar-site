@@ -1034,9 +1034,9 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
 
                 <div style={{
                   ...styles.stockStatus,
-                  color: game.stock > 20 ? '#86efac' : game.stock > 0 ? '#fdba74' : '#fca5a5'
+                  color: game.stock > 20 ? '#86efac' : game.stock > 0 ? '#fdba74' : '#f97316'
                 }}>
-                  {game.stock > 20 ? '✓ In Stock' : game.stock > 0 ? `Only ${game.stock} left!` : 'Out of Stock'}
+                  {game.stock > 20 ? '✓ In Stock' : game.stock > 0 ? `Only ${game.stock} left!` : '✨ Coming Spring 2026'}
                 </div>
 
                 {todayViews > 50 && (
@@ -1081,18 +1081,20 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
 
                 <div style={styles.actionButtons}>
                   {game.stock === 0 ? (
-                    <Tooltip text="This item is currently out of stock" position="top">
+                    <Tooltip text="Launching Spring 2026 - Join the chaos soon!" position="top">
                       <button
                         disabled={true}
                         style={{
                           ...styles.addToCartButton,
-                          opacity: 0.5,
+                          opacity: 0.8,
                           cursor: 'not-allowed',
-                          width: '100%'
+                          width: '100%',
+                          background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+                          border: '2px solid #f97316'
                         }}
                       >
-                        <ShoppingCart style={{ width: '20px', height: '20px' }} />
-                        Out of Stock
+                        <Sparkles style={{ width: '20px', height: '20px' }} />
+                        Coming Spring 2026
                       </button>
                     </Tooltip>
                   ) : (
@@ -1116,21 +1118,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                     </button>
                   )}
                   
-                  {game.stock === 0 ? (
-                    <Tooltip text="This item is currently out of stock" position="bottom">
-                      <button
-                        disabled={true}
-                        style={{
-                          ...styles.buyNowButton,
-                          opacity: 0.5,
-                          cursor: 'not-allowed',
-                          width: '100%'
-                        }}
-                      >
-                        Buy It Now!
-                      </button>
-                    </Tooltip>
-                  ) : (
+                  {game.stock > 0 && (
                     <button
                       onClick={handleBuyNow}
                       style={styles.buyNowButton}
