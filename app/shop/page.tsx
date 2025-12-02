@@ -542,12 +542,12 @@ function ShopContent() {
                         <AddToCartButton onClick={() => handleAddGameToCart(game)} disabled={game.stock === 0} />
                       ) : (
                         <div style={{
-                          width: '100%',
                           padding: '0.875rem',
                           background: 'linear-gradient(135deg, #1e293b, #0f172a)',
                           border: '2px solid #f97316',
                           borderRadius: '0.5rem',
-                          textAlign: 'center'
+                          textAlign: 'center',
+                          boxSizing: 'border-box'
                         }}>
                           <div style={{ color: '#f97316', fontWeight: 900, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
                             COMING SPRING 2026
