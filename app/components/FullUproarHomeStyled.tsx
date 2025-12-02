@@ -84,6 +84,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(800);
+  const [headlineTilts, setHeadlineTilts] = useState({ top: 0, bottom: 0 });
   // Icon lookup function to avoid storing components in arrays (causes build issues)
   const getChaosFeedIcon = (iconName: string, size: number, color: string) => {
     switch (iconName) {
@@ -323,8 +324,17 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Random headline tilts on page load for chaos
+  useEffect(() => {
+    const randomTilt = () => (Math.random() * 6) - 3; // -3 to +3 degrees
+    setHeadlineTilts({
+      top: randomTilt(),
+      bottom: -randomTilt(), // Opposite direction
+    });
   }, []);
 
   // Remove debug logs that were causing console spam
@@ -706,6 +716,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             lineHeight: 1,
             marginBottom: 0,
             color: '#FF7500',
+            transform: `rotate(${headlineTilts.top}deg)`,
+            transition: 'transform 0.3s',
           }}>
             Chaotic party games
           </h1>
@@ -715,7 +727,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             position: 'relative',
             marginTop: isMobile ? '2rem' : '3rem',
             marginBottom: isMobile ? '0.25rem' : '0.5rem',
-            height: isMobile ? '150px' : '240px',
+            height: isMobile ? '180px' : '300px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -724,7 +736,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               src="/FuglyLaying.png"
               alt="Fugly - the chaos mascot"
               style={{
-                height: isMobile ? '180px' : '300px',
+                height: isMobile ? '220px' : '380px',
                 width: 'auto',
                 transform: 'rotate(-2deg)',
                 filter: 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.5))',
@@ -739,6 +751,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             lineHeight: 1,
             marginBottom: '1.5rem',
             color: '#FF7500',
+            transform: `rotate(${headlineTilts.bottom}deg)`,
+            transition: 'transform 0.3s',
           }}>
             that hack your game night.
           </h1>
@@ -753,7 +767,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             margin: '0 auto 2rem',
             fontWeight: 500,
           }}>
-            Hilarious standalone games and mod decks that plug into the games you already own.
+            We make hilarious standalone games. We also make mod decks that plug into games you already own.
           </p>
 
           {/* CTA Buttons */}
@@ -831,14 +845,16 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           </div>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator - centered in remaining space */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: '0.5rem',
-            marginTop: isMobile ? '3rem' : '5rem',
+            flex: 1,
+            width: '100%',
             color: colors.chaosOrange,
             cursor: 'pointer',
           }}
@@ -849,6 +865,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             fontWeight: 900,
             letterSpacing: '0.15em',
             textShadow: '0 0 20px rgba(255, 117, 0, 0.5)',
+            textAlign: 'center',
           }}>
             SCROLL FOR CHAOS
           </span>
@@ -858,6 +875,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             style={{
               animation: 'bounce 1.5s infinite',
               filter: 'drop-shadow(0 0 8px rgba(255, 117, 0, 0.5))',
+              display: 'block',
             }}
           />
         </div>
