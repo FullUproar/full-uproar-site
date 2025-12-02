@@ -8,7 +8,6 @@ import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 import FuglyLogo from './FuglyLogo';
 import CartButton from './CartButton';
 import MobileCartButton from './MobileCartButton';
-import ChaosToggle from './ChaosToggle';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -193,7 +192,6 @@ export default function Navigation() {
                   </UserButton>
                 </SignedIn>
                 
-                <ChaosToggle />
                 <CartButton />
               </div>
             )}

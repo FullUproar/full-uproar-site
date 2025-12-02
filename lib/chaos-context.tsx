@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
 
 interface ChaosContextType {
   chaosEnabled: boolean;
@@ -13,26 +13,11 @@ const ChaosContext = createContext<ChaosContextType>({
 });
 
 export function ChaosProvider({ children }: { children: React.ReactNode }) {
-  const [chaosEnabled, setChaosEnabled] = useState(true);
-
-  // Load preference from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem('fugly-chaos-enabled');
-    if (stored !== null) {
-      setChaosEnabled(stored === 'true');
-    }
-  }, []);
-
-  const toggleChaos = () => {
-    const newEnabled = !chaosEnabled;
-    setChaosEnabled(newEnabled);
-    localStorage.setItem('fugly-chaos-enabled', String(newEnabled));
-  };
-
+  // Chaos is always enabled - no toggle needed
   return (
-    <ChaosContext.Provider value={{ 
-      chaosEnabled, 
-      toggleChaos
+    <ChaosContext.Provider value={{
+      chaosEnabled: true,
+      toggleChaos: () => {}
     }}>
       {children}
     </ChaosContext.Provider>
