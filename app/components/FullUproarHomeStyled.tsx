@@ -682,145 +682,151 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     <div style={styles.container}>
       <Navigation />
 
-      {/* Hero Section - Side by side layout */}
+      {/* Hero Section - Vertical with Fugly integrated into text */}
       <section style={{
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        paddingTop: '5rem', // Space for nav
+        alignItems: 'center',
+        paddingTop: '5rem',
         paddingBottom: '2rem',
+        textAlign: 'center',
       }}>
         <div style={{
-          maxWidth: '80rem',
+          maxWidth: '900px',
           margin: '0 auto',
           padding: '0 1.5rem',
           width: '100%',
         }}>
-          {/* Main hero grid - text left, Fugly right */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-            gap: isMobile ? '2rem' : '3rem',
-            alignItems: 'center',
+          {/* First headline line */}
+          <h1 style={{
+            fontSize: isMobile ? '2.5rem' : '4.5rem',
+            fontWeight: 900,
+            lineHeight: 1,
+            marginBottom: 0,
+            color: '#FF7500',
           }}>
-            {/* Text Content */}
-            <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
-              <h1 style={{
-                fontSize: isMobile ? '2.5rem' : '4rem',
+            Chaotic party games
+          </h1>
+
+          {/* Fugly integrated between text */}
+          <div style={{
+            position: 'relative',
+            margin: isMobile ? '0.5rem 0' : '0',
+            height: isMobile ? '120px' : '180px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <img
+              src="/FuglyLaying.png"
+              alt="Fugly - the chaos mascot"
+              style={{
+                height: isMobile ? '140px' : '220px',
+                width: 'auto',
+                transform: 'rotate(-2deg)',
+                filter: 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.5))',
+              }}
+            />
+          </div>
+
+          {/* Rest of headline */}
+          <h1 style={{
+            fontSize: isMobile ? '2.5rem' : '4.5rem',
+            fontWeight: 900,
+            lineHeight: 1,
+            marginBottom: '1.5rem',
+            color: '#FF7500',
+          }}>
+            that hack your game night.
+          </h1>
+
+          {/* Subtitle */}
+          <p style={{
+            fontSize: isMobile ? '1.1rem' : '1.4rem',
+            color: '#fde68a',
+            lineHeight: 1.5,
+            marginBottom: '2rem',
+            maxWidth: '600px',
+            margin: '0 auto 2rem',
+            fontWeight: 500,
+          }}>
+            Hilarious standalone games and game-mod decks that plug into the games you already own.
+          </p>
+
+          {/* CTA Buttons */}
+          <div style={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '1rem',
+          }}>
+            <a
+              href="/shop"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: '#FF7500',
+                color: '#111827',
+                padding: '1rem 2rem',
+                borderRadius: '50px',
                 fontWeight: 900,
-                lineHeight: 1.1,
-                marginBottom: '1.25rem',
-              }}>
-                <div style={styles.orangeText}>Chaotic party games</div>
-                <div style={styles.orangeText}>that hack your</div>
-                <div style={styles.orangeText}>game night.</div>
-              </h1>
+                fontSize: '1.1rem',
+                textDecoration: 'none',
+                boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
+                transition: 'all 0.3s',
+                textTransform: 'uppercase' as const,
+                letterSpacing: '0.03em'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 15px 50px rgba(255, 117, 0, 0.7)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
+              }}
+            >
+              Browse Games <ArrowRight size={20} />
+            </a>
 
-              <p style={{
-                fontSize: isMobile ? '1.1rem' : '1.3rem',
+            <button
+              onClick={() => {
+                const element = document.getElementById('how-it-works');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: 'transparent',
                 color: '#fde68a',
-                lineHeight: 1.5,
-                marginBottom: '2rem',
-                maxWidth: isMobile ? '100%' : '500px',
-                fontWeight: 500,
-              }}>
-                We make hilarious standalone games and game-mod decks that plug into the games you already own.
-              </p>
-
-              {/* CTA Buttons */}
-              <div style={{
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                alignItems: isMobile ? 'center' : 'flex-start',
-                gap: '1rem',
-              }}>
-                <a
-                  href="/shop"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    background: '#FF7500',
-                    color: '#111827',
-                    padding: '1rem 2rem',
-                    borderRadius: '50px',
-                    fontWeight: 900,
-                    fontSize: '1.1rem',
-                    textDecoration: 'none',
-                    boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
-                    transition: 'all 0.3s',
-                    textTransform: 'uppercase' as const,
-                    letterSpacing: '0.03em'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.boxShadow = '0 15px 50px rgba(255, 117, 0, 0.7)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
-                  }}
-                >
-                  Browse Games <ArrowRight size={20} />
-                </a>
-
-                <button
-                  onClick={() => {
-                    const element = document.getElementById('how-it-works');
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    background: 'transparent',
-                    color: '#fde68a',
-                    padding: '1rem 2rem',
-                    borderRadius: '50px',
-                    fontWeight: 700,
-                    fontSize: '1rem',
-                    border: '2px solid #fde68a',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(253, 230, 138, 0.1)';
-                    e.currentTarget.style.borderColor = '#FF7500';
-                    e.currentTarget.style.color = '#FF7500';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = '#fde68a';
-                    e.currentTarget.style.color = '#fde68a';
-                  }}
-                >
-                  How It Works
-                </button>
-              </div>
-            </div>
-
-            {/* Fugly Image */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              order: isMobile ? -1 : 0, // Fugly first on mobile
-            }}>
-              <img
-                src="/FuglyLaying.png"
-                alt="Fugly - the chaos mascot"
-                style={{
-                  width: isMobile ? '300px' : '100%',
-                  maxWidth: '600px',
-                  height: 'auto',
-                  transform: 'rotate(-3deg)',
-                  filter: 'drop-shadow(0 20px 50px rgba(0, 0, 0, 0.6))',
-                }}
-              />
-            </div>
+                padding: '1rem 2rem',
+                borderRadius: '50px',
+                fontWeight: 700,
+                fontSize: '1rem',
+                border: '2px solid #fde68a',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(253, 230, 138, 0.1)';
+                e.currentTarget.style.borderColor = '#FF7500';
+                e.currentTarget.style.color = '#FF7500';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.borderColor = '#fde68a';
+                e.currentTarget.style.color = '#fde68a';
+              }}
+            >
+              How It Works
+            </button>
           </div>
         </div>
 
@@ -831,7 +837,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             flexDirection: 'column',
             alignItems: 'center',
             gap: '0.5rem',
-            marginTop: '2rem',
+            marginTop: 'auto',
+            paddingTop: '2rem',
             color: colors.chaosOrange,
             cursor: 'pointer',
           }}
