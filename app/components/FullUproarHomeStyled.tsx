@@ -696,12 +696,12 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       <section style={{
         height: '100vh',
         maxHeight: '100vh',
-        minHeight: isMobile ? '600px' : '700px',
+        minHeight: isMobile ? '500px' : '700px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: isMobile ? '12vh' : '10vh',
+        paddingTop: isMobile ? '9vh' : '10vh',
         paddingBottom: isMobile ? '2vh' : '3vh',
         textAlign: 'center',
         overflow: 'hidden',
@@ -732,11 +732,11 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            marginTop: isMobile ? '1.5rem' : '2.5rem',
+            marginTop: isMobile ? '1rem' : '2.5rem',
             marginBottom: isMobile ? '0.25rem' : '0.5rem',
-            height: isMobile ? '25vh' : '35vh',
-            maxHeight: isMobile ? '180px' : '320px',
-            minHeight: isMobile ? '120px' : '200px',
+            height: isMobile ? '20vh' : '35vh',
+            maxHeight: isMobile ? '140px' : '320px',
+            minHeight: isMobile ? '100px' : '200px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -746,7 +746,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               alt="Fugly - the chaos mascot"
               style={{
                 height: '100%',
-                maxHeight: isMobile ? '200px' : '380px',
+                maxHeight: isMobile ? '160px' : '380px',
                 width: 'auto',
                 transform: 'rotate(-2deg)',
                 filter: 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.5))',
@@ -759,7 +759,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             fontSize: isMobile ? 'clamp(1.5rem, 7vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
             fontWeight: 900,
             lineHeight: 1,
-            marginBottom: isMobile ? '1rem' : '1.5rem',
+            marginBottom: isMobile ? '0.75rem' : '1.5rem',
             color: '#FF7500',
             transform: `rotate(${headlineTilts.bottom}deg)`,
             transition: 'transform 0.3s',
@@ -770,12 +770,12 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
 
           {/* Subtitle */}
           <p style={{
-            fontSize: isMobile ? 'clamp(0.9rem, 3.5vw, 1.1rem)' : '1.4rem',
+            fontSize: isMobile ? 'clamp(0.85rem, 3.5vw, 1rem)' : '1.4rem',
             color: '#fde68a',
-            lineHeight: 1.4,
-            marginBottom: isMobile ? '1rem' : '2rem',
+            lineHeight: 1.3,
+            marginBottom: isMobile ? '0.75rem' : '2rem',
             maxWidth: '600px',
-            margin: isMobile ? '0 auto 1rem' : '0 auto 2rem',
+            margin: isMobile ? '0 auto 0.75rem' : '0 auto 2rem',
             fontWeight: 500,
             padding: isMobile ? '0 0.25rem' : '0',
           }}>
@@ -788,7 +788,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             flexDirection: isMobile ? 'column' : 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: isMobile ? '0.75rem' : '1rem',
+            gap: isMobile ? '0.5rem' : '1rem',
           }}>
             <a
               href="/shop"
