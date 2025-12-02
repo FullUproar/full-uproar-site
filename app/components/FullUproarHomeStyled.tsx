@@ -682,78 +682,48 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     <div style={styles.container}>
       <Navigation />
 
-      {/* Hero Section - Fugly-first design */}
+      {/* Hero Section - Side by side layout */}
       <section style={{
-        ...styles.heroSection,
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        paddingTop: '4rem', // Space for nav
+        justifyContent: 'center',
+        paddingTop: '5rem', // Space for nav
+        paddingBottom: '2rem',
       }}>
-        {/* Hero content wrapper - this fades/scales on scroll */}
         <div style={{
-          ...styles.heroContent,
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
+          maxWidth: '80rem',
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          width: '100%',
         }}>
-          {/* Big Fugly Banner */}
+          {/* Main hero grid - text left, Fugly right */}
           <div style={{
-            display: 'flex',
-            justifyContent: 'center',
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+            gap: isMobile ? '2rem' : '3rem',
             alignItems: 'center',
-            padding: isMobile ? '1rem' : '2rem 2rem 0',
-            marginTop: isMobile ? '1rem' : '2rem',
           }}>
-            <img
-              src="/FuglyLaying.png"
-              alt="Fugly - the chaos mascot"
-              style={{
-                width: isMobile ? '280px' : '500px',
-                maxWidth: '90vw',
-                height: 'auto',
-                transform: 'rotate(-3deg)',
-                filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5))',
-              }}
-            />
-          </div>
-
-          {/* Text Content Below Fugly */}
-          <div style={{
-            ...styles.heroContainer,
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            paddingTop: isMobile ? '1rem' : '1.5rem',
-          }}>
-            <div style={styles.textCenter}>
-              <div style={{
-                ...styles.badge,
-                transform: `rotate(${phraseTransform.rotation}deg) scale(${phraseTransform.scale})`,
-                transition: 'none',
-                fontSize: isMobile ? '1rem' : '1.25rem',
-                padding: '0.4rem 1rem',
-                marginBottom: '1rem',
-              }}>{chaosPhrase}</div>
-
+            {/* Text Content */}
+            <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
               <h1 style={{
-                ...styles.heroTitle,
-                fontSize: isMobile ? '2rem' : '3.5rem',
-                marginBottom: '1rem',
-                lineHeight: 1.15,
+                fontSize: isMobile ? '2.5rem' : '4rem',
+                fontWeight: 900,
+                lineHeight: 1.1,
+                marginBottom: '1.25rem',
               }}>
                 <div style={styles.orangeText}>Chaotic party games</div>
-                <div style={styles.orangeText}>that hack your game night.</div>
+                <div style={styles.orangeText}>that hack your</div>
+                <div style={styles.orangeText}>game night.</div>
               </h1>
 
               <p style={{
-                ...styles.heroSubtitle,
-                fontSize: isMobile ? '1rem' : '1.2rem',
-                padding: isMobile ? '0 0.5rem' : '0',
-                maxWidth: '40rem',
+                fontSize: isMobile ? '1.1rem' : '1.3rem',
+                color: '#fde68a',
                 lineHeight: 1.5,
-                marginBottom: '1.5rem',
+                marginBottom: '2rem',
+                maxWidth: isMobile ? '100%' : '500px',
+                fontWeight: 500,
               }}>
                 We make hilarious standalone games and game-mod decks that plug into the games you already own.
               </p>
@@ -762,11 +732,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               <div style={{
                 display: 'flex',
                 flexDirection: isMobile ? 'column' : 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: isMobile ? '0.75rem' : '1rem',
+                alignItems: isMobile ? 'center' : 'flex-start',
+                gap: '1rem',
               }}>
-                {/* Primary CTA */}
                 <a
                   href="/shop"
                   style={{
@@ -775,10 +743,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     gap: '0.5rem',
                     background: '#FF7500',
                     color: '#111827',
-                    padding: isMobile ? '0.875rem 1.75rem' : '1rem 2rem',
+                    padding: '1rem 2rem',
                     borderRadius: '50px',
                     fontWeight: 900,
-                    fontSize: isMobile ? '0.95rem' : '1.1rem',
+                    fontSize: '1.1rem',
                     textDecoration: 'none',
                     boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
                     transition: 'all 0.3s',
@@ -794,10 +762,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
                   }}
                 >
-                  Browse Game-Mod Decks <ArrowRight size={isMobile ? 18 : 20} />
+                  Browse Games <ArrowRight size={20} />
                 </a>
 
-                {/* Secondary CTA - Ghost Button */}
                 <button
                   onClick={() => {
                     const element = document.getElementById('how-it-works');
@@ -811,10 +778,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     gap: '0.5rem',
                     background: 'transparent',
                     color: '#fde68a',
-                    padding: isMobile ? '0.75rem 1.5rem' : '0.875rem 1.75rem',
+                    padding: '1rem 2rem',
                     borderRadius: '50px',
                     fontWeight: 700,
-                    fontSize: isMobile ? '0.95rem' : '1rem',
+                    fontSize: '1rem',
                     border: '2px solid #fde68a',
                     cursor: 'pointer',
                     transition: 'all 0.3s',
@@ -834,40 +801,58 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 </button>
               </div>
             </div>
-          </div>
 
-          {/* Scroll Indicator */}
-          <div
-            style={{
+            {/* Fugly Image */}
+            <div style={{
               display: 'flex',
-              flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
-              gap: '0.5rem',
-              padding: '1.5rem 0',
-              color: colors.chaosOrange,
-              cursor: 'pointer',
-              opacity: scrollY > 80 ? 0 : 1,
-              transition: 'opacity 0.3s ease',
-            }}
-            onClick={() => window.scrollTo({ top: viewportHeight * 0.7, behavior: 'smooth' })}
-          >
-            <span style={{
-              fontSize: isMobile ? '0.875rem' : '1rem',
-              fontWeight: 900,
-              letterSpacing: '0.15em',
-              textShadow: '0 0 20px rgba(255, 117, 0, 0.5)',
+              order: isMobile ? -1 : 0, // Fugly first on mobile
             }}>
-              SCROLL FOR CHAOS
-            </span>
-            <ChevronDown
-              size={isMobile ? 32 : 40}
-              strokeWidth={2.5}
-              style={{
-                animation: 'bounce 1.5s infinite',
-                filter: 'drop-shadow(0 0 8px rgba(255, 117, 0, 0.5))',
-              }}
-            />
+              <img
+                src="/FuglyLaying.png"
+                alt="Fugly - the chaos mascot"
+                style={{
+                  width: isMobile ? '300px' : '100%',
+                  maxWidth: '600px',
+                  height: 'auto',
+                  transform: 'rotate(-3deg)',
+                  filter: 'drop-shadow(0 20px 50px rgba(0, 0, 0, 0.6))',
+                }}
+              />
+            </div>
           </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.5rem',
+            marginTop: '2rem',
+            color: colors.chaosOrange,
+            cursor: 'pointer',
+          }}
+          onClick={() => window.scrollTo({ top: viewportHeight * 0.8, behavior: 'smooth' })}
+        >
+          <span style={{
+            fontSize: '1rem',
+            fontWeight: 900,
+            letterSpacing: '0.15em',
+            textShadow: '0 0 20px rgba(255, 117, 0, 0.5)',
+          }}>
+            SCROLL FOR CHAOS
+          </span>
+          <ChevronDown
+            size={40}
+            strokeWidth={2.5}
+            style={{
+              animation: 'bounce 1.5s infinite',
+              filter: 'drop-shadow(0 0 8px rgba(255, 117, 0, 0.5))',
+            }}
+          />
         </div>
       </section>
 
