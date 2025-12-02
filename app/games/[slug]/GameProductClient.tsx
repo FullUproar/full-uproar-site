@@ -275,7 +275,7 @@ export default function GameProductClient({ game, similarGames }: GameProductCli
 
               {game.isPreorder && (
                 <p className="text-center text-yellow-400 font-bold">
-                  🚀 Pre-order now and get it August 2025!
+                  🚀 Pre-order now and get it Spring 2026!
                 </p>
               )}
             </div>

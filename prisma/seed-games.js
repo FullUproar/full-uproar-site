@@ -86,9 +86,9 @@ const sampleComics = [
 
 const sampleNews = [
   {
-    title: "August 2025 Production Confirmed!",
+    title: "Spring 2026 Production Confirmed!",
     excerpt: "All four games are heading to production! Hack Your Deck, Crime and Funishments, Dumbest Ways to Win, and #CancelMe are officially happening. Fugly demands extra catnip.",
-    content: "This is huge news for all Fugly fans! After months of development and testing, we're excited to announce that all four of our flagship games are moving into production. Expected delivery: August 2025. Pre-orders are now live!"
+    content: "This is huge news for all Fugly fans! After months of development and testing, we're excited to announce that all four of our flagship games are moving into production. Expected delivery: Spring 2026. Pre-orders are now live!"
   },
   {
     title: "Chaos Engine Bundle Saves You $10",

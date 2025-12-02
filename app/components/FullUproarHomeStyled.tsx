@@ -1644,7 +1644,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     fontWeight: 900,
                     transform: 'rotate(12deg)'
                   }}>
-                    AUG 2025
+                    SPRING 2026
                   </span>
                 )}
                 {game.isBundle && (

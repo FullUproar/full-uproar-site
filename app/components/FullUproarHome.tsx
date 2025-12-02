@@ -327,7 +327,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
                 
                 {game.isPreorder && !game.isBundle && (
                   <span className="absolute -top-3 -right-3 bg-red-500 text-white text-xs px-3 py-1 rounded-full font-black transform rotate-12">
-                    AUG 2025
+                    SPRING 2026
                   </span>
                 )}
                 {game.isBundle && (

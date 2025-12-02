@@ -508,7 +508,7 @@ export default function GameProductProfessional({ game, similarGames }: GameProd
                     </div>
                     <div className="flex">
                       <dt className="text-gray-600 w-32">Release Date</dt>
-                      <dd className="font-medium">{game.isPreorder ? 'August 2025' : 'Available Now'}</dd>
+                      <dd className="font-medium">{game.isPreorder ? 'Spring 2026' : 'Available Now'}</dd>
                     </div>
                   </dl>
                 </div>

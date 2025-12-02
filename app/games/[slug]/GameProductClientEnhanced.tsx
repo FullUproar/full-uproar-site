@@ -257,7 +257,7 @@ export default function GameProductClientEnhanced({ game, similarGames }: GamePr
                       <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-black">
                         PRE-ORDER BONUS
                       </div>
-                      <p className="text-xs text-gray-300 mt-1">Ships August 2025</p>
+                      <p className="text-xs text-gray-300 mt-1">Ships Spring 2026</p>
                     </div>
                   )}
                 </div>
