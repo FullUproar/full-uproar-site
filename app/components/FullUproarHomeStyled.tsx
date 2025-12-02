@@ -767,7 +767,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             margin: '0 auto 2rem',
             fontWeight: 500,
           }}>
-            We make hilarious standalone games. We also make mod decks that plug into games you already own.
+            We make mod decks that plug into games you already own. We also make hilarious standalone games.
           </p>
 
           {/* CTA Buttons */}
