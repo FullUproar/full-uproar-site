@@ -689,7 +689,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: isMobile ? '6rem' : '8rem',
+        paddingTop: isMobile ? '8rem' : '12rem',
         paddingBottom: '2rem',
         textAlign: 'center',
       }}>
@@ -753,7 +753,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             margin: '0 auto 2rem',
             fontWeight: 500,
           }}>
-            Hilarious standalone games and game-mod decks that plug into the games you already own.
+            Hilarious standalone games and mod decks that plug into the games you already own.
           </p>
 
           {/* CTA Buttons */}
@@ -838,7 +838,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             flexDirection: 'column',
             alignItems: 'center',
             gap: '0.5rem',
-            marginTop: isMobile ? '2rem' : '3rem',
+            marginTop: isMobile ? '3rem' : '5rem',
             color: colors.chaosOrange,
             cursor: 'pointer',
           }}
