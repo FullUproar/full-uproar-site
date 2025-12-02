@@ -693,16 +693,17 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       <Navigation />
 
       {/* Hero Section - Vertical with Fugly integrated into text */}
+      {/* Using dvh for mobile browsers where 100vh includes browser chrome */}
       <section style={{
-        height: '100vh',
-        maxHeight: '100vh',
+        height: isMobile ? '100dvh' : '100vh',
+        maxHeight: isMobile ? '100dvh' : '100vh',
         minHeight: isMobile ? '500px' : '700px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: isMobile ? '9vh' : '10vh',
-        paddingBottom: isMobile ? '2vh' : '3vh',
+        paddingTop: isMobile ? '70px' : '10vh', // Fixed px for mobile nav height
+        paddingBottom: isMobile ? '20px' : '3vh',
         textAlign: 'center',
         overflow: 'hidden',
         boxSizing: 'border-box',
