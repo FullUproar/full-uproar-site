@@ -713,7 +713,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            marginTop: isMobile ? '1rem' : '1.5rem',
+            marginTop: isMobile ? '2rem' : '3rem',
             marginBottom: isMobile ? '0.25rem' : '0.5rem',
             height: isMobile ? '150px' : '240px',
             display: 'flex',
@@ -838,8 +838,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             flexDirection: 'column',
             alignItems: 'center',
             gap: '0.5rem',
-            marginTop: 'auto',
-            paddingTop: '2rem',
+            marginTop: isMobile ? '2rem' : '3rem',
             color: colors.chaosOrange,
             cursor: 'pointer',
           }}
