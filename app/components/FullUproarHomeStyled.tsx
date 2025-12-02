@@ -699,7 +699,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: isMobile ? '8rem' : '12rem',
+        paddingTop: isMobile ? '6rem' : '8rem',
         paddingBottom: '2rem',
         textAlign: 'center',
       }}>
