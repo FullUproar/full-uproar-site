@@ -694,30 +694,37 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
 
       {/* Hero Section - Vertical with Fugly integrated into text */}
       <section style={{
-        minHeight: '100vh',
+        height: '100vh',
+        maxHeight: '100vh',
+        minHeight: isMobile ? '600px' : '700px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: isMobile ? '6rem' : '8rem',
-        paddingBottom: '2rem',
+        paddingTop: isMobile ? '12vh' : '10vh',
+        paddingBottom: isMobile ? '2vh' : '3vh',
         textAlign: 'center',
+        overflow: 'hidden',
+        boxSizing: 'border-box',
       }}>
         <div style={{
           maxWidth: '900px',
           margin: '0 auto',
-          padding: '0 1.5rem',
+          padding: isMobile ? '0 0.75rem' : '0 1rem',
           width: '100%',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
         }}>
           {/* First headline line */}
           <h1 style={{
-            fontSize: isMobile ? '2.5rem' : '4.5rem',
+            fontSize: isMobile ? 'clamp(1.75rem, 8vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
             fontWeight: 900,
             lineHeight: 1,
             marginBottom: 0,
             color: '#FF7500',
             transform: `rotate(${headlineTilts.top}deg)`,
             transition: 'transform 0.3s',
+            whiteSpace: 'nowrap',
           }}>
             Chaotic party games
           </h1>
@@ -725,9 +732,11 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            marginTop: isMobile ? '2rem' : '3rem',
+            marginTop: isMobile ? '1.5rem' : '2.5rem',
             marginBottom: isMobile ? '0.25rem' : '0.5rem',
-            height: isMobile ? '180px' : '300px',
+            height: isMobile ? '25vh' : '35vh',
+            maxHeight: isMobile ? '180px' : '320px',
+            minHeight: isMobile ? '120px' : '200px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -736,7 +745,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               src="/FuglyLaying.png"
               alt="Fugly - the chaos mascot"
               style={{
-                height: isMobile ? '220px' : '380px',
+                height: '100%',
+                maxHeight: isMobile ? '200px' : '380px',
                 width: 'auto',
                 transform: 'rotate(-2deg)',
                 filter: 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.5))',
@@ -746,26 +756,28 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
 
           {/* Rest of headline */}
           <h1 style={{
-            fontSize: isMobile ? '2.5rem' : '4.5rem',
+            fontSize: isMobile ? 'clamp(1.5rem, 7vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
             fontWeight: 900,
             lineHeight: 1,
-            marginBottom: '1.5rem',
+            marginBottom: isMobile ? '1rem' : '1.5rem',
             color: '#FF7500',
             transform: `rotate(${headlineTilts.bottom}deg)`,
             transition: 'transform 0.3s',
+            whiteSpace: 'nowrap',
           }}>
             that hack your game night.
           </h1>
 
           {/* Subtitle */}
           <p style={{
-            fontSize: isMobile ? '1.1rem' : '1.4rem',
+            fontSize: isMobile ? 'clamp(0.9rem, 3.5vw, 1.1rem)' : '1.4rem',
             color: '#fde68a',
-            lineHeight: 1.5,
-            marginBottom: '2rem',
+            lineHeight: 1.4,
+            marginBottom: isMobile ? '1rem' : '2rem',
             maxWidth: '600px',
-            margin: '0 auto 2rem',
+            margin: isMobile ? '0 auto 1rem' : '0 auto 2rem',
             fontWeight: 500,
+            padding: isMobile ? '0 0.25rem' : '0',
           }}>
             We make mod decks that plug into games you already own. We also make hilarious standalone games.
           </p>
@@ -776,7 +788,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             flexDirection: isMobile ? 'column' : 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: '1rem',
+            gap: isMobile ? '0.75rem' : '1rem',
           }}>
             <a
               href="/shop"
@@ -786,10 +798,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 gap: '0.5rem',
                 background: '#FF7500',
                 color: '#111827',
-                padding: '1rem 2rem',
+                padding: isMobile ? '0.75rem 1.5rem' : '1rem 2rem',
                 borderRadius: '50px',
                 fontWeight: 900,
-                fontSize: '1.1rem',
+                fontSize: isMobile ? '1rem' : '1.1rem',
                 textDecoration: 'none',
                 boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
                 transition: 'all 0.3s',
@@ -805,7 +817,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
               }}
             >
-              Browse Games <ArrowRight size={20} />
+              Browse Games <ArrowRight size={isMobile ? 18 : 20} />
             </a>
 
             <button
@@ -821,10 +833,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 gap: '0.5rem',
                 background: 'transparent',
                 color: '#fde68a',
-                padding: '1rem 2rem',
+                padding: isMobile ? '0.75rem 1.5rem' : '1rem 2rem',
                 borderRadius: '50px',
                 fontWeight: 700,
-                fontSize: '1rem',
+                fontSize: isMobile ? '0.9rem' : '1rem',
                 border: '2px solid #fde68a',
                 cursor: 'pointer',
                 transition: 'all 0.3s',
@@ -852,16 +864,18 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '0.5rem',
-            flex: 1,
+            gap: '0.25rem',
+            flexShrink: 0,
+            minHeight: isMobile ? '60px' : '80px',
             width: '100%',
             color: colors.chaosOrange,
             cursor: 'pointer',
+            paddingBottom: isMobile ? '1vh' : '2vh',
           }}
           onClick={() => window.scrollTo({ top: viewportHeight * 0.8, behavior: 'smooth' })}
         >
           <span style={{
-            fontSize: '1rem',
+            fontSize: isMobile ? '0.8rem' : '1rem',
             fontWeight: 900,
             letterSpacing: '0.15em',
             textShadow: '0 0 20px rgba(255, 117, 0, 0.5)',
@@ -870,7 +884,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             SCROLL FOR CHAOS
           </span>
           <ChevronDown
-            size={40}
+            size={isMobile ? 30 : 40}
             strokeWidth={2.5}
             style={{
               animation: 'bounce 1.5s infinite',
