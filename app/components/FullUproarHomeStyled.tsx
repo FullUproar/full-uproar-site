@@ -687,9 +687,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: '5rem',
+        paddingTop: isMobile ? '6rem' : '8rem',
         paddingBottom: '2rem',
         textAlign: 'center',
       }}>
@@ -713,8 +713,9 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            margin: isMobile ? '0.5rem 0' : '0',
-            height: isMobile ? '120px' : '180px',
+            marginTop: isMobile ? '1rem' : '1.5rem',
+            marginBottom: isMobile ? '0.25rem' : '0.5rem',
+            height: isMobile ? '150px' : '240px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -723,7 +724,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               src="/FuglyLaying.png"
               alt="Fugly - the chaos mascot"
               style={{
-                height: isMobile ? '140px' : '220px',
+                height: isMobile ? '180px' : '300px',
                 width: 'auto',
                 transform: 'rotate(-2deg)',
                 filter: 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.5))',
