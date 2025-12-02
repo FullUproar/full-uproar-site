@@ -682,36 +682,78 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
     <div style={styles.container}>
       <Navigation />
 
-      {/* Hero Section - Full viewport welcome mat */}
-      <section style={styles.heroSection}>
+      {/* Hero Section - Fugly-first design */}
+      <section style={{
+        ...styles.heroSection,
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        paddingTop: '4rem', // Space for nav
+      }}>
         {/* Hero content wrapper - this fades/scales on scroll */}
-        <div style={styles.heroContent}>
-          <div style={styles.heroContainer}>
+        <div style={{
+          ...styles.heroContent,
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+        }}>
+          {/* Big Fugly Banner */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: isMobile ? '1rem' : '2rem 2rem 0',
+            marginTop: isMobile ? '1rem' : '2rem',
+          }}>
+            <img
+              src="/FuglyLaying.png"
+              alt="Fugly - the chaos mascot"
+              style={{
+                width: isMobile ? '280px' : '500px',
+                maxWidth: '90vw',
+                height: 'auto',
+                transform: 'rotate(-3deg)',
+                filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5))',
+              }}
+            />
+          </div>
+
+          {/* Text Content Below Fugly */}
+          <div style={{
+            ...styles.heroContainer,
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            paddingTop: isMobile ? '1rem' : '1.5rem',
+          }}>
             <div style={styles.textCenter}>
               <div style={{
                 ...styles.badge,
                 transform: `rotate(${phraseTransform.rotation}deg) scale(${phraseTransform.scale})`,
                 transition: 'none',
-                fontSize: isMobile ? '1.1rem' : '1.5rem',
-                padding: '0.5rem 1.25rem',
+                fontSize: isMobile ? '1rem' : '1.25rem',
+                padding: '0.4rem 1rem',
+                marginBottom: '1rem',
               }}>{chaosPhrase}</div>
 
               <h1 style={{
                 ...styles.heroTitle,
-                fontSize: isMobile ? '2.25rem' : '4rem',
-                marginBottom: '1.5rem',
+                fontSize: isMobile ? '2rem' : '3.5rem',
+                marginBottom: '1rem',
                 lineHeight: 1.15,
               }}>
                 <div style={styles.orangeText}>Chaotic party games</div>
-                <div style={styles.lightOrangeText}>that hack your game night.</div>
+                <div style={styles.orangeText}>that hack your game night.</div>
               </h1>
 
               <p style={{
                 ...styles.heroSubtitle,
-                fontSize: isMobile ? '1.05rem' : '1.35rem',
+                fontSize: isMobile ? '1rem' : '1.2rem',
                 padding: isMobile ? '0 0.5rem' : '0',
-                maxWidth: '42rem',
-                lineHeight: 1.6,
+                maxWidth: '40rem',
+                lineHeight: 1.5,
+                marginBottom: '1.5rem',
               }}>
                 We make hilarious standalone games and game-mod decks that plug into the games you already own.
               </p>
@@ -721,7 +763,8 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                 display: 'flex',
                 flexDirection: isMobile ? 'column' : 'row',
                 alignItems: 'center',
-                gap: isMobile ? '1rem' : '1.25rem',
+                justifyContent: 'center',
+                gap: isMobile ? '0.75rem' : '1rem',
               }}>
                 {/* Primary CTA */}
                 <a
@@ -729,13 +772,13 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.75rem',
+                    gap: '0.5rem',
                     background: '#FF7500',
                     color: '#111827',
-                    padding: isMobile ? '1rem 2rem' : '1.25rem 2.5rem',
+                    padding: isMobile ? '0.875rem 1.75rem' : '1rem 2rem',
                     borderRadius: '50px',
                     fontWeight: 900,
-                    fontSize: isMobile ? '1rem' : '1.25rem',
+                    fontSize: isMobile ? '0.95rem' : '1.1rem',
                     textDecoration: 'none',
                     boxShadow: '0 10px 40px rgba(255, 117, 0, 0.5)',
                     transition: 'all 0.3s',
@@ -751,7 +794,7 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 117, 0, 0.5)';
                   }}
                 >
-                  Browse Game-Mod Decks <ArrowRight size={isMobile ? 20 : 24} />
+                  Browse Game-Mod Decks <ArrowRight size={isMobile ? 18 : 20} />
                 </a>
 
                 {/* Secondary CTA - Ghost Button */}
@@ -768,10 +811,10 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
                     gap: '0.5rem',
                     background: 'transparent',
                     color: '#fde68a',
-                    padding: isMobile ? '0.875rem 1.75rem' : '1.125rem 2rem',
+                    padding: isMobile ? '0.75rem 1.5rem' : '0.875rem 1.75rem',
                     borderRadius: '50px',
                     fontWeight: 700,
-                    fontSize: isMobile ? '1rem' : '1.125rem',
+                    fontSize: isMobile ? '0.95rem' : '1rem',
                     border: '2px solid #fde68a',
                     cursor: 'pointer',
                     transition: 'all 0.3s',
@@ -792,28 +835,39 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Scroll Indicator - Bigger and Bolder */}
-        <div
-          style={styles.scrollIndicator}
-          onClick={() => window.scrollTo({ top: viewportHeight * 0.7, behavior: 'smooth' })}
-        >
-          <span style={{
-            fontSize: isMobile ? '1rem' : '1.25rem',
-            fontWeight: 900,
-            letterSpacing: '0.15em',
-          }}>
-            SCROLL FOR CHAOS
-          </span>
-          <ChevronDown
-            size={isMobile ? 40 : 52}
-            strokeWidth={2.5}
+          {/* Scroll Indicator */}
+          <div
             style={{
-              animation: 'bounce 1.5s infinite',
-              filter: 'drop-shadow(0 0 8px rgba(255, 117, 0, 0.5))',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '1.5rem 0',
+              color: colors.chaosOrange,
+              cursor: 'pointer',
+              opacity: scrollY > 80 ? 0 : 1,
+              transition: 'opacity 0.3s ease',
             }}
-          />
+            onClick={() => window.scrollTo({ top: viewportHeight * 0.7, behavior: 'smooth' })}
+          >
+            <span style={{
+              fontSize: isMobile ? '0.875rem' : '1rem',
+              fontWeight: 900,
+              letterSpacing: '0.15em',
+              textShadow: '0 0 20px rgba(255, 117, 0, 0.5)',
+            }}>
+              SCROLL FOR CHAOS
+            </span>
+            <ChevronDown
+              size={isMobile ? 32 : 40}
+              strokeWidth={2.5}
+              style={{
+                animation: 'bounce 1.5s infinite',
+                filter: 'drop-shadow(0 0 8px rgba(255, 117, 0, 0.5))',
+              }}
+            />
+          </div>
         </div>
       </section>
 
