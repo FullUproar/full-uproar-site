@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrintifyClient } from '@/lib/printify/client';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET() {
   try {
+    // Admin-only debug endpoint
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
     const client = new PrintifyClient();
     await client.initialize();
     

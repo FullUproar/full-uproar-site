@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { config } from '@/lib/config';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET() {
+  // Admin-only debug endpoint
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
   const debugInfo = {
     environment: {
       nodeEnv: process.env.NODE_ENV,

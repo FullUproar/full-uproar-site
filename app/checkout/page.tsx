@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/lib/cartStore';
-import { ArrowLeft, CreditCard, Truck, Package, AlertCircle, TestTube } from 'lucide-react';
+import { ArrowLeft, CreditCard, Truck, Package, AlertCircle, TestTube, Rocket, Calendar } from 'lucide-react';
 import Navigation from '@/app/components/Navigation';
 import { simulatePayment, TEST_CARDS, formatTestCardDisplay } from '@/lib/payment-test-mode';
 import dynamic from 'next/dynamic';
@@ -12,6 +12,13 @@ import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analyti
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import TrustBadges from '@/app/components/TrustBadges';
 import SMSOptIn from '@/app/components/SMSOptIn';
+
+// Store status configuration
+const STORE_STATUS = {
+  isOpen: false,
+  launchDate: 'Spring 2026',
+  allowTestOrders: false // When true, admins can test the full flow
+};
 
 // Dynamically import StripeCheckout to avoid SSR issues
 const StripeCheckout = dynamic(() => import('@/app/components/StripeCheckout'), {
@@ -220,8 +227,7 @@ export default function CheckoutPage() {
         }))
       };
 
-      console.log('Cart items:', items);
-      console.log('Submitting order:', orderData);
+      // Debug logs removed for production
 
       const response = await fetch('/api/orders', {
         method: 'POST',
@@ -232,6 +238,16 @@ export default function CheckoutPage() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Order creation failed:', errorData);
+
+        // Handle store-closed 503 response gracefully
+        if (response.status === 503) {
+          setErrors({
+            submit: `🚀 ${errorData.error || 'Store launching soon!'} Join our mailing list to be notified when we open!`
+          });
+          setIsProcessing(false);
+          return;
+        }
+
         throw new Error(errorData.error || 'Failed to create order');
       }
 
@@ -253,9 +269,8 @@ export default function CheckoutPage() {
       router.push(`/order-confirmation?orderId=${order.id}`);
     } catch (error) {
       console.error('Checkout error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
       setErrors({ submit: errorMessage });
-      alert(`Order failed: ${errorMessage}`);
     } finally {
       setIsProcessing(false);
     }
@@ -328,12 +343,60 @@ export default function CheckoutPage() {
           fontWeight: 900,
           color: '#f97316',
           textAlign: 'center',
-          marginBottom: '3rem',
+          marginBottom: '2rem',
           textTransform: 'uppercase',
           letterSpacing: '0.05em'
         }}>
           FUGLY CHECKOUT
         </h1>
+
+        {/* Store Coming Soon Banner */}
+        {!STORE_STATUS.isOpen && (
+          <div style={{
+            maxWidth: '48rem',
+            margin: '0 auto 2rem',
+            padding: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(139, 92, 246, 0.15))',
+            borderRadius: '1rem',
+            border: '3px solid #f97316',
+            textAlign: 'center',
+            boxShadow: '0 0 30px rgba(249, 115, 22, 0.2)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              marginBottom: '0.75rem'
+            }}>
+              <Rocket style={{ width: '1.5rem', height: '1.5rem', color: '#f97316' }} />
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: 900,
+                color: '#f97316',
+                margin: 0
+              }}>
+                STORE LAUNCHING {STORE_STATUS.launchDate.toUpperCase()}
+              </h2>
+              <Rocket style={{ width: '1.5rem', height: '1.5rem', color: '#f97316', transform: 'scaleX(-1)' }} />
+            </div>
+            <p style={{
+              color: '#fdba74',
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              lineHeight: '1.5'
+            }}>
+              We're putting the finishing touches on our chaotic shop experience!
+            </p>
+            <p style={{
+              color: '#94a3b8',
+              fontSize: '0.875rem',
+              margin: 0
+            }}>
+              Feel free to explore checkout — this is a preview of what's coming. No actual orders will be processed.
+            </p>
+          </div>
+        )}
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', marginBottom: '2rem' }}>
           <div style={{ maxWidth: '48rem', margin: '0 auto', width: '100%' }}>
@@ -955,6 +1018,34 @@ export default function CheckoutPage() {
                     }}>
                       <AlertCircle style={{ width: '1.25rem', height: '1.25rem', color: '#ef4444', flexShrink: 0, marginTop: '0.125rem' }} />
                       <p style={{ fontSize: '0.875rem', color: '#ef4444', fontWeight: 'bold' }}>{errors.payment}</p>
+                    </div>
+                  )}
+
+                  {errors.submit && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '1rem',
+                      padding: '1.25rem',
+                      background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(139, 92, 246, 0.1))',
+                      borderRadius: '0.75rem',
+                      border: '2px solid #f97316'
+                    }}>
+                      <Rocket style={{ width: '1.5rem', height: '1.5rem', color: '#f97316', flexShrink: 0 }} />
+                      <div>
+                        <p style={{ fontSize: '0.9rem', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>{errors.submit}</p>
+                        <a
+                          href="/"
+                          style={{
+                            fontSize: '0.875rem',
+                            color: '#f97316',
+                            textDecoration: 'underline',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          ← Back to Homepage
+                        </a>
+                      </div>
                     </div>
                   )}
 

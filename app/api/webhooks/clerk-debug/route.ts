@@ -3,6 +3,13 @@ import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
+  // Disable debug webhook in production
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({
+      error: 'Debug webhook disabled in production'
+    }, { status: 403 });
+  }
+
   console.log('[CLERK WEBHOOK DEBUG] ========================================');
   console.log('[CLERK WEBHOOK DEBUG] Webhook received at:', new Date().toISOString());
 

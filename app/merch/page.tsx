@@ -219,7 +219,7 @@ export default function MerchPage() {
               color: '#9ca3af',
               marginTop: '2rem'
             }}>
-              Don't have a code? Stay tuned for public launch!
+              Don't have a code? Merch shop opens to everyone Spring 2026!
             </p>
           </div>
         </div>

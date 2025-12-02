@@ -63,7 +63,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    console.log('Order API received:', JSON.stringify(body, null, 2));
 
     // Validate required fields
     if (!body.customerEmail || !body.customerName || !body.shippingAddress || !body.items || !Array.isArray(body.items)) {

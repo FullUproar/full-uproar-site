@@ -45,10 +45,8 @@ export default function FuglyChaosMode() {
       .then(data => {
         if (Array.isArray(data)) {
           const chaosArtwork = data.filter((art: any) => art.chaosMode === true);
-          console.log('Chaos mode artwork:', chaosArtwork.length, 'items');
           setDebugArtwork(chaosArtwork);
         } else {
-          console.error('Invalid artwork data:', data);
           setDebugArtwork([]);
         }
       })
@@ -84,14 +82,10 @@ export default function FuglyChaosMode() {
     
     // Don't spawn anything if there's no artwork
     if (debugArtwork.length === 0) {
-      console.log('Chaos enabled but no artwork available');
       return;
     }
 
-    console.log('Chaos mode enabled! Starting character spawning...');
-
     const spawnCharacter = () => {
-      console.log('Spawning new character...');
       const id = Math.random().toString(36).substr(2, 9);
       const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
       let x, y;
@@ -223,8 +217,6 @@ export default function FuglyChaosMode() {
       </div>
     );
   }
-
-  console.log('Current characters:', characters.length, characters);
 
   // Don't render anything if chaos is not enabled
   if (!chaosEnabled) return null;

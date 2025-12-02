@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { adminStyles } from '../styles/adminStyles';
+import { useToastStore } from '@/lib/toastStore';
 
 interface Return {
   id: number;
@@ -55,6 +56,7 @@ const returnReasons = {
 };
 
 export default function ReturnsPage() {
+  const addToast = useToastStore((state) => state.addToast);
   const [returns, setReturns] = useState<Return[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -472,7 +474,7 @@ export default function ReturnsPage() {
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           // TODO: Generate return label
-                                          alert('Return label generation coming soon!');
+                                          addToast({ message: '📄 Return label generation coming soon!', type: 'info' });
                                         }}
                                       >
                                         <FileText size={14} />
@@ -490,7 +492,7 @@ export default function ReturnsPage() {
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           // TODO: Process refund
-                                          alert('Refund processing coming soon!');
+                                          addToast({ message: '💰 Refund processing coming soon!', type: 'info' });
                                         }}
                                       >
                                         <DollarSign size={14} />

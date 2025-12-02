@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { adminStyles } from '../../styles/adminStyles';
+import { useToastStore } from '@/lib/toastStore';
 
 interface OrderDetail {
   id: string;
@@ -81,6 +82,7 @@ interface OrderDetail {
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const addToast = useToastStore((state) => state.addToast);
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [editingNotes, setEditingNotes] = useState(false);
@@ -432,7 +434,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                       }}
                       onClick={() => {
                         // TODO: Open tracking URL
-                        alert('Tracking URL integration coming soon');
+                        addToast({ message: '📦 Tracking URL integration coming soon!', type: 'info' });
                       }}
                     >
                       <ExternalLink size={12} />

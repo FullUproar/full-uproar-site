@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
     };
     if (featured === 'true') where.featured = true;
     
-    console.log('Fetching games from database...');
     const games = await prisma.game.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -25,8 +24,6 @@ export async function GET(request: NextRequest) {
         inventory: true
       }
     });
-    
-    console.log(`Found ${games.length} games`);
     
     // Ensure we always return an array
     return NextResponse.json(games || []);

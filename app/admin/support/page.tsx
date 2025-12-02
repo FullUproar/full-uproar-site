@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { adminStyles } from '../styles/adminStyles';
+import { useToastStore } from '@/lib/toastStore';
 
 interface Ticket {
   id: number;
@@ -61,6 +62,7 @@ const categoryConfig = {
 };
 
 export default function SupportPage() {
+  const addToast = useToastStore((state) => state.addToast);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -575,7 +577,7 @@ export default function SupportPage() {
                       style={adminStyles.secondaryButton}
                       onClick={() => {
                         // TODO: Add internal note
-                        alert('Internal notes coming soon!');
+                        addToast({ message: '📝 Internal notes coming soon!', type: 'info' });
                       }}
                     >
                       <Plus size={16} />

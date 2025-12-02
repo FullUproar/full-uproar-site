@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET(request: NextRequest) {
   try {
+    // Admin-only debug endpoint
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const user = await getCurrentUser();
-    
+
     if (!user) {
-      return NextResponse.json({ 
-        error: 'Not authenticated' 
+      return NextResponse.json({
+        error: 'Not authenticated'
       }, { status: 401 });
     }
 

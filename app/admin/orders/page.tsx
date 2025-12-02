@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { adminStyles } from '../styles/adminStyles';
+import { useToastStore } from '@/lib/toastStore';
 
 interface Order {
   id: string;
@@ -65,6 +66,7 @@ const statusConfig = {
 };
 
 export default function OrdersPage() {
+  const addToast = useToastStore((state) => state.addToast);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -181,7 +183,7 @@ export default function OrdersPage() {
 
   const exportOrders = () => {
     // TODO: Implement CSV export
-    alert('Export functionality coming soon!');
+    addToast({ message: '📦 Export functionality coming soon!', type: 'info' });
   };
 
   return (
@@ -599,7 +601,7 @@ export default function OrdersPage() {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             // TODO: Implement shipping label generation
-                                            alert('Shipping label generation coming soon!');
+                                            addToast({ message: '🚚 Shipping label generation coming soon!', type: 'info' });
                                           }}
                                         >
                                           <Truck size={14} />
@@ -614,7 +616,7 @@ export default function OrdersPage() {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             // TODO: Implement refund processing
-                                            alert('Refund processing coming soon!');
+                                            addToast({ message: '💰 Refund processing coming soon!', type: 'info' });
                                           }}
                                         >
                                           <RotateCcw size={14} />

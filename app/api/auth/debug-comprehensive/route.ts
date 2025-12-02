@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser, checkPermission } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function POST(request: NextRequest) {
   try {
+    // Admin-only debug endpoint
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
     // Get Clerk auth info
     const { userId: clerkUserId } = await auth();
     const clerkUser = await currentUser();
