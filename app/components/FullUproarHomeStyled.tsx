@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Calendar, Users, ArrowRight, Zap, Skull, Pause, Dices, ChevronDown, Heart, ShieldCheck, Truck, X, Sparkles, MessageCircle, Trophy } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
@@ -85,6 +85,13 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
   const [scrollY, setScrollY] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(800);
   const [headlineTilts, setHeadlineTilts] = useState({ top: 0, bottom: 0 });
+
+  // Draggable headline easter egg state
+  const [isDraggingHeadline, setIsDraggingHeadline] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [userTopTilt, setUserTopTilt] = useState<number | null>(null);
+  const topHeadlineRef = useRef<HTMLHeadingElement>(null);
+
   // Icon lookup function to avoid storing components in arrays (causes build issues)
   const getChaosFeedIcon = (iconName: string, size: number, color: string) => {
     switch (iconName) {
@@ -336,6 +343,55 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
       bottom: -randomTilt(), // Opposite direction
     });
   }, []);
+
+  // Draggable headline easter egg - rotate by dragging!
+  const handleHeadlineMouseDown = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    setIsDraggingHeadline(true);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    setDragStartX(clientX);
+  }, []);
+
+  const handleHeadlineMouseMove = useCallback((e: MouseEvent | TouchEvent) => {
+    if (!isDraggingHeadline) return;
+
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const deltaX = clientX - dragStartX;
+
+    // Convert horizontal drag to rotation (100px = ~15 degrees)
+    const rotationDelta = deltaX / 7;
+    const baseRotation = userTopTilt !== null ? userTopTilt : headlineTilts.top;
+    const newRotation = Math.max(-45, Math.min(45, baseRotation + rotationDelta));
+
+    setUserTopTilt(newRotation);
+    setDragStartX(clientX);
+  }, [isDraggingHeadline, dragStartX, userTopTilt, headlineTilts.top]);
+
+  const handleHeadlineMouseUp = useCallback(() => {
+    setIsDraggingHeadline(false);
+  }, []);
+
+  // Global mouse/touch listeners for drag
+  useEffect(() => {
+    if (isDraggingHeadline) {
+      window.addEventListener('mousemove', handleHeadlineMouseMove);
+      window.addEventListener('mouseup', handleHeadlineMouseUp);
+      window.addEventListener('touchmove', handleHeadlineMouseMove);
+      window.addEventListener('touchend', handleHeadlineMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleHeadlineMouseMove);
+      window.removeEventListener('mouseup', handleHeadlineMouseUp);
+      window.removeEventListener('touchmove', handleHeadlineMouseMove);
+      window.removeEventListener('touchend', handleHeadlineMouseUp);
+    };
+  }, [isDraggingHeadline, handleHeadlineMouseMove, handleHeadlineMouseUp]);
+
+  // Calculate the actual rotation to use (user-set or random)
+  const actualTopTilt = userTopTilt !== null ? userTopTilt : headlineTilts.top;
+  // Bottom tilt mirrors the top for that chaotic balance
+  const actualBottomTilt = userTopTilt !== null ? -userTopTilt : headlineTilts.bottom;
 
   // Remove debug logs that were causing console spam
   // These were firing on every render (every second due to countdown timer)
@@ -716,17 +772,24 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
           boxSizing: 'border-box',
           overflow: 'hidden',
         }}>
-          {/* First headline line */}
-          <h1 style={{
-            fontSize: isMobile ? 'clamp(1.75rem, 8vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
-            fontWeight: 900,
-            lineHeight: 1,
-            marginBottom: 0,
-            color: '#FF7500',
-            transform: `rotate(${headlineTilts.top}deg)`,
-            transition: 'transform 0.3s',
-            whiteSpace: 'nowrap',
-          }}>
+          {/* First headline line - DRAGGABLE EASTER EGG! */}
+          <h1
+            ref={topHeadlineRef}
+            onMouseDown={handleHeadlineMouseDown}
+            onTouchStart={handleHeadlineMouseDown}
+            style={{
+              fontSize: isMobile ? 'clamp(1.75rem, 8vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
+              fontWeight: 900,
+              lineHeight: 1,
+              marginBottom: 0,
+              color: '#FF7500',
+              transform: `rotate(${actualTopTilt}deg)`,
+              transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
+              whiteSpace: 'nowrap',
+              cursor: isDraggingHeadline ? 'grabbing' : 'grab',
+              userSelect: 'none',
+            }}
+          >
             Chaotic party games
           </h1>
 
@@ -755,15 +818,15 @@ export default function FullUproarHomeStyled({ games, comics, news, merch }: Ful
             />
           </div>
 
-          {/* Rest of headline */}
+          {/* Rest of headline - mirrors the top rotation */}
           <h1 style={{
             fontSize: isMobile ? 'clamp(1.5rem, 7vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
             fontWeight: 900,
             lineHeight: 1,
             marginBottom: isMobile ? '0.75rem' : '1.5rem',
             color: '#FF7500',
-            transform: `rotate(${headlineTilts.bottom}deg)`,
-            transition: 'transform 0.3s',
+            transform: `rotate(${actualBottomTilt}deg)`,
+            transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
             whiteSpace: 'nowrap',
           }}>
             that hack your game night.
