@@ -41,7 +41,7 @@
     "@vercel/blob": "^1.1.1",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
-    "fabric": "^6.7.1",
+    "fabric": "^6.9.0",
     "lucide-react": "^0.526.0",
     "multer": "^2.0.2",
     "mysql2": "^3.14.0",

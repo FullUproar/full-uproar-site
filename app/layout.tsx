@@ -21,6 +21,7 @@ import CookieConsent from './components/CookieConsent'
 import ErrorBoundary from './components/ErrorBoundary'
 import { OrganizationSchema, WebSiteSchema } from './components/StructuredData'
 import ComingSoonBanner from './components/ComingSoonBanner'
+import MetricoolTracking from './components/MetricoolTracking'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -133,6 +134,7 @@ export default function RootLayout({
                   pinterestTagId={process.env.NEXT_PUBLIC_PINTEREST_TAG_ID}
                   snapchatPixelId={process.env.NEXT_PUBLIC_SNAPCHAT_PIXEL_ID}
                 />
+                <MetricoolTracking />
                 <main style={{ flex: 1 }}>
                   {children}
                 </main>
