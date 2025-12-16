@@ -2,25 +2,23 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      "Bash(node -e:*)",
       "Bash(npm run build:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)",
       "Bash(git push:*)",
-      "Bash(copy temp_chaos_feed.tsx appcomponentsFullUproarHomeStyled.tsx /Y)",
-      "Bash(del:*)",
-      "Bash(move \"logo.png.png\" \"logo.png\")",
-      "Bash(move \"logo_full.png.png\" \"logo_full.png\")",
-      "Bash(ren:*)",
-      "Bash(ren \"logo_full.png.png\" \"logo_full.png\")",
       "Bash(git checkout:*)",
       "Bash(git merge:*)",
-      "Bash(npm install:*)",
+      "Bash(del nul)",
       "Bash(npx prisma generate:*)",
       "Bash(npx prisma migrate:*)",
       "Bash(dir:*)",
       "Bash(npx prisma db push)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm run test:unit:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []

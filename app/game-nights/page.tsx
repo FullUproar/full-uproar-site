@@ -415,6 +415,7 @@ function CreateGameNightModal({
     location: '',
     vibe: 'CHILL',
   });
+  const [calendarMonth, setCalendarMonth] = useState(new Date());
 
   const handleCreate = async () => {
     if (!formData.date) return;
@@ -446,11 +447,54 @@ function CreateGameNightModal({
     { id: 'COZY', icon: Heart, label: 'Cozy', desc: 'Intimate, story-driven' },
   ];
 
+  // Calendar helpers
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    return { daysInMonth, startingDayOfWeek };
+  };
+
+  const formatDateString = (year: number, month: number, day: number) => {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  };
+
+  const isToday = (year: number, month: number, day: number) => {
+    const today = new Date();
+    return today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+  };
+
+  const isPastDate = (year: number, month: number, day: number) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkDate = new Date(year, month, day);
+    return checkDate < today;
+  };
+
+  const { daysInMonth, startingDayOfWeek } = getDaysInMonth(calendarMonth);
+  const monthYear = calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  const timeOptions = [
+    { value: '', label: 'Flexible' },
+    { value: '14:00', label: '2:00 PM' },
+    { value: '15:00', label: '3:00 PM' },
+    { value: '16:00', label: '4:00 PM' },
+    { value: '17:00', label: '5:00 PM' },
+    { value: '18:00', label: '6:00 PM' },
+    { value: '19:00', label: '7:00 PM' },
+    { value: '20:00', label: '8:00 PM' },
+    { value: '21:00', label: '9:00 PM' },
+  ];
+
   return (
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(0, 0, 0, 0.8)',
+      background: 'rgba(0, 0, 0, 0.85)',
+      backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -461,67 +505,196 @@ function CreateGameNightModal({
         onClick={(e) => e.stopPropagation()}
         style={{
           width: '100%',
-          maxWidth: '500px',
-          background: 'linear-gradient(135deg, #1f2937, #111827)',
+          maxWidth: '480px',
+          background: 'linear-gradient(145deg, #1a1f2e 0%, #0f1219 100%)',
           borderRadius: '1.5rem',
           border: '3px solid #f97316',
-          padding: '2rem',
-          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)',
+          padding: '1.5rem',
+          boxShadow: '0 25px 80px rgba(249, 115, 22, 0.25), 0 0 60px rgba(249, 115, 22, 0.1)',
+          maxHeight: '90vh',
+          overflowY: 'auto',
         }}
       >
+        {/* Step indicator */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+          {[1, 2, 3].map((s) => (
+            <div
+              key={s}
+              style={{
+                width: s === step ? '2rem' : '0.75rem',
+                height: '0.75rem',
+                borderRadius: '0.5rem',
+                background: s <= step ? '#f97316' : '#374151',
+                transition: 'all 0.3s',
+              }}
+            />
+          ))}
+        </div>
+
         {step === 1 && (
           <>
             <h2 style={{
-              fontSize: '2rem',
+              fontSize: '1.75rem',
               fontWeight: 900,
               color: '#f97316',
-              marginBottom: '0.5rem',
+              marginBottom: '0.25rem',
               textAlign: 'center',
             }}>
               Rally the Squad! 🎲
             </h2>
-            <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '2rem' }}>
-              When's the chaos happening?
+            <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '1.25rem', fontSize: '0.9rem' }}>
+              Pick your date and time
             </p>
 
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                When?
-              </label>
-              <input
-                type="date"
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                style={{
-                  width: '100%',
-                  padding: '1rem',
-                  background: 'rgba(0, 0, 0, 0.3)',
-                  border: '2px solid #374151',
-                  borderRadius: '0.75rem',
-                  color: '#fff',
-                  fontSize: '1.125rem',
-                }}
-              />
+            {/* Calendar */}
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: '1rem',
+              padding: '1rem',
+              marginBottom: '1rem',
+              border: '2px solid #374151',
+            }}>
+              {/* Month navigation */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <button
+                  onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))}
+                  style={{
+                    background: 'rgba(249, 115, 22, 0.2)',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    padding: '0.5rem 0.75rem',
+                    color: '#f97316',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  ←
+                </button>
+                <span style={{ color: '#fff', fontWeight: 'bold', fontSize: '1rem' }}>{monthYear}</span>
+                <button
+                  onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))}
+                  style={{
+                    background: 'rgba(249, 115, 22, 0.2)',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    padding: '0.5rem 0.75rem',
+                    color: '#f97316',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  →
+                </button>
+              </div>
+
+              {/* Day headers */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.25rem', marginBottom: '0.5rem' }}>
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                  <div key={day} style={{ textAlign: 'center', color: '#6b7280', fontSize: '0.75rem', fontWeight: 'bold', padding: '0.25rem' }}>
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              {/* Calendar grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.25rem' }}>
+                {/* Empty cells for days before month starts */}
+                {Array.from({ length: startingDayOfWeek }).map((_, i) => (
+                  <div key={`empty-${i}`} />
+                ))}
+
+                {/* Day cells */}
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const day = i + 1;
+                  const year = calendarMonth.getFullYear();
+                  const month = calendarMonth.getMonth();
+                  const dateStr = formatDateString(year, month, day);
+                  const selected = formData.date === dateStr;
+                  const today = isToday(year, month, day);
+                  const past = isPastDate(year, month, day);
+
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => !past && setFormData({ ...formData, date: dateStr })}
+                      disabled={past}
+                      style={{
+                        aspectRatio: '1',
+                        border: selected ? '2px solid #f97316' : today ? '2px solid #fbbf24' : '2px solid transparent',
+                        borderRadius: '0.5rem',
+                        background: selected
+                          ? 'linear-gradient(135deg, #f97316, #ea580c)'
+                          : today
+                          ? 'rgba(251, 191, 36, 0.15)'
+                          : 'rgba(255, 255, 255, 0.05)',
+                        color: past ? '#4b5563' : selected ? '#fff' : '#fff',
+                        fontWeight: selected || today ? 'bold' : 'normal',
+                        cursor: past ? 'not-allowed' : 'pointer',
+                        fontSize: '0.875rem',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                What time? (optional)
+            {/* Selected date display */}
+            {formData.date && (
+              <div style={{
+                background: 'rgba(249, 115, 22, 0.15)',
+                border: '2px solid rgba(249, 115, 22, 0.3)',
+                borderRadius: '0.75rem',
+                padding: '0.75rem 1rem',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+              }}>
+                <Calendar size={20} style={{ color: '#f97316' }} />
+                <span style={{ color: '#fdba74', fontWeight: 'bold' }}>
+                  {new Date(formData.date + 'T12:00:00').toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
+              </div>
+            )}
+
+            {/* Time selector */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                <Clock size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                Start Time
               </label>
-              <input
-                type="time"
-                value={formData.startTime}
-                onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                style={{
-                  width: '100%',
-                  padding: '1rem',
-                  background: 'rgba(0, 0, 0, 0.3)',
-                  border: '2px solid #374151',
-                  borderRadius: '0.75rem',
-                  color: '#fff',
-                  fontSize: '1.125rem',
-                }}
-              />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                {timeOptions.map((time) => (
+                  <button
+                    key={time.value}
+                    onClick={() => setFormData({ ...formData, startTime: time.value })}
+                    style={{
+                      padding: '0.6rem 0.5rem',
+                      background: formData.startTime === time.value
+                        ? 'rgba(249, 115, 22, 0.3)'
+                        : 'rgba(0, 0, 0, 0.3)',
+                      border: formData.startTime === time.value
+                        ? '2px solid #f97316'
+                        : '2px solid #374151',
+                      borderRadius: '0.5rem',
+                      color: formData.startTime === time.value ? '#f97316' : '#94a3b8',
+                      fontWeight: formData.startTime === time.value ? 'bold' : 'normal',
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    {time.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <button
@@ -533,10 +706,12 @@ function CreateGameNightModal({
                 background: formData.date ? 'linear-gradient(135deg, #f97316, #ea580c)' : '#374151',
                 border: 'none',
                 borderRadius: '0.75rem',
-                color: '#fff',
+                color: formData.date ? '#fff' : '#6b7280',
                 fontWeight: 900,
-                fontSize: '1.125rem',
+                fontSize: '1rem',
                 cursor: formData.date ? 'pointer' : 'not-allowed',
+                boxShadow: formData.date ? '0 10px 30px rgba(249, 115, 22, 0.3)' : 'none',
+                transition: 'all 0.2s',
               }}
             >
               Next: Set the Vibe →
@@ -547,19 +722,19 @@ function CreateGameNightModal({
         {step === 2 && (
           <>
             <h2 style={{
-              fontSize: '2rem',
+              fontSize: '1.75rem',
               fontWeight: 900,
               color: '#f97316',
-              marginBottom: '0.5rem',
+              marginBottom: '0.25rem',
               textAlign: 'center',
             }}>
               What's the Vibe? 🎭
             </h2>
-            <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '2rem' }}>
-              Sets the tone for suggestions
+            <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '1.25rem', fontSize: '0.9rem' }}>
+              This helps with suggestions
             </p>
 
-            <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gap: '0.6rem', marginBottom: '1.5rem' }}>
               {vibes.map((v) => {
                 const Icon = v.icon;
                 const isSelected = formData.vibe === v.id;
@@ -572,37 +747,54 @@ function CreateGameNightModal({
                       display: 'flex',
                       alignItems: 'center',
                       gap: '1rem',
-                      padding: '1rem',
+                      padding: '0.875rem 1rem',
                       background: isSelected ? config.bg : 'rgba(0, 0, 0, 0.3)',
                       border: `2px solid ${isSelected ? config.color : '#374151'}`,
                       borderRadius: '0.75rem',
                       cursor: 'pointer',
                       textAlign: 'left',
-                      transition: 'all 0.2s',
+                      transition: 'all 0.15s',
+                      transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                      boxShadow: isSelected ? `0 5px 20px ${config.color}30` : 'none',
                     }}
                   >
-                    <Icon size={28} style={{ color: config.color }} />
-                    <div>
-                      <div style={{ color: '#fff', fontWeight: 'bold' }}>{v.label}</div>
-                      <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>{v.desc}</div>
+                    <div style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '0.75rem',
+                      background: isSelected ? config.color : `${config.color}20`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.15s',
+                    }}>
+                      <Icon size={24} style={{ color: isSelected ? '#fff' : config.color }} />
                     </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.95rem' }}>{v.label}</div>
+                      <div style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{v.desc}</div>
+                    </div>
+                    {isSelected && (
+                      <div style={{ color: config.color, fontSize: '1.25rem' }}>✓</div>
+                    )}
                   </button>
                 );
               })}
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => setStep(1)}
                 style={{
                   flex: 1,
-                  padding: '1rem',
-                  background: 'transparent',
+                  padding: '0.875rem',
+                  background: 'rgba(255, 255, 255, 0.05)',
                   border: '2px solid #374151',
                   borderRadius: '0.75rem',
                   color: '#94a3b8',
                   fontWeight: 'bold',
                   cursor: 'pointer',
+                  transition: 'all 0.15s',
                 }}
               >
                 ← Back
@@ -611,14 +803,15 @@ function CreateGameNightModal({
                 onClick={() => setStep(3)}
                 style={{
                   flex: 2,
-                  padding: '1rem',
+                  padding: '0.875rem',
                   background: 'linear-gradient(135deg, #f97316, #ea580c)',
                   border: 'none',
                   borderRadius: '0.75rem',
                   color: '#fff',
                   fontWeight: 900,
-                  fontSize: '1.125rem',
+                  fontSize: '1rem',
                   cursor: 'pointer',
+                  boxShadow: '0 10px 30px rgba(249, 115, 22, 0.3)',
                 }}
               >
                 Almost There! →
@@ -630,21 +823,56 @@ function CreateGameNightModal({
         {step === 3 && (
           <>
             <h2 style={{
-              fontSize: '2rem',
+              fontSize: '1.75rem',
               fontWeight: 900,
               color: '#f97316',
-              marginBottom: '0.5rem',
+              marginBottom: '0.25rem',
               textAlign: 'center',
             }}>
               Final Details 📍
             </h2>
-            <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '2rem' }}>
-              Optional but helpful
+            <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '1.25rem', fontSize: '0.9rem' }}>
+              Add some extra info (optional)
             </p>
 
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                Give it a name?
+            {/* Summary card */}
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: '0.75rem',
+              padding: '1rem',
+              marginBottom: '1.25rem',
+              border: '2px solid #374151',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                <Calendar size={18} style={{ color: '#f97316' }} />
+                <span style={{ color: '#fff', fontSize: '0.9rem' }}>
+                  {formData.date && new Date(formData.date + 'T12:00:00').toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                  {formData.startTime && ` at ${timeOptions.find(t => t.value === formData.startTime)?.label || formData.startTime}`}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                {(() => {
+                  const vibe = vibeConfig[formData.vibe];
+                  const Icon = vibes.find(v => v.id === formData.vibe)?.icon || Coffee;
+                  return (
+                    <>
+                      <Icon size={18} style={{ color: vibe?.color || '#60a5fa' }} />
+                      <span style={{ color: vibe?.color || '#60a5fa', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                        {vibe?.label || 'Chill'} Vibes
+                      </span>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                Give it a name
               </label>
               <input
                 type="text"
@@ -653,18 +881,22 @@ function CreateGameNightModal({
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 style={{
                   width: '100%',
-                  padding: '1rem',
+                  padding: '0.875rem 1rem',
                   background: 'rgba(0, 0, 0, 0.3)',
                   border: '2px solid #374151',
                   borderRadius: '0.75rem',
                   color: '#fff',
-                  fontSize: '1.125rem',
+                  fontSize: '1rem',
+                  outline: 'none',
                 }}
+                onFocus={(e) => e.target.style.borderColor = '#f97316'}
+                onBlur={(e) => e.target.style.borderColor = '#374151'}
               />
             </div>
 
-            <div style={{ marginBottom: '2rem' }}>
-              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                <MapPin size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
                 Where at?
               </label>
               <input
@@ -674,23 +906,26 @@ function CreateGameNightModal({
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 style={{
                   width: '100%',
-                  padding: '1rem',
+                  padding: '0.875rem 1rem',
                   background: 'rgba(0, 0, 0, 0.3)',
                   border: '2px solid #374151',
                   borderRadius: '0.75rem',
                   color: '#fff',
-                  fontSize: '1.125rem',
+                  fontSize: '1rem',
+                  outline: 'none',
                 }}
+                onFocus={(e) => e.target.style.borderColor = '#f97316'}
+                onBlur={(e) => e.target.style.borderColor = '#374151'}
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => setStep(2)}
                 style={{
                   flex: 1,
-                  padding: '1rem',
-                  background: 'transparent',
+                  padding: '0.875rem',
+                  background: 'rgba(255, 255, 255, 0.05)',
                   border: '2px solid #374151',
                   borderRadius: '0.75rem',
                   color: '#94a3b8',
@@ -705,23 +940,24 @@ function CreateGameNightModal({
                 disabled={creating}
                 style={{
                   flex: 2,
-                  padding: '1rem',
+                  padding: '0.875rem',
                   background: creating ? '#374151' : 'linear-gradient(135deg, #10b981, #059669)',
                   border: 'none',
                   borderRadius: '0.75rem',
                   color: '#fff',
                   fontWeight: 900,
-                  fontSize: '1.125rem',
+                  fontSize: '1rem',
                   cursor: creating ? 'wait' : 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.5rem',
+                  boxShadow: creating ? 'none' : '0 10px 30px rgba(16, 185, 129, 0.3)',
                 }}
               >
                 {creating ? 'Creating...' : (
                   <>
-                    <Sparkles size={20} />
+                    <Sparkles size={18} />
                     Let's Go!
                   </>
                 )}

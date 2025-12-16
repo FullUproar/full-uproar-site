@@ -84,8 +84,9 @@ test.describe('Game Nights Feature', () => {
       // Modal should appear (checking for modal content)
       await expect(page.locator('text=Rally the Squad!')).toBeVisible({ timeout: 5000 });
 
-      // Should show date picker in first step
-      await expect(page.locator('input[type="date"]')).toBeVisible();
+      // Should show visual calendar - check for month navigation buttons
+      await expect(page.getByRole('button', { name: '←', exact: true })).toBeVisible();
+      await expect(page.getByRole('button', { name: '→', exact: true })).toBeVisible();
     });
 
     test('should close modal when clicking outside', async ({ page }) => {
@@ -110,13 +111,15 @@ test.describe('Game Nights Feature', () => {
       // Open modal
       await page.getByRole('button', { name: /rally the squad/i }).click();
 
-      // Fill in date
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const dateStr = tomorrow.toISOString().split('T')[0];
-      await page.locator('input[type="date"]').fill(dateStr);
+      // Select a future date from the calendar - click on day 25 (should be in the future for most months)
+      // First make sure we're on a month where day 25 exists and is clickable
+      await page.waitForSelector('text=Rally the Squad!', { timeout: 5000 });
 
-      // Click next
+      // Click on a day number in the calendar (find a button with just a number)
+      const dayButtons = page.locator('button').filter({ hasText: /^(2[5-8])$/ });
+      await dayButtons.first().click();
+
+      // Click next - button text is "Next: Set the Vibe →"
       await page.getByRole('button', { name: /next.*vibe/i }).click();
 
       // Should show vibe selection header
@@ -136,14 +139,14 @@ test.describe('Game Nights Feature', () => {
       // Open modal
       await page.getByRole('button', { name: /rally the squad/i }).click();
 
-      // Step 1: Date
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      await page.locator('input[type="date"]').fill(tomorrow.toISOString().split('T')[0]);
+      // Step 1: Date - select a day from the visual calendar
+      await page.waitForSelector('text=Rally the Squad!', { timeout: 5000 });
+      const dayButtons = page.locator('button').filter({ hasText: /^(2[5-8])$/ });
+      await dayButtons.first().click();
       await page.getByRole('button', { name: /next.*vibe/i }).click();
 
-      // Step 2: Vibe - Select Chill (first option, less ambiguous)
-      await page.getByRole('button', { name: /chill.*relaxed/i }).click();
+      // Step 2: Vibe - Select Chill (button contains "Chill" and "Relaxed")
+      await page.getByRole('button', { name: /chill/i }).first().click();
 
       // Dismiss cookie banner again if it reappeared
       await dismissCookieBanner(page);
