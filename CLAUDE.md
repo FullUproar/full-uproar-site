@@ -57,26 +57,11 @@ Full Uproar is a gaming company's e-commerce platform built with Next.js 15, fea
    - Secure webhook handling
    - Environment variable protection
 
-## 📁 Documentation Structure
+## 📁 Documentation
 
-### Core Documentation
-- **[README.md](./README.md)** - Basic project setup and deployment
+- **[README.md](./README.md)** - Project setup and deployment
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System design and structure
 - **[STYLE_GUIDE.md](./STYLE_GUIDE.md)** - UI/UX design patterns and brand colors
-
-### Feature Documentation
-- **[CLAUDE_ECOMMERCE.md](./CLAUDE_ECOMMERCE.md)** - E-commerce implementation details
-- **[STRIPE_SETUP.md](./STRIPE_SETUP.md)** - Payment integration guide
-- **[TEST_DATA_MANAGEMENT.md](./TEST_DATA_MANAGEMENT.md)** - Managing test vs production data
-
-### Testing & Security
-- **[ECOMMERCE_TEST_PLAN.md](./ECOMMERCE_TEST_PLAN.md)** - Comprehensive test scenarios
-- **[ECOMMERCE_QUICK_TEST.md](./ECOMMERCE_QUICK_TEST.md)** - Quick testing checklist
-- **[ECOMMERCE_SECURITY_AUDIT.md](./ECOMMERCE_SECURITY_AUDIT.md)** - Security review checklist
-
-### Setup Guides
-- **[README_ADMIN_SETUP.md](./README_ADMIN_SETUP.md)** - Admin user configuration
-- **[CLERK_EMAIL_VERIFICATION_SETUP.md](./CLERK_EMAIL_VERIFICATION_SETUP.md)** - Email verification setup
 
 ## 🎨 Brand Identity
 
@@ -213,5 +198,4 @@ When working on this project:
 
 ---
 
-Last Updated: January 2025
-Current Focus: E-commerce launch readiness
+Last Updated: December 2025
