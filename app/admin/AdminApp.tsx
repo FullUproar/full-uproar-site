@@ -322,7 +322,7 @@ export default function AdminApp() {
           icon: <Crown size={20} />,
           view: { type: 'fugly-prime' as ViewType },
           color: '#f97316',
-          badge: 'SUB',
+          badge: 'SOON',
         },
       ]
     },
