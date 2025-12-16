@@ -111,6 +111,7 @@ model Game {
   orderItems          OrderItem[]
   reviews             Review[]
   designComponents    DesignComponent[]
+  gameNightGames      GameNightGame[]    // Games added to game night lineups
 }
 
 model Comic {
@@ -397,6 +398,10 @@ model User {
   supportMessages   SupportMessage[]
   orderNotes        OrderNote[]
   inventoryAlerts   InventoryAlert[]
+
+  // Game Night relations
+  hostedGameNights     GameNight[]        @relation("HostedGameNights")
+  gameNightAttendances GameNightGuest[]   @relation("GameNightAttendances")
 
   @@index([clerkId])
   @@index([email])
@@ -938,4 +943,211 @@ model AnalyticsEvent {
   @@index([userId])
   @@index([sessionId])
   @@index([timestamp])
+}
+
+// ============================================
+// GAME NIGHT PLANNER
+// ============================================
+
+model GameNight {
+  id              String              @id @default(cuid())
+  hostId          String
+  host            User                @relation("HostedGameNights", fields: [hostId], references: [id])
+
+  // Event details
+  title           String              @default("Game Night")
+  description     String?
+  date            DateTime
+  startTime       String?             // "7:00 PM" - flexible format for display
+  duration        Int?                // Expected duration in minutes
+  location        String?             // Physical address or "Online" or custom
+  maxGuests       Int?                // null = unlimited
+
+  // Vibe & theming
+  vibe            GameNightVibe       @default(CHILL)
+  theme           String?             // Custom theme like "80s Arcade Night"
+  aiSuggestions   Json?               // Stored AI suggestions (games, snacks, etc.)
+
+  // Status
+  status          GameNightStatus     @default(PLANNING)
+
+  // Reminder settings
+  reminderSent    Boolean             @default(false)
+  dayOfReminderSent Boolean           @default(false)
+
+  // Metadata
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
+  completedAt     DateTime?
+
+  // Relations
+  guests          GameNightGuest[]
+  games           GameNightGame[]
+  moments         GameNightMoment[]
+  recap           GameNightRecap?
+
+  @@index([hostId])
+  @@index([date])
+  @@index([status])
+}
+
+model GameNightGuest {
+  id              String              @id @default(cuid())
+  gameNightId     String
+  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+
+  // Guest identity (one of these should be set)
+  userId          String?             // If they're a registered user
+  user            User?               @relation("GameNightAttendances", fields: [userId], references: [id])
+  guestName       String?             // For non-registered guests
+  guestEmail      String?             // For sending invites/reminders
+  guestPhone      String?             // Optional phone for SMS reminders
+
+  // Invite tracking
+  inviteToken     String              @unique @default(cuid()) // Magic link token
+  inviteSentAt    DateTime?
+  inviteMethod    String?             // "link", "email", "sms"
+
+  // Response
+  status          GuestStatus         @default(PENDING)
+  respondedAt     DateTime?
+
+  // Role at the event
+  isCoHost        Boolean             @default(false)
+  bringing        String?             // What they're bringing: "snacks", "drinks", etc.
+
+  // Metadata
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
+
+  // Game night stats for this guest
+  gamesWon        Int                 @default(0)
+
+  @@unique([gameNightId, userId])
+  @@unique([gameNightId, guestEmail])
+  @@index([gameNightId])
+  @@index([userId])
+  @@index([inviteToken])
+}
+
+model GameNightGame {
+  id              String              @id @default(cuid())
+  gameNightId     String
+  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+
+  // Game reference (either our game or custom)
+  gameId          Int?                // Links to our Game model if applicable
+  game            Game?               @relation(fields: [gameId], references: [id])
+  customGameName  String?             // For games not in our catalog
+
+  // Planning
+  playOrder       Int                 @default(0)
+  estimatedMinutes Int?
+
+  // Status during the night
+  status          GameStatus          @default(PLANNED)
+  startedAt       DateTime?
+  completedAt     DateTime?
+
+  // Winner(s)
+  winnerId        String?             // GameNightGuest ID
+  winnerName      String?             // Denormalized for easy display
+  isTie           Boolean             @default(false)
+
+  // Fun stats
+  chaosLevel      Int?                // 1-10 rating
+  notes           String?             // "Dave rage quit after losing Catan"
+
+  createdAt       DateTime            @default(now())
+
+  @@index([gameNightId])
+  @@index([gameId])
+  @@index([playOrder])
+}
+
+model GameNightMoment {
+  id              String              @id @default(cuid())
+  gameNightId     String
+  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+
+  // Who captured it
+  capturedById    String?             // GameNightGuest ID or host
+  capturedByName  String?
+
+  // Content
+  type            MomentType          @default(NOTE)
+  content         String?             // Text content or caption
+  imageUrl        String?             // Photo URL if uploaded
+
+  // Context
+  gameId          String?             // Which game this moment was during
+
+  createdAt       DateTime            @default(now())
+
+  @@index([gameNightId])
+  @@index([type])
+}
+
+model GameNightRecap {
+  id              String              @id @default(cuid())
+  gameNightId     String              @unique
+  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+
+  // AI-generated content
+  aiSummary       String?             @db.Text // Fun recap narrative
+  highlights      Json?               // Key moments, winners, stats
+
+  // Stats
+  totalGamesPlayed Int               @default(0)
+  totalDurationMinutes Int?
+  mvpGuestId      String?             // Most wins
+  chaosChampionId String?             // Highest chaos moments
+
+  // Sharing
+  isPublic        Boolean             @default(false)
+  shareToken      String?             @unique
+
+  generatedAt     DateTime            @default(now())
+
+  @@index([shareToken])
+}
+
+// Enums for Game Night
+
+enum GameNightVibe {
+  CHILL         // Relaxed, casual games
+  COMPETITIVE   // Bring your A-game
+  CHAOS         // Full Uproar mode
+  PARTY         // High energy, lots of people
+  COZY          // Intimate, story-driven
+}
+
+enum GameNightStatus {
+  PLANNING      // Still being set up
+  LOCKED_IN     // Date confirmed, invites out
+  IN_PROGRESS   // It's happening!
+  COMPLETED     // Done, ready for recap
+  CANCELLED     // Didn't happen
+}
+
+enum GuestStatus {
+  PENDING       // Haven't responded
+  IN            // They're coming!
+  MAYBE         // On the fence
+  OUT           // Can't make it
+}
+
+enum GameStatus {
+  PLANNED       // On the lineup
+  PLAYING       // Currently playing
+  COMPLETED     // Finished
+  SKIPPED       // Didn't get to it
+}
+
+enum MomentType {
+  NOTE          // Text note
+  PHOTO         // Image
+  WINNER        // Game winner announcement
+  CHAOS         // Epic chaos moment
+  QUOTE         // Funny quote from the night
 }

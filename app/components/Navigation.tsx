@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu, X, ShoppingCart, Package, User, Settings } from 'lucide-react';
+import { Menu, X, ShoppingCart, Package, User, Settings, Gamepad2 } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 import FuglyLogo from './FuglyLogo';
 import CartButton from './CartButton';
@@ -27,9 +27,10 @@ export default function Navigation() {
 
   const navLinks = [
     { href: '/about', label: 'ABOUT' },
-    { href: '/shop', label: 'SHOP' },      // Combined Games + Merch
+    { href: '/shop', label: 'SHOP' },
+    { href: '/game-nights', label: 'GAME NIGHTS' },
     { href: '/forum', label: 'FORUM' },
-    { href: '/fugly', label: 'FUGLY' },    // Combined Cult + Chaos → "The Cult of Fugly" + "Fuglyverse"
+    { href: '/fugly', label: 'FUGLY' },
   ];
 
   const styles = {
@@ -169,6 +170,11 @@ export default function Navigation() {
                   >
                     <UserButton.MenuItems>
                       <UserButton.Link
+                        label="Game Nights"
+                        labelIcon={<Gamepad2 size={16} />}
+                        href="/game-nights"
+                      />
+                      <UserButton.Link
                         label="Account Settings"
                         labelIcon={<Settings size={16} />}
                         href="/account"
@@ -265,22 +271,29 @@ export default function Navigation() {
           </SignedOut>
           
           <SignedIn>
-            <Link 
-              href="/track-order" 
+            <Link
+              href="/game-nights"
+              style={{ ...styles.navLink, display: 'block', padding: '0.5rem', color: '#f97316' }}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              🎲 MY GAME NIGHTS
+            </Link>
+            <Link
+              href="/track-order"
               style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
               onClick={() => setIsMenuOpen(false)}
             >
               TRACK ORDERS
             </Link>
-            <Link 
-              href="/admin" 
+            <Link
+              href="/admin"
               style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
               onClick={() => setIsMenuOpen(false)}
             >
               ADMIN
             </Link>
-            <Link 
-              href="/account" 
+            <Link
+              href="/account"
               style={{ ...styles.navLink, display: 'flex', alignItems: 'center', padding: '0.5rem', gap: '8px' }}
               onClick={() => setIsMenuOpen(false)}
             >
