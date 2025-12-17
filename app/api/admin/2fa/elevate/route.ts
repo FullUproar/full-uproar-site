@@ -2,64 +2,67 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { verifyTOTP, decryptSecret, getElevationExpiry, isElevationValid } from '@/lib/auth/totp';
+import { ADMIN_ROLES, HTTP_STATUS } from '@/lib/constants';
+import { handleApiError, ValidationError, UnauthorizedError, ForbiddenError } from '@/lib/utils/errors';
 
 // POST - Elevate admin session using 2FA code
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      throw new UnauthorizedError();
     }
 
     // Only admins can elevate
-    const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
-    if (!adminRoles.includes(user.role)) {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    if (!ADMIN_ROLES.includes(user.role as typeof ADMIN_ROLES[number])) {
+      throw new ForbiddenError('Admin access required');
     }
 
     // Check if 2FA is enabled
     if (!user.totpEnabled || !user.totpSecret) {
       return NextResponse.json({
         error: '2FA is not enabled. Please set up 2FA first.',
+        code: 'TOTP_NOT_ENABLED',
         requiresSetup: true,
-      }, { status: 400 });
+      }, { status: HTTP_STATUS.BAD_REQUEST });
     }
 
     let body;
     try {
       body = await request.json();
-    } catch (e) {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    } catch {
+      throw new ValidationError('Invalid request body');
     }
 
     const { code } = body;
 
     if (!code || typeof code !== 'string' || code.length !== 6) {
-      return NextResponse.json({ error: 'Invalid code format' }, { status: 400 });
+      throw new ValidationError('Invalid code format - must be 6 digits');
     }
 
     // Decrypt and verify
     let secret;
     try {
       secret = decryptSecret(user.totpSecret);
-    } catch (e) {
-      console.error('Failed to decrypt 2FA secret');
-      return NextResponse.json({ error: 'Failed to decrypt 2FA secret' }, { status: 500 });
+    } catch {
+      console.error('Failed to decrypt 2FA secret for user:', user.id);
+      return NextResponse.json({
+        error: 'Failed to decrypt 2FA secret',
+        code: 'DECRYPTION_ERROR',
+      }, { status: HTTP_STATUS.INTERNAL_SERVER_ERROR });
     }
 
     const isValid = verifyTOTP(secret, code);
 
     if (!isValid) {
-      return NextResponse.json({ error: 'Invalid authentication code' }, { status: 400 });
+      throw new ValidationError('Invalid authentication code');
     }
 
     // Elevate session
     const elevatedUntil = getElevationExpiry();
     await prisma.user.update({
       where: { id: user.id },
-      data: {
-        adminElevatedUntil: elevatedUntil,
-      },
+      data: { adminElevatedUntil: elevatedUntil },
     });
 
     return NextResponse.json({
@@ -67,22 +70,21 @@ export async function POST(request: NextRequest) {
       elevatedUntil,
       message: 'Admin session elevated for 3 hours',
     });
-  } catch (error: any) {
-    console.error('Error elevating session:', error?.message || error);
-    return NextResponse.json({ error: 'Failed to elevate session' }, { status: 500 });
+  } catch (error) {
+    const { statusCode, body } = handleApiError(error);
+    return NextResponse.json(body, { status: statusCode });
   }
 }
 
 // GET - Check current elevation status
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      throw new UnauthorizedError();
     }
 
-    const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
-    const isAdmin = adminRoles.includes(user.role);
+    const isAdmin = ADMIN_ROLES.includes(user.role as typeof ADMIN_ROLES[number]);
     const isElevated = isElevationValid(user.adminElevatedUntil);
 
     return NextResponse.json({
@@ -93,24 +95,22 @@ export async function GET(request: NextRequest) {
       requiresElevation: isAdmin && user.totpEnabled && !isElevated,
     });
   } catch (error) {
-    console.error('Error checking elevation:', error);
-    return NextResponse.json({ error: 'Failed to check elevation status' }, { status: 500 });
+    const { statusCode, body } = handleApiError(error);
+    return NextResponse.json(body, { status: statusCode });
   }
 }
 
 // DELETE - Manually end elevation (logout of admin mode)
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      throw new UnauthorizedError();
     }
 
     await prisma.user.update({
       where: { id: user.id },
-      data: {
-        adminElevatedUntil: null,
-      },
+      data: { adminElevatedUntil: null },
     });
 
     return NextResponse.json({
@@ -118,7 +118,7 @@ export async function DELETE(request: NextRequest) {
       message: 'Admin session de-elevated',
     });
   } catch (error) {
-    console.error('Error de-elevating session:', error);
-    return NextResponse.json({ error: 'Failed to de-elevate session' }, { status: 500 });
+    const { statusCode, body } = handleApiError(error);
+    return NextResponse.json(body, { status: statusCode });
   }
 }
