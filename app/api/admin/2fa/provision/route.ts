@@ -2,36 +2,40 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { generateTOTPSecret, generateQRCode, encryptSecret, isElevationValid } from '@/lib/auth/totp';
+import { ADMIN_ROLES, HTTP_STATUS } from '@/lib/constants';
+import { handleApiError, ValidationError, UnauthorizedError, ForbiddenError, NotFoundError } from '@/lib/utils/errors';
 
 // POST - Generate 2FA setup for another admin (requires elevated admin)
 export async function POST(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      throw new UnauthorizedError();
     }
 
-    // Require elevated admin
-    const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
-    if (!adminRoles.includes(currentUser.role)) {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    if (!ADMIN_ROLES.includes(currentUser.role as typeof ADMIN_ROLES[number])) {
+      throw new ForbiddenError('Admin access required');
     }
 
-    // Check elevation
     if (!isElevationValid(currentUser.adminElevatedUntil)) {
       return NextResponse.json({
         error: 'Admin elevation required to provision 2FA',
         requiresElevation: true
-      }, { status: 403 });
+      }, { status: HTTP_STATUS.FORBIDDEN });
     }
 
-    const { userId } = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      throw new ValidationError('Invalid request body');
+    }
 
+    const { userId } = body;
     if (!userId) {
-      return NextResponse.json({ error: 'User ID required' }, { status: 400 });
+      throw new ValidationError('User ID required');
     }
 
-    // Get target user
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -44,37 +48,24 @@ export async function POST(request: NextRequest) {
     });
 
     if (!targetUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      throw new NotFoundError('User');
     }
 
-    // Check email domain
     if (!targetUser.email.endsWith('@fulluproar.com')) {
-      return NextResponse.json({
-        error: 'Only @fulluproar.com email addresses can receive 2FA setup'
-      }, { status: 403 });
+      throw new ForbiddenError('Only @fulluproar.com email addresses can receive 2FA setup');
     }
 
-    // Check if user is an admin role
-    if (!adminRoles.includes(targetUser.role)) {
-      return NextResponse.json({
-        error: 'Target user must have an admin role to set up 2FA'
-      }, { status: 403 });
+    if (!ADMIN_ROLES.includes(targetUser.role as typeof ADMIN_ROLES[number])) {
+      throw new ForbiddenError('Target user must have an admin role to set up 2FA');
     }
 
-    // Check if already has 2FA
     if (targetUser.totpEnabled) {
-      return NextResponse.json({
-        error: 'User already has 2FA enabled. To reset, contact support.'
-      }, { status: 400 });
+      throw new ValidationError('User already has 2FA enabled. To reset, contact support.');
     }
 
-    // Generate new TOTP secret
     const { secret, uri } = generateTOTPSecret(targetUser.email);
-
-    // Generate QR code
     const qrCode = await generateQRCode(uri);
 
-    // Store encrypted secret (not enabled until user verifies)
     const encryptedSecret = encryptSecret(secret);
     await prisma.user.update({
       where: { id: targetUser.id },
@@ -83,9 +74,6 @@ export async function POST(request: NextRequest) {
         totpEnabled: false,
       },
     });
-
-    // Log this security action
-    console.log(`[SECURITY] Admin ${currentUser.email} provisioned 2FA for ${targetUser.email}`);
 
     return NextResponse.json({
       success: true,
@@ -96,7 +84,7 @@ export async function POST(request: NextRequest) {
       message: 'Share this QR code securely with the user. It will only be shown once.',
     });
   } catch (error) {
-    console.error('Error provisioning 2FA:', error);
-    return NextResponse.json({ error: 'Failed to provision 2FA' }, { status: 500 });
+    const { statusCode, body } = handleApiError(error);
+    return NextResponse.json(body, { status: statusCode });
   }
 }

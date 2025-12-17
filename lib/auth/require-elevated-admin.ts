@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { isElevationValid } from '@/lib/auth/totp';
+import { ADMIN_ROLES, HTTP_STATUS } from '@/lib/constants';
 
 interface ElevatedAdminCheck {
   authorized: boolean;
@@ -22,13 +23,11 @@ interface ElevatedAdminCheck {
 export async function requireElevatedAdmin(): Promise<ElevatedAdminCheck> {
   const user = await getCurrentUser();
 
-  // Check if user exists and is admin
-  const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
-  if (!user || !adminRoles.includes(user.role)) {
+  if (!user || !ADMIN_ROLES.includes(user.role as typeof ADMIN_ROLES[number])) {
     return {
       authorized: false,
       elevated: false,
-      response: NextResponse.json({ error: 'Admin access required' }, { status: 403 }),
+      response: NextResponse.json({ error: 'Admin access required' }, { status: HTTP_STATUS.FORBIDDEN }),
     };
   }
 
@@ -51,7 +50,7 @@ export async function requireElevatedAdmin(): Promise<ElevatedAdminCheck> {
       response: NextResponse.json({
         error: 'Admin elevation required',
         requiresElevation: true,
-      }, { status: 403 }),
+      }, { status: HTTP_STATUS.FORBIDDEN }),
     };
   }
 
@@ -65,15 +64,14 @@ export async function requireElevatedAdmin(): Promise<ElevatedAdminCheck> {
 /**
  * Use this for read-only admin operations that don't need elevation
  */
-export async function requireAdmin(): Promise<ElevatedAdminCheck> {
+export async function requireAdminWithElevationStatus(): Promise<ElevatedAdminCheck> {
   const user = await getCurrentUser();
 
-  const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
-  if (!user || !adminRoles.includes(user.role)) {
+  if (!user || !ADMIN_ROLES.includes(user.role as typeof ADMIN_ROLES[number])) {
     return {
       authorized: false,
       elevated: false,
-      response: NextResponse.json({ error: 'Admin access required' }, { status: 403 }),
+      response: NextResponse.json({ error: 'Admin access required' }, { status: HTTP_STATUS.FORBIDDEN }),
     };
   }
 

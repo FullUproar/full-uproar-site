@@ -5,6 +5,7 @@ import { adminStyles } from '../styles/adminStyles';
 import { useToast } from '@/lib/toastStore';
 import { UserRole } from '@prisma/client';
 import { Shield, X, Copy, Check } from 'lucide-react';
+import { ADMIN_ROLES } from '@/lib/constants';
 
 interface User {
   id: string;
@@ -59,7 +60,6 @@ export default function UserManagementPage() {
       const response = await fetch('/api/admin/users');
       if (response.ok) {
         const data = await response.json();
-        console.log('Fetched users data:', data);
 
         // Handle both array and object response formats
         if (Array.isArray(data)) {
@@ -67,11 +67,7 @@ export default function UserManagementPage() {
           setUsers(data);
           setStats({
             total: data.length,
-            admins: data.filter((u: User) =>
-              u.role === 'GOD' ||
-              u.role === 'SUPER_ADMIN' ||
-              u.role === 'ADMIN'
-            ).length,
+            admins: data.filter((u: User) => (ADMIN_ROLES as readonly string[]).includes(u.role)).length,
             users: data.filter((u: User) => u.role === 'USER').length,
             verified: data.filter((u: User) => u.emailVerified).length,
           });
@@ -80,11 +76,7 @@ export default function UserManagementPage() {
           setUsers(data.users);
           setStats(data.stats || {
             total: data.users.length,
-            admins: data.users.filter((u: User) =>
-              u.role === 'GOD' ||
-              u.role === 'SUPER_ADMIN' ||
-              u.role === 'ADMIN'
-            ).length,
+            admins: data.users.filter((u: User) => (ADMIN_ROLES as readonly string[]).includes(u.role)).length,
             users: data.users.filter((u: User) => u.role === 'USER').length,
             verified: data.users.filter((u: User) => u.emailVerified).length,
           });
@@ -628,7 +620,7 @@ export default function UserManagementPage() {
               </div>
 
               {/* 2FA Provisioning for admin users with @fulluproar.com */}
-              {['ADMIN', 'SUPER_ADMIN', 'GOD'].includes(selectedUser.role) &&
+              {(ADMIN_ROLES as readonly string[]).includes(selectedUser.role) &&
                selectedUser.email.endsWith('@fulluproar.com') &&
                !selectedUser.totpEnabled && (
                 <div style={{

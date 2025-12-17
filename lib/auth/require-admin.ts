@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { ADMIN_ROLES, HTTP_STATUS } from '@/lib/constants';
 
 export type AdminCheckResult =
   | { authorized: true; userId: string; user: { id: string; role: string; email: string } }
@@ -16,7 +17,7 @@ export async function requireAdmin(): Promise<AdminCheckResult> {
   if (!userId) {
     return {
       authorized: false,
-      response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      response: NextResponse.json({ error: 'Unauthorized' }, { status: HTTP_STATUS.UNAUTHORIZED })
     };
   }
 
@@ -25,12 +26,10 @@ export async function requireAdmin(): Promise<AdminCheckResult> {
     select: { id: true, role: true, email: true }
   });
 
-  // Allow ADMIN, SUPER_ADMIN, and GOD roles
-  const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
-  if (!user || !adminRoles.includes(user.role)) {
+  if (!user || !ADMIN_ROLES.includes(user.role as typeof ADMIN_ROLES[number])) {
     return {
       authorized: false,
-      response: NextResponse.json({ error: 'Admin access required' }, { status: 403 })
+      response: NextResponse.json({ error: 'Admin access required' }, { status: HTTP_STATUS.FORBIDDEN })
     };
   }
 

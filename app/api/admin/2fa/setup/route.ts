@@ -1,55 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { generateTOTPSecret, generateQRCode, encryptSecret } from '@/lib/auth/totp';
+import { ADMIN_ROLES } from '@/lib/constants';
+import { handleApiError, UnauthorizedError, ForbiddenError } from '@/lib/utils/errors';
 
 // POST - Start 2FA setup (generate new secret)
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      throw new UnauthorizedError();
     }
 
-    // Only admins can set up 2FA
-    const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
-    if (!adminRoles.includes(user.role)) {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    if (!ADMIN_ROLES.includes(user.role as typeof ADMIN_ROLES[number])) {
+      throw new ForbiddenError('Admin access required');
     }
 
-    // Generate new TOTP secret
     const { secret, uri } = generateTOTPSecret(user.email);
-
-    // Generate QR code
     const qrCode = await generateQRCode(uri);
 
-    // Store encrypted secret (but don't enable until verified)
     const encryptedSecret = encryptSecret(secret);
     await prisma.user.update({
       where: { id: user.id },
       data: {
         totpSecret: encryptedSecret,
-        totpEnabled: false, // Will be enabled after verification
+        totpEnabled: false,
       },
     });
 
     return NextResponse.json({
       qrCode,
-      secret, // Show the secret in case user can't scan QR
+      secret,
       message: 'Scan the QR code with your authenticator app, then verify with a code',
     });
   } catch (error) {
-    console.error('Error setting up 2FA:', error);
-    return NextResponse.json({ error: 'Failed to setup 2FA' }, { status: 500 });
+    const { statusCode, body } = handleApiError(error);
+    return NextResponse.json(body, { status: statusCode });
   }
 }
 
 // GET - Check if 2FA is set up
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      throw new UnauthorizedError();
     }
 
     return NextResponse.json({
@@ -57,7 +53,7 @@ export async function GET(request: NextRequest) {
       totpVerifiedAt: user.totpVerifiedAt,
     });
   } catch (error) {
-    console.error('Error checking 2FA status:', error);
-    return NextResponse.json({ error: 'Failed to check 2FA status' }, { status: 500 });
+    const { statusCode, body } = handleApiError(error);
+    return NextResponse.json(body, { status: statusCode });
   }
 }
