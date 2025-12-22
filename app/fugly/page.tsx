@@ -247,7 +247,7 @@ export default function FuglyPage() {
             fontSize: isMobile ? '3rem' : '4.5rem',
             fontWeight: 900,
             marginBottom: '1rem',
-            background: 'linear-gradient(45deg, #a855f7, #FF7500, #ef4444)',
+            background: 'linear-gradient(45deg, #a855f7, #FF8200, #ef4444)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -336,7 +336,7 @@ export default function FuglyPage() {
                 </p>
                 <SignInButton mode="modal">
                   <button style={{
-                    background: 'linear-gradient(45deg, #a855f7, #FF7500)',
+                    background: 'linear-gradient(45deg, #a855f7, #FF8200)',
                     color: '#111827',
                     padding: '1rem 2rem',
                     borderRadius: '0.5rem',
@@ -397,9 +397,9 @@ export default function FuglyPage() {
               padding: '1.5rem',
               background: 'rgba(255, 117, 0, 0.1)',
               borderRadius: '1rem',
-              border: '2px solid #FF7500'
+              border: '2px solid #FF8200'
             }}>
-              <h3 style={{ color: '#FF7500', fontSize: '1.25rem', fontWeight: 900, marginBottom: '0.75rem', textAlign: 'center' }}>
+              <h3 style={{ color: '#FF8200', fontSize: '1.25rem', fontWeight: 900, marginBottom: '0.75rem', textAlign: 'center' }}>
                 DEVOTION TO CHAOS
               </h3>
               <div style={{
@@ -413,7 +413,7 @@ export default function FuglyPage() {
                 <div style={{
                   width: `${devotion}%`,
                   height: '100%',
-                  background: 'linear-gradient(90deg, #a855f7, #FF7500, #ef4444)',
+                  background: 'linear-gradient(90deg, #a855f7, #FF8200, #ef4444)',
                   transition: 'width 0.1s ease'
                 }} />
                 <div style={{
@@ -436,7 +436,7 @@ export default function FuglyPage() {
             {/* Membership Perks Grid */}
             <div style={{
               background: 'rgba(255, 117, 0, 0.05)',
-              border: '3px solid #FF7500',
+              border: '3px solid #FF8200',
               borderRadius: '1.5rem',
               padding: isMobile ? '1.5rem' : '2.5rem',
               position: 'relative',
@@ -447,7 +447,7 @@ export default function FuglyPage() {
                 top: '-15px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                background: 'linear-gradient(45deg, #a855f7, #FF7500)',
+                background: 'linear-gradient(45deg, #a855f7, #FF8200)',
                 color: '#111827',
                 padding: '0.5rem 1.5rem',
                 borderRadius: '50px',
@@ -519,7 +519,7 @@ export default function FuglyPage() {
                       ? 'linear-gradient(45deg, #fbbf24, #f59e0b)'
                       : devotion < 100
                         ? 'linear-gradient(45deg, #4b5563, #6b7280)'
-                        : 'linear-gradient(45deg, #a855f7, #FF7500, #ef4444)',
+                        : 'linear-gradient(45deg, #a855f7, #FF8200, #ef4444)',
                   color: devotion < 100 && cultLevel < 6 ? '#9ca3af' : '#111827',
                   padding: '1.25rem 3rem',
                   borderRadius: '50px',
@@ -552,7 +552,7 @@ export default function FuglyPage() {
                 gap: '1.5rem'
               }}>
                 <div>
-                  <div style={{ fontSize: '2.5rem', color: '#FF7500', fontWeight: 900 }}>13,666</div>
+                  <div style={{ fontSize: '2.5rem', color: '#FF8200', fontWeight: 900 }}>13,666</div>
                   <p style={{ color: '#fdba74' }}>Active Cultists</p>
                 </div>
                 <div>
@@ -587,7 +587,7 @@ export default function FuglyPage() {
                 <h2 style={{
                   fontSize: '2rem',
                   fontWeight: 900,
-                  color: '#FF7500',
+                  color: '#FF8200',
                   marginBottom: '1.5rem',
                   display: 'flex',
                   alignItems: 'center',
@@ -606,7 +606,7 @@ export default function FuglyPage() {
                       key={comic.id}
                       style={{
                         background: 'rgba(17, 24, 39, 0.9)',
-                        border: '3px solid #FF7500',
+                        border: '3px solid #FF8200',
                         borderRadius: '1rem',
                         overflow: 'hidden',
                         cursor: 'pointer',
@@ -622,7 +622,7 @@ export default function FuglyPage() {
                         />
                       )}
                       <div style={{ padding: '1rem' }}>
-                        <h3 style={{ color: '#FF7500', fontWeight: 900, marginBottom: '0.5rem' }}>
+                        <h3 style={{ color: '#FF8200', fontWeight: 900, marginBottom: '0.5rem' }}>
                           {comic.episode && `#${comic.episode}: `}{comic.title}
                         </h3>
                         <p style={{ color: '#fdba74', fontSize: '0.875rem' }}>{comic.description}</p>

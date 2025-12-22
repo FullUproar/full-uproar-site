@@ -16,12 +16,12 @@ interface SectionConfig {
 }
 
 const sections: SectionConfig[] = [
-  { id: 'mission', label: 'Mission', icon: Target, color: '#FF7500' },
+  { id: 'mission', label: 'Mission', icon: Target, color: '#FF8200' },
   { id: 'what-we-do', label: 'What We Do', icon: Gamepad2, color: '#fbbf24' },
-  { id: 'philosophy', label: 'Philosophy', icon: Sparkles, color: '#FF7500' },
+  { id: 'philosophy', label: 'Philosophy', icon: Sparkles, color: '#FF8200' },
   { id: 'tribe', label: 'Our Tribe', icon: Users, color: '#fbbf24' },
   { id: 'promise', label: 'Our Promise', icon: Shield, color: '#10b981' },
-  { id: 'fugly', label: 'Fugly', icon: Crown, color: '#FF7500' },
+  { id: 'fugly', label: 'Fugly', icon: Crown, color: '#FF8200' },
 ];
 
 export default function AboutPage() {
@@ -55,7 +55,7 @@ export default function AboutPage() {
             <h2 style={{
               fontSize: isMobile ? '1.75rem' : '2.25rem',
               fontWeight: 900,
-              color: '#FF7500',
+              color: '#FF8200',
               marginBottom: '1.5rem'
             }}>
               WHY WE EXIST
@@ -68,9 +68,9 @@ export default function AboutPage() {
               margin: '0 auto 1.5rem'
             }}>
               We make games—and game-modifiers—that break stale routines wide open and replace them with{' '}
-              <strong style={{ color: '#FF7500' }}>bold laughter</strong>,{' '}
+              <strong style={{ color: '#FF8200' }}>bold laughter</strong>,{' '}
               <strong style={{ color: '#fbbf24' }}>clever chaos</strong>, and unforgettable{' '}
-              <strong style={{ color: '#FF7500' }}>Afterroar™</strong> moments.
+              <strong style={{ color: '#FF8200' }}>Afterroar™</strong> moments.
             </p>
             <p style={{
               fontSize: isMobile ? '1.25rem' : '1.5rem',
@@ -101,9 +101,9 @@ export default function AboutPage() {
               maxWidth: '42rem',
               margin: '0 auto 2rem'
             }}>
-              We create <strong style={{ color: '#FF7500' }}>original games</strong>,{' '}
+              We create <strong style={{ color: '#FF8200' }}>original games</strong>,{' '}
               <strong style={{ color: '#fbbf24' }}>chaos-infused rule hacks</strong>, and{' '}
-              <strong style={{ color: '#FF7500' }}>playful modifiers</strong> that plug into the games you already love.
+              <strong style={{ color: '#FF8200' }}>playful modifiers</strong> that plug into the games you already love.
             </p>
             <div style={{
               background: 'rgba(251, 191, 36, 0.15)',
@@ -130,7 +130,7 @@ export default function AboutPage() {
             <h2 style={{
               fontSize: isMobile ? '1.75rem' : '2.25rem',
               fontWeight: 900,
-              color: '#FF7500',
+              color: '#FF8200',
               marginBottom: '1.5rem'
             }}>
               OUR PHILOSOPHY
@@ -182,14 +182,14 @@ export default function AboutPage() {
               margin: '0 auto 1.5rem'
             }}>
               We make games for the people who show up to game night ready to{' '}
-              <strong style={{ color: '#FF7500' }}>stir the pot</strong>,{' '}
+              <strong style={{ color: '#FF8200' }}>stir the pot</strong>,{' '}
               <strong style={{ color: '#fbbf24' }}>start a ruckus</strong>,{' '}
-              <strong style={{ color: '#FF7500' }}>hack the rules</strong>, and{' '}
+              <strong style={{ color: '#FF8200' }}>hack the rules</strong>, and{' '}
               <strong style={{ color: '#fbbf24' }}>laugh way too loud</strong>.
             </p>
             <div style={{
               background: 'rgba(255, 117, 0, 0.1)',
-              border: '2px solid #FF7500',
+              border: '2px solid #FF8200',
               borderRadius: '1rem',
               padding: '1.5rem 2rem',
               display: 'inline-block',
@@ -201,7 +201,7 @@ export default function AboutPage() {
                 margin: 0
               }}>
                 If you've ever felt the electric buzz after a night of ridiculous fun—that lingering echo we call the{' '}
-                <strong style={{ color: '#FF7500' }}>Afterroar™</strong>—you're one of us.
+                <strong style={{ color: '#FF8200' }}>Afterroar™</strong>—you're one of us.
               </p>
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function AboutPage() {
             <h2 style={{
               fontSize: isMobile ? '1.75rem' : '2.25rem',
               fontWeight: 900,
-              color: '#FF7500',
+              color: '#FF8200',
               marginBottom: '0.25rem'
             }}>
               FUGLY THE CHAOS GREMLIN
@@ -294,13 +294,13 @@ export default function AboutPage() {
           <h1 style={{
             fontSize: isMobile ? '1.75rem' : '2.5rem',
             fontWeight: 900,
-            color: '#FF7500',
+            color: '#FF8200',
             marginBottom: '0.5rem',
             lineHeight: 1.3
           }}>
             Full Uproar is the iconoclastic party-game company built for people who want game night to actually feel{' '}
             <span style={{
-              background: 'linear-gradient(90deg, #FF7500, #fbbf24)',
+              background: 'linear-gradient(90deg, #FF8200, #fbbf24)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
@@ -371,7 +371,7 @@ export default function AboutPage() {
         {/* Brand Closer */}
         <div style={{
           marginTop: '3rem',
-          background: 'linear-gradient(135deg, #FF7500, #ea580c)',
+          background: 'linear-gradient(135deg, #FF8200, #ea580c)',
           borderRadius: '1.5rem',
           padding: isMobile ? '2rem' : '2.5rem',
           textAlign: 'center'
@@ -408,7 +408,7 @@ export default function AboutPage() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.75rem',
-              background: '#FF7500',
+              background: '#FF8200',
               color: '#111827',
               padding: '1rem 2.5rem',
               borderRadius: '50px',

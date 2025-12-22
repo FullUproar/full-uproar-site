@@ -37,7 +37,7 @@ export default function GlobalFooter() {
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#FF7500'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#FF8200'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             Privacy Policy
           </Link>
@@ -46,7 +46,7 @@ export default function GlobalFooter() {
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#FF7500'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#FF8200'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             Terms of Service
           </Link>
@@ -55,7 +55,7 @@ export default function GlobalFooter() {
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#FF7500'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#FF8200'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             Returns & Refunds
           </Link>
@@ -64,7 +64,7 @@ export default function GlobalFooter() {
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#FF7500'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#FF8200'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             FAQ
           </Link>
@@ -73,7 +73,7 @@ export default function GlobalFooter() {
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#FF7500'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#FF8200'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             Contact
           </Link>
@@ -82,7 +82,7 @@ export default function GlobalFooter() {
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#FF7500'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#FF8200'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             Contact Support
           </a>

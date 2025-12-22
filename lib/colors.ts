@@ -2,33 +2,34 @@
  * Full Uproar Brand Colors
  *
  * Central color definitions for consistent branding across the site.
- * Official Pantone colors with sRGB equivalents provided by Pantone.
+ * Official Pantone colors with sRGB hex equivalents.
  */
 
 export const colors = {
   // ============================================
-  // OFFICIAL PANTONE BRAND COLORS
+  // OFFICIAL PANTONE BRAND COLORS (2025)
   // ============================================
 
-  // Pantone 2018 C — Primary Chaos Orange
-  // RGB: 255, 117, 0 | LAB: 68.40, 54.35, 88.71 | CMYK: 0, 54, 100, 0
-  // Role: Primary brand color, CTA color, core identity highlight
-  chaosOrange: '#FF7500',
+  // Pantone 151 C — Primary Brand Orange
+  // Hex: #FF8200 | Role: Primary brand color, main CTA, core identity
+  chaosOrange: '#FF8200',
 
-  // Pantone 2006 C — Golden Chaos
-  // RGB: 235, 188, 78 | LAB: 79.26, 9.66, 60.43 | CMYK: 0, 20, 75, 0
-  // Role: Secondary accent, illustration highlight tone, warm contrast
-  goldenChaos: '#EBBC4E',
+  // Pantone Orange 021 C — Vibrant Accent Orange
+  // Hex: #FE5000 | Role: Vibrant CTAs, urgent highlights, punch accents
+  vibrantOrange: '#FE5000',
 
-  // Pantone 7417 C — Warm Chaos Coral
-  // RGB: 224, 79, 57 | LAB: 55.48, 59.93, 45.74 | CMYK: 0, 65, 75, 0
-  // Role: Tertiary accent, soft UI highlights, comic backgrounds
-  chaosCoral: '#E04F39',
+  // Pantone 120 C — Cream Yellow (Headlines)
+  // Hex: #FBDB65 | Role: Headline text, warm highlights on dark
+  creamYellow: '#FBDB65',
+
+  // Pantone 266 C — Purple Accent
+  // Hex: #7D55C7 | Role: Cult features, special/premium accents
+  chaosPurple: '#7D55C7',
 
   // ============================================
   // LEGACY/UTILITY COLORS (aliased for compatibility)
   // ============================================
-  primary: '#FF7500',           // Alias for chaosOrange
+  primary: '#FF8200',           // Alias for chaosOrange (PMS 151 C)
   primaryLight: '#fdba74',      // Light orange/peach for accents
   primaryDark: '#ea580c',       // Darker orange for hover states
 
@@ -39,14 +40,14 @@ export const colors = {
   bgNav: 'rgba(17, 24, 39, 0.9)', // Navigation background with transparency
 
   // Text Colors
-  textPrimary: '#fde68a',       // Pale yellow - primary text
+  textPrimary: '#FBDB65',       // PMS 120 C - Cream yellow headlines
   textSecondary: '#e2e8f0',     // Light gray - secondary text
   textMuted: '#9ca3af',         // Muted text
   textDark: '#111827',          // Dark text (on light backgrounds)
 
   // Accent Colors
-  purple: '#8b5cf6',            // Purple accent for special items
-  purpleLight: '#c4b5fd',       // Light purple
+  purple: '#7D55C7',            // PMS 266 C - Purple accent
+  purpleLight: '#a78bfa',       // Light purple (digital variant)
   purpleBg: '#4c1d95',          // Purple background
 
   // Status Colors
@@ -55,9 +56,9 @@ export const colors = {
   warning: '#fbbf24',           // Yellow/gold for warnings
 
   // Gradients (as strings for direct use)
-  gradientPrimary: 'linear-gradient(135deg, #FF7500 0%, #ea580c 100%)',
+  gradientPrimary: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
   gradientHero: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)',
-  gradientExplosion: 'linear-gradient(to right, #ef4444, #FF7500)',
+  gradientExplosion: 'linear-gradient(to right, #ef4444, #FF8200)',
 } as const;
 
 // Type for color keys
@@ -71,12 +72,12 @@ export function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-// Pre-computed rgba values for common use cases
+// Pre-computed rgba values for common use cases (PMS 151 C based)
 export const colorsRgba = {
-  primaryGlow: 'rgba(255, 117, 0, 0.4)',
-  primaryGlowStrong: 'rgba(255, 117, 0, 0.6)',
-  primaryGlowLight: 'rgba(255, 117, 0, 0.2)',
-  primaryShadow: 'rgba(255, 117, 0, 0.5)',
+  primaryGlow: 'rgba(255, 130, 0, 0.4)',
+  primaryGlowStrong: 'rgba(255, 130, 0, 0.6)',
+  primaryGlowLight: 'rgba(255, 130, 0, 0.2)',
+  primaryShadow: 'rgba(255, 130, 0, 0.5)',
 } as const;
 
 export default colors;

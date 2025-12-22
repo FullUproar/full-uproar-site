@@ -47,7 +47,7 @@ interface MerchItem {
 type ShopTab = 'games' | 'merch';
 
 const gameCategories = [
-  { id: 'MOD', name: 'Game Mods', icon: Shuffle, description: 'Transform any game with chaos', featured: true, color: '#FF7500' },
+  { id: 'MOD', name: 'Game Mods', icon: Shuffle, description: 'Transform any game with chaos', featured: true, color: '#FF8200' },
   { id: 'TTRPG', name: 'TTRPGs', icon: Map, description: 'Tabletop roleplaying adventures', color: '#8b5cf6' },
   { id: 'BOARD_GAME', name: 'Board Games', icon: Dice1, description: 'Classic chaos on your table', color: '#10b981' },
   { id: 'CARD_GAME', name: 'Card Games', icon: Package, description: 'Deck-based mayhem', color: '#3b82f6' },
@@ -182,7 +182,7 @@ function ShopContent() {
           <h1 style={{
             fontSize: '4rem',
             fontWeight: 900,
-            color: activeTab === 'games' ? '#FF7500' : '#a855f7',
+            color: activeTab === 'games' ? '#FF8200' : '#a855f7',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             textShadow: activeTab === 'games'
@@ -216,9 +216,9 @@ function ShopContent() {
                 gap: '0.75rem',
                 padding: '1rem 2.5rem',
                 background: activeTab === 'games'
-                  ? 'linear-gradient(135deg, #FF7500, #ea580c)'
+                  ? 'linear-gradient(135deg, #FF8200, #ea580c)'
                   : 'rgba(31, 41, 55, 0.8)',
-                border: `3px solid ${activeTab === 'games' ? '#FF7500' : '#374151'}`,
+                border: `3px solid ${activeTab === 'games' ? '#FF8200' : '#374151'}`,
                 borderRadius: '50px',
                 color: activeTab === 'games' ? '#111827' : '#9ca3af',
                 fontWeight: 900,
@@ -275,7 +275,7 @@ function ShopContent() {
                 borderRadius: '1.5rem',
                 padding: '3rem',
                 marginBottom: '3rem',
-                border: '3px solid #FF7500',
+                border: '3px solid #FF8200',
                 position: 'relative',
                 overflow: 'hidden',
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(249, 115, 22, 0.1)'
@@ -284,18 +284,18 @@ function ShopContent() {
                   position: 'absolute',
                   top: 0, left: 0, right: 0, bottom: 0,
                   opacity: 0.03,
-                  background: `repeating-linear-gradient(45deg, transparent, transparent 10px, #FF7500 10px, #FF7500 20px)`,
+                  background: `repeating-linear-gradient(45deg, transparent, transparent 10px, #FF8200 10px, #FF8200 20px)`,
                   pointerEvents: 'none'
                 }} />
 
                 <div style={{ position: 'relative', zIndex: 1 }}>
                   <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                      <Zap style={{ width: '3rem', height: '3rem', color: '#FF7500' }} />
+                      <Zap style={{ width: '3rem', height: '3rem', color: '#FF8200' }} />
                       <h2 style={{
                         fontSize: '3rem',
                         fontWeight: 900,
-                        background: 'linear-gradient(45deg, #FF7500, #fbbf24)',
+                        background: 'linear-gradient(45deg, #FF8200, #fbbf24)',
                         backgroundClip: 'text',
                         WebkitBackgroundClip: 'text',
                         color: 'transparent',
@@ -305,7 +305,7 @@ function ShopContent() {
                       }}>
                         Fugly's Chaos Engine
                       </h2>
-                      <Zap style={{ width: '3rem', height: '3rem', color: '#FF7500' }} />
+                      <Zap style={{ width: '3rem', height: '3rem', color: '#FF8200' }} />
                     </div>
                     <p style={{ fontSize: '1.25rem', color: '#fbbf24', fontWeight: 'bold' }}>
                       GAME MODIFICATION SYSTEM
@@ -316,7 +316,7 @@ function ShopContent() {
                     background: 'rgba(0, 0, 0, 0.9)',
                     borderRadius: '1rem',
                     padding: '1.5rem',
-                    border: '2px solid #FF7500',
+                    border: '2px solid #FF8200',
                     maxWidth: '800px',
                     margin: '0 auto'
                   }}>
@@ -364,7 +364,7 @@ function ShopContent() {
                         position: 'absolute',
                         top: '-8px',
                         right: '10px',
-                        background: '#FF7500',
+                        background: '#FF8200',
                         color: '#000',
                         padding: '0.125rem 0.5rem',
                         borderRadius: '0.25rem',
@@ -438,7 +438,7 @@ function ShopContent() {
                         position: 'absolute',
                         top: '-15px',
                         right: '-15px',
-                        background: 'linear-gradient(45deg, #FF7500, #fb923c)',
+                        background: 'linear-gradient(45deg, #FF8200, #fb923c)',
                         color: '#000',
                         padding: '0.75rem',
                         borderRadius: '50%',
@@ -480,7 +480,7 @@ function ShopContent() {
                         <h3 style={{
                           fontSize: '1.125rem',
                           fontWeight: 900,
-                          color: '#FF7500',
+                          color: '#FF8200',
                           marginBottom: '0.5rem',
                           textTransform: 'uppercase',
                           minHeight: '2.75rem',
@@ -531,7 +531,7 @@ function ShopContent() {
                           </div>
                         </div>
 
-                        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF7500', marginBottom: '0.5rem' }}>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF8200', marginBottom: '0.5rem' }}>
                           ${(game.priceCents / 100).toFixed(2)}
                         </div>
                       </div>
@@ -564,7 +564,7 @@ function ShopContent() {
                         position: 'absolute',
                         top: '10px',
                         left: '10px',
-                        background: 'linear-gradient(45deg, #FF7500, #fbbf24)',
+                        background: 'linear-gradient(45deg, #FF8200, #fbbf24)',
                         color: '#000',
                         padding: '0.375rem 0.75rem',
                         borderRadius: '0.5rem',

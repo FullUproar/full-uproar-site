@@ -99,7 +99,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       description: "Inject pure chaos into your next game night! Works with ANY existing game.",
       price: "$24.99",
       icon: Zap,
-      color: '#FF7500',
+      color: '#FF8200',
       status: 'preorder'
     },
     {
@@ -129,7 +129,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       description: "Get all three game-breaking decks in one chaotic bundle!",
       price: "$49.99",
       icon: Sparkles,
-      color: '#a855f7',
+      color: '#7D55C7',
       status: 'preorder'
     }
   ];
@@ -352,10 +352,10 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
     gamePrice: {
       fontSize: '1.875rem',
       fontWeight: 900,
-      color: '#FF7500'
+      color: '#FF8200'
     },
     buyButton: {
-      background: '#FF7500',
+      background: '#FF8200',
       color: '#111827',
       padding: '0.75rem 1.5rem',
       borderRadius: '50px',
@@ -426,7 +426,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
-              color: '#fde68a',
+              color: '#FBDB65',
               textTransform: 'uppercase',
               transform: `rotate(${actualTopTilt}deg)`,
               transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
@@ -468,7 +468,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             fontWeight: 900,
             lineHeight: 1,
             marginBottom: isMobile ? '1rem' : '1.5rem',
-            color: '#FF7500',
+            color: '#FF8200',
             textTransform: 'uppercase',
             textShadow: '0 0 60px rgba(255, 117, 0, 0.5)',
             transform: `rotate(${actualBottomTilt}deg)`,
@@ -510,7 +510,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           <span style={{
             fontSize: isMobile ? '1rem' : '1.25rem',
             fontWeight: 900,
-            color: '#FF7500',
+            color: '#FF8200',
             textTransform: 'uppercase',
             letterSpacing: '0.1em',
             textShadow: '0 0 30px rgba(255, 117, 0, 0.5)',
@@ -519,7 +519,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           </span>
           <ChevronDown
             size={isMobile ? 32 : 44}
-            color="#FF7500"
+            color="#FF8200"
             strokeWidth={2.5}
             style={{
               animation: 'bounce 1.5s infinite',
@@ -538,7 +538,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           <h2 style={{
             fontSize: isMobile ? '2rem' : '3rem',
             fontWeight: 900,
-            color: '#FF7500',
+            color: '#FF8200',
             textAlign: 'center',
             marginBottom: '0.5rem',
             textTransform: 'uppercase',
@@ -678,7 +678,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             {/* MODS Card */}
             <div style={{
               background: expandedWeapon === 'mods' ? 'rgba(255, 117, 0, 0.1)' : 'rgba(31, 41, 55, 0.5)',
-              border: `3px solid ${expandedWeapon === 'mods' ? '#FF7500' : '#374151'}`,
+              border: `3px solid ${expandedWeapon === 'mods' ? '#FF8200' : '#374151'}`,
               borderRadius: '1rem',
               overflow: 'hidden',
               transition: 'all 0.3s',
@@ -701,7 +701,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                   <div style={{
                     width: isMobile ? '48px' : '60px',
                     height: isMobile ? '48px' : '60px',
-                    background: 'linear-gradient(135deg, #FF7500, #ea580c)',
+                    background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                     borderRadius: '0.75rem',
                     display: 'flex',
                     alignItems: 'center',
@@ -713,7 +713,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                     <h3 style={{
                       fontSize: isMobile ? '1.25rem' : '1.5rem',
                       fontWeight: 900,
-                      color: '#FF7500',
+                      color: '#FF8200',
                       marginBottom: '0.25rem',
                     }}>
                       Mods
@@ -729,7 +729,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <span style={{
-                    background: '#FF7500',
+                    background: '#FF8200',
                     color: '#0a0a0a',
                     padding: '0.25rem 0.75rem',
                     borderRadius: '50px',
@@ -836,7 +836,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                                 </span>
                                 <span style={{
                                   fontSize: '0.7rem',
-                                  color: '#FF7500',
+                                  color: '#FF8200',
                                   fontWeight: 700,
                                 }}>
                                   SPRING 2026
@@ -855,7 +855,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '0.5rem',
-                        background: '#FF7500',
+                        background: '#FF8200',
                         color: '#0a0a0a',
                         padding: '0.875rem 2rem',
                         borderRadius: '50px',
@@ -874,7 +874,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             {/* GAME NIGHT Card */}
             <div style={{
               background: expandedWeapon === 'gamenight' ? 'rgba(168, 85, 247, 0.1)' : 'rgba(31, 41, 55, 0.5)',
-              border: `3px solid ${expandedWeapon === 'gamenight' ? '#a855f7' : '#374151'}`,
+              border: `3px solid ${expandedWeapon === 'gamenight' ? '#7D55C7' : '#374151'}`,
               borderRadius: '1rem',
               overflow: 'hidden',
               transition: 'all 0.3s',
@@ -897,7 +897,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                   <div style={{
                     width: isMobile ? '48px' : '60px',
                     height: isMobile ? '48px' : '60px',
-                    background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+                    background: 'linear-gradient(135deg, #7D55C7, #7c3aed)',
                     borderRadius: '0.75rem',
                     display: 'flex',
                     alignItems: 'center',
@@ -909,7 +909,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                     <h3 style={{
                       fontSize: isMobile ? '1.25rem' : '1.5rem',
                       fontWeight: 900,
-                      color: '#a855f7',
+                      color: '#7D55C7',
                       marginBottom: '0.25rem',
                     }}>
                       Game Night
@@ -925,7 +925,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <span style={{
-                    background: '#a855f7',
+                    background: '#7D55C7',
                     color: '#fff',
                     padding: '0.25rem 0.75rem',
                     borderRadius: '50px',
@@ -972,7 +972,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                             transition: 'all 0.2s',
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = '#a855f7';
+                            e.currentTarget.style.borderColor = '#7D55C7';
                             e.currentTarget.style.transform = 'translateY(-2px)';
                           }}
                           onMouseLeave={(e) => {
@@ -990,12 +990,12 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                             justifyContent: 'center',
                             margin: '0 auto 1rem',
                           }}>
-                            <Icon size={24} color="#a855f7" />
+                            <Icon size={24} color="#7D55C7" />
                           </div>
                           <h4 style={{
                             fontSize: '1rem',
                             fontWeight: 900,
-                            color: '#a855f7',
+                            color: '#7D55C7',
                             marginBottom: '0.5rem',
                           }}>
                             {tool.title}
@@ -1051,7 +1051,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             fontSize: isMobile ? '0.875rem' : '0.95rem',
             fontWeight: 500,
           }}>
-            <Heart size={18} color="#FF7500" />
+            <Heart size={18} color="#FF8200" />
             <span>Made by game night addicts</span>
           </div>
 
@@ -1095,7 +1095,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             <h2 style={{
               fontSize: isMobile ? '2rem' : '2.5rem',
               fontWeight: 900,
-              color: '#FF7500',
+              color: '#FF8200',
               textAlign: 'center',
               marginBottom: '0.5rem',
             }}>
@@ -1117,7 +1117,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 borderRadius: '1.5rem',
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
                 padding: isMobile ? '1.5rem' : '2.5rem',
-                border: '4px solid #FF7500',
+                border: '4px solid #FF8200',
                 transform: isMobile ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`,
                 transition: 'transform 0.3s ease-in-out'
               }}
@@ -1152,7 +1152,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                   }}>
                     {featuredGame.title}
                   </h3>
-                  <p style={{ color: '#fde68a', marginBottom: '1.25rem', fontSize: '1.125rem', fontWeight: 'bold' }}>
+                  <p style={{ color: '#FBDB65', marginBottom: '1.25rem', fontSize: '1.125rem', fontWeight: 'bold' }}>
                     {featuredGame.description || 'The board game that destroys everything you hold dear.'}
                   </p>
 
@@ -1168,34 +1168,34 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                         alignItems: 'center',
                         gap: '0.5rem'
                       }}>
-                        <span style={{ color: '#FF7500' }}>✓</span> {prop}
+                        <span style={{ color: '#FF8200' }}>✓</span> {prop}
                       </div>
                     ))}
                   </div>
 
                   <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <Users style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF7500' }} />
-                      <span style={{ fontWeight: 'bold', color: '#fde68a', fontSize: '0.875rem' }}>{featuredGame.players}</span>
+                      <Users style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF8200' }} />
+                      <span style={{ fontWeight: 'bold', color: '#FBDB65', fontSize: '0.875rem' }}>{featuredGame.players}</span>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <Calendar style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF7500' }} />
-                      <span style={{ fontWeight: 'bold', color: '#fde68a', fontSize: '0.875rem' }}>{featuredGame.timeToPlay}</span>
+                      <Calendar style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF8200' }} />
+                      <span style={{ fontWeight: 'bold', color: '#FBDB65', fontSize: '0.875rem' }}>{featuredGame.timeToPlay}</span>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <Skull style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF7500' }} />
-                      <span style={{ fontWeight: 'bold', color: '#fde68a', fontSize: '0.875rem' }}>{featuredGame.ageRating}</span>
+                      <Skull style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF8200' }} />
+                      <span style={{ fontWeight: 'bold', color: '#FBDB65', fontSize: '0.875rem' }}>{featuredGame.ageRating}</span>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '2rem', fontWeight: 900, color: '#FF7500' }}>
+                    <span style={{ fontSize: '2rem', fontWeight: 900, color: '#FF8200' }}>
                       ${(featuredGame.priceCents / 100).toFixed(2)}
                     </span>
                     <Link
                       href={`/games/${featuredGame.slug || featuredGame.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                       style={{
-                        background: '#FF7500',
+                        background: '#FF8200',
                         color: '#111827',
                         padding: '0.875rem 1.75rem',
                         borderRadius: '50px',
@@ -1223,7 +1223,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#FF7500',
+                    color: '#FF8200',
                     fontSize: '4rem',
                     fontWeight: 'bold',
                     overflow: 'hidden'
@@ -1261,11 +1261,11 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 marginTop: '2rem',
                 padding: '1.25rem',
                 background: 'rgba(255, 117, 0, 0.1)',
-                borderLeft: '4px solid #FF7500',
+                borderLeft: '4px solid #FF8200',
                 borderRadius: '0.5rem'
               }}>
                 <p style={{
-                  color: '#fde68a',
+                  color: '#FBDB65',
                   fontSize: '1rem',
                   fontStyle: 'italic',
                   margin: 0,
@@ -1290,7 +1290,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                         height: '0.75rem',
                         borderRadius: '50px',
                         border: 'none',
-                        background: index === activeGame ? '#FF7500' : '#6b7280',
+                        background: index === activeGame ? '#FF8200' : '#6b7280',
                         cursor: 'pointer',
                         transition: 'all 0.3s'
                       }}
@@ -1336,7 +1336,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           <h2 style={{
             fontSize: isMobile ? '1.75rem' : '2.5rem',
             fontWeight: 900,
-            color: '#fde68a',
+            color: '#FBDB65',
             marginBottom: '0.75rem',
           }}>
             Join the Chaos Crew
@@ -1367,7 +1367,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 background: '#1f2937',
                 border: '3px solid #374151',
                 borderRadius: '50px',
-                color: '#fde68a',
+                color: '#FBDB65',
                 fontSize: '1rem',
                 fontWeight: 600,
                 outline: 'none',
@@ -1377,7 +1377,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
               type="submit"
               style={{
                 padding: '1rem 2rem',
-                background: '#FF7500',
+                background: '#FF8200',
                 color: '#0a0a0a',
                 border: 'none',
                 borderRadius: '50px',
@@ -1423,7 +1423,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
               <FuglyLogo size={50} />
               <div>
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', color: '#FF7500' }}>FULL UPROAR</div>
+                <div style={{ fontWeight: 900, fontSize: '1.25rem', color: '#FF8200' }}>FULL UPROAR</div>
                 <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>Fugly Approved Games™</div>
               </div>
             </div>
@@ -1434,7 +1434,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
           {/* Shop Column */}
           <div>
-            <h4 style={{ fontWeight: 900, color: '#fde68a', marginBottom: '1rem', fontSize: '0.95rem' }}>SHOP</h4>
+            <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>SHOP</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <Link href="/shop" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>All Products</Link>
               <Link href="/shop?tab=games&category=MOD" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Game Mods</Link>
@@ -1444,7 +1444,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
           {/* Community Column */}
           <div>
-            <h4 style={{ fontWeight: 900, color: '#fde68a', marginBottom: '1rem', fontSize: '0.95rem' }}>COMMUNITY</h4>
+            <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>COMMUNITY</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <Link href="/game-nights" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Game Nights</Link>
               <Link href="/forum" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Forum</Link>
@@ -1454,7 +1454,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
           {/* Company Column */}
           <div>
-            <h4 style={{ fontWeight: 900, color: '#fde68a', marginBottom: '1rem', fontSize: '0.95rem' }}>COMPANY</h4>
+            <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>COMPANY</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <Link href="/about" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>About Us</Link>
               <Link href="/track-order" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Track Order</Link>

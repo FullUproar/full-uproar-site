@@ -1,0 +1,140 @@
+{
+  "Full Uproar": {
+    "colors": {
+      "brand": {
+        "orange": {
+          "primary": { "value": "#FF8200", "type": "color", "description": "PMS 151 C - Main brand orange" },
+          "vibrant": { "value": "#FE5000", "type": "color", "description": "PMS Orange 021 C - Vibrant CTAs" },
+          "legacy": { "value": "#FF7500", "type": "color", "description": "Original digital orange (between 151 C and 021 C)" },
+          "light": { "value": "#fdba74", "type": "color", "description": "Light orange - text on dark" },
+          "muted": { "value": "rgba(255, 130, 0, 0.2)", "type": "color", "description": "Subtle orange backgrounds" },
+          "border": { "value": "rgba(255, 130, 0, 0.3)", "type": "color", "description": "Orange borders" },
+          "glow": { "value": "rgba(255, 130, 0, 0.5)", "type": "color", "description": "Orange glow/shadow" }
+        },
+        "yellow": {
+          "primary": { "value": "#FBDB65", "type": "color", "description": "PMS 120 C - Cream/headline text" },
+          "light": { "value": "#fde68a", "type": "color", "description": "Lighter cream (digital variant)" }
+        },
+        "purple": {
+          "primary": { "value": "#7D55C7", "type": "color", "description": "PMS 266 C - Cult/special features" },
+          "digital": { "value": "#a855f7", "type": "color", "description": "Brighter purple for screens" },
+          "light": { "value": "#d8b4fe", "type": "color", "description": "Light purple text" }
+        }
+      },
+      "pantone": {
+        "151C": { "value": "#FF8200", "type": "color", "description": "Pantone 151 C - Primary Orange" },
+        "Orange021C": { "value": "#FE5000", "type": "color", "description": "Pantone Orange 021 C - Vibrant Orange" },
+        "120C": { "value": "#FBDB65", "type": "color", "description": "Pantone 120 C - Cream Yellow" },
+        "266C": { "value": "#7D55C7", "type": "color", "description": "Pantone 266 C - Purple" }
+      },
+      "background": {
+        "darkest": { "value": "#0a0a0a", "type": "color", "description": "Near black - main body" },
+        "dark": { "value": "#0f172a", "type": "color", "description": "Primary dark background" },
+        "medium": { "value": "#111827", "type": "color", "description": "Card backgrounds" },
+        "light": { "value": "#1e293b", "type": "color", "description": "Elevated surfaces" },
+        "lighter": { "value": "#1f2937", "type": "color", "description": "Section backgrounds" },
+        "border": { "value": "#334155", "type": "color", "description": "Borders and dividers" }
+      },
+      "text": {
+        "primary": { "value": "#e2e8f0", "type": "color", "description": "Main body text" },
+        "secondary": { "value": "#94a3b8", "type": "color", "description": "Muted text" },
+        "tertiary": { "value": "#64748b", "type": "color", "description": "Very muted text" },
+        "muted": { "value": "#9ca3af", "type": "color", "description": "Gray text" },
+        "yellow": { "value": "#fde68a", "type": "color", "description": "Headline text - cream/yellow" },
+        "orange": { "value": "#fdba74", "type": "color", "description": "Orange accent text" }
+      },
+      "status": {
+        "success": { "value": "#10b981", "type": "color", "description": "Success states" },
+        "error": { "value": "#ef4444", "type": "color", "description": "Error states" },
+        "warning": { "value": "#f59e0b", "type": "color", "description": "Warning states" },
+        "info": { "value": "#3b82f6", "type": "color", "description": "Info states" },
+        "successLight": { "value": "#fca5a5", "type": "color", "description": "Light error/red" },
+        "warningLight": { "value": "#fbbf24", "type": "color", "description": "Light warning/gold" }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "primary": { "value": "system-ui, -apple-system, sans-serif", "type": "fontFamilies" }
+      },
+      "fontSize": {
+        "hero": { "value": "clamp(4rem, 6vw, 5.5rem)", "type": "fontSizes", "description": "Hero headlines" },
+        "heroMobile": { "value": "clamp(2rem, 10vw, 3rem)", "type": "fontSizes", "description": "Hero headlines mobile" },
+        "h1": { "value": "36px", "type": "fontSizes" },
+        "h2": { "value": "28px", "type": "fontSizes" },
+        "h3": { "value": "20px", "type": "fontSizes" },
+        "h4": { "value": "18px", "type": "fontSizes" },
+        "body": { "value": "16px", "type": "fontSizes" },
+        "bodySmall": { "value": "14px", "type": "fontSizes" },
+        "caption": { "value": "12px", "type": "fontSizes" },
+        "tiny": { "value": "10px", "type": "fontSizes" }
+      },
+      "fontWeight": {
+        "regular": { "value": "400", "type": "fontWeights" },
+        "medium": { "value": "500", "type": "fontWeights" },
+        "semibold": { "value": "600", "type": "fontWeights" },
+        "bold": { "value": "700", "type": "fontWeights" },
+        "black": { "value": "900", "type": "fontWeights", "description": "Headlines" }
+      },
+      "lineHeight": {
+        "tight": { "value": "1", "type": "lineHeights", "description": "Headlines" },
+        "snug": { "value": "1.25", "type": "lineHeights" },
+        "normal": { "value": "1.5", "type": "lineHeights", "description": "Body text" },
+        "relaxed": { "value": "1.75", "type": "lineHeights" }
+      }
+    },
+    "spacing": {
+      "0": { "value": "0", "type": "spacing" },
+      "1": { "value": "4px", "type": "spacing" },
+      "2": { "value": "8px", "type": "spacing" },
+      "3": { "value": "12px", "type": "spacing" },
+      "4": { "value": "16px", "type": "spacing" },
+      "5": { "value": "20px", "type": "spacing" },
+      "6": { "value": "24px", "type": "spacing" },
+      "8": { "value": "32px", "type": "spacing" },
+      "10": { "value": "40px", "type": "spacing" },
+      "12": { "value": "48px", "type": "spacing" },
+      "16": { "value": "64px", "type": "spacing" },
+      "20": { "value": "80px", "type": "spacing" },
+      "24": { "value": "96px", "type": "spacing" }
+    },
+    "borderRadius": {
+      "none": { "value": "0", "type": "borderRadius" },
+      "sm": { "value": "4px", "type": "borderRadius" },
+      "md": { "value": "8px", "type": "borderRadius" },
+      "lg": { "value": "12px", "type": "borderRadius" },
+      "xl": { "value": "16px", "type": "borderRadius" },
+      "2xl": { "value": "24px", "type": "borderRadius" },
+      "full": { "value": "9999px", "type": "borderRadius" }
+    },
+    "borderWidth": {
+      "thin": { "value": "1px", "type": "borderWidth" },
+      "medium": { "value": "2px", "type": "borderWidth" },
+      "thick": { "value": "4px", "type": "borderWidth", "description": "Feature borders" }
+    },
+    "shadow": {
+      "sm": { "value": "0 1px 2px rgba(0, 0, 0, 0.3)", "type": "boxShadow" },
+      "md": { "value": "0 4px 6px rgba(0, 0, 0, 0.4)", "type": "boxShadow" },
+      "lg": { "value": "0 10px 15px rgba(0, 0, 0, 0.5)", "type": "boxShadow" },
+      "xl": { "value": "0 25px 50px -12px rgba(0, 0, 0, 0.5)", "type": "boxShadow", "description": "Cards" },
+      "glow": { "value": "0 0 60px rgba(255, 117, 0, 0.5)", "type": "boxShadow", "description": "Orange glow" },
+      "drop": { "value": "0 15px 40px rgba(0, 0, 0, 0.5)", "type": "boxShadow", "description": "Images" }
+    },
+    "breakpoints": {
+      "mobile": { "value": "768px", "type": "dimension", "description": "Mobile breakpoint" },
+      "tablet": { "value": "1024px", "type": "dimension" },
+      "desktop": { "value": "1280px", "type": "dimension" },
+      "wide": { "value": "1536px", "type": "dimension" }
+    },
+    "layout": {
+      "maxWidth": {
+        "content": { "value": "900px", "type": "dimension", "description": "Hero content width" },
+        "page": { "value": "1280px", "type": "dimension", "description": "Max page width" },
+        "nav": { "value": "80rem", "type": "dimension", "description": "Navigation max width" }
+      },
+      "navHeight": {
+        "desktop": { "value": "4rem", "type": "dimension" },
+        "mobile": { "value": "3.5rem", "type": "dimension" }
+      }
+    }
+  }
+}
