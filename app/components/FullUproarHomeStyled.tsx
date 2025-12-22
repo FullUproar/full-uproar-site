@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Calendar, Users, ArrowRight, Zap, Skull, Pause, ChevronDown, Heart, ShieldCheck, Truck, Sparkles, Trophy, Gamepad2, Shuffle, Clock } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import DeploymentInfo from './DeploymentInfo';
@@ -79,6 +79,13 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
   const [countdown, setCountdown] = useState(7);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
+
+  // Draggable headline state
+  const [headlineTilts, setHeadlineTilts] = useState({ top: 0, bottom: 0 });
+  const [isDraggingHeadline, setIsDraggingHeadline] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [userTopTilt, setUserTopTilt] = useState<number | null>(null);
+  const topHeadlineRef = useRef<HTMLHeadingElement>(null);
 
   // Choose Your Weapon section state
   const [expandedWeapon, setExpandedWeapon] = useState<WeaponCategory>(null);
@@ -163,6 +170,64 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Random headline tilts on page load for chaos
+  useEffect(() => {
+    const randomTilt = () => (Math.random() * 6) - 3; // -3 to +3 degrees
+    setHeadlineTilts({
+      top: randomTilt(),
+      bottom: -randomTilt(), // Opposite direction
+    });
+  }, []);
+
+  // Draggable headline easter egg - rotate by dragging!
+  const handleHeadlineMouseDown = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    setIsDraggingHeadline(true);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    setDragStartX(clientX);
+  }, []);
+
+  const handleHeadlineMouseMove = useCallback((e: MouseEvent | TouchEvent) => {
+    if (!isDraggingHeadline) return;
+
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const deltaX = clientX - dragStartX;
+
+    // Convert horizontal drag to rotation (100px = ~15 degrees)
+    const rotationDelta = deltaX / 7;
+    const baseRotation = userTopTilt !== null ? userTopTilt : headlineTilts.top;
+    const newRotation = Math.max(-45, Math.min(45, baseRotation + rotationDelta));
+
+    setUserTopTilt(newRotation);
+    setDragStartX(clientX);
+  }, [isDraggingHeadline, dragStartX, userTopTilt, headlineTilts.top]);
+
+  const handleHeadlineMouseUp = useCallback(() => {
+    setIsDraggingHeadline(false);
+  }, []);
+
+  // Global mouse/touch listeners for drag
+  useEffect(() => {
+    if (isDraggingHeadline) {
+      window.addEventListener('mousemove', handleHeadlineMouseMove);
+      window.addEventListener('mouseup', handleHeadlineMouseUp);
+      window.addEventListener('touchmove', handleHeadlineMouseMove);
+      window.addEventListener('touchend', handleHeadlineMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleHeadlineMouseMove);
+      window.removeEventListener('mouseup', handleHeadlineMouseUp);
+      window.removeEventListener('touchmove', handleHeadlineMouseMove);
+      window.removeEventListener('touchend', handleHeadlineMouseUp);
+    };
+  }, [isDraggingHeadline, handleHeadlineMouseMove, handleHeadlineMouseUp]);
+
+  // Calculate the actual rotation to use (user-set or random)
+  const actualTopTilt = userTopTilt !== null ? userTopTilt : headlineTilts.top;
+  // Bottom tilt mirrors the top for that chaotic balance
+  const actualBottomTilt = userTopTilt !== null ? -userTopTilt : headlineTilts.bottom;
 
   // Testimonials for featured games
   const gameTestimonials: Record<string, string[]> = {
@@ -342,74 +407,87 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         }} />
 
         <div style={{
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: isMobile ? '1.5rem' : '3rem',
-          padding: isMobile ? '0 1rem' : '0 2rem',
-          maxWidth: '1200px',
+          maxWidth: '900px',
+          margin: '0 auto',
+          padding: isMobile ? '0 0.75rem' : '0 1rem',
           width: '100%',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
+          textAlign: 'center',
           zIndex: 1,
         }}>
-          {/* Text content */}
-          <div style={{
-            textAlign: isMobile ? 'center' : 'left',
-            flex: 1,
-          }}>
-            <h1 style={{
-              fontSize: isMobile ? 'clamp(2.5rem, 10vw, 3.5rem)' : 'clamp(4rem, 6vw, 6rem)',
+          {/* First headline - DRAGGABLE EASTER EGG! */}
+          <h1
+            ref={topHeadlineRef}
+            onMouseDown={handleHeadlineMouseDown}
+            onTouchStart={handleHeadlineMouseDown}
+            style={{
+              fontSize: isMobile ? 'clamp(2rem, 10vw, 3rem)' : 'clamp(4rem, 6vw, 5.5rem)',
               fontWeight: 900,
-              lineHeight: 0.95,
-              marginBottom: '0.25em',
+              lineHeight: 1,
+              marginBottom: 0,
               color: '#fde68a',
               textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
-            }}>
-              Life hits hard.
-            </h1>
-            <h1 style={{
-              fontSize: isMobile ? 'clamp(2.5rem, 10vw, 3.5rem)' : 'clamp(4rem, 6vw, 6rem)',
-              fontWeight: 900,
-              lineHeight: 0.95,
-              marginBottom: isMobile ? '1rem' : '1.5rem',
-              color: '#FF7500',
-              textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
-              textShadow: '0 0 60px rgba(255, 117, 0, 0.5)',
-            }}>
-              Game night hits back.
-            </h1>
+              transform: `rotate(${actualTopTilt}deg)`,
+              transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
+              cursor: isDraggingHeadline ? 'grabbing' : 'grab',
+              userSelect: 'none',
+            }}
+          >
+            Life hits hard
+          </h1>
 
-            <p style={{
-              fontSize: isMobile ? '1rem' : '1.35rem',
-              color: '#9ca3af',
-              lineHeight: 1.5,
-              maxWidth: '500px',
-              margin: isMobile ? '0 auto' : '0',
-            }}>
-              Chaotic party games and mod decks that transform boring game nights into legendary stories.
-            </p>
-          </div>
-
-          {/* Fugly mascot */}
+          {/* Fugly integrated between text */}
           <div style={{
-            flex: isMobile ? 'none' : '0 0 auto',
+            position: 'relative',
+            marginTop: isMobile ? '1rem' : '1.5rem',
+            marginBottom: isMobile ? '0.5rem' : '1rem',
+            height: isMobile ? '25vh' : '35vh',
+            maxHeight: isMobile ? '180px' : '320px',
+            minHeight: isMobile ? '120px' : '200px',
             display: 'flex',
-            justifyContent: 'center',
             alignItems: 'center',
+            justifyContent: 'center',
           }}>
             <img
               src="/FuglyLaying.png"
               alt="Fugly - the chaos mascot"
               style={{
-                height: isMobile ? '180px' : '380px',
+                height: '100%',
+                maxHeight: isMobile ? '200px' : '380px',
                 width: 'auto',
-                filter: 'drop-shadow(0 20px 60px rgba(255, 117, 0, 0.3))',
                 transform: 'rotate(-2deg)',
+                filter: 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.5))',
               }}
             />
           </div>
+
+          {/* Second headline - mirrors the top rotation */}
+          <h1 style={{
+            fontSize: isMobile ? 'clamp(2rem, 10vw, 3rem)' : 'clamp(4rem, 6vw, 5.5rem)',
+            fontWeight: 900,
+            lineHeight: 1,
+            marginBottom: isMobile ? '1rem' : '1.5rem',
+            color: '#FF7500',
+            textTransform: 'uppercase',
+            textShadow: '0 0 60px rgba(255, 117, 0, 0.5)',
+            transform: `rotate(${actualBottomTilt}deg)`,
+            transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
+          }}>
+            Game night hits back
+          </h1>
+
+          {/* Subtitle */}
+          <p style={{
+            fontSize: isMobile ? '1rem' : '1.25rem',
+            color: '#9ca3af',
+            lineHeight: 1.5,
+            maxWidth: '500px',
+            margin: '0 auto',
+            marginTop: isMobile ? '1rem' : '1.5rem',
+          }}>
+            Arm yourself with chaos to transform boring game nights into legendary stories.
+          </p>
         </div>
 
         {/* Scroll CTA - Weaponize My Game Night */}
