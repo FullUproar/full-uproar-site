@@ -90,6 +90,18 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
   // Choose Your Weapon section state
   const [expandedWeapon, setExpandedWeapon] = useState<WeaponCategory>(null);
 
+  // Randomized background glow positions - changes on each page load
+  const [glowPositions, setGlowPositions] = useState({
+    // Purple glow - top right area
+    purple1: { top: '5%', right: '0%', width: '60vw', height: '60vh', opacity: 0.25 },
+    // Orange glow - center left area
+    orange1: { top: '25%', left: '-5%', width: '50vw', height: '50vh', opacity: 0.18 },
+    // Purple glow - bottom center area
+    purple2: { bottom: '10%', left: '20%', width: '70vw', height: '50vh', opacity: 0.2 },
+    // Orange accent - bottom right area
+    orange2: { bottom: '30%', right: '5%', width: '30vw', height: '30vh', opacity: 0.12 },
+  });
+
   // Mod products for the Mods panel
   const modProducts = [
     {
@@ -177,6 +189,47 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
     setHeadlineTilts({
       top: randomTilt(),
       bottom: -randomTilt(), // Opposite direction
+    });
+  }, []);
+
+  // Randomize background glow positions on page load
+  useEffect(() => {
+    const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const randomSize = (base: number, variance: number) => base + randomInRange(-variance, variance);
+
+    setGlowPositions({
+      // Purple glow - top right quadrant (varies within that area)
+      purple1: {
+        top: `${randomInRange(0, 15)}%`,
+        right: `${randomInRange(-5, 10)}%`,
+        width: `${randomSize(60, 15)}vw`,
+        height: `${randomSize(60, 15)}vh`,
+        opacity: 0.2 + Math.random() * 0.1, // 0.2 to 0.3
+      },
+      // Orange glow - left side (varies vertically)
+      orange1: {
+        top: `${randomInRange(15, 40)}%`,
+        left: `${randomInRange(-10, 5)}%`,
+        width: `${randomSize(50, 12)}vw`,
+        height: `${randomSize(50, 12)}vh`,
+        opacity: 0.15 + Math.random() * 0.08, // 0.15 to 0.23
+      },
+      // Purple glow - bottom area (varies horizontally)
+      purple2: {
+        bottom: `${randomInRange(5, 20)}%`,
+        left: `${randomInRange(10, 35)}%`,
+        width: `${randomSize(70, 15)}vw`,
+        height: `${randomSize(50, 12)}vh`,
+        opacity: 0.15 + Math.random() * 0.1, // 0.15 to 0.25
+      },
+      // Orange accent - bottom right (smaller, accent)
+      orange2: {
+        bottom: `${randomInRange(20, 45)}%`,
+        right: `${randomInRange(0, 15)}%`,
+        width: `${randomSize(30, 10)}vw`,
+        height: `${randomSize(30, 10)}vh`,
+        opacity: 0.1 + Math.random() * 0.08, // 0.1 to 0.18
+      },
     });
   }, []);
 
@@ -380,7 +433,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
   return (
     <div style={styles.container}>
-      {/* Fixed background with purple and orange glows */}
+      {/* Fixed background with randomized purple and orange glows */}
       <div style={{
         position: 'fixed',
         top: 0,
@@ -391,45 +444,49 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         zIndex: 0,
         pointerEvents: 'none',
       }}>
-        {/* Purple glow - top right - prominent */}
+        {/* Purple glow - top right area (randomized) */}
         <div style={{
           position: 'absolute',
-          top: '5%',
-          right: '0%',
-          width: '60vw',
-          height: '60vh',
-          background: 'radial-gradient(ellipse at center, rgba(168, 85, 247, 0.25) 0%, rgba(168, 85, 247, 0.08) 40%, transparent 70%)',
+          top: glowPositions.purple1.top,
+          right: glowPositions.purple1.right,
+          width: glowPositions.purple1.width,
+          height: glowPositions.purple1.height,
+          background: `radial-gradient(ellipse at center, rgba(168, 85, 247, ${glowPositions.purple1.opacity}) 0%, rgba(168, 85, 247, ${glowPositions.purple1.opacity * 0.3}) 40%, transparent 70%)`,
           filter: 'blur(40px)',
+          transition: 'all 0.5s ease-out',
         }} />
-        {/* Orange glow - center left */}
+        {/* Orange glow - left side (randomized) */}
         <div style={{
           position: 'absolute',
-          top: '25%',
-          left: '-5%',
-          width: '50vw',
-          height: '50vh',
-          background: 'radial-gradient(ellipse at center, rgba(255, 130, 0, 0.18) 0%, rgba(255, 130, 0, 0.05) 40%, transparent 70%)',
+          top: glowPositions.orange1.top,
+          left: glowPositions.orange1.left,
+          width: glowPositions.orange1.width,
+          height: glowPositions.orange1.height,
+          background: `radial-gradient(ellipse at center, rgba(255, 130, 0, ${glowPositions.orange1.opacity}) 0%, rgba(255, 130, 0, ${glowPositions.orange1.opacity * 0.3}) 40%, transparent 70%)`,
           filter: 'blur(60px)',
+          transition: 'all 0.5s ease-out',
         }} />
-        {/* Purple glow - bottom center */}
+        {/* Purple glow - bottom area (randomized) */}
         <div style={{
           position: 'absolute',
-          bottom: '10%',
-          left: '20%',
-          width: '70vw',
-          height: '50vh',
-          background: 'radial-gradient(ellipse at center, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+          bottom: glowPositions.purple2.bottom,
+          left: glowPositions.purple2.left,
+          width: glowPositions.purple2.width,
+          height: glowPositions.purple2.height,
+          background: `radial-gradient(ellipse at center, rgba(168, 85, 247, ${glowPositions.purple2.opacity}) 0%, rgba(168, 85, 247, ${glowPositions.purple2.opacity * 0.3}) 40%, transparent 70%)`,
           filter: 'blur(60px)',
+          transition: 'all 0.5s ease-out',
         }} />
-        {/* Small orange accent - bottom right */}
+        {/* Orange accent - bottom right (randomized) */}
         <div style={{
           position: 'absolute',
-          bottom: '30%',
-          right: '5%',
-          width: '30vw',
-          height: '30vh',
-          background: 'radial-gradient(ellipse at center, rgba(255, 130, 0, 0.12) 0%, transparent 60%)',
+          bottom: glowPositions.orange2.bottom,
+          right: glowPositions.orange2.right,
+          width: glowPositions.orange2.width,
+          height: glowPositions.orange2.height,
+          background: `radial-gradient(ellipse at center, rgba(255, 130, 0, ${glowPositions.orange2.opacity}) 0%, transparent 60%)`,
           filter: 'blur(50px)',
+          transition: 'all 0.5s ease-out',
         }} />
       </div>
 
