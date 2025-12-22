@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import {
   Package, ShoppingBag, ShoppingCart, DollarSign, TrendingUp,
   Plus, Gamepad2, BookOpen, Palette, Database, Settings, MessageSquare,
-  RotateCcw, Box, HelpCircle, BarChart3
+  RotateCcw, Box, HelpCircle, BarChart3, Layers
 } from 'lucide-react';
+import Link from 'next/link';
 import { adminStyles } from '../styles/adminStyles';
 import DeploymentInfo from '../../components/DeploymentInfo';
 import TestModeToggle from './TestModeToggle';
@@ -457,6 +458,20 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
               <MessageSquare size={16} style={{ marginRight: '4px' }} />
               Seed Forum
             </button>
+            <Link
+              href="/admin/figma"
+              style={{
+                ...adminStyles.outlineButton,
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderColor: '#a855f7',
+                color: '#a855f7',
+              }}
+            >
+              <Layers size={16} style={{ marginRight: '4px' }} />
+              Figma Integration
+            </Link>
           </div>
         </div>
       )}
