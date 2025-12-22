@@ -140,9 +140,9 @@ const DELETE_TOKEN_SET = gql`
  * Get the Tokens Studio API key from environment
  */
 function getApiKey(): string {
-  const key = process.env.TOKENS_STUDIO_API_KEY;
+  const key = process.env.FIGMA_ACCESS_TOKEN;
   if (!key) {
-    throw new Error('TOKENS_STUDIO_API_KEY is not set in environment variables');
+    throw new Error('FIGMA_ACCESS_TOKEN is not set in environment variables');
   }
   return key;
 }

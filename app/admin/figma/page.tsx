@@ -1081,17 +1081,15 @@ export default function FigmaAdminPage() {
               <h2 style={adminStyles.cardTitle}>Setup Instructions</h2>
               <div style={{ color: '#9ca3af', lineHeight: 1.8 }}>
                 <p style={{ marginBottom: '1rem' }}>
-                  To connect to Tokens Studio Pro, you need an API key:
+                  To connect to Tokens Studio Pro, add your API key to <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>FIGMA_ACCESS_TOKEN</code> in your environment variables.
                 </p>
                 <ol style={{ paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-                  <li>Go to <a href="https://tokens.studio" target="_blank" rel="noopener noreferrer" style={{ color: '#a78bfa' }}>tokens.studio</a> and sign in</li>
-                  <li>Navigate to Personal Settings → API Keys</li>
-                  <li>Create a new API key with scopes: <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>projects:read</code>, <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>projects:write</code></li>
-                  <li>Add <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>TOKENS_STUDIO_API_KEY=your_key</code> to your .env.local</li>
-                  <li>Restart your development server</li>
+                  <li>Go to <a href="https://tokens.studio" target="_blank" rel="noopener noreferrer" style={{ color: '#a78bfa' }}>tokens.studio</a> → Personal Settings → API Keys</li>
+                  <li>Use your existing API key with scopes: <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>projects:read</code>, <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>projects:write</code></li>
+                  <li>Add it to <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>FIGMA_ACCESS_TOKEN</code> in .env.local and Vercel</li>
                 </ol>
                 <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                  Note: Tokens Studio Pro subscription required. The API key is only shown once during creation.
+                  Note: Tokens Studio Pro subscription required.
                 </p>
               </div>
             </div>

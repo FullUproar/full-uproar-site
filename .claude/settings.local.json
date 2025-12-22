@@ -26,7 +26,9 @@
       "Bash(timeout 30 npm run dev:*)",
       "Bash(npm run dev:*)",
       "Bash(npx next build)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm install:*)",
+      "Bash(node --version)"
     ],
     "deny": [],
     "ask": []
