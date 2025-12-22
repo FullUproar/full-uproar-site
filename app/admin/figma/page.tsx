@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, RefreshCw, Check, X, Download, Upload, Palette, Type, Box, Layers, Cloud, ChevronRight, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Check, X, Download, Upload, Palette, Type, Box, Layers } from 'lucide-react';
 
 interface FigmaUser {
   id: string;
@@ -23,45 +23,14 @@ interface DesignTokens {
   };
 }
 
-interface TokensStudioOrg {
-  id: string;
-  name: string;
-}
-
-interface TokensStudioProject {
-  id: string;
-  name: string;
-  organizationId: string;
-  branches: Array<{ name: string; isDefault: boolean }>;
-}
-
-interface TokensStudioSet {
-  name: string;
-  raw: Record<string, unknown> | null;
-  type: 'Static' | 'Dynamic';
-  orderIndex: number;
-}
-
 export default function FigmaAdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'unknown' | 'connected' | 'error'>('unknown');
   const [user, setUser] = useState<FigmaUser | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tokens, setTokens] = useState<DesignTokens | null>(null);
-  const [activeTab, setActiveTab] = useState<'connection' | 'tokens' | 'sync' | 'studio'>('connection');
+  const [activeTab, setActiveTab] = useState<'connection' | 'tokens' | 'sync'>('connection');
   const [syncResult, setSyncResult] = useState<unknown>(null);
-
-  // Tokens Studio state
-  const [studioStatus, setStudioStatus] = useState<'unknown' | 'connected' | 'error'>('unknown');
-  const [studioOrgs, setStudioOrgs] = useState<TokensStudioOrg[]>([]);
-  const [studioProjects, setStudioProjects] = useState<TokensStudioProject[]>([]);
-  const [studioTokenSets, setStudioTokenSets] = useState<TokensStudioSet[]>([]);
-  const [selectedOrg, setSelectedOrg] = useState<string>('');
-  const [selectedProject, setSelectedProject] = useState<string>('');
-  const [selectedBranch, setSelectedBranch] = useState<string>('main');
-  const [studioError, setStudioError] = useState<string | null>(null);
-  const [studioLoading, setStudioLoading] = useState(false);
-  const [studioSyncResult, setStudioSyncResult] = useState<unknown>(null);
 
   // Test connection on page load
   useEffect(() => {
@@ -113,7 +82,7 @@ export default function FigmaAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'sync-tokens',
-          fileKey: 'your-figma-file-key', // This would come from user input
+          fileKey: 'your-figma-file-key',
         }),
       });
       const data = await response.json();
@@ -135,148 +104,6 @@ export default function FigmaAdminPage() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  // Tokens Studio functions
-  const testStudioConnection = async () => {
-    setStudioLoading(true);
-    setStudioError(null);
-    try {
-      const response = await fetch('/api/admin/tokens-studio?action=test');
-      const data = await response.json();
-
-      if (data.success) {
-        setStudioStatus('connected');
-        setStudioOrgs(data.organizations || []);
-        if (data.organizations && data.organizations.length > 0) {
-          setSelectedOrg(data.organizations[0].id);
-        }
-      } else {
-        setStudioStatus('error');
-        setStudioError(data.error || 'Connection failed');
-      }
-    } catch (err) {
-      setStudioStatus('error');
-      setStudioError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setStudioLoading(false);
-    }
-  };
-
-  const loadStudioProjects = async (orgId: string) => {
-    if (!orgId) return;
-    setStudioLoading(true);
-    try {
-      const response = await fetch(`/api/admin/tokens-studio?action=projects&orgId=${orgId}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setStudioProjects(data.projects || []);
-        if (data.projects && data.projects.length > 0) {
-          setSelectedProject(data.projects[0].id);
-          const defaultBranch = data.projects[0].branches.find((b: { isDefault: boolean }) => b.isDefault);
-          setSelectedBranch(defaultBranch?.name || 'main');
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load projects:', err);
-    } finally {
-      setStudioLoading(false);
-    }
-  };
-
-  const loadStudioTokenSets = async () => {
-    if (!selectedOrg || !selectedProject) return;
-    setStudioLoading(true);
-    setStudioTokenSets([]);
-    try {
-      const response = await fetch(
-        `/api/admin/tokens-studio?action=token-sets&orgId=${selectedOrg}&projectId=${selectedProject}&branch=${selectedBranch}`
-      );
-      const data = await response.json();
-
-      if (data.success) {
-        setStudioTokenSets(data.tokenSets || []);
-      }
-    } catch (err) {
-      console.error('Failed to load token sets:', err);
-    } finally {
-      setStudioLoading(false);
-    }
-  };
-
-  const pushToStudio = async () => {
-    if (!selectedOrg || !selectedProject) {
-      setStudioError('Please select an organization and project');
-      return;
-    }
-    setStudioLoading(true);
-    setStudioSyncResult(null);
-    try {
-      const response = await fetch('/api/admin/tokens-studio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'push',
-          orgId: selectedOrg,
-          projectId: selectedProject,
-          branch: selectedBranch,
-        }),
-      });
-      const data = await response.json();
-      setStudioSyncResult(data);
-      if (data.success) {
-        loadStudioTokenSets();
-      }
-    } catch (err) {
-      setStudioSyncResult({ error: err instanceof Error ? err.message : 'Unknown error' });
-    } finally {
-      setStudioLoading(false);
-    }
-  };
-
-  const pullFromStudio = async () => {
-    if (!selectedOrg || !selectedProject) {
-      setStudioError('Please select an organization and project');
-      return;
-    }
-    setStudioLoading(true);
-    setStudioSyncResult(null);
-    try {
-      const response = await fetch('/api/admin/tokens-studio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'sync-from-studio',
-          orgId: selectedOrg,
-          projectId: selectedProject,
-          branch: selectedBranch,
-        }),
-      });
-      const data = await response.json();
-      setStudioSyncResult(data);
-      if (data.success) {
-        loadTokens(); // Reload local tokens
-      }
-    } catch (err) {
-      setStudioSyncResult({ error: err instanceof Error ? err.message : 'Unknown error' });
-    } finally {
-      setStudioLoading(false);
-    }
-  };
-
-  // Load projects when org changes
-  useEffect(() => {
-    if (selectedOrg) {
-      loadStudioProjects(selectedOrg);
-    }
-  }, [selectedOrg]);
-
-  // Load token sets when project/branch changes
-  useEffect(() => {
-    if (selectedProject && selectedBranch) {
-      loadStudioTokenSets();
-    }
-  }, [selectedProject, selectedBranch]);
 
   const adminStyles = {
     container: {
@@ -396,9 +223,6 @@ export default function FigmaAdminPage() {
       borderRadius: '50%',
       border: '2px solid #FF8200',
     },
-    tokenSection: {
-      marginBottom: '1.5rem',
-    },
     tokenGrid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
@@ -437,65 +261,6 @@ export default function FigmaAdminPage() {
       fontFamily: 'monospace',
       fontSize: '0.8rem',
       whiteSpace: 'pre-wrap' as const,
-    },
-    select: {
-      padding: '0.75rem 1rem',
-      background: '#111827',
-      color: '#e2e8f0',
-      border: '1px solid #374151',
-      borderRadius: '0.5rem',
-      fontSize: '0.875rem',
-      width: '100%',
-      cursor: 'pointer',
-    },
-    selectGroup: {
-      marginBottom: '1rem',
-    },
-    label: {
-      display: 'block',
-      color: '#9ca3af',
-      fontSize: '0.875rem',
-      marginBottom: '0.5rem',
-      fontWeight: 500,
-    },
-    tokenSetItem: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '0.75rem 1rem',
-      background: '#111827',
-      borderRadius: '0.5rem',
-      marginBottom: '0.5rem',
-    },
-    tokenSetName: {
-      color: '#e2e8f0',
-      fontWeight: 500,
-    },
-    tokenSetBadge: {
-      padding: '0.25rem 0.75rem',
-      background: 'rgba(139, 92, 246, 0.2)',
-      color: '#a78bfa',
-      borderRadius: '50px',
-      fontSize: '0.75rem',
-      fontWeight: 600,
-    },
-    syncActions: {
-      display: 'flex',
-      gap: '1rem',
-      flexWrap: 'wrap' as const,
-    },
-    purpleButton: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      padding: '0.75rem 1.5rem',
-      background: '#8b5cf6',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '0.5rem',
-      fontWeight: 700,
-      cursor: 'pointer',
-      transition: 'all 0.2s',
     },
   };
 
@@ -575,22 +340,6 @@ export default function FigmaAdminPage() {
             onClick={() => setActiveTab('sync')}
           >
             Sync & Export
-          </button>
-          <button
-            style={{
-              ...adminStyles.tab,
-              ...(activeTab === 'studio' ? adminStyles.activeTab : {}),
-              ...(activeTab === 'studio' ? {} : { borderColor: '#8b5cf6', color: '#a78bfa' }),
-            }}
-            onClick={() => {
-              setActiveTab('studio');
-              if (studioStatus === 'unknown') {
-                testStudioConnection();
-              }
-            }}
-          >
-            <Cloud size={16} style={{ marginRight: '0.25rem', verticalAlign: 'middle' }} />
-            Tokens Studio Pro
           </button>
         </div>
 
@@ -793,7 +542,7 @@ export default function FigmaAdminPage() {
                 Export Tokens
               </h2>
               <p style={{ color: '#9ca3af', marginBottom: '1rem' }}>
-                Download your design tokens in JSON format compatible with Figma Tokens Studio plugin.
+                Download your design tokens in JSON format compatible with the free Tokens Studio plugin for Figma.
               </p>
               <div style={{ display: 'flex', gap: '1rem' }}>
                 <button style={adminStyles.button} onClick={downloadTokensJson}>
@@ -806,10 +555,10 @@ export default function FigmaAdminPage() {
             <div style={adminStyles.card}>
               <h2 style={adminStyles.cardTitle}>
                 <Upload size={20} />
-                Sync to Figma
+                Sync to Figma Variables
               </h2>
               <p style={{ color: '#9ca3af', marginBottom: '1rem' }}>
-                Push your design tokens directly to a Figma file using the Variables API.
+                Preview token conversion for Figma Variables API.
               </p>
               <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem' }}>
                 Note: This feature requires a Figma Professional/Organization plan with Variables enabled.
@@ -841,10 +590,10 @@ export default function FigmaAdminPage() {
               </h2>
               <div style={{ color: '#9ca3af', lineHeight: 1.8 }}>
                 <p style={{ marginBottom: '1rem' }}>
-                  <strong style={{ color: '#FBDB65' }}>Option 1: Tokens Studio Plugin</strong>
+                  <strong style={{ color: '#FBDB65' }}>Recommended: Free Tokens Studio Plugin</strong>
                 </p>
                 <ol style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}>
-                  <li>Install "Tokens Studio for Figma" plugin</li>
+                  <li>Install "Tokens Studio for Figma" plugin (free)</li>
                   <li>Download the figma-tokens.json file above</li>
                   <li>In Figma, open the Tokens Studio plugin</li>
                   <li>Import your tokens from the JSON file</li>
@@ -852,7 +601,7 @@ export default function FigmaAdminPage() {
                 </ol>
 
                 <p style={{ marginBottom: '1rem' }}>
-                  <strong style={{ color: '#FBDB65' }}>Option 2: Figma Variables (Native)</strong>
+                  <strong style={{ color: '#FBDB65' }}>Alternative: Figma Variables (Manual)</strong>
                 </p>
                 <ol style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}>
                   <li>Open your Figma design file</li>
@@ -862,234 +611,7 @@ export default function FigmaAdminPage() {
                 </ol>
 
                 <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                  The Tokens Studio plugin is recommended for easier token management and GitHub sync capabilities.
-                </p>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* Tokens Studio Pro Tab */}
-        {activeTab === 'studio' && (
-          <>
-            <div style={adminStyles.card}>
-              <h2 style={adminStyles.cardTitle}>
-                <Cloud size={20} />
-                Tokens Studio Pro Connection
-              </h2>
-
-              <div style={{ marginBottom: '1.5rem' }}>
-                <span
-                  style={{
-                    ...adminStyles.statusBadge,
-                    background:
-                      studioStatus === 'connected'
-                        ? 'rgba(139, 92, 246, 0.2)'
-                        : studioStatus === 'error'
-                        ? 'rgba(239, 68, 68, 0.2)'
-                        : 'rgba(156, 163, 175, 0.2)',
-                    color:
-                      studioStatus === 'connected'
-                        ? '#a78bfa'
-                        : studioStatus === 'error'
-                        ? '#ef4444'
-                        : '#9ca3af',
-                  }}
-                >
-                  {studioStatus === 'connected' && <Check size={16} />}
-                  {studioStatus === 'error' && <X size={16} />}
-                  {studioStatus === 'connected'
-                    ? 'Connected to Tokens Studio'
-                    : studioStatus === 'error'
-                    ? 'Connection Error'
-                    : 'Checking...'}
-                </span>
-              </div>
-
-              {studioError && (
-                <div
-                  style={{
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    borderRadius: '0.5rem',
-                    padding: '1rem',
-                    marginBottom: '1rem',
-                    color: '#fca5a5',
-                  }}
-                >
-                  {studioError}
-                </div>
-              )}
-
-              <div style={{ marginTop: '1rem' }}>
-                <button
-                  style={adminStyles.purpleButton}
-                  onClick={testStudioConnection}
-                  disabled={studioLoading}
-                >
-                  <RefreshCw size={16} className={studioLoading ? 'animate-spin' : ''} />
-                  {studioLoading ? 'Testing...' : 'Test Connection'}
-                </button>
-              </div>
-            </div>
-
-            {studioStatus === 'connected' && (
-              <>
-                <div style={adminStyles.card}>
-                  <h2 style={adminStyles.cardTitle}>
-                    <ChevronRight size={20} />
-                    Select Project
-                  </h2>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-                    <div style={adminStyles.selectGroup}>
-                      <label style={adminStyles.label}>Organization</label>
-                      <select
-                        style={adminStyles.select}
-                        value={selectedOrg}
-                        onChange={(e) => setSelectedOrg(e.target.value)}
-                      >
-                        {studioOrgs.map((org) => (
-                          <option key={org.id} value={org.id}>
-                            {org.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div style={adminStyles.selectGroup}>
-                      <label style={adminStyles.label}>Project</label>
-                      <select
-                        style={adminStyles.select}
-                        value={selectedProject}
-                        onChange={(e) => setSelectedProject(e.target.value)}
-                      >
-                        {studioProjects.map((project) => (
-                          <option key={project.id} value={project.id}>
-                            {project.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div style={adminStyles.selectGroup}>
-                      <label style={adminStyles.label}>Branch</label>
-                      <select
-                        style={adminStyles.select}
-                        value={selectedBranch}
-                        onChange={(e) => setSelectedBranch(e.target.value)}
-                      >
-                        {studioProjects
-                          .find((p) => p.id === selectedProject)
-                          ?.branches.map((branch) => (
-                            <option key={branch.name} value={branch.name}>
-                              {branch.name} {branch.isDefault ? '(default)' : ''}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div style={adminStyles.card}>
-                  <h2 style={adminStyles.cardTitle}>
-                    <Layers size={20} />
-                    Token Sets in Studio
-                  </h2>
-
-                  {studioTokenSets.length > 0 ? (
-                    <div style={{ marginBottom: '1rem' }}>
-                      {studioTokenSets.map((set) => (
-                        <div key={set.name} style={adminStyles.tokenSetItem}>
-                          <span style={adminStyles.tokenSetName}>{set.name}</span>
-                          <span style={adminStyles.tokenSetBadge}>{set.type}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
-                      {studioLoading ? 'Loading token sets...' : 'No token sets found in this project.'}
-                    </p>
-                  )}
-
-                  <button
-                    style={adminStyles.secondaryButton}
-                    onClick={loadStudioTokenSets}
-                    disabled={studioLoading}
-                  >
-                    <RefreshCw size={16} />
-                    Refresh Token Sets
-                  </button>
-                </div>
-
-                <div style={adminStyles.card}>
-                  <h2 style={adminStyles.cardTitle}>
-                    <ArrowUpCircle size={20} />
-                    Sync Actions
-                  </h2>
-                  <p style={{ color: '#9ca3af', marginBottom: '1.5rem' }}>
-                    Push your local design tokens to Tokens Studio or pull the latest from the cloud.
-                  </p>
-
-                  <div style={adminStyles.syncActions}>
-                    <button
-                      style={adminStyles.purpleButton}
-                      onClick={pushToStudio}
-                      disabled={studioLoading || !selectedProject}
-                    >
-                      <ArrowUpCircle size={16} />
-                      {studioLoading ? 'Pushing...' : 'Push Local → Studio'}
-                    </button>
-
-                    <button
-                      style={adminStyles.secondaryButton}
-                      onClick={pullFromStudio}
-                      disabled={studioLoading || !selectedProject}
-                    >
-                      <ArrowDownCircle size={16} />
-                      {studioLoading ? 'Pulling...' : 'Pull Studio → Local'}
-                    </button>
-                  </div>
-
-                  {studioSyncResult !== null ? (
-                    <div style={{ marginTop: '1.5rem' }}>
-                      <div
-                        style={{
-                          ...adminStyles.codeBlock,
-                          background:
-                            (studioSyncResult as { success?: boolean }).success
-                              ? 'rgba(139, 92, 246, 0.1)'
-                              : 'rgba(239, 68, 68, 0.1)',
-                          border: `1px solid ${
-                            (studioSyncResult as { success?: boolean }).success
-                              ? 'rgba(139, 92, 246, 0.3)'
-                              : 'rgba(239, 68, 68, 0.3)'
-                          }`,
-                        }}
-                      >
-                        <pre style={adminStyles.code}>
-                          {JSON.stringify(studioSyncResult, null, 2)}
-                        </pre>
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              </>
-            )}
-
-            <div style={adminStyles.card}>
-              <h2 style={adminStyles.cardTitle}>Setup Instructions</h2>
-              <div style={{ color: '#9ca3af', lineHeight: 1.8 }}>
-                <p style={{ marginBottom: '1rem' }}>
-                  To connect to Tokens Studio Pro, add your API key to <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>FIGMA_ACCESS_TOKEN</code> in your environment variables.
-                </p>
-                <ol style={{ paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-                  <li>Go to <a href="https://tokens.studio" target="_blank" rel="noopener noreferrer" style={{ color: '#a78bfa' }}>tokens.studio</a> → Personal Settings → API Keys</li>
-                  <li>Use your existing API key with scopes: <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>projects:read</code>, <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>projects:write</code></li>
-                  <li>Add it to <code style={{ background: '#111827', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>FIGMA_ACCESS_TOKEN</code> in .env.local and Vercel</li>
-                </ol>
-                <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                  Note: Tokens Studio Pro subscription required.
+                  The free Tokens Studio plugin is the easiest way to use design tokens in Figma.
                 </p>
               </div>
             </div>
