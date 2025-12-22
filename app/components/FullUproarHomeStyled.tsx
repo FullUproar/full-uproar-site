@@ -1041,8 +1041,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 padding: isMobile ? '1.5rem' : '2.5rem',
                 border: '4px solid #FF7500',
                 transform: isMobile ? 'rotate(0deg)' : `rotate(${cardRotation}deg)`,
-                transition: 'transform 0.3s',
-                animation: isTransitioning ? 'chaosShake 0.3s ease-in-out' : 'none'
+                transition: 'transform 0.3s ease-in-out'
               }}
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
@@ -1412,20 +1411,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       {/* Chaos Mode effects */}
       <FuglyChaosMode />
 
-      <style jsx>{`
-        @keyframes chaosShake {
-          0%, 100% { transform: rotate(${cardRotation}deg) translateX(0); }
-          10% { transform: rotate(${cardRotation + 3}deg) translateX(-2px); }
-          20% { transform: rotate(${cardRotation - 3}deg) translateX(2px); }
-          30% { transform: rotate(${cardRotation + 2}deg) translateX(-4px); }
-          40% { transform: rotate(${cardRotation - 2}deg) translateX(4px); }
-          50% { transform: rotate(${cardRotation + 4}deg) translateX(-2px); }
-          60% { transform: rotate(${cardRotation - 4}deg) translateX(2px); }
-          70% { transform: rotate(${cardRotation + 1}deg) translateX(-1px); }
-          80% { transform: rotate(${cardRotation - 1}deg) translateX(1px); }
-          90% { transform: rotate(${cardRotation + 2}deg) translateX(0); }
-        }
-
+      <style>{`
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
