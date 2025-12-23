@@ -23,5 +23,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "debug-env.js"],
-  "exclude": ["node_modules", "scripts/**/*", "tests/**/*"]
+  "exclude": ["node_modules", "scripts/**/*", "tests/**/*", "figma-plugin/**/*"]
 }
