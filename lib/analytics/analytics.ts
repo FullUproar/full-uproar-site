@@ -87,7 +87,7 @@ class Analytics {
   private queue: Array<{ event: AnalyticsEvent; properties: AnalyticsProperties }> = [];
   private sessionId: string;
   private isInitialized = false;
-  private batchTimer: NodeJS.Timeout | null = null;
+  private batchTimer: ReturnType<typeof setTimeout> | null = null;
   
   constructor() {
     this.sessionId = typeof window !== 'undefined' ? this.generateSessionId() : 'ssr';

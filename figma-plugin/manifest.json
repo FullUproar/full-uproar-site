@@ -1,0 +1,17 @@
+{
+  "name": "Full Uproar Importer",
+  "id": "full-uproar-html-importer",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://fulluproar.com",
+      "https://www.fulluproar.com",
+      "http://localhost:3000"
+    ]
+  }
+}

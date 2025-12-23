@@ -22,7 +22,7 @@ export default function ChaosUnleashedLanding() {
 
   useEffect(() => {
     // Sequence animation
-    const timers: NodeJS.Timeout[] = [];
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
     textSequence.forEach((item, index) => {
       const timer = setTimeout(() => {

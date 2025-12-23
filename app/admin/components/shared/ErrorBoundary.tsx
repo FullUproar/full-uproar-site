@@ -24,7 +24,7 @@ interface State {
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  private resetTimeoutId: NodeJS.Timeout | null = null;
+  private resetTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private previousResetKeys: Array<string | number> = [];
 
   constructor(props: Props) {

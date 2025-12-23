@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Inter, sans-serif;
+      font-size: 12px;
+      color: #333;
+      padding: 16px;
+      background: #fff;
+    }
+
+    h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #f97316;
+    }
+
+    .section {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #666;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #f97316;
+      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button.primary {
+      background: #f97316;
+      color: white;
+    }
+
+    button.primary:hover {
+      background: #ea580c;
+    }
+
+    button.primary:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    button.secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    .status.info {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .status.success {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .progress {
+      margin-top: 12px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #f97316;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .quick-urls {
+      margin-top: 8px;
+    }
+
+    .quick-urls button {
+      padding: 4px 8px;
+      font-size: 10px;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      color: #666;
+    }
+
+    .tab.active {
+      color: #f97316;
+      border-bottom-color: #f97316;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .env-note {
+      font-size: 10px;
+      color: #999;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Full Uproar Importer</h2>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="import">Import Pages</div>
+    <div class="tab" data-tab="settings">Settings</div>
+  </div>
+
+  <div id="import-tab" class="tab-content active">
+    <div class="section">
+      <label>Backend URL</label>
+      <input type="text" id="backend-url" value="https://fulluproar.com" placeholder="https://fulluproar.com">
+      <p class="env-note">Use http://localhost:3000 for local development</p>
+    </div>
+
+    <div class="section">
+      <label>URLs to Import (one per line)</label>
+      <textarea id="urls" placeholder="https://fulluproar.com
+https://fulluproar.com/games
+https://fulluproar.com/merch"></textarea>
+
+      <div class="quick-urls">
+        <button class="secondary" onclick="addQuickUrls('main')">+ Main Pages</button>
+        <button class="secondary" onclick="addQuickUrls('shop')">+ Shop Pages</button>
+        <button class="secondary" onclick="addQuickUrls('all')">+ All Pages</button>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="primary" id="import-btn" onclick="importPages()">Import to Figma</button>
+      <button class="secondary" onclick="clearUrls()">Clear</button>
+    </div>
+
+    <div id="status" class="status info" style="display: none;"></div>
+
+    <div id="progress" class="progress" style="display: none;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+      <div class="progress-text" id="progress-text">Preparing...</div>
+    </div>
+  </div>
+
+  <div id="settings-tab" class="tab-content">
+    <div class="section">
+      <label>Import Options</label>
+      <p class="env-note">Options are handled by the backend API</p>
+    </div>
+
+    <div class="section">
+      <label>API Status</label>
+      <button class="secondary" onclick="checkApiStatus()">Check Connection</button>
+      <div id="api-status" class="status info" style="display: none; margin-top: 8px;"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@divriots/c2d-sdk@0.2.0/dist/to-binary.umd.js"></script>
+  <script>
+    const QUICK_URL_SETS = {
+      main: [
+        'https://fulluproar.com',
+        'https://fulluproar.com/about',
+        'https://fulluproar.com/contact',
+        'https://fulluproar.com/faq'
+      ],
+      shop: [
+        'https://fulluproar.com/games',
+        'https://fulluproar.com/merch',
+        'https://fulluproar.com/shop',
+        'https://fulluproar.com/cart',
+        'https://fulluproar.com/checkout'
+      ],
+      all: [
+        'https://fulluproar.com',
+        'https://fulluproar.com/games',
+        'https://fulluproar.com/merch',
+        'https://fulluproar.com/shop',
+        'https://fulluproar.com/cart',
+        'https://fulluproar.com/checkout',
+        'https://fulluproar.com/about',
+        'https://fulluproar.com/contact',
+        'https://fulluproar.com/faq',
+        'https://fulluproar.com/forum',
+        'https://fulluproar.com/game-nights',
+        'https://fulluproar.com/comics',
+        'https://fulluproar.com/cult',
+        'https://fulluproar.com/chaos',
+        'https://fulluproar.com/fugly',
+        'https://fulluproar.com/impossible',
+        'https://fulluproar.com/account',
+        'https://fulluproar.com/profile',
+        'https://fulluproar.com/admin',
+        'https://fulluproar.com/sign-in',
+        'https://fulluproar.com/sign-up'
+      ]
+    };
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab + '-tab').classList.add('active');
+      });
+    });
+
+    function addQuickUrls(set) {
+      const textarea = document.getElementById('urls');
+      const existing = textarea.value.trim();
+      const newUrls = QUICK_URL_SETS[set].join('\n');
+      textarea.value = existing ? existing + '\n' + newUrls : newUrls;
+    }
+
+    function clearUrls() {
+      document.getElementById('urls').value = '';
+      hideStatus();
+      hideProgress();
+    }
+
+    function showStatus(message, type = 'info') {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = 'status ' + type;
+      status.style.display = 'block';
+    }
+
+    function hideStatus() {
+      document.getElementById('status').style.display = 'none';
+    }
+
+    function showProgress(percent, text) {
+      const progress = document.getElementById('progress');
+      progress.style.display = 'block';
+      document.getElementById('progress-fill').style.width = percent + '%';
+      document.getElementById('progress-text').textContent = text;
+    }
+
+    function hideProgress() {
+      document.getElementById('progress').style.display = 'none';
+    }
+
+    async function checkApiStatus() {
+      const backendUrl = document.getElementById('backend-url').value.trim();
+      const statusEl = document.getElementById('api-status');
+
+      try {
+        const response = await fetch(`${backendUrl}/api/admin/figma/html-to-design`);
+        const data = await response.json();
+
+        statusEl.style.display = 'block';
+        if (data.configured) {
+          statusEl.className = 'status success';
+          statusEl.textContent = 'API connected and configured!';
+        } else {
+          statusEl.className = 'status error';
+          statusEl.textContent = 'API key not configured on backend';
+        }
+      } catch (error) {
+        statusEl.style.display = 'block';
+        statusEl.className = 'status error';
+        statusEl.textContent = 'Cannot connect to backend: ' + error.message;
+      }
+    }
+
+    async function importPages() {
+      const backendUrl = document.getElementById('backend-url').value.trim();
+      const urlsText = document.getElementById('urls').value.trim();
+
+      if (!urlsText) {
+        showStatus('Please enter at least one URL', 'error');
+        return;
+      }
+
+      const urls = urlsText.split('\n').map(u => u.trim()).filter(u => u);
+
+      if (urls.length === 0) {
+        showStatus('No valid URLs found', 'error');
+        return;
+      }
+
+      const importBtn = document.getElementById('import-btn');
+      importBtn.disabled = true;
+
+      try {
+        showProgress(10, `Processing ${urls.length} URL(s)...`);
+        showStatus('Sending to backend API...', 'info');
+
+        // Call our backend API
+        const response = await fetch(`${backendUrl}/api/admin/figma/html-to-design`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ urls }),
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        showProgress(50, 'Received Figma data, painting to canvas...');
+
+        if (data.results && data.results.length > 0) {
+          // Process each result
+          for (let i = 0; i < data.results.length; i++) {
+            const result = data.results[i];
+            const percent = 50 + ((i + 1) / data.results.length) * 50;
+            showProgress(percent, `Painting ${result.url} (${i + 1}/${data.results.length})...`);
+
+            if (result.success && result.model) {
+              // Convert images to binary and send to Figma
+              const binaryImages = window.c2dSdk ? window.c2dSdk.toBinary(result.images) : result.images;
+
+              // Send to Figma plugin main thread
+              parent.postMessage({
+                pluginMessage: {
+                  type: 'paint-to-canvas',
+                  model: result.model,
+                  images: binaryImages,
+                  url: result.url,
+                }
+              }, '*');
+
+              // Wait a bit between paints to not overwhelm Figma
+              await new Promise(resolve => setTimeout(resolve, 500));
+            }
+          }
+
+          showProgress(100, 'Complete!');
+          showStatus(
+            `Successfully imported ${data.summary.converted} of ${data.summary.total} pages`,
+            data.summary.failed > 0 ? 'info' : 'success'
+          );
+
+          if (data.errors && data.errors.length > 0) {
+            console.error('Import errors:', data.errors);
+          }
+        } else {
+          throw new Error('No results returned from API');
+        }
+      } catch (error) {
+        showStatus('Error: ' + error.message, 'error');
+        hideProgress();
+        console.error('Import error:', error);
+      } finally {
+        importBtn.disabled = false;
+      }
+    }
+
+    // Listen for messages from Figma
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg) {
+        if (msg.type === 'paint-complete') {
+          console.log('Painted:', msg.url);
+        } else if (msg.type === 'paint-error') {
+          showStatus('Figma error: ' + msg.error, 'error');
+        }
+      }
+    };
+  </script>
+</body>
+</html>

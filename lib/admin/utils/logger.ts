@@ -16,7 +16,7 @@ class Logger {
   private static instance: Logger;
   private context: LogContext = {};
   private queue: SystemLog[] = [];
-  private flushInterval: NodeJS.Timeout | null = null;
+  private flushInterval: ReturnType<typeof setInterval> | null = null;
   private isDevelopment = process.env.NODE_ENV === 'development';
 
   private constructor() {

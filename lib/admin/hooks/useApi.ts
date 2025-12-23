@@ -386,7 +386,7 @@ export function usePolling<T>(
 ): UseApiState<T> {
   const { interval = 5000, enabled = true, ...apiOptions } = options;
   const result = useApi<T>(endpoint, { ...apiOptions, autoFetch: false });
-  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   useEffect(() => {
     if (!enabled) return;
@@ -431,7 +431,7 @@ export function useSearch<T>(
   const [results, setResults] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any | null>(null);
-  const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const { debounce = 300, minLength = 2 } = options;
 
   const performSearch = useCallback(async (searchQuery: string) => {
