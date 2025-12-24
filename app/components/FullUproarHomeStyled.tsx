@@ -562,18 +562,24 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             />
           </div>
 
-          {/* Second headline - mirrors the top rotation */}
-          <h1 style={{
-            fontSize: isMobile ? 'clamp(2rem, 10vw, 3rem)' : 'clamp(4rem, 6vw, 5.5rem)',
-            fontWeight: 900,
-            lineHeight: 1,
-            marginBottom: isMobile ? '1rem' : '1.5rem',
-            color: '#FF8200',
-            textTransform: 'uppercase',
-            textShadow: '0 0 60px rgba(255, 117, 0, 0.5)',
-            transform: `rotate(${actualBottomTilt}deg)`,
-            transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
-          }}>
+          {/* Second headline - mirrors the top rotation, ALSO DRAGGABLE! */}
+          <h1
+            onMouseDown={handleHeadlineMouseDown}
+            onTouchStart={handleHeadlineMouseDown}
+            style={{
+              fontSize: isMobile ? 'clamp(2rem, 10vw, 3rem)' : 'clamp(4rem, 6vw, 5.5rem)',
+              fontWeight: 900,
+              lineHeight: 1,
+              marginBottom: isMobile ? '1rem' : '1.5rem',
+              color: '#FF8200',
+              textTransform: 'uppercase',
+              textShadow: '0 0 60px rgba(255, 117, 0, 0.5)',
+              transform: `rotate(${actualBottomTilt}deg)`,
+              transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
+              cursor: isDraggingHeadline ? 'grabbing' : 'grab',
+              userSelect: 'none',
+            }}
+          >
             Game night hits back
           </h1>
 
