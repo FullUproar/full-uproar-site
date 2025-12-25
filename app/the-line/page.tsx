@@ -1,23 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Heart, Shield, Users, Sparkles, ArrowLeft, ExternalLink } from 'lucide-react';
 import Navigation from '../components/Navigation';
-import FuglyLogo from '../components/FuglyLogo';
 
 export default function TheLinePage() {
   const [isMobile, setIsMobile] = useState(false);
+  const [hugImageUrl, setHugImageUrl] = useState<string | null>(null);
 
   // Detect mobile on mount
-  useState(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsMobile(window.innerWidth <= 768);
       const handleResize = () => setIsMobile(window.innerWidth <= 768);
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }
-  });
+  }, []);
+
+  // Fetch the hugging Fugly image (fugly3)
+  useEffect(() => {
+    fetch('/api/artwork')
+      .then(res => res.json())
+      .then(data => {
+        // Find fugly3 (the hugging one)
+        const hugFugly = data.find((art: any) =>
+          art.name.toLowerCase() === 'fugly3' ||
+          art.name.toLowerCase().includes('fugly3') ||
+          art.name.toLowerCase().includes('hug')
+        );
+        if (hugFugly) {
+          setHugImageUrl(hugFugly.imageUrl);
+        }
+      })
+      .catch(err => console.error('Failed to load Fugly image:', err));
+  }, []);
 
   return (
     <div style={{
@@ -76,13 +94,23 @@ export default function TheLinePage() {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: '1.5rem',
-          }}>
-            <FuglyLogo size={80} />
-          </div>
+          {hugImageUrl && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '1.5rem',
+            }}>
+              <img
+                src={hugImageUrl}
+                alt="Fugly giving a hug"
+                style={{
+                  width: isMobile ? '180px' : '220px',
+                  height: 'auto',
+                  objectFit: 'contain',
+                }}
+              />
+            </div>
+          )}
           <h1 style={{
             fontSize: isMobile ? '2.5rem' : '3.5rem',
             fontWeight: 900,
