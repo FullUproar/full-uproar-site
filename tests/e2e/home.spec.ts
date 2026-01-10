@@ -31,10 +31,9 @@ test.describe('Homepage', () => {
     await expect(page).toHaveURL('/merch');
     await expect(page.locator('h1')).toContainText('Merch');
 
-    // Test navigation to Chaos
-    await page.click('a[href="/chaos"]');
-    await expect(page).toHaveURL('/chaos');
-    await expect(page.locator('h1')).toContainText('Chaos');
+    // Test navigation to Community (Forum)
+    await page.click('a[href="/forum"]');
+    await expect(page).toHaveURL('/forum');
   });
 
   test('should display featured content', async ({ page }) => {

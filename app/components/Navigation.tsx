@@ -26,11 +26,10 @@ export default function Navigation() {
   }, []);
 
   const navLinks = [
-    { href: '/about', label: 'ABOUT' },
     { href: '/shop', label: 'SHOP' },
     { href: '/game-nights', label: 'GAME NIGHTS' },
-    { href: '/forum', label: 'FORUM' },
-    { href: '/fugly', label: 'FUGLY' },
+    // { href: '/afterroar', label: 'AFTERROAR' }, // Coming soon
+    { href: '/forum', label: 'COMMUNITY' },
   ];
 
   const styles = {
