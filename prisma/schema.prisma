@@ -403,6 +403,14 @@ model User {
   hostedGameNights     GameNight[]        @relation("HostedGameNights")
   gameNightAttendances GameNightGuest[]   @relation("GameNightAttendances")
 
+  // Moderation relations
+  reportsCreated           Report[]          @relation("ReportsCreated")
+  reportsReceived          Report[]          @relation("ReportsReceived")
+  reportsReviewed          Report[]          @relation("ReportsReviewed")
+  moderationActionsPerformed ModerationAction[] @relation("ModerationActionsPerformed")
+  moderationActionsReceived  ModerationAction[] @relation("ModerationActionsReceived")
+  autoModRulesCreated      AutoModRule[]
+
   @@index([clerkId])
   @@index([email])
   @@index([username])
@@ -1150,4 +1158,192 @@ enum MomentType {
   WINNER        // Game winner announcement
   CHAOS         // Epic chaos moment
   QUOTE         // Funny quote from the night
+}
+
+// ============================================
+// MODERATION SYSTEM
+// ============================================
+
+model Report {
+  id             String         @id @default(cuid())
+  reporterId     String         // Who reported it
+  reporter       User           @relation("ReportsCreated", fields: [reporterId], references: [id])
+
+  // What was reported
+  contentType    ReportContentType  // POST, THREAD, USER, GAME_NIGHT, etc
+  contentId      String         // ID of the content (e.g., post ID, user ID)
+  targetUserId   String?        // User who created the content (if applicable)
+  targetUser     User?          @relation("ReportsReceived", fields: [targetUserId], references: [id])
+
+  // Report details
+  reason         ReportReason
+  description    String?        @db.Text // Additional context from reporter
+  url            String?        // URL where content appears (for easy navigation)
+
+  // Status
+  status         ReportStatus   @default(PENDING)
+  priority       ReportPriority @default(NORMAL)
+
+  // Resolution
+  reviewedBy     String?        // Moderator who reviewed
+  reviewer       User?          @relation("ReportsReviewed", fields: [reviewedBy], references: [id])
+  reviewedAt     DateTime?
+  resolution     String?        @db.Text // What action was taken
+  resolutionType ReportResolutionType?
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now()) @updatedAt
+
+  @@index([reporterId])
+  @@index([targetUserId])
+  @@index([status])
+  @@index([contentType, contentId])
+  @@index([createdAt])
+}
+
+model ModerationAction {
+  id             String              @id @default(cuid())
+  moderatorId    String
+  moderator      User                @relation("ModerationActionsPerformed", fields: [moderatorId], references: [id])
+
+  // What action was taken
+  actionType     ModerationActionType
+  targetUserId   String?             // User being moderated (if applicable)
+  targetUser     User?               @relation("ModerationActionsReceived", fields: [targetUserId], references: [id])
+
+  // Context
+  contentType    String?             // POST, THREAD, USER, etc
+  contentId      String?             // ID of content affected
+  relatedReportId String?            // Report that triggered this action (if any)
+
+  // Details
+  reason         String              @db.Text
+  duration       Int?                // Duration in hours (for temp bans/mutes)
+  expiresAt      DateTime?           // When the action expires (for temp actions)
+
+  // Notes
+  internalNotes  String?             @db.Text // Private notes for mod team
+  publicReason   String?             // Reason shown to affected user
+
+  // Metadata
+  ipAddress      String?
+  userAgent      String?
+
+  createdAt      DateTime            @default(now())
+
+  @@index([moderatorId])
+  @@index([targetUserId])
+  @@index([actionType])
+  @@index([createdAt])
+}
+
+// Auto-moderation triggers (keyword flags, rate limits)
+model AutoModRule {
+  id             String              @id @default(cuid())
+  name           String
+  description    String?             @db.Text
+
+  // Rule configuration
+  ruleType       AutoModRuleType
+  pattern        String?             // Regex or keyword pattern
+  threshold      Int?                // For rate limiting
+  timeWindowMinutes Int?             // Time window for rate limits
+
+  // Action to take
+  action         AutoModActionType
+  severity       ReportPriority      @default(NORMAL)
+
+  // Status
+  isActive       Boolean             @default(true)
+  createdBy      String?
+  creator        User?               @relation(fields: [createdBy], references: [id])
+
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @default(now()) @updatedAt
+
+  @@index([ruleType])
+  @@index([isActive])
+}
+
+// Enums for Moderation
+
+enum ReportContentType {
+  POST
+  THREAD
+  USER
+  GAME_NIGHT
+  REVIEW
+  PROFILE
+  OTHER
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  HATE_SPEECH
+  NSFW
+  SCAM
+  IMPERSONATION
+  OFF_TOPIC
+  MISINFORMATION
+  PERSONAL_INFO
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+  ESCALATED
+}
+
+enum ReportPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum ReportResolutionType {
+  NO_ACTION
+  WARNING_SENT
+  CONTENT_HIDDEN
+  CONTENT_REMOVED
+  USER_WARNED
+  USER_MUTED
+  USER_SUSPENDED
+  USER_BANNED
+  ESCALATED_TO_ADMIN
+}
+
+enum ModerationActionType {
+  WARN
+  MUTE
+  SUSPEND
+  BAN
+  HIDE_CONTENT
+  REMOVE_CONTENT
+  LOCK_THREAD
+  PIN_THREAD
+  UNBAN
+  UNMUTE
+  RESTORE_CONTENT
+}
+
+enum AutoModRuleType {
+  KEYWORD_FILTER
+  SPAM_DETECTION
+  RATE_LIMIT
+  LINK_FILTER
+  CAPS_LIMIT
+  MENTION_LIMIT
+}
+
+enum AutoModActionType {
+  FLAG_FOR_REVIEW
+  AUTO_HIDE
+  AUTO_REMOVE
+  AUTO_WARN
+  RATE_LIMIT_USER
 }

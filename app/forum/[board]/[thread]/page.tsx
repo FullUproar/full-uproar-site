@@ -5,10 +5,11 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth, useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { 
+import {
   ArrowLeft, MessageCircle, Lock, Pin, User, Calendar,
   Edit, Trash2, Shield, Send, AlertCircle
 } from 'lucide-react';
+import ReportButton from '@/app/components/ReportButton';
 
 interface Thread {
   id: number;
@@ -273,8 +274,16 @@ export default function ThreadPage() {
             <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316', flex: 1 }}>
               {thread.title}
             </h1>
+            {userId && userId !== thread.authorId && (
+              <ReportButton
+                contentType="THREAD"
+                contentId={thread.id.toString()}
+                targetUserId={thread.authorId}
+                url={typeof window !== 'undefined' ? window.location.href : undefined}
+              />
+            )}
           </div>
-          
+
           <div style={{ display: 'flex', gap: '2rem', fontSize: '14px', color: '#94a3b8' }}>
             <span>Started by {thread.authorName}</span>
             <span>{formatDate(thread.createdAt)}</span>
@@ -347,19 +356,31 @@ export default function ThreadPage() {
                   )}
                 </div>
               </div>
-              
-              {index === 0 && (
-                <span style={{
-                  background: 'rgba(249, 115, 22, 0.2)',
-                  color: '#f97316',
-                  padding: '4px 12px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
-                }}>
-                  Original Post
-                </span>
-              )}
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {index === 0 && (
+                  <span style={{
+                    background: 'rgba(249, 115, 22, 0.2)',
+                    color: '#f97316',
+                    padding: '4px 12px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
+                  }}>
+                    Original Post
+                  </span>
+                )}
+
+                {userId && userId !== post.authorId && (
+                  <ReportButton
+                    contentType="POST"
+                    contentId={post.id.toString()}
+                    targetUserId={post.authorId}
+                    url={typeof window !== 'undefined' ? window.location.href : undefined}
+                    compact={true}
+                  />
+                )}
+              </div>
             </div>
             
             <div style={{ 
