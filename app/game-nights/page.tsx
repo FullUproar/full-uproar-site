@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
+import { useUser } from '@clerk/nextjs';
 import {
   Calendar,
   Plus,
@@ -17,7 +18,9 @@ import {
   Zap,
   Heart,
   PartyPopper,
-  Coffee
+  Coffee,
+  CheckCircle2,
+  ArrowRight
 } from 'lucide-react';
 
 interface GameNight {
@@ -56,6 +59,7 @@ const statusConfig: Record<string, { color: string; label: string }> = {
 
 export default function GameNightsPage() {
   const router = useRouter();
+  const { user, isLoaded } = useUser();
   const [gameNights, setGameNights] = useState<{ hosted: GameNight[]; attending: GameNight[] }>({
     hosted: [],
     attending: [],
@@ -109,49 +113,202 @@ export default function GameNightsPage() {
       <Navigation />
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 1rem 3rem' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h1 style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
-            fontWeight: 900,
-            background: 'linear-gradient(135deg, #f97316, #fbbf24)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-            marginBottom: '1rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-          }}>
-            Game Night HQ
-          </h1>
-          <p style={{ color: '#fdba74', fontSize: '1.25rem', marginBottom: '2rem' }}>
-            Rally the squad. Roll the dice. Create the chaos.
-          </p>
+        {/* Orientation Hero - Show when logged out or no game nights */}
+        {(!user || (isLoaded && upcomingHosted.length === 0 && gameNights.attending.length === 0 && !loading)) && (
+          <div style={{ marginBottom: '4rem' }}>
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <h1 style={{
+                fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+                fontWeight: 900,
+                background: 'linear-gradient(135deg, #f97316, #fbbf24)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                marginBottom: '1rem',
+              }}>
+                Game Nights
+              </h1>
+              <p style={{
+                color: '#fdba74',
+                fontSize: '1.5rem',
+                marginBottom: '2rem',
+                maxWidth: '48rem',
+                margin: '0 auto 2rem',
+                lineHeight: 1.6
+              }}>
+                Simple tools that make hosting easier—pick dates, choose games, track RSVPs.
+              </p>
+              <p style={{ color: '#94a3b8', fontSize: '1.125rem', marginBottom: '3rem' }}>
+                Use them once for a single night, or build something that sticks.
+              </p>
+            </div>
 
-          <button
-            onClick={() => setShowCreateModal(true)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              padding: '1rem 2rem',
-              background: 'linear-gradient(135deg, #f97316, #ea580c)',
-              border: 'none',
-              borderRadius: '50px',
-              color: '#fff',
-              fontWeight: 900,
-              fontSize: '1.125rem',
-              cursor: 'pointer',
-              boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
-              transition: 'all 0.3s',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            <Plus size={24} />
-            Rally the Squad
-          </button>
-        </div>
+            {/* Three-step visual */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '2rem',
+              marginBottom: '3rem',
+            }}>
+              {[
+                { icon: Calendar, title: 'Pick Dates', desc: 'Vote on when works best for everyone' },
+                { icon: Gamepad2, title: 'Choose Games', desc: 'Build a shared list and let people vote' },
+                { icon: Users, title: 'Track RSVPs', desc: 'Know who\'s in, who\'s maybe, who\'s out' },
+              ].map((step, i) => (
+                <div key={i} style={{
+                  padding: '2rem',
+                  background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9))',
+                  borderRadius: '1rem',
+                  border: '2px solid rgba(249, 115, 22, 0.2)',
+                  textAlign: 'center',
+                }}>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '1rem',
+                    background: 'rgba(249, 115, 22, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 1rem',
+                  }}>
+                    <step.icon size={32} style={{ color: '#f97316' }} />
+                  </div>
+                  <h3 style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+                    {step.title}
+                  </h3>
+                  <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                    {step.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Value props */}
+            <div style={{
+              background: 'rgba(249, 115, 22, 0.1)',
+              border: '2px solid rgba(249, 115, 22, 0.3)',
+              borderRadius: '1rem',
+              padding: '2rem',
+              marginBottom: '3rem',
+            }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '1.5rem',
+              }}>
+                {[
+                  'Free for one-off events',
+                  'Invite via simple link',
+                  'No app required for guests',
+                  'Build recurring rituals'
+                ].map((benefit, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <CheckCircle2 size={20} style={{ color: '#10b981', flexShrink: 0 }} />
+                    <span style={{ color: '#fdba74', fontSize: '1rem' }}>{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div style={{ textAlign: 'center' }}>
+              {user ? (
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '1rem 2.5rem',
+                    background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                    border: 'none',
+                    borderRadius: '50px',
+                    color: '#fff',
+                    fontWeight: 900,
+                    fontSize: '1.25rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+                    transition: 'all 0.3s',
+                  }}
+                >
+                  <Plus size={24} />
+                  Start Your First Game Night
+                </button>
+              ) : (
+                <Link href="/sign-up">
+                  <button style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '1rem 2.5rem',
+                    background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                    border: 'none',
+                    borderRadius: '50px',
+                    color: '#fff',
+                    fontWeight: 900,
+                    fontSize: '1.25rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+                    transition: 'all 0.3s',
+                  }}>
+                    Try a Free Game Night
+                    <ArrowRight size={24} />
+                  </button>
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Existing dashboard view for users with events */}
+        {user && (upcomingHosted.length > 0 || gameNights.attending.length > 0 || loading) && (
+          <>
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <h1 style={{
+                fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+                fontWeight: 900,
+                background: 'linear-gradient(135deg, #f97316, #fbbf24)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                marginBottom: '1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}>
+                Game Night HQ
+              </h1>
+              <p style={{ color: '#fdba74', fontSize: '1.25rem', marginBottom: '2rem' }}>
+                Rally the squad. Roll the dice. Create the chaos.
+              </p>
+
+              <button
+                onClick={() => setShowCreateModal(true)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                  border: 'none',
+                  borderRadius: '50px',
+                  color: '#fff',
+                  fontWeight: 900,
+                  fontSize: '1.125rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+                  transition: 'all 0.3s',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+              >
+                <Plus size={24} />
+                Rally the Squad
+              </button>
+            </div>
+          </>
+        )}
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: '#fdba74' }}>
@@ -175,23 +332,7 @@ export default function GameNightsPage() {
                 Upcoming
               </h2>
 
-              {upcomingHosted.length === 0 && gameNights.attending.length === 0 ? (
-                <div style={{
-                  padding: '3rem',
-                  background: 'rgba(249, 115, 22, 0.1)',
-                  borderRadius: '1rem',
-                  border: '2px dashed rgba(249, 115, 22, 0.3)',
-                  textAlign: 'center',
-                }}>
-                  <Gamepad2 size={48} style={{ color: '#f97316', marginBottom: '1rem' }} />
-                  <h3 style={{ color: '#fdba74', fontSize: '1.25rem', marginBottom: '0.5rem' }}>
-                    No game nights planned... yet
-                  </h3>
-                  <p style={{ color: '#94a3b8' }}>
-                    Your calendar is looking empty. Time to fix that!
-                  </p>
-                </div>
-              ) : (
+              {upcomingHosted.length > 0 || gameNights.attending.length > 0 ? (
                 <div style={{ display: 'grid', gap: '1rem' }}>
                   {/* Hosted game nights */}
                   {upcomingHosted.map((gn) => (
@@ -203,7 +344,7 @@ export default function GameNightsPage() {
                     <GameNightCard key={gn.id} gameNight={gn} isHost={false} onClick={() => router.push(`/game-nights/${gn.id}`)} />
                   ))}
                 </div>
-              )}
+              ) : null}
             </section>
 
             {/* Past Game Nights */}

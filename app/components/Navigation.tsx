@@ -28,7 +28,7 @@ export default function Navigation() {
   const navLinks = [
     { href: '/shop', label: 'SHOP' },
     { href: '/game-nights', label: 'GAME NIGHTS' },
-    // { href: '/afterroar', label: 'AFTERROAR' }, // Coming soon
+    { href: '/afterroar', label: 'AFTERROAR' },
     { href: '/forum', label: 'COMMUNITY' },
   ];
 
