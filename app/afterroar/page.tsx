@@ -17,11 +17,27 @@ export default function AfterroarPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleWaitlist = (e: React.FormEvent) => {
+  const handleWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement waitlist signup
-    console.log('Waitlist signup:', email);
-    setSubmitted(true);
+
+    try {
+      const response = await fetch('/api/afterroar/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'afterroar_page' })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitted(true);
+      } else {
+        alert(data.error || 'Failed to join waitlist. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error joining waitlist:', error);
+      alert('Failed to join waitlist. Please try again.');
+    }
   };
 
   return (

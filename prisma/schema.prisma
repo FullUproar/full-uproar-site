@@ -411,6 +411,10 @@ model User {
   moderationActionsReceived  ModerationAction[] @relation("ModerationActionsReceived")
   autoModRulesCreated      AutoModRule[]
 
+  // Rituals relations (Afterroar)
+  ritualsCreated      Ritual[]        @relation("RitualsCreated")
+  ritualMemberships   RitualRegular[] @relation("RitualRegulars")
+
   @@index([clerkId])
   @@index([email])
   @@index([username])
@@ -962,6 +966,11 @@ model GameNight {
   hostId          String
   host            User                @relation("HostedGameNights", fields: [hostId], references: [id])
 
+  // Ritual relation (for recurring game nights)
+  ritualId        String?
+  ritual          Ritual?             @relation("RitualGameNights", fields: [ritualId], references: [id])
+  ritualInstance  Int?                // Which occurrence of the ritual (1st, 2nd, 3rd...)
+
   // Event details
   title           String              @default("Game Night")
   description     String?
@@ -997,6 +1006,7 @@ model GameNight {
   @@index([hostId])
   @@index([date])
   @@index([status])
+  @@index([ritualId])
 }
 
 model GameNightGuest {
@@ -1346,4 +1356,89 @@ enum AutoModActionType {
   AUTO_REMOVE
   AUTO_WARN
   RATE_LIMIT_USER
+}
+
+// Afterroar Waitlist
+model AfterroarWaitlist {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  tier        String?  // 'AFTERROAR' or 'AFTERROAR_PLUS'
+  source      String?  // Where they signed up from
+  referredBy  String?  // Referral code if any
+  createdAt   DateTime @default(now())
+  notifiedAt  DateTime? // When we sent launch notification
+  convertedAt DateTime? // When they became a paying member
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+// Rituals - Recurring game nights (Afterroar feature)
+model Ritual {
+  id              String   @id @default(cuid())
+  creatorId       String
+  creator         User     @relation("RitualsCreated", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  name            String
+  description     String?  @db.Text
+  imageUrl        String?
+
+  // Recurrence settings
+  recurrenceType  RecurrenceType
+  dayOfWeek       Int?     // 0-6 for weekly/biweekly
+  dayOfMonth      Int?     // 1-31 for monthly
+  weekOfMonth     Int?     // 1-4 for "first Monday", etc.
+  frequency       Int      @default(1) // Every X weeks/months
+  startDate       DateTime
+  endDate         DateTime? // Optional end date
+
+  // Time settings
+  startTime       String   // "19:00" format
+  duration        Int?     // Minutes
+  timezone        String   @default("America/Los_Angeles")
+
+  // Campaign tracking (for RPGs)
+  isCampaign      Boolean  @default(false)
+  campaignName    String?
+  sessionCount    Int      @default(0)
+
+  // Settings
+  isActive        Boolean  @default(true)
+  maxPlayers      Int?
+  autoCreateDays  Int      @default(14) // Auto-create game nights X days in advance
+
+  // Metadata
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  // Relations
+  gameNights      GameNight[] @relation("RitualGameNights")
+  regulars        RitualRegular[]
+
+  @@index([creatorId])
+  @@index([isActive])
+  @@index([recurrenceType])
+}
+
+// Track regular attendees of a ritual
+model RitualRegular {
+  id         String   @id @default(cuid())
+  ritualId   String
+  ritual     Ritual   @relation(fields: [ritualId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation("RitualRegulars", fields: [userId], references: [id], onDelete: Cascade)
+
+  role       String   @default("player") // host, co-host, player, spectator
+  joinedAt   DateTime @default(now())
+
+  @@unique([ritualId, userId])
+  @@index([ritualId])
+  @@index([userId])
+}
+
+enum RecurrenceType {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  CUSTOM
 }
