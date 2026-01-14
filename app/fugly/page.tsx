@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import GlobalFooter from '../components/GlobalFooter';
 import { BookOpen, Newspaper, Flame } from 'lucide-react';
 
 interface NewsPost {
@@ -363,8 +362,6 @@ export default function FuglyPage() {
           </div>
         </div>
       )}
-
-      <GlobalFooter />
     </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import GlobalFooter from '../components/GlobalFooter';
 import { Zap, Heart, Gamepad2, Sparkles, Target, Shield, Users, Flame, Crown } from 'lucide-react';
 import FuglyLogo from '../components/FuglyLogo';
 
@@ -425,8 +424,6 @@ export default function AboutPage() {
           </a>
         </div>
       </div>
-
-      <GlobalFooter />
     </div>
   );
 }

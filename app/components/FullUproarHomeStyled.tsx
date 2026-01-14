@@ -8,6 +8,7 @@ import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
 import Navigation from './Navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Game {
   id: number;
@@ -549,9 +550,13 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <img
+            <Image
               src="/FuglyLaying.png"
               alt="Fugly - the chaos mascot"
+              width={500}
+              height={380}
+              priority
+              quality={95}
               style={{
                 height: '100%',
                 maxHeight: isMobile ? '200px' : '380px',
@@ -591,6 +596,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             maxWidth: '500px',
             margin: '0 auto',
             marginTop: isMobile ? '1rem' : '1.5rem',
+            marginBottom: isMobile ? '6rem' : '8rem', // Prevent overlap with CTA button
           }}>
             Arm yourself with chaos to transform boring game nights into legendary stories.
           </p>

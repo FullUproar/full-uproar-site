@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import GlobalFooter from '../components/GlobalFooter';
 import { Check, Sparkles, Package, Zap, Users, Calendar, Trophy, Heart, ArrowRight } from 'lucide-react';
 
 export default function AfterroarPage() {
@@ -419,8 +418,6 @@ export default function AfterroarPage() {
           )}
         </div>
       </div>
-
-      <GlobalFooter />
     </div>
   );
 }
