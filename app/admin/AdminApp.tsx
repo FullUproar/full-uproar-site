@@ -51,10 +51,12 @@ import B2BPortal from './components/B2BPortal';
 import FulfillmentCenter from './components/FulfillmentCenter';
 import DesignComponentsView from './components/DesignComponentsView';
 import SiteIssuesPage from './site-issues/page';
+import WarRoomDashboard from './components/WarRoomDashboard';
 
-type ViewType = 
+type ViewType =
   | 'dashboard'
   | 'power-dashboard'
+  | 'war-room'
   | 'customers'
   | 'email-campaigns'
   | 'marketing-war-room'
@@ -231,6 +233,14 @@ export default function AdminApp() {
           icon: <BarChart3 size={20} />,
           view: { type: 'analytics' as ViewType },
           color: '#06b6d4',
+        },
+        {
+          id: 'war-room',
+          label: 'War Room',
+          icon: <Target size={20} />,
+          view: { type: 'war-room' as ViewType },
+          color: '#f97316',
+          badge: 'LIVE',
         },
       ]
     },
@@ -516,7 +526,10 @@ export default function AdminApp() {
       
       case 'power-dashboard':
         return <PowerDashboard onNavigate={navigateTo} />;
-      
+
+      case 'war-room':
+        return <WarRoomDashboard />;
+
       case 'customers':
         return <CustomerManagement onNavigate={navigateTo} />;
       

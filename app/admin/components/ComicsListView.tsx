@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import NextImage from 'next/image';
 import { BookOpen, Plus, Edit2, Trash2, Eye, Image, Calendar } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
@@ -116,12 +117,14 @@ export default function ComicsListView({ onEdit, onNew }: ComicsListViewProps) {
                 style={adminStyles.card}
                 {...adminStyles.hoverEffects.card}
               >
-                <div style={{ aspectRatio: '16/9', background: '#1e293b', borderRadius: '8px', marginBottom: '16px', overflow: 'hidden' }}>
+                <div style={{ aspectRatio: '16/9', background: '#1e293b', borderRadius: '8px', marginBottom: '16px', overflow: 'hidden', position: 'relative' }}>
                   {comic.imageUrl ? (
-                    <img
+                    <NextImage
                       src={comic.imageUrl}
                       alt={comic.title}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      fill
+                      unoptimized
+                      style={{ objectFit: 'cover' }}
                     />
                   ) : (
                     <div style={{ 

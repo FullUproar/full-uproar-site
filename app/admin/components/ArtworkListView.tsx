@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import NextImage from 'next/image';
 import { Palette, Plus, Edit2, Trash2, Eye, Tag, Image, Sparkles } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
@@ -173,19 +174,20 @@ export default function ArtworkListView({ onEdit, onNew }: ArtworkListViewProps)
                   </div>
                 )}
                 
-                <div style={{ 
-                  aspectRatio: '1', 
-                  background: '#1e293b', 
-                  borderRadius: '8px', 
-                  marginBottom: '16px', 
-                  overflow: 'hidden' 
+                <div style={{
+                  aspectRatio: '1',
+                  background: '#1e293b',
+                  borderRadius: '8px',
+                  marginBottom: '16px',
+                  overflow: 'hidden',
+                  position: 'relative'
                 }}>
-                  <img
+                  <NextImage
                     src={artwork.thumbnailUrl || artwork.imageUrl}
                     alt={artwork.name}
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
+                    fill
+                    unoptimized
+                    style={{
                       objectFit: 'cover',
                       transition: 'transform 0.3s'
                     }}

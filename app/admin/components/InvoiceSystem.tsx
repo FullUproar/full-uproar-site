@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
+import Image from 'next/image';
+import {
   FileText, Send, Download, Printer, Clock, CheckCircle,
   AlertCircle, DollarSign, Calendar, User, Building,
   Mail, Phone, MapPin, Hash, CreditCard, Copy,
@@ -480,7 +481,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ marginBottom: '20px' }}>
-                    <img src="/logo.png" alt="Full Uproar" style={{ height: '50px' }} />
+                    <Image src="/logo.png" alt="Full Uproar" width={150} height={50} style={{ height: '50px', width: 'auto' }} />
                   </div>
                   <div style={{ color: '#e2e8f0', fontSize: '14px' }}>
                     <div>Full Uproar Games</div>

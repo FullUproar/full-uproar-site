@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Plus, Edit2, Trash2, Eye, Search, Filter, Package, CheckSquare, Square, Archive, ArchiveRestore } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import ConfirmationModal from './ConfirmationModal';
@@ -382,12 +383,13 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                   </td>
                   <td style={adminStyles.tableCell}>
                     {game.imageUrl ? (
-                      <img
+                      <Image
                         src={game.imageUrl}
                         alt={game.title}
+                        width={60}
+                        height={60}
+                        unoptimized
                         style={{
-                          width: '60px',
-                          height: '60px',
                           objectFit: 'cover',
                           borderRadius: '8px',
                           border: '2px solid rgba(249, 115, 22, 0.3)',

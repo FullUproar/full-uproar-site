@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { User, UserRole } from '@prisma/client';
-import { 
-  Search, Filter, UserPlus, Edit2, Shield, Ban, Mail, 
+import {
+  Search, Filter, UserPlus, Edit2, Shield, Ban, Mail,
   MoreVertical, Check, X, AlertCircle, ChevronDown
 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
@@ -339,12 +340,13 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
                   <td style={adminStyles.tableCell}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       {user.avatarUrl ? (
-                        <img
+                        <Image
                           src={user.avatarUrl}
                           alt={user.displayName || user.username || ''}
+                          width={40}
+                          height={40}
+                          unoptimized
                           style={{
-                            width: '40px',
-                            height: '40px',
                             borderRadius: '50%',
                             border: '2px solid #334155'
                           }}
