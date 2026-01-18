@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { 
-  Package, ShoppingBag, Newspaper, Image, ShoppingCart, Settings, 
+import {
+  Package, ShoppingBag, Newspaper, Image, ShoppingCart, Settings,
   Plus, Edit2, Trash2, Eye, Database, ArrowLeft, Menu, Home,
   Dices, BookOpen, Palette, DollarSign, Users, TrendingUp,
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
   BarChart3, Shield, Target, Calculator, Crown, GraduationCap, Briefcase,
-  Landmark, FileText, Building, Zap
+  Landmark, FileText, Building, Zap, QrCode
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -101,7 +101,8 @@ type ViewType =
   | 'diagnostics'
   | 'analytics'
   | 'compliance'
-  | 'site-issues';
+  | 'site-issues'
+  | 'redirects';
 
 interface ViewState {
   type: ViewType;
@@ -493,6 +494,14 @@ export default function AdminApp() {
           view: { type: 'site-issues' as ViewType },
           color: '#f59e0b',
         },
+        {
+          id: 'redirects',
+          label: 'URL Redirects',
+          icon: <QrCode size={20} />,
+          view: { type: 'redirects' as ViewType },
+          color: '#22d3ee',
+          badge: 'QR',
+        },
       ]
     },
   ];
@@ -568,6 +577,21 @@ export default function AdminApp() {
       
       case 'site-issues':
         return <SiteIssuesPage />;
+
+      case 'redirects':
+        return (
+          <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+            <iframe
+              src="/admin/redirects"
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                background: '#111827'
+              }}
+            />
+          </div>
+        );
       
       case 'games-list':
         return (
