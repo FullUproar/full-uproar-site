@@ -1,0 +1,17 @@
+{
+  "name": "full-uproar-game-platform",
+  "private": true,
+  "workspaces": [
+    "core",
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=@full-uproar/game-platform-core",
+    "build:core": "npm run build --workspace=@full-uproar/game-platform-core",
+    "test": "npm run test --workspace=@full-uproar/game-platform-core",
+    "typecheck": "npm run typecheck --workspace=@full-uproar/game-platform-client",
+    "server:dev": "npm run dev --workspace=@full-uproar/game-platform-server",
+    "server:deploy": "npm run deploy --workspace=@full-uproar/game-platform-server"
+  }
+}

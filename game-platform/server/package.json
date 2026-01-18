@@ -1,0 +1,19 @@
+{
+  "name": "@full-uproar/game-platform-server",
+  "version": "0.1.0",
+  "description": "PartyKit server for Full Uproar's online card game platform",
+  "type": "module",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "partykit dev",
+    "deploy": "partykit deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@full-uproar/game-platform-core": "*",
+    "partykit": "^0.0.115"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

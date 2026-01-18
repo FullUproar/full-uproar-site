@@ -958,6 +958,62 @@ model AnalyticsEvent {
 }
 
 // ============================================
+// URL REDIRECTS (QR Codes, Short Links)
+// ============================================
+
+model Redirect {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique  // e.g., "fugly", "pax2025"
+  destination String              // Full URL to redirect to
+  name        String?             // Friendly name for admin display
+  description String?             // Notes about where this is used
+
+  // Status
+  isActive    Boolean   @default(true)
+
+  // Analytics
+  scanCount   Int       @default(0)
+  lastScannedAt DateTime?
+
+  // Metadata
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  createdBy   String?   // User ID who created it
+
+  // Relations
+  scans       RedirectScan[]
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+model RedirectScan {
+  id          Int       @id @default(autoincrement())
+  redirectId  Int
+  redirect    Redirect  @relation(fields: [redirectId], references: [id], onDelete: Cascade)
+
+  // Tracking data
+  ipAddress   String?
+  userAgent   String?
+  referer     String?
+  country     String?
+  city        String?
+  device      String?   // "mobile", "desktop", "tablet"
+  browser     String?
+  os          String?
+
+  // UTM parameters (if present in destination or passed through)
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+
+  scannedAt   DateTime  @default(now())
+
+  @@index([redirectId])
+  @@index([scannedAt])
+}
+
+// ============================================
 // GAME NIGHT PLANNER
 // ============================================
 
