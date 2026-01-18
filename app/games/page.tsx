@@ -120,7 +120,7 @@ export default function GamesPage() {
       <Navigation />
       
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '3rem 1rem' }}>
-        {/* Featured Section - Chaos Engine */}
+        {/* Featured Section - Mayhem Machine */}
         {selectedCategory === 'MOD' && (
           <div style={{
             background: 'linear-gradient(135deg, #0a0a0a, #1a1a1a)',
@@ -171,7 +171,7 @@ export default function GamesPage() {
                     letterSpacing: '0.1em',
                     margin: 0
                   }}>
-                    Fugly's Chaos Engine
+                    Fugly's Mayhem Machine
                   </h1>
                   <Zap style={{ width: '3rem', height: '3rem', color: '#f97316' }} />
                 </div>
@@ -222,7 +222,7 @@ export default function GamesPage() {
                     letterSpacing: '0.05em',
                     textShadow: '0 2px 10px rgba(249, 115, 22, 0.5)'
                   }}>
-                    What is the Chaos Engine?
+                    What is the Mayhem Machine?
                   </h2>
                   <p style={{ 
                     color: '#ffffff', 
@@ -231,7 +231,7 @@ export default function GamesPage() {
                     marginBottom: '1rem',
                     textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)'
                   }}>
-                    The Chaos Engine is our revolutionary game modification system. These aren't expansions or new games - they're <strong style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(249, 115, 22, 0.5)' }}>universal game modifiers</strong> that transform ANY game you already own into something completely new and insane.
+                    The Mayhem Machine is our revolutionary game modification system. These aren't expansions or new games - they're <strong style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(249, 115, 22, 0.5)' }}>universal game modifiers</strong> that transform ANY game you already own into something completely new and insane.
                   </p>
                   <p style={{ 
                     color: '#fbbf24', 
@@ -593,7 +593,7 @@ export default function GamesPage() {
                     gap: '0.25rem'
                   }}>
                     <Zap style={{ width: '0.875rem', height: '0.875rem' }} />
-                    Chaos Engine
+                    Mayhem Machine
                   </div>
                 )}
               </div>
@@ -623,7 +623,7 @@ export default function GamesPage() {
               We're cooking up some incredible {activeCategory?.name.toLowerCase()} for you.
             </p>
             <p style={{ color: '#fde68a', marginTop: '0.5rem' }}>
-              Meanwhile, check out our revolutionary Chaos Engine mods!
+              Meanwhile, check out our revolutionary Mayhem Machine mods!
             </p>
           </div>
         )}
@@ -639,7 +639,7 @@ export default function GamesPage() {
           }}>
             <h3 style={{ color: '#f97316', marginBottom: '1rem' }}>🎨 Suggested Graphics to Generate:</h3>
             <ul style={{ color: '#fde68a', lineHeight: '2' }}>
-              <li>A logo for "Fugly's Chaos Engine" - mechanical gears with dice, cards, and game pieces integrated</li>
+              <li>A logo for "Fugly's Mayhem Machine" - mechanical gears with dice, cards, and game pieces integrated</li>
               <li>Banner image showing game pieces being transformed by orange energy/chaos magic</li>
               <li>Icon set for each mod showing how it transforms games (shuffle icon, timer, wildcards, etc.)</li>
               <li>Background pattern with game elements (dice, cards, meeples) in a chaotic arrangement</li>

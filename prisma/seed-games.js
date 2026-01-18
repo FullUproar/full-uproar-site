@@ -13,7 +13,7 @@ const sampleGames = [
     isBundle: false,
     isPreorder: true,
     featured: true,
-    bundleInfo: "Chaos Engine Collection"
+    bundleInfo: "Mayhem Machine Collection"
   },
   {
     title: "Crime and Funishments",
@@ -52,7 +52,7 @@ const sampleGames = [
     featured: false
   },
   {
-    title: "Chaos Engine Bundle",
+    title: "Mayhem Machine Bundle",
     tagline: "All three chaos decks - SAVE $10!",
     description: "Get all three game-breaking decks in one chaotic bundle! Includes Hack Your Deck, Crime and Funishments, AND Dumbest Ways to Win. Transform any game night into a beautiful disaster. Fugly's personal favorite!",
     priceCents: 4999,
@@ -91,7 +91,7 @@ const sampleNews = [
     content: "This is huge news for all Fugly fans! After months of development and testing, we're excited to announce that all four of our flagship games are moving into production. Expected delivery: Spring 2026. Pre-orders are now live!"
   },
   {
-    title: "Chaos Engine Bundle Saves You $10",
+    title: "Mayhem Machine Bundle Saves You $10",
     excerpt: "Get all three game-modifier decks for just $49.99. That's like getting Dumbest Ways to Win basically free. Math is hard. Savings are easy.",
     content: "Bundle up and save! When you buy Hack Your Deck, Crime and Funishments, and Dumbest Ways to Win together, you save $10 off the individual prices. Fugly approved!"
   },

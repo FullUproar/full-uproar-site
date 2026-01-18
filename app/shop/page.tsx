@@ -268,7 +268,7 @@ function ShopContent() {
         {/* GAMES TAB */}
         {activeTab === 'games' && (
           <>
-            {/* Featured Section - Chaos Engine */}
+            {/* Featured Section - Mayhem Machine */}
             {selectedCategory === 'MOD' && (
               <div style={{
                 background: 'linear-gradient(135deg, #0a0a0a, #1a1a1a)',
@@ -303,7 +303,7 @@ function ShopContent() {
                         letterSpacing: '0.1em',
                         margin: 0
                       }}>
-                        Fugly's Chaos Engine
+                        Fugly's Mayhem Machine
                       </h2>
                       <Zap style={{ width: '3rem', height: '3rem', color: '#FF8200' }} />
                     </div>
@@ -576,7 +576,7 @@ function ShopContent() {
                         gap: '0.25rem'
                       }}>
                         <Zap style={{ width: '0.75rem', height: '0.75rem' }} />
-                        Chaos Engine
+                        Mayhem Machine
                       </div>
                     )}
                   </div>

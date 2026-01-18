@@ -110,7 +110,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
       email: 'john@fulluproar.com',
       phone: '555-0101',
       department: 'engineering',
-      position: 'Senior Chaos Engineer',
+      position: 'Senior Mayhem Engineer',
       level: 'senior',
       status: 'active',
       startDate: new Date('2023-01-15'),

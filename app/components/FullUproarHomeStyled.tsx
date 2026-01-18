@@ -137,7 +137,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
     },
     {
       id: 4,
-      title: "Chaos Engine Bundle",
+      title: "Mayhem Machine Bundle",
       tagline: "All three decks - SAVE $10!",
       description: "Get all three game-breaking decks in one chaotic bundle!",
       price: "$49.99",
