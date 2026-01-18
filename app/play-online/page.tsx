@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import type { GameState, GameAction, GameEvent, Player, Card } from '../../game-platform/core/dist/types';
+import type { GameState, GameAction, GameEvent, Player, Card } from '../../game-platform/core/src/types';
 import {
   createGame,
   addPlayer,
@@ -12,7 +12,7 @@ import {
   combinePacks,
   generateId,
   now,
-} from '../../game-platform/core/dist/index';
+} from '../../game-platform/core/src/index';
 
 // Generate a random 4-letter room code
 function generateRoomCode(): string {

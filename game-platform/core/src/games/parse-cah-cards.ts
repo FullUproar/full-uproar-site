@@ -99,7 +99,7 @@ function parseCAHData(): void {
  * Total: ${allWhiteCards.length} white cards, ${allBlackCards.length} black cards
  */
 
-import type { CardPack, Card } from '../types.js';
+import type { CardPack, Card } from '../types';
 
 // All white cards (answers)
 const whiteCards: Card[] = ${JSON.stringify(allWhiteCards, null, 2)};

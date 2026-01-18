@@ -68,7 +68,7 @@ export type {
   StateTransitionResult,
   GameContext,
   Timestamp,
-} from './types.js';
+} from './types';
 
 // State Machine
 export {
@@ -76,13 +76,13 @@ export {
   createGame,
   addPlayer,
   removePlayer,
-} from './state-machine.js';
+} from './state-machine';
 
 // Validation
 export {
   validateAction,
   checkTransitionCondition,
-} from './validation.js';
+} from './validation';
 
 // Utilities
 export {
@@ -106,7 +106,7 @@ export {
   deepClone,
   removeWhere,
   removeById,
-} from './utils.js';
+} from './utils';
 
 // Games
 export {
@@ -115,11 +115,11 @@ export {
   interpolatePrompt,
   getPickCount,
   isValidSubmission,
-} from './games/cah-definition.js';
+} from './games/cah-definition';
 
 // Card Packs
 export {
   getCAHPack,
   getAllPacks,
   combinePacks,
-} from './games/cah-packs.js';
+} from './games/cah-packs';

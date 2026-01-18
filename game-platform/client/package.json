@@ -1,0 +1,20 @@
+{
+  "name": "@full-uproar/game-platform-client",
+  "version": "0.1.0",
+  "description": "React components for Full Uproar's online card game platform",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@full-uproar/game-platform-core": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "typescript": "^5.3.0"
+  }
+}

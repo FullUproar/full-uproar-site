@@ -12,8 +12,8 @@ import type {
   ActionType,
   Player,
   Action,
-} from './types.js';
-import { findPlayer, getSubmitters, findCardInHand } from './utils.js';
+} from './types';
+import { findPlayer, getSubmitters, findCardInHand } from './utils';
 
 // =============================================================================
 // MAIN VALIDATION FUNCTION

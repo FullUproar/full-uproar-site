@@ -16,7 +16,7 @@ import type {
   PlayerPresence,
   GameDefinition,
   Timestamp,
-} from './types.js';
+} from './types';
 import {
   shuffle,
   drawCards,
@@ -33,8 +33,8 @@ import {
   generateId,
   now,
   shuffleDeck,
-} from './utils.js';
-import { validateAction, checkTransitionCondition } from './validation.js';
+} from './utils';
+import { validateAction, checkTransitionCondition } from './validation';
 
 // =============================================================================
 // MAIN STATE MACHINE

@@ -11,7 +11,7 @@ import type {
   ClientMessage,
   ServerMessage,
   Submission,
-} from '../../../game-platform/core/dist/types';
+} from '../../../game-platform/core/src/types';
 
 // =============================================================================
 // PARTYKIT CONFIG

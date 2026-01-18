@@ -3,8 +3,8 @@
  * This configures the CAH game using the generic game engine
  */
 
-import type { GameDefinition, CardPack, Card } from '../types.js';
-import { generateId } from '../utils.js';
+import type { GameDefinition, CardPack, Card } from '../types';
+import { generateId } from '../utils';
 
 // =============================================================================
 // GAME DEFINITION

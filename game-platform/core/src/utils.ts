@@ -3,7 +3,7 @@
  * All functions are pure - no side effects
  */
 
-import type { Card, Deck, Player, GameState, CardPack, Timestamp } from './types.js';
+import type { Card, Deck, Player, GameState, CardPack, Timestamp } from './types';
 
 // =============================================================================
 // ARRAY UTILITIES
