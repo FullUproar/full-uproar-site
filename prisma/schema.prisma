@@ -370,6 +370,12 @@ model User {
   flagCount        Int          @default(0)
   lastFlaggedAt    DateTime?
 
+  // Forum-specific ban (separate from site ban)
+  forumBanned       Boolean      @default(false)
+  forumBannedAt     DateTime?
+  forumBannedReason String?
+  forumBannedUntil  DateTime?    // null = permanent
+
   // Admin 2FA (TOTP) fields
   totpSecret          String?      // Encrypted TOTP secret for authenticator apps
   totpEnabled         Boolean      @default(false)
@@ -386,6 +392,8 @@ model User {
   easterEggsFound   String?    // JSON array of found easter egg IDs
   
   posts             MessagePost[]
+  threads           MessageThread[]
+  boardInvites      BoardInvite[]
   permissions       Permission[]
   profile           UserProfile?
   sessions          UserSession[]
@@ -548,7 +556,7 @@ model UserPaymentMethod {
   @@index([isDefault])
 }
 
-model MessageBoard {
+model BoardCategory {
   id          Int             @id @default(autoincrement())
   name        String
   slug        String          @unique
@@ -556,10 +564,43 @@ model MessageBoard {
   icon        String?
   sortOrder   Int             @default(0)
   isActive    Boolean         @default(true)
-  isPrivate   Boolean         @default(false)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @default(now()) @updatedAt
+  boards      MessageBoard[]
+}
+
+model MessageBoard {
+  id          Int              @id @default(autoincrement())
+  categoryId  Int?
+  category    BoardCategory?   @relation(fields: [categoryId], references: [id])
+  name        String
+  slug        String           @unique
+  description String?
+  icon        String?
+  sortOrder   Int              @default(0)
+  isActive    Boolean          @default(true)
+  isPrivate   Boolean          @default(false)
+  accessLevel BoardAccessLevel @default(PUBLIC)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @default(now()) @updatedAt
   threads     MessageThread[]
+  invites     BoardInvite[]
+
+  @@index([categoryId])
+}
+
+model BoardInvite {
+  id        Int           @id @default(autoincrement())
+  boardId   Int
+  board     MessageBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invitedBy String
+  invitedAt DateTime      @default(now())
+  acceptedAt DateTime?
+
+  @@unique([boardId, userId])
+  @@index([userId])
 }
 
 model MessageThread {
@@ -568,6 +609,7 @@ model MessageThread {
   title      String
   slug       String
   authorId   String
+  author     User          @relation(fields: [authorId], references: [id])
   isPinned   Boolean       @default(false)
   isLocked   Boolean       @default(false)
   viewCount  Int           @default(0)
@@ -597,6 +639,13 @@ model MessagePost {
 
   @@index([threadId])
   @@index([authorId])
+}
+
+enum BoardAccessLevel {
+  PUBLIC           // Anyone can view
+  MEMBERS_ONLY     // Must be logged in
+  SUBSCRIBERS_ONLY // Must have premium membership
+  PRIVATE          // Invite only
 }
 
 enum MerchCategory {

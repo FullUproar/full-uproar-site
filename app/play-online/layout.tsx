@@ -4,11 +4,15 @@ import React, { useState, useEffect, ReactNode } from 'react';
 
 // =============================================================================
 // PASSWORD PROTECTION FOR GAME TESTING
-// Set NEXT_PUBLIC_GAME_PASSWORD in .env.local to enable protection
-// If not set, the game is accessible without a password (for development)
+// SECURITY: This page contains third-party IP (Cards Against Humanity)
+// Password is ALWAYS required - no bypass for development
+// Set NEXT_PUBLIC_GAME_PASSWORD in environment variables
 // =============================================================================
 
 const STORAGE_KEY = 'fu-game-test-auth';
+
+// Hardcoded fallback password if env var not set (never allow open access)
+const FALLBACK_PASSWORD = 'FuglyTest2026!';
 
 const styles = {
   container: {
@@ -104,17 +108,11 @@ function PasswordGate({ children }: { children: ReactNode }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // The password from environment variable
-  const requiredPassword = process.env.NEXT_PUBLIC_GAME_PASSWORD || '';
+  // The password from environment variable, with fallback (NEVER allow open access)
+  const requiredPassword = process.env.NEXT_PUBLIC_GAME_PASSWORD || FALLBACK_PASSWORD;
 
   useEffect(() => {
-    // If no password is set, allow access (development mode)
-    if (!requiredPassword) {
-      setIsAuthenticated(true);
-      setIsLoading(false);
-      return;
-    }
-
+    // SECURITY: Password is ALWAYS required - no development bypass
     // Check if already authenticated
     const storedAuth = localStorage.getItem(STORAGE_KEY);
     if (storedAuth === requiredPassword) {

@@ -4,17 +4,17 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
-import {
-  MessageSquare, Users, TrendingUp, Clock, Pin, Lock,
-  Plus, ChevronRight, Eye, MessageCircle
-} from 'lucide-react';
+import { Plus, TrendingUp, Clock, Pin, Lock, Eye, MessageCircle, Users, MessageSquare } from 'lucide-react';
+import { forumStyles, forumColors } from './styles/forumStyles';
+import CategorySection from './components/CategorySection';
 
-interface MessageBoard {
+interface Board {
   id: number;
-  name: string;
   slug: string;
-  description?: string;
-  icon?: string;
+  name: string;
+  description?: string | null;
+  icon?: string | null;
+  accessLevel: string;
   threadCount: number;
   postCount: number;
   lastPost?: {
@@ -22,7 +22,17 @@ interface MessageBoard {
     threadSlug: string;
     authorName: string;
     createdAt: string;
-  };
+  } | null;
+  userCanAccess: boolean;
+}
+
+interface Category {
+  id: number;
+  slug: string;
+  name: string;
+  description?: string | null;
+  icon?: string | null;
+  boards: Board[];
 }
 
 interface MessageThread {
@@ -42,37 +52,19 @@ interface MessageThread {
   };
 }
 
+interface ForumStats {
+  threadCount: number;
+  postCount: number;
+  userCount: number;
+}
+
 export default function ForumView() {
   const router = useRouter();
-  const [boards, setBoards] = useState<MessageBoard[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [popularThreads, setPopularThreads] = useState<MessageThread[]>([]);
   const [recentThreads, setRecentThreads] = useState<MessageThread[]>([]);
+  const [stats, setStats] = useState<ForumStats>({ threadCount: 0, postCount: 0, userCount: 0 });
   const [loading, setLoading] = useState(true);
-
-  // Add CSS animation for floating emojis
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes chaosFloat {
-        0%, 100% {
-          transform: translateY(0) rotate(0deg);
-        }
-        25% {
-          transform: translateY(-20px) rotate(5deg);
-        }
-        50% {
-          transform: translateY(0) rotate(-5deg);
-        }
-        75% {
-          transform: translateY(-10px) rotate(3deg);
-        }
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
 
   useEffect(() => {
     fetchForumData();
@@ -83,18 +75,29 @@ export default function ForumView() {
       const [boardsRes, popularRes, recentRes] = await Promise.all([
         fetch('/api/forum/boards'),
         fetch('/api/forum/threads/popular'),
-        fetch('/api/forum/threads/recent')
+        fetch('/api/forum/threads/recent'),
       ]);
 
       const [boardsData, popularData, recentData] = await Promise.all([
         boardsRes.json(),
         popularRes.json(),
-        recentRes.json()
+        recentRes.json(),
       ]);
 
-      setBoards(boardsData);
+      setCategories(boardsData.categories || []);
       setPopularThreads(popularData);
       setRecentThreads(recentData);
+
+      // Calculate stats from categories
+      let threadCount = 0;
+      let postCount = 0;
+      (boardsData.categories || []).forEach((cat: Category) => {
+        cat.boards.forEach((board) => {
+          threadCount += board.threadCount;
+          postCount += board.postCount;
+        });
+      });
+      setStats({ threadCount, postCount, userCount: 42 }); // userCount placeholder
     } catch (error) {
       console.error('Error fetching forum data:', error);
     } finally {
@@ -102,394 +105,276 @@ export default function ForumView() {
     }
   };
 
-  const styles = {
-    container: {
-      minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)',
-      color: '#e2e8f0'
-    },
-    content: {
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: '0 24px 48px'
-    },
-    boardCard: {
-      background: 'rgba(30, 41, 59, 0.95)',
-      border: '1px solid #334155',
-      borderRadius: '12px',
-      padding: '24px',
-      marginBottom: '16px',
-      transition: 'all 0.3s',
-      cursor: 'pointer'
-    },
-    threadRow: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: '16px',
-      background: 'rgba(30, 41, 59, 0.5)',
-      border: '1px solid #334155',
-      borderRadius: '8px',
-      marginBottom: '8px',
-      transition: 'all 0.2s',
-      textDecoration: 'none',
-      color: 'inherit'
-    },
-    stat: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      padding: '8px 16px',
-      background: 'rgba(51, 65, 85, 0.5)',
-      borderRadius: '8px',
-      minWidth: '80px'
-    },
-    searchBar: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      background: 'rgba(30, 41, 59, 0.95)',
-      border: '1px solid #334155',
-      borderRadius: '8px',
-      padding: '12px 16px',
-      marginBottom: '24px'
-    }
-  };
-
   if (loading) {
     return (
-      <div style={styles.container}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '50vh' 
-        }}>
-          <p style={{ color: '#fdba74' }}>Loading forum...</p>
+      <div style={forumStyles.container}>
+        <Navigation />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh',
+          }}
+        >
+          <p style={{ color: forumColors.textSecondary }}>Loading forum...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
+    <div style={forumStyles.container}>
       <Navigation />
-      
-      {/* Hero Section - Match Main Site Style */}
-      <section style={{
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg, #1f2937 0%, #111827 50%, #ea580c 100%)',
-        borderBottom: '4px solid #f97316',
-        marginBottom: '3rem'
-      }}>
-        <div style={{
-          maxWidth: '80rem',
-          margin: '0 auto',
-          padding: '4rem 1rem',
-          textAlign: 'center',
-          position: 'relative'
-        }}>
-          {/* Chaos Badge */}
-          <div style={{
-            display: 'inline-block',
-            background: 'linear-gradient(135deg, #f97316 0%, #dc2626 100%)',
-            color: '#111827',
-            padding: '0.5rem 1.5rem',
-            borderRadius: '50px',
-            fontWeight: 900,
-            transform: 'rotate(-2deg)',
-            marginBottom: '2rem',
-            fontSize: '0.875rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em'
-          }}>
-            🔥 PURE CHAOS DISCUSSIONS 🔥
+
+      {/* Header - Cleaner, less chaotic */}
+      <section
+        style={{
+          background: `linear-gradient(135deg, ${forumColors.bgCard} 0%, ${forumColors.bgPage} 70%, ${forumColors.accentOrangeGlow} 100%)`,
+          borderBottom: `3px solid ${forumColors.borderAccent}`,
+          marginBottom: '32px',
+          padding: '48px 24px',
+        }}
+      >
+        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+          {/* Chaos Badge - ONE pop of orange */}
+          <div
+            style={{
+              display: 'inline-block',
+              background: forumColors.accentOrange,
+              color: '#000',
+              padding: '6px 16px',
+              borderRadius: '50px',
+              fontWeight: '700',
+              marginBottom: '16px',
+              fontSize: '12px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+            }}
+          >
+            Community Forum
           </div>
-          
-          <h1 style={{
-            fontSize: '5rem',
-            fontWeight: 900,
-            marginBottom: '1.5rem',
-            background: 'linear-gradient(45deg, #f97316, #ef4444, #f97316)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-            lineHeight: 1
-          }}>
-            Community Chaos Forum
+
+          <h1
+            style={{
+              fontSize: '3rem',
+              fontWeight: '800',
+              color: forumColors.textTitle,
+              marginBottom: '12px',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Full Uproar Forums
           </h1>
-          
-          <p style={{
-            fontSize: '1.5rem',
-            color: '#fdba74',
-            marginBottom: '2rem',
-            fontWeight: 700
-          }}>
-            Where game-ruining strategies are born and friendships go to die
+
+          <p
+            style={{
+              fontSize: '1.1rem',
+              color: forumColors.textSecondary,
+              maxWidth: '600px',
+              margin: '0 auto',
+            }}
+          >
+            Discuss strategies, share stories, and connect with fellow chaos agents
           </p>
-          
-          {/* Floating Emojis */}
-          <div style={{
-            position: 'absolute',
-            top: '20%',
-            left: '10%',
-            fontSize: '2rem',
-            animation: 'chaosFloat 6s ease-in-out infinite',
-            opacity: 0.3
-          }}>💀</div>
-          <div style={{
-            position: 'absolute',
-            top: '30%',
-            right: '15%',
-            fontSize: '2.5rem',
-            animation: 'chaosFloat 8s ease-in-out infinite',
-            animationDelay: '1s',
-            opacity: 0.3
-          }}>🔥</div>
-          <div style={{
-            position: 'absolute',
-            bottom: '20%',
-            left: '20%',
-            fontSize: '2rem',
-            animation: 'chaosFloat 7s ease-in-out infinite',
-            animationDelay: '2s',
-            opacity: 0.3
-          }}>😈</div>
         </div>
       </section>
-      
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
         {/* Action Bar */}
-        <div style={{
-          ...styles.searchBar,
-          justifyContent: 'flex-end'
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '24px',
+          }}
+        >
+          {/* Stats */}
+          <div style={{ display: 'flex', gap: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: forumColors.textSecondary }}>
+              <MessageSquare size={18} />
+              <span>{stats.threadCount} threads</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: forumColors.textSecondary }}>
+              <MessageCircle size={18} />
+              <span>{stats.postCount} posts</span>
+            </div>
+          </div>
+
+          {/* New Thread Button */}
           <button
             onClick={() => router.push('/forum/new-thread')}
-            style={{
-              padding: '8px 16px',
-              background: '#f97316',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
+            style={forumStyles.primaryButton}
           >
             <Plus size={18} />
             New Thread
           </button>
         </div>
 
-        {/* Forum Stats */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '16px',
-          marginBottom: '40px'
-        }}>
-          <div style={{
-            background: 'rgba(30, 41, 59, 0.95)',
-            border: '1px solid #334155',
-            borderRadius: '12px',
-            padding: '20px',
-            textAlign: 'center'
-          }}>
-            <Users size={32} style={{ color: '#f97316', marginBottom: '8px' }} />
-            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>1,234</div>
-            <div style={{ color: '#94a3b8', fontSize: '14px' }}>Active Members</div>
-          </div>
-          <div style={{
-            background: 'rgba(30, 41, 59, 0.95)',
-            border: '1px solid #334155',
-            borderRadius: '12px',
-            padding: '20px',
-            textAlign: 'center'
-          }}>
-            <MessageSquare size={32} style={{ color: '#3b82f6', marginBottom: '8px' }} />
-            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>5,678</div>
-            <div style={{ color: '#94a3b8', fontSize: '14px' }}>Total Threads</div>
-          </div>
-          <div style={{
-            background: 'rgba(30, 41, 59, 0.95)',
-            border: '1px solid #334155',
-            borderRadius: '12px',
-            padding: '20px',
-            textAlign: 'center'
-          }}>
-            <MessageCircle size={32} style={{ color: '#10b981', marginBottom: '8px' }} />
-            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>12,345</div>
-            <div style={{ color: '#94a3b8', fontSize: '14px' }}>Total Posts</div>
-          </div>
-          <div style={{
-            background: 'rgba(30, 41, 59, 0.95)',
-            border: '1px solid #334155',
-            borderRadius: '12px',
-            padding: '20px',
-            textAlign: 'center'
-          }}>
-            <TrendingUp size={32} style={{ color: '#ec4899', marginBottom: '8px' }} />
-            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>89</div>
-            <div style={{ color: '#94a3b8', fontSize: '14px' }}>Online Now</div>
-          </div>
-        </div>
-
-        {/* Message Boards */}
-        <div style={{ marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>
-            Message Boards
-          </h2>
-          {boards.map((board) => (
-            <div
-              key={board.id}
-              style={styles.boardCard}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#f97316';
-                e.currentTarget.style.transform = 'translateX(4px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '#334155';
-                e.currentTarget.style.transform = 'translateX(0)';
-              }}
-              onClick={() => router.push(`/forum/${board.slug}`)}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                    {board.icon && <span style={{ fontSize: '24px' }}>{board.icon}</span>}
-                    <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fdba74' }}>
-                      {board.name}
-                    </h3>
-                  </div>
-                  {board.description && (
-                    <p style={{ color: '#94a3b8', marginBottom: '12px' }}>
-                      {board.description}
-                    </p>
-                  )}
-                  <div style={{ display: 'flex', gap: '24px', fontSize: '14px', color: '#64748b' }}>
-                    <span>{board.threadCount} threads</span>
-                    <span>{board.postCount} posts</span>
-                  </div>
-                </div>
-                {board.lastPost && (
-                  <div style={{
-                    background: 'rgba(51, 65, 85, 0.5)',
-                    padding: '12px 16px',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    minWidth: '250px'
-                  }}>
-                    <div style={{ color: '#e2e8f0', marginBottom: '4px' }}>
-                      {board.lastPost.threadTitle}
-                    </div>
-                    <div style={{ color: '#94a3b8', fontSize: '12px' }}>
-                      by {board.lastPost.authorName} • {board.lastPost.createdAt}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* Categories with Boards */}
+        <div style={{ marginBottom: '48px' }}>
+          {categories.map((category) => (
+            <CategorySection key={category.id} category={category} boards={category.boards} />
           ))}
+
+          {categories.length === 0 && (
+            <div style={forumStyles.emptyState}>
+              <MessageSquare size={48} style={{ color: forumColors.textMuted, marginBottom: '16px' }} />
+              <p>No forum categories yet. Check back soon!</p>
+            </div>
+          )}
         </div>
 
         {/* Popular & Recent Threads */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginBottom: '48px' }}>
           {/* Popular Threads */}
           <div>
-            <h2 style={{ 
-              fontSize: '20px', 
-              fontWeight: 'bold', 
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <TrendingUp size={20} style={{ color: '#f97316' }} />
+            <h2
+              style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: forumColors.textTitle,
+              }}
+            >
+              <TrendingUp size={20} style={{ color: forumColors.accentOrange }} />
               Popular Threads
             </h2>
-            {popularThreads.map((thread) => (
-              <Link
-                key={thread.id}
-                href={`/forum/${thread.board?.slug || 'general'}/${thread.slug}`}
-                style={styles.threadRow}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(30, 41, 59, 0.8)';
-                  e.currentTarget.style.borderColor = '#f97316';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(30, 41, 59, 0.5)';
-                  e.currentTarget.style.borderColor = '#334155';
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    {thread.isPinned && <Pin size={16} style={{ color: '#f97316' }} />}
-                    {thread.isLocked && <Lock size={16} style={{ color: '#ef4444' }} />}
-                    <span style={{ fontWeight: 'bold' }}>{thread.title}</span>
-                  </div>
-                  <div style={{ fontSize: '14px', color: '#94a3b8' }}>
-                    by {thread.authorName} • {thread.postCount} replies
-                  </div>
+            <div
+              style={{
+                background: forumColors.bgCard,
+                borderRadius: '12px',
+                border: `1px solid ${forumColors.borderDefault}`,
+                overflow: 'hidden',
+              }}
+            >
+              {popularThreads.length > 0 ? (
+                popularThreads.map((thread, index) => (
+                  <ThreadRow key={thread.id} thread={thread} isLast={index === popularThreads.length - 1} />
+                ))
+              ) : (
+                <div style={{ padding: '24px', textAlign: 'center', color: forumColors.textMuted }}>
+                  No popular threads yet
                 </div>
-                <div style={styles.stat}>
-                  <Eye size={16} style={{ color: '#94a3b8', marginBottom: '4px' }} />
-                  <span style={{ fontSize: '14px' }}>{thread.viewCount}</span>
-                </div>
-              </Link>
-            ))}
+              )}
+            </div>
           </div>
 
           {/* Recent Threads */}
           <div>
-            <h2 style={{ 
-              fontSize: '20px', 
-              fontWeight: 'bold', 
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
+            <h2
+              style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: forumColors.textTitle,
+              }}
+            >
               <Clock size={20} style={{ color: '#3b82f6' }} />
               Recent Threads
             </h2>
-            {recentThreads.map((thread) => (
-              <Link
-                key={thread.id}
-                href={`/forum/${thread.board?.slug || 'general'}/${thread.slug}`}
-                style={styles.threadRow}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(30, 41, 59, 0.8)';
-                  e.currentTarget.style.borderColor = '#3b82f6';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(30, 41, 59, 0.5)';
-                  e.currentTarget.style.borderColor = '#334155';
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    {thread.isPinned && <Pin size={16} style={{ color: '#f97316' }} />}
-                    {thread.isLocked && <Lock size={16} style={{ color: '#ef4444' }} />}
-                    <span style={{ fontWeight: 'bold' }}>{thread.title}</span>
-                  </div>
-                  <div style={{ fontSize: '14px', color: '#94a3b8' }}>
-                    by {thread.authorName} • {new Date(thread.createdAt).toLocaleDateString()}
-                  </div>
+            <div
+              style={{
+                background: forumColors.bgCard,
+                borderRadius: '12px',
+                border: `1px solid ${forumColors.borderDefault}`,
+                overflow: 'hidden',
+              }}
+            >
+              {recentThreads.length > 0 ? (
+                recentThreads.map((thread, index) => (
+                  <ThreadRow key={thread.id} thread={thread} isLast={index === recentThreads.length - 1} />
+                ))
+              ) : (
+                <div style={{ padding: '24px', textAlign: 'center', color: forumColors.textMuted }}>
+                  No recent threads yet
                 </div>
-                <div style={styles.stat}>
-                  <MessageCircle size={16} style={{ color: '#94a3b8', marginBottom: '4px' }} />
-                  <span style={{ fontSize: '14px' }}>{thread.postCount}</span>
-                </div>
-              </Link>
-            ))}
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+// Thread Row Component
+function ThreadRow({ thread, isLast }: { thread: MessageThread; isLast?: boolean }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Link
+      href={`/forum/${thread.board?.slug || 'general'}/${thread.slug}`}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '14px 16px',
+        background: isHovered ? forumColors.bgCardHover : 'transparent',
+        borderBottom: isLast ? 'none' : `1px solid ${forumColors.borderSubtle}`,
+        textDecoration: 'none',
+        color: 'inherit',
+        transition: 'background 0.15s',
+        borderLeft: isHovered ? `3px solid ${forumColors.accentOrange}` : '3px solid transparent',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div style={{ flex: 1 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '4px',
+          }}
+        >
+          {thread.isPinned && (
+            <span style={forumStyles.pinnedBadge}>
+              <Pin size={10} style={{ marginRight: '2px' }} /> Pinned
+            </span>
+          )}
+          {thread.isLocked && (
+            <span style={forumStyles.lockedBadge}>
+              <Lock size={10} style={{ marginRight: '2px' }} /> Locked
+            </span>
+          )}
+          <span
+            style={{
+              fontWeight: '600',
+              color: forumColors.textTitle,
+              fontSize: '14px',
+            }}
+          >
+            {thread.title.length > 50 ? thread.title.slice(0, 50) + '...' : thread.title}
+          </span>
+        </div>
+        <div style={{ fontSize: '12px', color: forumColors.textSecondary }}>
+          by {thread.authorName}
+          {thread.board && (
+            <>
+              {' '}
+              in <span style={{ color: forumColors.accentOrangeText }}>{thread.board.name}</span>
+            </>
+          )}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: '16px', color: forumColors.textMuted, fontSize: '12px' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Eye size={14} />
+          {thread.viewCount}
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <MessageCircle size={14} />
+          {thread.postCount}
+        </span>
+      </div>
+    </Link>
   );
 }
