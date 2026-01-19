@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { Send, Mail, MessageSquare, Package, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Send, Mail, MessageSquare, Package, AlertCircle, CheckCircle, User } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 import Navigation from '@/app/components/Navigation';
 import Turnstile from '@/app/components/Turnstile';
 
 export default function ContactPage() {
+  const { user, isLoaded } = useUser();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,6 +18,30 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [ticketNumber, setTicketNumber] = useState<string | null>(null);
+
+  // Auto-fill name and email for logged-in users
+  useEffect(() => {
+    if (isLoaded && user) {
+      const fullName = user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim();
+      const email = user.primaryEmailAddress?.emailAddress || '';
+      setFormData(prev => ({
+        ...prev,
+        name: fullName || prev.name,
+        email: email || prev.email
+      }));
+    }
+  }, [isLoaded, user]);
+
+  // Stable callbacks for Turnstile to prevent re-renders
+  const handleCaptchaVerify = useCallback((token: string) => {
+    setCaptchaToken(token);
+  }, []);
+
+  const handleCaptchaError = useCallback(() => {
+    setErrorMessage('CAPTCHA failed. Please refresh and try again.');
+    setCaptchaToken('');
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +67,11 @@ export default function ContactPage() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         setSubmitStatus('success');
-        setFormData({ name: '', email: '', subject: 'general', message: '' });
+        setTicketNumber(data.ticketNumber || null);
+        // Only clear message, keep name/email for logged-in users
+        setFormData(prev => ({ ...prev, message: '' }));
         setCaptchaToken('');
       } else {
         throw new Error('Failed to send message');
@@ -128,11 +157,59 @@ export default function ContactPage() {
                 }}>
                   <CheckCircle size={48} style={{ color: '#10b981', margin: '0 auto 1rem' }} />
                   <h3 style={{ color: '#10b981', marginBottom: '0.5rem' }}>Message Sent!</h3>
+                  {ticketNumber && (
+                    <p style={{
+                      color: '#f97316',
+                      fontWeight: 'bold',
+                      fontSize: '1.125rem',
+                      marginBottom: '0.75rem'
+                    }}>
+                      Ticket #{ticketNumber}
+                    </p>
+                  )}
                   <p style={{ color: '#cbd5e1' }}>
                     We'll get back to you within 24-48 hours. Probably sooner because we're excited someone wants to talk to us.
                   </p>
+                  <button
+                    onClick={() => {
+                      setSubmitStatus('idle');
+                      setTicketNumber(null);
+                    }}
+                    style={{
+                      marginTop: '1rem',
+                      padding: '0.5rem 1rem',
+                      background: 'transparent',
+                      border: '1px solid #10b981',
+                      borderRadius: '0.5rem',
+                      color: '#10b981',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    Send Another Message
+                  </button>
                 </div>
               ) : (
+                <>
+                {/* Logged-in user indicator */}
+                {user && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem',
+                    background: 'rgba(16, 185, 129, 0.1)',
+                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    borderRadius: '0.5rem',
+                    marginBottom: '0.5rem'
+                  }}>
+                    <User size={16} style={{ color: '#10b981' }} />
+                    <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
+                      Signed in as {user.primaryEmailAddress?.emailAddress}
+                    </span>
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div>
                     <label style={{
@@ -152,8 +229,8 @@ export default function ContactPage() {
                       style={{
                         width: '100%',
                         padding: '0.75rem',
-                        background: '#0f172a',
-                        border: '1px solid #374151',
+                        background: user ? 'rgba(15, 23, 42, 0.7)' : '#0f172a',
+                        border: user ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid #374151',
                         borderRadius: '0.5rem',
                         color: '#e5e7eb',
                         fontSize: '1rem',
@@ -181,8 +258,8 @@ export default function ContactPage() {
                       style={{
                         width: '100%',
                         padding: '0.75rem',
-                        background: '#0f172a',
-                        border: '1px solid #374151',
+                        background: user ? 'rgba(15, 23, 42, 0.7)' : '#0f172a',
+                        border: user ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid #374151',
                         borderRadius: '0.5rem',
                         color: '#e5e7eb',
                         fontSize: '1rem',
@@ -259,11 +336,8 @@ export default function ContactPage() {
                     <div style={{ marginTop: '0.5rem' }}>
                       <Turnstile
                         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
-                        onVerify={setCaptchaToken}
-                        onError={() => {
-                          setErrorMessage('CAPTCHA failed. Please refresh and try again.');
-                          setCaptchaToken('');
-                        }}
+                        onVerify={handleCaptchaVerify}
+                        onError={handleCaptchaError}
                         theme="dark"
                       />
                     </div>
@@ -307,6 +381,7 @@ export default function ContactPage() {
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </button>
                 </form>
+                </>
               )}
             </div>
 

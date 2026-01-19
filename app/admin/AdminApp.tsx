@@ -10,7 +10,7 @@ import {
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
   BarChart3, Shield, Target, Calculator, Crown, GraduationCap, Briefcase,
-  Landmark, FileText, Building, Zap, QrCode
+  Landmark, FileText, Building, Zap, QrCode, MessageSquare
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -303,6 +303,13 @@ export default function AdminApp() {
       label: 'Customer Relations',
       expanded: false,
       items: [
+        {
+          id: 'support-tickets',
+          label: 'Support Tickets',
+          icon: <MessageSquare size={20} />,
+          view: { type: 'support' as ViewType },
+          color: '#f97316',
+        },
         {
           id: 'customers',
           label: 'Customers',
