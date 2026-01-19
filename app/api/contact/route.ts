@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
         customerEmail: email,
         category,
         priority: 'normal',
-        status: 'open',
+        status: 'new',
         subject: ticketSubject,
         ...(internalUserId && { userId: internalUserId }),
         tags: ['contact_form', subject],

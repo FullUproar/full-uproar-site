@@ -39,11 +39,11 @@ interface Ticket {
 }
 
 const statusConfig = {
-  open: { icon: AlertCircle, color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.1)' },
-  in_progress: { icon: Clock, color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  waiting_customer: { icon: User, color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' },
-  resolved: { icon: CheckCircle, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  closed: { icon: X, color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' }
+  new: { icon: AlertCircle, color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.1)', label: 'New' },
+  in_progress: { icon: Clock, color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)', label: 'In Progress' },
+  waiting_on_customer: { icon: User, color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)', label: 'Waiting on Customer' },
+  resolved: { icon: CheckCircle, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', label: 'Resolved' },
+  closed: { icon: X, color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)', label: 'Closed' }
 };
 
 const priorityConfig = {
@@ -68,14 +68,16 @@ export default function SupportPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('open');
+  const [statusFilter, setStatusFilter] = useState('active'); // 'active' = all non-closed
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sortBy, setSortBy] = useState<'ticketNumber' | 'status' | 'priority' | 'createdAt'>('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [replyMessage, setReplyMessage] = useState('');
   const [sendingReply, setSendingReply] = useState(false);
   const [stats, setStats] = useState({
-    totalOpen: 0,
+    totalNew: 0,
     totalInProgress: 0,
     totalResolved: 0,
     avgResponseTime: 0
@@ -185,7 +187,7 @@ export default function SupportPage() {
       previousTicketsRef.current = fetchedTickets;
       setTickets(fetchedTickets);
       setStats(data.stats || {
-        totalOpen: 0,
+        totalNew: 0,
         totalInProgress: 0,
         totalResolved: 0,
         avgResponseTime: 0
@@ -261,8 +263,8 @@ export default function SupportPage() {
         });
         setReplyMessage('');
 
-        // Update ticket status to in_progress if it was open
-        if (selectedTicket.status === 'open') {
+        // Update ticket status to in_progress if it was new
+        if (selectedTicket.status === 'new') {
           updateTicketStatus(selectedTicket.id, 'in_progress');
         }
       }
@@ -273,20 +275,44 @@ export default function SupportPage() {
     }
   };
 
-  const filteredTickets = tickets.filter(ticket => {
-    if (!searchTerm) return true;
-    const search = searchTerm.toLowerCase();
-    return (
-      ticket.ticketNumber.toLowerCase().includes(search) ||
-      ticket.customerName.toLowerCase().includes(search) ||
-      ticket.customerEmail.toLowerCase().includes(search) ||
-      ticket.subject.toLowerCase().includes(search) ||
-      (ticket.orderId?.toLowerCase().includes(search))
-    );
-  });
+  // Priority order for sorting
+  const priorityOrder: Record<string, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
+  const statusOrder: Record<string, number> = { new: 0, in_progress: 1, waiting_on_customer: 2, resolved: 3, closed: 4 };
+
+  const filteredTickets = tickets
+    .filter(ticket => {
+      if (!searchTerm) return true;
+      const search = searchTerm.toLowerCase();
+      return (
+        ticket.ticketNumber.toLowerCase().includes(search) ||
+        ticket.customerName.toLowerCase().includes(search) ||
+        ticket.customerEmail.toLowerCase().includes(search) ||
+        ticket.subject.toLowerCase().includes(search) ||
+        (ticket.orderId?.toLowerCase().includes(search))
+      );
+    })
+    .sort((a, b) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case 'ticketNumber':
+          comparison = a.ticketNumber.localeCompare(b.ticketNumber);
+          break;
+        case 'status':
+          comparison = (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99);
+          break;
+        case 'priority':
+          comparison = (priorityOrder[a.priority] ?? 99) - (priorityOrder[b.priority] ?? 99);
+          break;
+        case 'createdAt':
+        default:
+          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          break;
+      }
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
 
   const getStatusDisplay = (status: string) => {
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.open;
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
     const Icon = config.icon;
     return (
       <span style={{
@@ -302,7 +328,7 @@ export default function SupportPage() {
         border: `1px solid ${config.color}40`
       }}>
         <Icon size={14} />
-        {status.replace(/_/g, ' ')}
+        {config.label || status.replace(/_/g, ' ')}
       </span>
     );
   };
@@ -412,8 +438,8 @@ export default function SupportPage() {
           <div style={adminStyles.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Open Tickets</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalOpen}</p>
+                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>New Tickets</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalNew}</p>
               </div>
               <AlertCircle size={32} style={{ color: '#fbbf24' }} />
             </div>
@@ -485,12 +511,13 @@ export default function SupportPage() {
                     onChange={(e) => setStatusFilter(e.target.value)}
                     style={{ ...adminStyles.input, flex: 1 }}
                   >
-                    <option value="all">All Status</option>
-                    <option value="open">Open</option>
+                    <option value="active">Open (Active)</option>
+                    <option value="new">New</option>
                     <option value="in_progress">In Progress</option>
-                    <option value="waiting_customer">Waiting Customer</option>
+                    <option value="waiting_on_customer">Waiting on Customer</option>
                     <option value="resolved">Resolved</option>
                     <option value="closed">Closed</option>
+                    <option value="all">All Status</option>
                   </select>
 
                   <select
@@ -499,11 +526,39 @@ export default function SupportPage() {
                     style={{ ...adminStyles.input, flex: 1 }}
                   >
                     <option value="all">All Priority</option>
-                    <option value="low">Low</option>
-                    <option value="normal">Normal</option>
-                    <option value="high">High</option>
                     <option value="urgent">Urgent</option>
+                    <option value="high">High</option>
+                    <option value="normal">Normal</option>
+                    <option value="low">Low</option>
                   </select>
+                </div>
+
+                {/* Sorting */}
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '13px', color: '#94a3b8' }}>Sort by:</span>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                    style={{ ...adminStyles.input, flex: 1 }}
+                  >
+                    <option value="createdAt">Date</option>
+                    <option value="ticketNumber">Ticket #</option>
+                    <option value="priority">Priority</option>
+                    <option value="status">Status</option>
+                  </select>
+                  <button
+                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                    style={{
+                      ...adminStyles.input,
+                      cursor: 'pointer',
+                      padding: '8px 12px',
+                      minWidth: '40px',
+                      textAlign: 'center',
+                    }}
+                    title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+                  >
+                    {sortOrder === 'asc' ? '↑' : '↓'}
+                  </button>
                 </div>
               </div>
             </div>
@@ -651,9 +706,9 @@ export default function SupportPage() {
                         fontSize: '13px'
                       }}
                     >
-                      <option value="open">Open</option>
+                      <option value="new">New</option>
                       <option value="in_progress">In Progress</option>
-                      <option value="waiting_customer">Waiting Customer</option>
+                      <option value="waiting_on_customer">Waiting on Customer</option>
                       <option value="resolved">Resolved</option>
                       <option value="closed">Closed</option>
                     </select>

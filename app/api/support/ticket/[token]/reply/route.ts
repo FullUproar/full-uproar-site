@@ -54,11 +54,11 @@ export async function POST(
       },
     });
 
-    // Update ticket status to open if it was waiting on customer
+    // Update ticket status to in_progress if it was waiting on customer
     if (ticket.status === 'waiting_on_customer') {
       await prisma.supportTicket.update({
         where: { id: ticket.id },
-        data: { status: 'open' },
+        data: { status: 'in_progress' },
       });
     }
 

@@ -16,9 +16,14 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: any = {};
-    
+
     if (status && status !== 'all') {
-      where.status = status;
+      if (status === 'active') {
+        // "active" = all non-closed tickets (new, in_progress, waiting_on_customer)
+        where.status = { in: ['new', 'in_progress', 'waiting_on_customer'] };
+      } else {
+        where.status = status;
+      }
     }
     
     if (priority && priority !== 'all') {
@@ -122,7 +127,7 @@ export async function POST(request: NextRequest) {
         orderId,
         category,
         priority: priority || 'normal',
-        status: 'open',
+        status: 'new',
         subject,
         ...(assignToSelf && { assignedToId: user.id }),
         messages: {
@@ -163,12 +168,12 @@ async function calculateTicketStats() {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const [totalOpen, totalInProgress, totalResolvedToday, avgResponseTime] = await Promise.all([
-    // Total open tickets
+  const [totalNew, totalInProgress, totalResolvedToday, avgResponseTime] = await Promise.all([
+    // Total new tickets (awaiting first response)
     prisma.supportTicket.count({
-      where: { status: 'open' }
+      where: { status: 'new' }
     }),
-    
+
     // Total in progress
     prisma.supportTicket.count({
       where: { status: 'in_progress' }
@@ -187,7 +192,7 @@ async function calculateTicketStats() {
   ]);
 
   return {
-    totalOpen,
+    totalNew,
     totalInProgress,
     totalResolved: totalResolvedToday,
     avgResponseTime
