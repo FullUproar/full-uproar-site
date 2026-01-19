@@ -84,6 +84,33 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Check if user can access a board based on access level
+async function canAccessBoard(
+  accessLevel: string,
+  userId: string | null,
+  membershipTier: string | null,
+  boardId: number
+): Promise<boolean> {
+  switch (accessLevel) {
+    case 'PUBLIC':
+      return true;
+    case 'MEMBERS_ONLY':
+      return !!userId;
+    case 'SUBSCRIBERS_ONLY':
+      const premiumTiers = ['AFTERROAR_PLUS', 'VIP', 'CREATOR'];
+      return !!userId && !!membershipTier && premiumTiers.includes(membershipTier);
+    case 'PRIVATE':
+      // Check for explicit invite
+      if (!userId) return false;
+      const invite = await prisma.boardInvite.findFirst({
+        where: { boardId, userId }
+      });
+      return !!invite;
+    default:
+      return true;
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -93,17 +120,54 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'lastPostAt';
     const order = searchParams.get('order') || 'desc';
 
+    // Get current user for access control
+    const { userId: clerkId } = await auth();
+    let dbUser = null;
+    if (clerkId) {
+      dbUser = await prisma.user.findUnique({
+        where: { clerkId },
+        select: { id: true, membershipTier: true },
+      });
+    }
+
     const where: any = {};
-    
+    let board = null;
+
     if (boardSlug) {
-      const board = await prisma.messageBoard.findUnique({
+      board = await prisma.messageBoard.findUnique({
         where: { slug: boardSlug }
       });
-      
+
       if (!board) {
         return NextResponse.json({ error: 'Board not found' }, { status: 404 });
       }
-      
+
+      // Check access control
+      const hasAccess = await canAccessBoard(
+        board.accessLevel,
+        dbUser?.id || null,
+        dbUser?.membershipTier || null,
+        board.id
+      );
+
+      if (!hasAccess) {
+        // Return board info but no threads - teaser mode
+        const threadCount = await prisma.messageThread.count({ where: { boardId: board.id } });
+        return NextResponse.json({
+          threads: [],
+          accessDenied: true,
+          accessLevel: board.accessLevel,
+          boardName: board.name,
+          threadCount, // Show how many threads exist (FOMO)
+          message: board.accessLevel === 'MEMBERS_ONLY'
+            ? 'Sign up for a free account to view this board'
+            : board.accessLevel === 'SUBSCRIBERS_ONLY'
+            ? 'This board is exclusive to Afterroar+ members'
+            : 'This is a private board',
+          pagination: { page: 1, limit, totalCount: threadCount, totalPages: 0 }
+        });
+      }
+
       where.boardId = board.id;
     }
 

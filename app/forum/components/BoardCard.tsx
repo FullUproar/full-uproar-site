@@ -41,7 +41,11 @@ export default function BoardCard({
     ...forumStyles.boardCard,
     ...(isHovered ? forumStyles.boardCardHover : {}),
     ...(isLast ? forumStyles.boardCardLast : {}),
-    ...(!userCanAccess ? { opacity: 0.6 } : {}),
+    // Softer locked state - still inviting
+    ...(!userCanAccess ? {
+      opacity: 0.85,
+      background: isHovered ? 'rgba(30, 41, 59, 0.4)' : 'rgba(30, 41, 59, 0.2)',
+    } : {}),
   };
 
   const content = (
@@ -96,10 +100,7 @@ export default function BoardCard({
     </div>
   );
 
-  if (!userCanAccess) {
-    return content;
-  }
-
+  // Always make clickable - locked boards show sign-up prompt on the board page
   return (
     <Link href={`/forum/${board.slug}`} style={{ textDecoration: 'none' }}>
       {content}

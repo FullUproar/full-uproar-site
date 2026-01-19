@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useUser } from '@clerk/nextjs';
 import Navigation from '@/app/components/Navigation';
-import { 
-  ArrowLeft, Plus, Pin, Lock, MessageCircle, Eye, Clock, 
-  TrendingUp, Filter
+import {
+  ArrowLeft, Plus, Pin, Lock, MessageCircle, Eye, Clock,
+  TrendingUp, Filter, LogIn, Crown, Users
 } from 'lucide-react';
 
 interface Board {
@@ -15,6 +16,7 @@ interface Board {
   slug: string;
   description?: string;
   icon?: string;
+  accessLevel?: string;
 }
 
 interface Thread {
@@ -31,17 +33,27 @@ interface Thread {
   lastPostAuthor: string;
 }
 
+interface AccessDeniedInfo {
+  accessDenied: boolean;
+  accessLevel: string;
+  boardName: string;
+  threadCount: number;
+  message: string;
+}
+
 export default function BoardPage() {
   const params = useParams();
   const router = useRouter();
+  const { isSignedIn } = useUser();
   const boardSlug = params.board as string;
-  
+
   const [board, setBoard] = useState<Board | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState<'lastPostAt' | 'createdAt' | 'viewCount'>('lastPostAt');
+  const [accessDenied, setAccessDenied] = useState<AccessDeniedInfo | null>(null);
 
   useEffect(() => {
     fetchBoardAndThreads();
@@ -50,17 +62,27 @@ export default function BoardPage() {
   const fetchBoardAndThreads = async () => {
     try {
       setLoading(true);
-      
-      // Fetch board info
+      setAccessDenied(null);
+
+      // Fetch board info from categories
       const boardsRes = await fetch('/api/forum/boards');
-      const boards = await boardsRes.json();
-      const currentBoard = boards.find((b: Board) => b.slug === boardSlug);
-      
+      const boardsData = await boardsRes.json();
+
+      // Find board in categories
+      let currentBoard: Board | null = null;
+      for (const category of boardsData.categories || []) {
+        const found = category.boards.find((b: Board) => b.slug === boardSlug);
+        if (found) {
+          currentBoard = found;
+          break;
+        }
+      }
+
       if (!currentBoard) {
         router.push('/forum');
         return;
       }
-      
+
       setBoard(currentBoard);
 
       // Fetch threads
@@ -68,9 +90,21 @@ export default function BoardPage() {
         `/api/forum/threads?board=${boardSlug}&page=${page}&sortBy=${sortBy}`
       );
       const data = await threadsRes.json();
-      
-      setThreads(data.threads || []);
-      setTotalPages(data.pagination?.totalPages || 1);
+
+      // Check if access was denied
+      if (data.accessDenied) {
+        setAccessDenied({
+          accessDenied: true,
+          accessLevel: data.accessLevel,
+          boardName: data.boardName,
+          threadCount: data.threadCount,
+          message: data.message
+        });
+        setThreads([]);
+      } else {
+        setThreads(data.threads || []);
+        setTotalPages(data.pagination?.totalPages || 1);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -264,13 +298,175 @@ export default function BoardPage() {
           </button>
         </div>
 
+        {/* Access Denied State */}
+        {accessDenied && (
+          <div style={{
+            ...styles.threadList,
+            padding: '3rem',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%)'
+          }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              margin: '0 auto 1.5rem',
+              borderRadius: '50%',
+              background: accessDenied.accessLevel === 'SUBSCRIBERS_ONLY'
+                ? 'linear-gradient(135deg, #f97316, #ea580c)'
+                : 'linear-gradient(135deg, #3b82f6, #2563eb)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {accessDenied.accessLevel === 'SUBSCRIBERS_ONLY' ? (
+                <Crown size={36} style={{ color: 'white' }} />
+              ) : accessDenied.accessLevel === 'PRIVATE' ? (
+                <Lock size={36} style={{ color: 'white' }} />
+              ) : (
+                <Users size={36} style={{ color: 'white' }} />
+              )}
+            </div>
+
+            <h2 style={{
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              color: '#e2e8f0',
+              marginBottom: '0.75rem'
+            }}>
+              {accessDenied.accessLevel === 'SUBSCRIBERS_ONLY'
+                ? 'Afterroar+ Exclusive'
+                : accessDenied.accessLevel === 'PRIVATE'
+                ? 'Private Board'
+                : 'Members Only'}
+            </h2>
+
+            <p style={{
+              color: '#94a3b8',
+              marginBottom: '1rem',
+              maxWidth: '400px',
+              margin: '0 auto 1rem'
+            }}>
+              {accessDenied.message}
+            </p>
+
+            <p style={{
+              color: '#64748b',
+              fontSize: '0.875rem',
+              marginBottom: '1.5rem'
+            }}>
+              {accessDenied.threadCount} {accessDenied.threadCount === 1 ? 'thread' : 'threads'} waiting for you
+            </p>
+
+            {!isSignedIn && accessDenied.accessLevel === 'MEMBERS_ONLY' && (
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Link
+                  href={`/sign-in?redirect_url=/forum/${boardSlug}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 20px',
+                    background: 'transparent',
+                    color: '#94a3b8',
+                    border: '1px solid rgba(148, 163, 184, 0.3)',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  Already a member? Sign in
+                </Link>
+                <Link
+                  href={`/sign-up?redirect_url=/forum/${boardSlug}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 20px',
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  Create Free Account
+                </Link>
+              </div>
+            )}
+
+            {isSignedIn && accessDenied.accessLevel === 'SUBSCRIBERS_ONLY' && (
+              <Link
+                href="/afterroar"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 20px',
+                  background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  textDecoration: 'none'
+                }}
+              >
+                <Crown size={18} />
+                Learn about Afterroar+
+              </Link>
+            )}
+
+            {!isSignedIn && accessDenied.accessLevel === 'SUBSCRIBERS_ONLY' && (
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Link
+                  href={`/sign-in?redirect_url=/forum/${boardSlug}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 20px',
+                    background: 'transparent',
+                    color: '#94a3b8',
+                    border: '1px solid rgba(148, 163, 184, 0.3)',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/afterroar"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 20px',
+                    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  <Crown size={18} />
+                  Learn about Afterroar+
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Threads List */}
+        {!accessDenied && (
         <div style={styles.threadList}>
           {threads.length === 0 ? (
-            <div style={{ 
-              padding: '4rem', 
-              textAlign: 'center', 
-              color: '#94a3b8' 
+            <div style={{
+              padding: '4rem',
+              textAlign: 'center',
+              color: '#94a3b8'
             }}>
               <p style={{ marginBottom: '1rem' }}>No threads yet in this board.</p>
               <p>Be the first to start a discussion!</p>
@@ -328,6 +524,7 @@ export default function BoardPage() {
             ))
           )}
         </div>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
