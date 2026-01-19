@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requirePermission, getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendStaffReplyNotification } from '@/lib/email';
 
 export async function GET(
   request: NextRequest,
@@ -96,8 +97,16 @@ export async function POST(
 
     // Send email notification to customer if not internal
     if (!isInternal) {
-      // TODO: Implement email service
-      // await sendTicketReplyEmail(ticket.customerEmail, ticket, newMessage);
+      await sendStaffReplyNotification({
+        ticketNumber: ticket.ticketNumber,
+        accessToken: ticket.accessToken,
+        customerName: ticket.customerName,
+        customerEmail: ticket.customerEmail,
+        category: ticket.category,
+        subject: ticket.subject,
+        staffName: user.displayName || user.username,
+        newMessage: message.trim(),
+      });
     }
 
     return NextResponse.json(newMessage);

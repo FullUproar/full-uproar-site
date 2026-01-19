@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  MessageSquare, ArrowLeft, Clock, CheckCircle, 
-  AlertCircle, Search, Filter, Eye, User,
+import {
+  MessageSquare, Clock, CheckCircle,
+  AlertCircle, Search, User,
   Package, CreditCard, Send, X, Plus
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -129,6 +129,26 @@ export default function SupportPage() {
     }
   };
 
+  const selectTicket = async (ticket: Ticket) => {
+    // Set the ticket immediately for responsiveness
+    setSelectedTicket(ticket);
+
+    // Fetch fresh messages in the background
+    try {
+      const response = await fetch(`/api/admin/support/tickets/${ticket.id}/messages`);
+      if (response.ok) {
+        const messages = await response.json();
+        setSelectedTicket(prev => prev?.id === ticket.id ? { ...prev, messages } : prev);
+        // Also update in the tickets list
+        setTickets(prevTickets =>
+          prevTickets.map(t => t.id === ticket.id ? { ...t, messages } : t)
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
   const sendReply = async () => {
     if (!selectedTicket || !replyMessage.trim()) return;
 
@@ -137,9 +157,9 @@ export default function SupportPage() {
       const response = await fetch(`/api/admin/support/tickets/${selectedTicket.id}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           message: replyMessage,
-          isInternal: false 
+          isInternal: false
         })
       });
 
@@ -150,7 +170,7 @@ export default function SupportPage() {
           messages: [...selectedTicket.messages, newMessage]
         });
         setReplyMessage('');
-        
+
         // Update ticket status to in_progress if it was open
         if (selectedTicket.status === 'open') {
           updateTicketStatus(selectedTicket.id, 'in_progress');
@@ -217,14 +237,6 @@ export default function SupportPage() {
   return (
     <div style={adminStyles.container}>
       <div style={adminStyles.content}>
-        <Link 
-          href="/admin"
-          style={adminStyles.backButton}
-        >
-          <ArrowLeft size={20} />
-          Back to Admin Dashboard
-        </Link>
-
         <div style={adminStyles.header}>
           <h1 style={adminStyles.title}>Customer Support</h1>
           <p style={adminStyles.subtitle}>
@@ -371,7 +383,7 @@ export default function SupportPage() {
                         cursor: 'pointer',
                         transition: 'all 0.2s'
                       }}
-                      onClick={() => setSelectedTicket(ticket)}
+                      onClick={() => selectTicket(ticket)}
                     >
                       <div style={{ 
                         display: 'flex', 

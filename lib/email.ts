@@ -321,7 +321,8 @@ Reply to: ${data.customerEmail}
 `;
 
   try {
-    await transporter.sendMail({
+    console.log(`Sending team notification to ${teamEmail} for ticket ${data.ticketNumber}...`);
+    const result = await transporter.sendMail({
       from: `"Full Uproar Tickets" <${process.env.GMAIL_USER}>`,
       to: teamEmail,
       replyTo: data.customerEmail,
@@ -329,10 +330,20 @@ Reply to: ${data.customerEmail}
       text,
       html,
     });
-    console.log(`Team notification sent to ${teamEmail}`);
+    console.log(`Team notification sent to ${teamEmail}:`, {
+      messageId: result.messageId,
+      accepted: result.accepted,
+      rejected: result.rejected,
+    });
     return true;
-  } catch (error) {
-    console.error('Failed to send team notification:', error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Failed to send team notification:', {
+      to: teamEmail,
+      ticketNumber: data.ticketNumber,
+      error: errorMessage,
+      hint: 'If this is a Google Group, ensure donotreply@ is a member of the group or the group accepts emails from organization members.',
+    });
     return false;
   }
 }
@@ -355,6 +366,159 @@ export async function sendTicketEmails(data: TicketEmailData): Promise<{
 /**
  * Send notification when customer replies to a ticket
  */
+interface StaffReplyData {
+  ticketNumber: string;
+  accessToken: string | null;
+  customerName: string;
+  customerEmail: string;
+  category: string;
+  subject: string;
+  staffName: string | null;
+  newMessage: string;
+}
+
+/**
+ * Send notification to customer when staff replies
+ */
+export async function sendStaffReplyNotification(data: StaffReplyData): Promise<boolean> {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn('Email not configured - skipping staff reply notification');
+    return false;
+  }
+
+  const categoryLabel = categoryLabels[data.category] || 'General Inquiry';
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 30px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                Full Uproar
+              </h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">
+                We've replied to your ticket!
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="color: #e2e8f0; font-size: 16px; margin: 0 0 20px 0;">
+                Hey ${data.customerName}!
+              </p>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                Our team has responded to your support ticket. Here's a preview of our reply:
+              </p>
+
+              <!-- Ticket Info Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
+                      Ticket ${data.ticketNumber}
+                    </p>
+                    <p style="color: #e2e8f0; font-size: 14px; margin: 0 0 15px 0;">
+                      ${data.subject}
+                    </p>
+                    <p style="color: #64748b; font-size: 13px; margin: 0;">
+                      Category: ${categoryLabel}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Reply Preview -->
+              <p style="color: #f97316; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0; font-weight: 600;">
+                Our Reply
+              </p>
+              <div style="background-color: rgba(249, 115, 22, 0.1); border-radius: 8px; padding: 20px; border-left: 3px solid #f97316; margin-bottom: 25px;">
+                <p style="color: #e2e8f0; font-size: 14px; line-height: 1.7; margin: 0; white-space: pre-wrap;">${data.newMessage.length > 500 ? data.newMessage.slice(0, 500) + '...' : data.newMessage}</p>
+              </div>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                Click below to view the full conversation and reply if needed.
+              </p>
+
+              <!-- View Ticket Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+                <tr>
+                  <td align="center">
+                    <a href="${BASE_URL}/support/ticket/${data.accessToken}"
+                       style="display: inline-block; background-color: #f97316; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                      View Full Conversation
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
+                This link is unique to your ticket. Keep it handy!
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
+              <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+                Full Uproar Games Inc.<br>
+                <span style="color: #f97316;">Professionally ruining game nights since day one.</span>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  const text = `
+Hey ${data.customerName}!
+
+Our team has responded to your support ticket ${data.ticketNumber}.
+
+OUR REPLY:
+${data.newMessage}
+
+---
+
+To view the full conversation and reply, visit:
+${BASE_URL}/support/ticket/${data.accessToken}
+
+- The Full Uproar Team
+`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Full Uproar Support" <${process.env.GMAIL_USER}>`,
+      to: data.customerEmail,
+      subject: `Re: ${data.ticketNumber} - We've replied to your ticket`,
+      text,
+      html,
+    });
+    console.log(`Staff reply notification sent to ${data.customerEmail}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send staff reply notification:', error);
+    return false;
+  }
+}
+
 export async function sendCustomerReplyNotification(data: CustomerReplyData): Promise<boolean> {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     console.warn('Email not configured - skipping customer reply notification');
