@@ -243,9 +243,9 @@ const manualSections: ManualSection[] = [
           tip: 'Escalate to supervisor if customer requests it or if resolution exceeds $50.'
         },
         {
-          title: 'Fugly Prime Support',
-          description: 'Prime members get priority support. Respond within 2 hours, offer exclusive solutions.',
-          warning: 'Always verify Prime status before offering Prime-only benefits.'
+          title: 'Afterroar+ Support',
+          description: 'Afterroar+ members get priority support. Respond within 2 hours, offer exclusive solutions.',
+          warning: 'Always verify Afterroar+ status before offering subscriber-only benefits.'
         }
       ],
       quickReference: [
@@ -256,7 +256,7 @@ const manualSections: ManualSection[] = [
       commonIssues: [
         {
           issue: 'Customer didn\'t receive order',
-          solution: 'Check tracking → If delivered, file claim → Send replacement immediately for Prime members.',
+          solution: 'Check tracking → If delivered, file claim → Send replacement immediately for Afterroar+ members.',
           preventionTip: 'Always require signature for orders over $100.'
         },
         {

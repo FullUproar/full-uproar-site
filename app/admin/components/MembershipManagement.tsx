@@ -26,7 +26,7 @@ interface User {
 
 const TIER_ICONS: Record<string, React.ReactNode> = {
   FREE: <Users size={16} style={{ color: '#64748b' }} />,
-  FUGLY_PRIME: <Crown size={16} style={{ color: '#f97316' }} />,
+  AFTERROAR_PLUS: <Crown size={16} style={{ color: '#f97316' }} />,
   VIP: <Star size={16} style={{ color: '#fbbf24' }} />,
   CREATOR: <Palette size={16} style={{ color: '#8b5cf6' }} />,
   BETA_TESTER: <Beaker size={16} style={{ color: '#10b981' }} />
@@ -106,7 +106,7 @@ export default function MembershipManagement() {
 
   const stats = {
     totalMembers: users.length,
-    primeMembers: users.filter(u => u.membershipTier === 'FUGLY_PRIME').length,
+    primeMembers: users.filter(u => u.membershipTier === 'AFTERROAR_PLUS').length,
     vipMembers: users.filter(u => u.membershipTier === 'VIP').length,
     totalLifetimeValue: users.reduce((sum, u) => sum + u.lifetimeValue, 0)
   };
@@ -163,7 +163,7 @@ export default function MembershipManagement() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                 <Crown size={20} style={{ color: '#f97316' }} />
-                <span style={{ color: '#fdba74', fontSize: '0.875rem' }}>Fugly Prime</span>
+                <span style={{ color: '#fdba74', fontSize: '0.875rem' }}>Afterroar+</span>
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f97316' }}>
                 {stats.primeMembers}
@@ -231,7 +231,7 @@ export default function MembershipManagement() {
                 {benefits.benefits.freeShippingThreshold && (
                   <div>• Free shipping over ${(benefits.benefits.freeShippingThreshold / 100).toFixed(0)}</div>
                 )}
-                {tier === 'FUGLY_PRIME' && <div>• $3.99 flat rate shipping</div>}
+                {tier === 'AFTERROAR_PLUS' && <div>• $3.99 flat rate shipping</div>}
                 {benefits.benefits.earlyAccess && <div>• Early access</div>}
                 {benefits.benefits.exclusiveMerch && <div>• Exclusive items</div>}
               </div>
@@ -273,7 +273,7 @@ export default function MembershipManagement() {
             >
               <option value="ALL">All Tiers</option>
               <option value="FREE">Free</option>
-              <option value="FUGLY_PRIME">Fugly Prime</option>
+              <option value="AFTERROAR_PLUS">Afterroar+</option>
               <option value="VIP">VIP</option>
               <option value="CREATOR">Creator</option>
               <option value="BETA_TESTER">Beta Tester</option>

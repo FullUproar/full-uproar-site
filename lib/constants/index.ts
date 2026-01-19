@@ -14,7 +14,7 @@ export const ADMIN_ROLES: readonly UserRole[] = ['ADMIN', 'SUPER_ADMIN', 'GOD'];
 export const SUPER_ADMIN_ROLES: readonly UserRole[] = ['SUPER_ADMIN', 'GOD'];
 
 // Membership tiers
-export const MEMBERSHIP_TIERS = ['FREE', 'FUGLY_PRIME', 'VIP', 'CREATOR', 'BETA_TESTER'] as const;
+export const MEMBERSHIP_TIERS = ['FREE', 'AFTERROAR_PLUS', 'VIP', 'CREATOR', 'BETA_TESTER'] as const;
 export type MembershipTier = (typeof MEMBERSHIP_TIERS)[number];
 
 // Order statuses

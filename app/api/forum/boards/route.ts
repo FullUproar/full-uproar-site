@@ -14,7 +14,7 @@ async function canAccessBoard(
     case 'MEMBERS_ONLY':
       return !!userId;
     case 'SUBSCRIBERS_ONLY':
-      const premiumTiers = ['FUGLY_PRIME', 'VIP', 'CREATOR'];
+      const premiumTiers = ['AFTERROAR_PLUS', 'VIP', 'CREATOR'];
       return !!userId && !!membershipTier && premiumTiers.includes(membershipTier);
     case 'PRIVATE':
       // Private access requires explicit invite - handled separately

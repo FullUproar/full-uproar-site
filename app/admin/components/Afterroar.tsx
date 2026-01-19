@@ -7,11 +7,11 @@ import {
 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
-export default function FuglyPrime({ onNavigate }: { onNavigate: (view: any, label: string) => void }) {
+export default function Afterroar({ onNavigate }: { onNavigate: (view: any, label: string) => void }) {
   const upcomingFeatures = [
     {
       icon: <Crown size={32} />,
-      title: 'FUGLY PRIME Membership',
+      title: 'AFTERROAR+ Membership',
       description: 'Monthly subscription with exclusive perks, discounts, and early access to new releases',
       color: '#f97316',
     },
@@ -40,7 +40,7 @@ export default function FuglyPrime({ onNavigate }: { onNavigate: (view: any, lab
     { name: 'Chaos Player', icon: <Zap size={16} />, color: '#3b82f6' },
     { name: 'Chaos Champion', icon: <Flame size={16} />, color: '#f97316' },
     { name: 'Chaos Master', icon: <Shield size={16} />, color: '#a855f7' },
-    { name: 'FUGLY PRIME', icon: <Diamond size={16} />, color: '#fbbf24' },
+    { name: 'AFTERROAR+', icon: <Diamond size={16} />, color: '#fbbf24' },
   ];
 
   return (
@@ -72,7 +72,7 @@ export default function FuglyPrime({ onNavigate }: { onNavigate: (view: any, lab
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
         }}>
-          FUGLY PRIME
+          AFTERROAR+
         </h1>
 
         <div style={{
@@ -206,7 +206,7 @@ export default function FuglyPrime({ onNavigate }: { onNavigate: (view: any, lab
                 {tier.name}
               </span>
               {index < tiers.length - 1 && (
-                <span style={{ color: '#4b5563', marginLeft: '0.5rem' }}>→</span>
+                <span style={{ color: '#4b5563', marginLeft: '0.5rem' }}></span>
               )}
             </div>
           ))}
@@ -227,7 +227,7 @@ export default function FuglyPrime({ onNavigate }: { onNavigate: (view: any, lab
           color: '#fdba74',
           marginBottom: '1rem',
         }}>
-          FUGLY PRIME Membership
+          AFTERROAR+ Membership
         </h3>
         <div style={{
           display: 'flex',

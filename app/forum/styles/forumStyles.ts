@@ -403,7 +403,7 @@ export function getAccessBadgeText(accessLevel: string) {
     case 'MEMBERS_ONLY':
       return 'Members';
     case 'SUBSCRIBERS_ONLY':
-      return 'Fugly Prime';
+      return 'Afterroar+';
     case 'PRIVATE':
       return 'Invite Only';
     default:

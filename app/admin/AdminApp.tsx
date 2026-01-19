@@ -42,7 +42,7 @@ import CustomerManagement from './components/CustomerManagement';
 import EmailCampaigns from './components/EmailCampaigns';
 import MarketingWarRoom from './components/MarketingWarRoom';
 import ProductIntelligence from './components/ProductIntelligence';
-import FuglyPrime from './components/FuglyPrime';
+import Afterroar from './components/Afterroar';
 import OperatorManual from './components/OperatorManual';
 import EmployeeHub from './components/EmployeeHub';
 import FinancialIntelligence from './components/FinancialIntelligence';
@@ -61,7 +61,7 @@ type ViewType =
   | 'email-campaigns'
   | 'marketing-war-room'
   | 'product-intelligence'
-  | 'fugly-prime'
+  | 'afterroar-plus'
   | 'operator-manual'
   | 'employee-hub'
   | 'financial-intelligence'
@@ -283,7 +283,7 @@ export default function AdminApp() {
       // Validate view type
       const validViews: ViewType[] = [
         'dashboard', 'power-dashboard', 'war-room', 'customers', 'email-campaigns',
-        'marketing-war-room', 'product-intelligence', 'fugly-prime', 'operator-manual',
+        'marketing-war-room', 'product-intelligence', 'afterroar-plus', 'operator-manual',
         'employee-hub', 'financial-intelligence', 'invoice-system', 'b2b-portal',
         'games-list', 'games-edit', 'games-new', 'design-components',
         'merch-list', 'merch-edit', 'merch-new',
@@ -526,10 +526,10 @@ export default function AdminApp() {
           badge: 'INTEL',
         },
         {
-          id: 'fugly-prime',
-          label: 'Fugly Prime',
+          id: 'afterroar-plus',
+          label: 'Afterroar+',
           icon: <Crown size={20} />,
-          view: { type: 'fugly-prime' as ViewType },
+          view: { type: 'afterroar-plus' as ViewType },
           color: '#f97316',
           badge: 'SOON',
         },
@@ -749,8 +749,8 @@ export default function AdminApp() {
       case 'product-intelligence':
         return <ProductIntelligence onNavigate={navigateTo} />;
       
-      case 'fugly-prime':
-        return <FuglyPrime onNavigate={navigateTo} />;
+      case 'afterroar-plus':
+        return <Afterroar onNavigate={navigateTo} />;
       
       case 'operator-manual':
         return <OperatorManual onNavigate={navigateTo} />;

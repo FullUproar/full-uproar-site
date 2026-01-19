@@ -142,7 +142,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
         nextReview: new Date('2024-12-01'),
         rating: 4,
         goals: [
-          { title: 'Launch Fugly Prime', progress: 75, dueDate: new Date('2024-12-31') },
+          { title: 'Launch Afterroar+', progress: 75, dueDate: new Date('2024-12-31') },
           { title: 'Optimize checkout flow', progress: 100, dueDate: new Date('2024-09-30') }
         ]
       },

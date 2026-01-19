@@ -5,7 +5,7 @@
 
 export enum MembershipTier {
   FREE = 'FREE',
-  FUGLY_PRIME = 'FUGLY_PRIME',
+  AFTERROAR_PLUS = 'AFTERROAR_PLUS',
   VIP = 'VIP',
   CREATOR = 'CREATOR',
   BETA_TESTER = 'BETA_TESTER'
@@ -60,8 +60,8 @@ export const MEMBERSHIP_BENEFITS: Record<MembershipTier, MembershipBenefits> = {
     }
   },
   
-  [MembershipTier.FUGLY_PRIME]: {
-    displayName: 'Fugly Prime',
+  [MembershipTier.AFTERROAR_PLUS]: {
+    displayName: 'Afterroar+',
     description: 'Premium membership with exclusive benefits and discounts',
     color: '#f97316',
     icon: '👑',
@@ -78,7 +78,7 @@ export const MEMBERSHIP_BENEFITS: Record<MembershipTier, MembershipBenefits> = {
       forumAccess: 'premium',
       betaFeatures: true,
       eventInvites: true,
-      customTitle: 'Prime Member'
+      customTitle: 'Afterroar+ Member'
     },
     pricing: {
       monthly: 666, // $6.66/month
@@ -229,14 +229,14 @@ export function isShippingFree(
 }
 
 /**
- * Get shipping discount for Fugly Prime members
+ * Get shipping discount for Afterroar+ members
  */
 export function getShippingRate(
   tier: MembershipTier,
   standardRate: number // in cents
 ): number {
-  if (tier === MembershipTier.FUGLY_PRIME) {
-    // Flat $3.99 shipping for Prime members
+  if (tier === MembershipTier.AFTERROAR_PLUS) {
+    // Flat $3.99 shipping for Afterroar+ members
     return Math.min(399, standardRate);
   }
   return standardRate;

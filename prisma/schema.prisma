@@ -743,7 +743,7 @@ enum UserRole {
 
 enum MembershipTier {
   FREE          // Basic registered user
-  FUGLY_PRIME   // Premium subscription
+  AFTERROAR_PLUS // Premium subscription
   VIP           // High-value customers
   CREATOR       // Community content creators
   BETA_TESTER   // Early access group
