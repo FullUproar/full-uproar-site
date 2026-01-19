@@ -59,8 +59,8 @@ export default function GlobalFooter() {
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             Returns & Refunds
           </Link>
-          <Link href="/faq" style={{ 
-            color: '#9ca3af', 
+          <Link href="/discover/faq" style={{
+            color: '#9ca3af',
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}
@@ -68,8 +68,8 @@ export default function GlobalFooter() {
           onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>
             FAQ
           </Link>
-          <Link href="/contact" style={{ 
-            color: '#9ca3af', 
+          <Link href="/connect/contact" style={{
+            color: '#9ca3af',
             textDecoration: 'none',
             transition: 'color 0.2s'
           }}

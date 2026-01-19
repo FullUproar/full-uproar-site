@@ -1567,8 +1567,8 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>COMMUNITY</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <Link href="/game-nights" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Game Nights</Link>
-              <Link href="/forum" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Forum</Link>
-              <Link href="/fugly" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Meet Fugly</Link>
+              <Link href="/connect/forum" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Forum</Link>
+              <Link href="/discover/fugly" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Meet Fugly</Link>
             </div>
           </div>
 
@@ -1576,7 +1576,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           <div>
             <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>COMPANY</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <Link href="/about" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>About Us</Link>
+              <Link href="/discover/about" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>About Us</Link>
               <Link href="/track-order" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Track Order</Link>
               <a href="mailto:hello@fulluproar.com" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Contact</a>
             </div>
