@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
+import { sendTicketEmails } from '@/lib/email';
 
 // Map contact form subjects to support ticket categories
 const categoryMap: Record<string, string> = {
@@ -131,8 +132,17 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
 
-    // TODO: Send email notification to appropriate Google Group based on category
-    // await sendContactNotificationEmail(ticket);
+    // Send email notifications (customer confirmation + team notification)
+    const emailResult = await sendTicketEmails({
+      ticketNumber: ticket.ticketNumber,
+      customerName: name,
+      customerEmail: email,
+      category,
+      subject: ticketSubject,
+      message,
+    });
+
+    console.log('Email notifications sent:', emailResult);
 
     return NextResponse.json({
       success: true,
