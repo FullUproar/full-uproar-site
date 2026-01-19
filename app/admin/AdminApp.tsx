@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import {
   Package, ShoppingBag, Newspaper, Image, ShoppingCart, Settings,
   Plus, Edit2, Trash2, Eye, Database, ArrowLeft, Menu, Home,
@@ -111,6 +111,9 @@ interface ViewState {
 
 export default function AdminApp() {
   const { user, isLoaded } = useUser();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [currentView, setCurrentView] = useState<ViewState>({ type: 'dashboard' });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -120,6 +123,8 @@ export default function AdminApp() {
   ]);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [isVerifying, setIsVerifying] = useState(true);
+  const [isLoadingViewData, setIsLoadingViewData] = useState(false);
+  const [urlInitialized, setUrlInitialized] = useState(false);
 
   // Verify admin permissions
   useEffect(() => {
@@ -165,20 +170,206 @@ export default function AdminApp() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const navigateTo = (view: ViewState, label: string) => {
+  // Helper to build URL from view state
+  const buildUrlFromView = useCallback((view: ViewState): string => {
+    const params = new URLSearchParams();
+    params.set('view', view.type);
+
+    // Add ID for views that need it
+    if (view.data?.id) {
+      params.set('id', String(view.data.id));
+    }
+
+    return `/admin?${params.toString()}`;
+  }, []);
+
+  // Helper to get label for a view type
+  const getLabelForView = useCallback((viewType: ViewType, data?: any): string => {
+    // Check menu sections for the view
+    for (const section of menuSections) {
+      for (const item of section.items) {
+        if (item.view.type === viewType) {
+          return item.label;
+        }
+        if (item.subItems) {
+          for (const subItem of item.subItems) {
+            if (subItem.view.type === viewType) {
+              return subItem.label;
+            }
+          }
+        }
+      }
+    }
+
+    // Special labels for edit views
+    if (viewType.endsWith('-edit') && data) {
+      const name = data.title || data.name || data.id;
+      return `Edit: ${name}`;
+    }
+    if (viewType.endsWith('-detail') && data) {
+      const id = data.id ? String(data.id).slice(0, 8) : 'Item';
+      return `Order: ${id}`;
+    }
+    if (viewType.endsWith('-new')) {
+      return 'New';
+    }
+
+    return viewType.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }, []);
+
+  // Fetch data for edit views when loading from URL
+  const fetchViewData = useCallback(async (viewType: ViewType, id: string): Promise<any> => {
+    try {
+      switch (viewType) {
+        case 'games-edit': {
+          const res = await fetch(`/api/admin/games/${id}`);
+          if (res.ok) return await res.json();
+          break;
+        }
+        case 'merch-edit': {
+          const res = await fetch(`/api/admin/merch/${id}`);
+          if (res.ok) return await res.json();
+          break;
+        }
+        case 'orders-detail': {
+          const res = await fetch(`/api/admin/orders/${id}`);
+          if (res.ok) return await res.json();
+          break;
+        }
+        case 'news-edit': {
+          const res = await fetch(`/api/admin/news/${id}`);
+          if (res.ok) {
+            const data = await res.json();
+            return data.post || data;
+          }
+          break;
+        }
+        case 'artwork-edit': {
+          const res = await fetch(`/api/admin/artwork/${id}`);
+          if (res.ok) {
+            const data = await res.json();
+            return data.artwork || data;
+          }
+          break;
+        }
+        case 'users-edit': {
+          const res = await fetch(`/api/admin/users/${id}`);
+          if (res.ok) {
+            const data = await res.json();
+            return data.user || data;
+          }
+          break;
+        }
+      }
+    } catch (error) {
+      console.error(`Failed to fetch data for ${viewType}:`, error);
+    }
+    return null;
+  }, []);
+
+  // Initialize view from URL params on mount
+  useEffect(() => {
+    if (urlInitialized || !isAdmin) return;
+
+    const initViewFromUrl = async () => {
+      const viewParam = searchParams.get('view');
+      const idParam = searchParams.get('id');
+
+      if (!viewParam) {
+        setUrlInitialized(true);
+        return;
+      }
+
+      // Validate view type
+      const validViews: ViewType[] = [
+        'dashboard', 'power-dashboard', 'war-room', 'customers', 'email-campaigns',
+        'marketing-war-room', 'product-intelligence', 'fugly-prime', 'operator-manual',
+        'employee-hub', 'financial-intelligence', 'invoice-system', 'b2b-portal',
+        'games-list', 'games-edit', 'games-new', 'design-components',
+        'merch-list', 'merch-edit', 'merch-new',
+        'orders-list', 'orders-detail', 'fulfillment', 'returns', 'support',
+        'comics-list', 'comics-edit', 'comics-new',
+        'news-list', 'news-edit', 'news-new',
+        'artwork-list', 'artwork-edit', 'artwork-new',
+        'migrations', 'integrations', 'settings', 'test-modes',
+        'users-list', 'users-edit', 'users-new', 'users-moderation',
+        'roles', 'memberships', 'diagnostics', 'analytics', 'compliance',
+        'site-issues', 'redirects'
+      ];
+
+      if (!validViews.includes(viewParam as ViewType)) {
+        setUrlInitialized(true);
+        return;
+      }
+
+      const viewType = viewParam as ViewType;
+
+      // Check if this view needs data
+      const needsData = viewType.endsWith('-edit') || viewType === 'orders-detail';
+
+      if (needsData && idParam) {
+        setIsLoadingViewData(true);
+        const data = await fetchViewData(viewType, idParam);
+        setIsLoadingViewData(false);
+
+        if (data) {
+          const label = getLabelForView(viewType, data);
+          const view: ViewState = { type: viewType, data };
+          setCurrentView(view);
+
+          // Build breadcrumbs
+          const newBreadcrumbs = [{ label: 'Dashboard', view: { type: 'dashboard' as ViewType } }];
+          const prefix = viewType.split('-')[0];
+          const listView = `${prefix}-list` as ViewType;
+
+          // Find parent label
+          for (const section of menuSections) {
+            const item = section.items.find(i => i.id === prefix);
+            if (item) {
+              newBreadcrumbs.push({ label: item.label, view: { type: listView } });
+              break;
+            }
+          }
+          newBreadcrumbs.push({ label, view });
+          setBreadcrumbs(newBreadcrumbs);
+        }
+      } else if (!needsData) {
+        const label = getLabelForView(viewType);
+        const view: ViewState = { type: viewType };
+        setCurrentView(view);
+
+        // Build breadcrumbs for non-data views
+        if (viewType !== 'dashboard') {
+          const newBreadcrumbs = [{ label: 'Dashboard', view: { type: 'dashboard' as ViewType } }];
+          newBreadcrumbs.push({ label, view });
+          setBreadcrumbs(newBreadcrumbs);
+        }
+      }
+
+      setUrlInitialized(true);
+    };
+
+    initViewFromUrl();
+  }, [searchParams, isAdmin, urlInitialized, fetchViewData, getLabelForView]);
+
+  const navigateTo = useCallback((view: ViewState, label: string) => {
     setCurrentView(view);
-    
+
+    // Update URL (shallow navigation - no page reload)
+    const url = buildUrlFromView(view);
+    router.push(url, { scroll: false });
+
     // Update breadcrumbs
     if (view.type === 'dashboard') {
       setBreadcrumbs([{ label: 'Dashboard', view: { type: 'dashboard' } }]);
     } else {
       // Always start with Dashboard
       let newBreadcrumbs = [{ label: 'Dashboard', view: { type: 'dashboard' as ViewType } }];
-      
+
       // Determine parent for sub-views
       const viewTypePrefix = view.type.split('-')[0]; // e.g., 'games' from 'games-edit'
       const viewTypeSuffix = view.type.split('-')[1]; // e.g., 'edit' from 'games-edit'
-      
+
       // Find parent item across all sections
       let parentItem: any = null;
       for (const section of menuSections) {
@@ -188,7 +379,7 @@ export default function AdminApp() {
           break;
         }
       }
-      
+
       // Only add parent breadcrumb if this is actually a sub-view (edit/new/detail)
       if (parentItem && viewTypeSuffix && viewTypeSuffix !== 'list') {
         newBreadcrumbs.push({ label: parentItem.label, view: parentItem.view });
@@ -201,10 +392,10 @@ export default function AdminApp() {
         // Add current breadcrumb for any other case
         newBreadcrumbs.push({ label, view });
       }
-      
+
       setBreadcrumbs(newBreadcrumbs);
     }
-  };
+  }, [router, buildUrlFromView]);
 
   // Organized menu sections
   const menuSections = [
@@ -797,17 +988,17 @@ export default function AdminApp() {
     }
   };
 
-  if (!isLoaded || isVerifying) {
+  if (!isLoaded || isVerifying || isLoadingViewData) {
     return (
       <div style={adminStyles.container}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '100vh' 
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh'
         }}>
           <div style={{ color: '#fdba74', fontSize: '18px' }}>
-            {!isLoaded ? 'Loading admin panel...' : 'Verifying admin permissions...'}
+            {!isLoaded ? 'Loading admin panel...' : isVerifying ? 'Verifying admin permissions...' : 'Loading view...'}
           </div>
         </div>
       </div>
