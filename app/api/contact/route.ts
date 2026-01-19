@@ -76,7 +76,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Get current user if logged in
-    const { userId } = await auth();
+    const { userId: clerkId } = await auth();
+
+    // Look up internal user ID if logged in
+    let internalUserId: string | null = null;
+    if (clerkId) {
+      const user = await prisma.user.findUnique({
+        where: { clerkId },
+        select: { id: true }
+      });
+      if (user) {
+        internalUserId = user.id;
+      }
+    }
 
     // Generate ticket number
     const ticketNumber = await generateTicketNumber();
@@ -95,7 +107,7 @@ export async function POST(request: NextRequest) {
         priority: 'normal',
         status: 'open',
         subject: ticketSubject,
-        ...(userId && { userId }),
+        ...(internalUserId && { userId: internalUserId }),
         tags: ['contact_form', subject],
         messages: {
           create: {
@@ -103,7 +115,7 @@ export async function POST(request: NextRequest) {
             senderName: name,
             message,
             isInternal: false,
-            ...(userId && { senderId: userId })
+            ...(internalUserId && { senderId: internalUserId })
           }
         }
       },
