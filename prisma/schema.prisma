@@ -856,6 +856,7 @@ model ReturnItem {
 model SupportTicket {
   id                 Int              @id @default(autoincrement())
   ticketNumber       String           @unique
+  accessToken        String?          @unique @default(cuid()) // For customer portal access without login
   userId             String?
   customerEmail      String
   customerName       String
@@ -878,6 +879,7 @@ model SupportTicket {
   @@index([status])
   @@index([customerEmail])
   @@index([orderId])
+  @@index([accessToken])
 }
 
 model SupportMessage {

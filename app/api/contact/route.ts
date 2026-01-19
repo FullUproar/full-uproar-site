@@ -135,6 +135,7 @@ export async function POST(request: NextRequest) {
     // Send email notifications (customer confirmation + team notification)
     const emailResult = await sendTicketEmails({
       ticketNumber: ticket.ticketNumber,
+      accessToken: ticket.accessToken,
       customerName: name,
       customerEmail: email,
       category,
