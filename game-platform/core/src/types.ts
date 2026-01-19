@@ -353,6 +353,7 @@ export type ActionType =
   | 'pauseGame'
   | 'resumeGame'
   | 'endGame'
+  | 'restartGame'
   | 'kickPlayer'
   | 'setPresence'
   | 'submitCards';
@@ -377,6 +378,7 @@ export type Action =
   | { type: 'pauseGame' }
   | { type: 'resumeGame' }
   | { type: 'endGame' }
+  | { type: 'restartGame' }
   | { type: 'kickPlayer'; playerId: string }
   // Player presence
   | { type: 'setPresence'; presence: PlayerPresence }
@@ -446,15 +448,34 @@ export type GameEvent =
 export type ClientMessage =
   | { type: 'createGame'; playerName: string }
   | { type: 'joinGame'; playerName: string }
+  | { type: 'rejoinGame'; playerId: string; playerName: string }
   | { type: 'leaveGame' }
   | { type: 'action'; action: Action };
+
+/**
+ * Sanitized deck info sent to clients (no actual cards)
+ */
+export interface SanitizedDeck {
+  id: string;
+  cardsRemaining: number;
+  discardCount: number;
+}
+
+/**
+ * Sanitized game state for clients - decks have counts only, not full contents
+ */
+export interface ClientGameState extends Omit<GameState, 'decks'> {
+  decks: {
+    [deckId: string]: SanitizedDeck;
+  };
+}
 
 /**
  * Server → Client message format
  */
 export type ServerMessage =
-  | { type: 'gameState'; state: GameState | null }
-  | { type: 'joined'; playerId: string; gameState: GameState }
+  | { type: 'gameState'; state: ClientGameState | null }
+  | { type: 'joined'; playerId: string; gameState: ClientGameState }
   | { type: 'left' }
   | { type: 'event'; event: GameEvent }
   | { type: 'error'; message: string };

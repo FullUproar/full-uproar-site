@@ -79,6 +79,10 @@ export function applyAction(
       result = handleEndGame(state, action);
       break;
 
+    case 'restartGame':
+      result = handleRestartGame(state, action);
+      break;
+
     case 'draw':
       result = handleDraw(state, action);
       break;
@@ -267,6 +271,44 @@ function handleEndGame(state: GameState, action: GameAction): StateTransitionRes
         finalScores,
         timestamp,
       },
+    ],
+  };
+}
+
+function handleRestartGame(state: GameState, action: GameAction): StateTransitionResult {
+  const timestamp = now();
+
+  // Reset players - clear hands and scores but keep them in the game
+  const resetPlayers = state.players.map((player) => ({
+    ...player,
+    hand: [],
+    score: 0,
+    slots: {},
+  }));
+
+  return {
+    state: {
+      ...state,
+      status: 'lobby',
+      startedAt: undefined,
+      endedAt: undefined,
+      players: resetPlayers,
+      turnOrder: [],
+      decks: {}, // Decks will be reinitialized on startGame
+      globalSlots: {},
+      roles: {
+        ...state.roles,
+        judge: null,
+      },
+      currentPhase: 'LOBBY',
+      phaseStartedAt: timestamp,
+      round: 0,
+      roundState: {
+        submissions: {},
+      },
+    },
+    events: [
+      { type: 'phaseChanged', from: 'END', to: 'LOBBY', timestamp },
     ],
   };
 }

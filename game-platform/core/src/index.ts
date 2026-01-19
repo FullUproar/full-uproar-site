@@ -63,6 +63,8 @@ export type {
   // Networking
   ClientMessage,
   ServerMessage,
+  SanitizedDeck,
+  ClientGameState,
 
   // Utility
   StateTransitionResult,

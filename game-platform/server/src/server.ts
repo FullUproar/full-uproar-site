@@ -6,6 +6,8 @@ import type {
   ClientMessage,
   ServerMessage,
   Player,
+  SanitizedDeck,
+  ClientGameState,
 } from '@full-uproar/game-platform-core';
 import {
   createGame,
@@ -31,22 +33,6 @@ interface ConnectionState {
 interface RoomState {
   gameState: GameState | null;
   connections: Map<string, ConnectionState>;
-}
-
-/**
- * Sanitized game state for clients - strips deck contents to reduce payload size
- * The full deck (4,000+ cards) would create a 2-5MB JSON payload that freezes browsers
- */
-interface SanitizedDeck {
-  id: string;
-  cardsRemaining: number;
-  discardCount: number;
-}
-
-interface ClientGameState extends Omit<GameState, 'decks'> {
-  decks: {
-    [deckId: string]: SanitizedDeck;
-  };
 }
 
 // =============================================================================
@@ -145,6 +131,10 @@ export default class GameRoom implements Party.Server {
 
       case 'joinGame':
         await this.handleJoinGame(sender, connState, parsed.playerName);
+        break;
+
+      case 'rejoinGame':
+        await this.handleRejoinGame(sender, connState, parsed.playerId, parsed.playerName);
         break;
 
       case 'leaveGame':
@@ -252,6 +242,63 @@ export default class GameRoom implements Party.Server {
     this.broadcastEvents(result.events);
   }
 
+  private async handleRejoinGame(
+    connection: Party.Connection,
+    connState: ConnectionState,
+    playerId: string,
+    playerName: string
+  ) {
+    if (!this.state.gameState) {
+      this.sendError(connection, 'No game exists in this room');
+      return;
+    }
+
+    // Find the player in the game
+    const player = this.state.gameState.players.find(p => p.id === playerId);
+
+    if (!player) {
+      // Player not found, fall back to regular join if in lobby
+      if (this.state.gameState.status === 'lobby') {
+        await this.handleJoinGame(connection, connState, playerName);
+      } else {
+        this.sendError(connection, 'Player not found and game has already started');
+      }
+      return;
+    }
+
+    // Check if player name matches (security check)
+    if (player.name !== playerName) {
+      this.sendError(connection, 'Player name mismatch');
+      return;
+    }
+
+    // Update player presence back to active
+    const result = this.applyGameAction(playerId, {
+      type: 'setPresence',
+      presence: 'active',
+    });
+
+    // Update connection state
+    connState.playerId = playerId;
+    connState.playerName = playerName;
+
+    // Save and broadcast
+    await this.persistState();
+
+    this.sendToConnection(connection, {
+      type: 'joined',
+      playerId,
+      gameState: this.sanitizeStateForClient(this.state.gameState)!,
+    });
+
+    this.broadcastGameState();
+    if (result) {
+      this.broadcastEvents(result.events);
+    }
+
+    console.log(`[${this.room.id}] Player ${playerName} rejoined the game`);
+  }
+
   private async handleLeaveGame(
     connection: Party.Connection,
     connState: ConnectionState
@@ -260,7 +307,7 @@ export default class GameRoom implements Party.Server {
       return;
     }
 
-    const result = removePlayer(this.state.gameState, connState.playerId);
+    const result = removePlayer(this.state.gameState, connState.playerId, 'left');
 
     // Update connection state
     connState.playerId = null;

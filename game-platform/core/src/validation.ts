@@ -61,7 +61,7 @@ function validateGameStatus(state: GameState, action: Action): ValidationResult 
   const pausedAllowed: ActionType[] = ['resumeGame', 'endGame', 'kickPlayer', 'setPresence'];
 
   // Actions allowed when ended
-  const endedAllowed: ActionType[] = ['setPresence'];
+  const endedAllowed: ActionType[] = ['setPresence', 'restartGame'];
 
   if (alwaysAllowed.includes(action.type)) {
     return { valid: true };
@@ -109,6 +109,7 @@ function validatePhasePermission(
     'pauseGame',
     'resumeGame',
     'endGame',
+    'restartGame',
     'kickPlayer',
     'setPresence',
   ];

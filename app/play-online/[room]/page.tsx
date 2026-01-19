@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import type {
-  GameState,
+  ClientGameState,
   GameEvent,
   Player,
   Card,
@@ -468,7 +468,7 @@ export default function MultiplayerRoom() {
   const [error, setError] = useState<string | null>(null);
 
   // Game state
-  const [gameState, setGameState] = useState<GameState | null>(null);
+  const [gameState, setGameState] = useState<ClientGameState | null>(null);
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [events, setEvents] = useState<GameEvent[]>([]);
 
@@ -477,9 +477,41 @@ export default function MultiplayerRoom() {
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [hoveredSubmission, setHoveredSubmission] = useState<string | null>(null);
   const [showCopied, setShowCopied] = useState(false);
+  const [reconnectAttempts, setReconnectAttempts] = useState(0);
+  const [showReconnectPrompt, setShowReconnectPrompt] = useState(false);
+  const [storedPlayerName, setStoredPlayerName] = useState<string | null>(null);
 
   // WebSocket ref
   const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Get storage key for this room
+  const storageKey = `fu-game-room-${room.toUpperCase()}`;
+
+  // Load stored player info on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const { playerId: storedId, playerName: storedName } = JSON.parse(stored);
+        setStoredPlayerName(storedName);
+        // We'll check if we can reconnect after we receive game state
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [storageKey]);
+
+  // Save player info to localStorage when joining
+  useEffect(() => {
+    if (playerId && playerName) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({ playerId, playerName }));
+      } catch {
+        // Ignore localStorage errors
+      }
+    }
+  }, [playerId, playerName, storageKey]);
 
   // Copy room code to clipboard
   const copyRoomCode = useCallback(() => {
@@ -514,6 +546,16 @@ export default function MultiplayerRoom() {
       setIsConnected(false);
       setIsConnecting(false);
       console.log('[PartyKit] Disconnected');
+
+      // Auto-reconnect if we were in a game
+      if (playerId && reconnectAttempts < 5) {
+        console.log(`[PartyKit] Attempting reconnect (${reconnectAttempts + 1}/5)...`);
+        setReconnectAttempts(prev => prev + 1);
+        reconnectTimeoutRef.current = setTimeout(() => {
+          // Force re-render to trigger new connection
+          window.location.reload();
+        }, 2000 + reconnectAttempts * 1000);
+      }
     };
 
     ws.onerror = () => {
@@ -539,22 +581,54 @@ export default function MultiplayerRoom() {
       if (ws.readyState === WebSocket.OPEN) {
         ws.close();
       }
+      // Clean up any pending reconnect timeout
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
     };
-  }, [room]);
+  }, [room, playerId, reconnectAttempts]);
 
   // Handle server messages
   const handleServerMessage = (message: ServerMessage) => {
     switch (message.type) {
       case 'gameState':
         setGameState(message.state);
+        // Check if we can reconnect to an existing session
+        if (message.state && !playerId) {
+          try {
+            const stored = localStorage.getItem(storageKey);
+            if (stored) {
+              const { playerId: storedId, playerName: name } = JSON.parse(stored);
+              // Check if this player exists in the game and is disconnected
+              const existingPlayer = message.state.players.find(
+                (p: Player) => p.id === storedId && (p.presence === 'disconnected' || p.presence === 'active')
+              );
+              if (existingPlayer) {
+                setShowReconnectPrompt(true);
+                setStoredPlayerName(name);
+              }
+            }
+          } catch {
+            // Ignore errors
+          }
+        }
         break;
       case 'joined':
         setPlayerId(message.playerId);
         setGameState(message.gameState);
+        setShowReconnectPrompt(false);
+        setReconnectAttempts(0);
         break;
       case 'left':
         setPlayerId(null);
         setGameState(null);
+        // Clear stored session on explicit leave
+        try {
+          localStorage.removeItem(storageKey);
+        } catch {
+          // Ignore
+        }
         break;
       case 'event':
         setEvents((prev) => [...prev.slice(-50), message.event]);
@@ -583,6 +657,35 @@ export default function MultiplayerRoom() {
   const handleJoinGame = () => {
     if (!playerName.trim()) return;
     send({ type: 'joinGame', playerName: playerName.trim() });
+  };
+
+  // Reconnect to previous session
+  const handleReconnect = () => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const { playerId: storedId, playerName: name } = JSON.parse(stored);
+        // Try to rejoin with the same player ID
+        send({ type: 'rejoinGame', playerId: storedId, playerName: name });
+      }
+    } catch {
+      // Fall back to regular join
+      if (storedPlayerName) {
+        setPlayerName(storedPlayerName);
+      }
+      setShowReconnectPrompt(false);
+    }
+  };
+
+  // Cancel reconnection prompt and join as new player
+  const handleSkipReconnect = () => {
+    try {
+      localStorage.removeItem(storageKey);
+    } catch {
+      // Ignore
+    }
+    setShowReconnectPrompt(false);
+    setStoredPlayerName(null);
   };
 
   // Start game
@@ -687,6 +790,70 @@ export default function MultiplayerRoom() {
         </div>
       )}
 
+      {/* Reconnect prompt */}
+      {showReconnectPrompt && storedPlayerName && !playerId && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(20, 30, 48, 0.98) 100%)',
+            padding: '32px',
+            borderRadius: '16px',
+            border: '2px solid rgba(249, 115, 22, 0.4)',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+            zIndex: 200,
+            textAlign: 'center',
+            maxWidth: '360px',
+            animation: 'slideUp 0.3s ease-out',
+          }}
+        >
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>👋</div>
+          <h3 style={{ color: '#fdba74', marginBottom: '8px', fontSize: '20px' }}>
+            Welcome Back!
+          </h3>
+          <p style={{ color: '#9ca3af', marginBottom: '24px', fontSize: '14px' }}>
+            We found your previous session as <strong style={{ color: '#f97316' }}>{storedPlayerName}</strong>.
+            Would you like to rejoin?
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <button
+              onClick={handleReconnect}
+              style={{
+                ...styles.button,
+                padding: '12px 24px',
+              }}
+            >
+              Rejoin Game
+            </button>
+            <button
+              onClick={handleSkipReconnect}
+              style={{
+                ...styles.button,
+                ...styles.buttonSecondary,
+                padding: '12px 24px',
+              }}
+            >
+              Join as New
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Reconnect overlay */}
+      {showReconnectPrompt && storedPlayerName && !playerId && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 199,
+          }}
+          onClick={handleSkipReconnect}
+        />
+      )}
+
       {/* Loading state */}
       {isConnecting && (
         <div style={{ ...styles.gameArea, justifyContent: 'center' }}>
@@ -762,24 +929,169 @@ export default function MultiplayerRoom() {
             >
               {/* Lobby */}
               {gameState.status === 'lobby' && (
-                <div style={{ textAlign: 'center' }}>
-                  <h2 style={{ color: '#fdba74', marginBottom: '16px' }}>Waiting for Players</h2>
-                  <p style={{ color: '#9ca3af', marginBottom: '24px' }}>
-                    {gameState.players.length} player{gameState.players.length !== 1 ? 's' : ''} in lobby
+                <div style={{ textAlign: 'center', maxWidth: '500px', margin: '0 auto' }}>
+                  <h2 style={{ color: '#fdba74', marginBottom: '8px' }}>Game Lobby</h2>
+                  <p style={{ color: '#9ca3af', marginBottom: '32px' }}>
+                    {gameState.players.length} player{gameState.players.length !== 1 ? 's' : ''} ready
+                    {gameState.players.length < 3 && ` • Need ${3 - gameState.players.length} more`}
                   </p>
+
+                  {/* Game Settings (Lead only) */}
+                  {currentPlayer?.isLead && (
+                    <div style={{
+                      background: 'rgba(30, 41, 59, 0.6)',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      marginBottom: '24px',
+                      border: '1px solid rgba(249, 115, 22, 0.2)',
+                      textAlign: 'left',
+                    }}>
+                      <h3 style={{
+                        color: '#fdba74',
+                        fontSize: '12px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        marginBottom: '16px',
+                      }}>
+                        Game Settings
+                      </h3>
+
+                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                        {/* Points to win */}
+                        <div style={{ flex: '1 1 140px' }}>
+                          <label style={{
+                            display: 'block',
+                            color: '#9ca3af',
+                            fontSize: '12px',
+                            marginBottom: '6px',
+                          }}>
+                            Points to Win
+                          </label>
+                          <select
+                            value={gameState.settings.endValue || 10}
+                            onChange={(e) => {
+                              // Would send update to server - for now just visual
+                              // TODO: Implement settings update
+                            }}
+                            style={{
+                              width: '100%',
+                              padding: '10px 12px',
+                              background: 'rgba(15, 23, 42, 0.8)',
+                              border: '1px solid rgba(249, 115, 22, 0.3)',
+                              borderRadius: '8px',
+                              color: '#fff',
+                              fontSize: '14px',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <option value="5">5 points (Quick)</option>
+                            <option value="7">7 points</option>
+                            <option value="10">10 points (Classic)</option>
+                            <option value="15">15 points (Long)</option>
+                          </select>
+                        </div>
+
+                        {/* Hand size */}
+                        <div style={{ flex: '1 1 140px' }}>
+                          <label style={{
+                            display: 'block',
+                            color: '#9ca3af',
+                            fontSize: '12px',
+                            marginBottom: '6px',
+                          }}>
+                            Cards in Hand
+                          </label>
+                          <select
+                            value={gameState.settings.handSize || 7}
+                            onChange={(e) => {
+                              // Would send update to server - for now just visual
+                              // TODO: Implement settings update
+                            }}
+                            style={{
+                              width: '100%',
+                              padding: '10px 12px',
+                              background: 'rgba(15, 23, 42, 0.8)',
+                              border: '1px solid rgba(249, 115, 22, 0.3)',
+                              borderRadius: '8px',
+                              color: '#fff',
+                              fontSize: '14px',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <option value="5">5 cards</option>
+                            <option value="7">7 cards (Classic)</option>
+                            <option value="10">10 cards</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Player list preview */}
+                  <div style={{
+                    background: 'rgba(30, 41, 59, 0.4)',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    marginBottom: '24px',
+                  }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+                      {gameState.players.map((player) => (
+                        <div
+                          key={player.id}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            background: player.id === playerId ? 'rgba(249, 115, 22, 0.15)' : 'rgba(15, 23, 42, 0.6)',
+                            border: player.id === playerId ? '1px solid rgba(249, 115, 22, 0.4)' : '1px solid transparent',
+                            padding: '8px 12px',
+                            borderRadius: '20px',
+                          }}
+                        >
+                          <div style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            background: player.isLead ? '#f97316' : '#4b5563',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            color: player.isLead ? '#000' : '#fff',
+                          }}>
+                            {player.name.charAt(0).toUpperCase()}
+                          </div>
+                          <span style={{ color: '#e2e8f0', fontSize: '14px' }}>
+                            {player.name}
+                            {player.isLead && ' 👑'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   {currentPlayer?.isLead && (
                     <button
                       style={{
                         ...styles.button,
+                        padding: '14px 48px',
+                        fontSize: '16px',
                         ...(gameState.players.length < 3 ? styles.buttonDisabled : {}),
                       }}
                       onClick={handleStartGame}
                       disabled={gameState.players.length < 3}
                     >
                       {gameState.players.length < 3
-                        ? `Need ${3 - gameState.players.length} more player${3 - gameState.players.length !== 1 ? 's' : ''}`
+                        ? `Waiting for ${3 - gameState.players.length} more player${3 - gameState.players.length !== 1 ? 's' : ''}...`
                         : 'Start Game'}
                     </button>
+                  )}
+
+                  {!currentPlayer?.isLead && (
+                    <p style={{ color: '#9ca3af', fontSize: '14px', animation: 'pulse 2s ease-in-out infinite' }}>
+                      Waiting for host to start the game...
+                    </p>
                   )}
                 </div>
               )}
@@ -787,21 +1099,69 @@ export default function MultiplayerRoom() {
               {/* Active game */}
               {gameState.status === 'playing' && (
                 <>
-                  {/* Phase indicator */}
+                  {/* Phase indicator with score progress */}
                   <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                    <span
-                      style={{
-                        background: 'rgba(249, 115, 22, 0.2)',
-                        color: '#fdba74',
-                        padding: '8px 16px',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      Round {gameState.round} • {judge?.name || 'Unknown'} is Card Czar
-                    </span>
+                    <div style={{
+                      display: 'inline-flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                      background: 'rgba(30, 41, 59, 0.6)',
+                      padding: '12px 20px',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(249, 115, 22, 0.2)',
+                    }}>
+                      <span
+                        style={{
+                          color: '#fdba74',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Round {gameState.round} • {judge?.name || 'Unknown'} is Card Czar
+                      </span>
+                      {/* Score progress bar */}
+                      {(() => {
+                        const targetScore = gameState.settings.endValue || 10;
+                        const highestScore = Math.max(...gameState.players.map(p => p.score || 0), 0);
+                        const leader = gameState.players.reduce((best, p) =>
+                          (p.score || 0) > (best?.score || 0) ? p : best,
+                          gameState.players[0]
+                        );
+                        return (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ color: '#9ca3af', fontSize: '11px', whiteSpace: 'nowrap' }}>
+                              First to {targetScore}
+                            </span>
+                            <div style={{
+                              flex: 1,
+                              height: '6px',
+                              background: 'rgba(15, 23, 42, 0.8)',
+                              borderRadius: '3px',
+                              minWidth: '100px',
+                              overflow: 'hidden',
+                            }}>
+                              <div style={{
+                                width: `${Math.min((highestScore / targetScore) * 100, 100)}%`,
+                                height: '100%',
+                                background: highestScore >= targetScore - 1
+                                  ? 'linear-gradient(90deg, #ef4444, #f97316)'
+                                  : 'linear-gradient(90deg, #f97316, #22c55e)',
+                                borderRadius: '3px',
+                                transition: 'width 0.5s ease-out',
+                              }} />
+                            </div>
+                            <span style={{
+                              color: highestScore >= targetScore - 1 ? '#ef4444' : '#9ca3af',
+                              fontSize: '11px',
+                              fontWeight: highestScore >= targetScore - 1 ? 'bold' : 'normal',
+                            }}>
+                              {leader?.name}: {highestScore}/{targetScore}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </div>
                   </div>
 
                   {/* Prompt card */}
@@ -902,6 +1262,121 @@ export default function MultiplayerRoom() {
                     </>
                   )}
                 </>
+              )}
+
+              {/* Game Over */}
+              {gameState.status === 'ended' && (
+                <div style={{ textAlign: 'center', animation: 'fadeIn 0.5s ease-out' }}>
+                  <div style={{ fontSize: '64px', marginBottom: '16px' }}>🏆</div>
+                  <h2 style={{
+                    color: '#f97316',
+                    fontSize: '32px',
+                    fontWeight: 'bold',
+                    marginBottom: '8px',
+                  }}>
+                    Game Over!
+                  </h2>
+                  {(() => {
+                    const winner = gameState.players.reduce((best, p) =>
+                      (p.score || 0) > (best?.score || 0) ? p : best,
+                      gameState.players[0]
+                    );
+                    const isWinner = winner?.id === playerId;
+                    return (
+                      <>
+                        <p style={{
+                          color: isWinner ? '#22c55e' : '#fdba74',
+                          fontSize: '24px',
+                          marginBottom: '32px',
+                        }}>
+                          {isWinner ? '🎉 You Won! 🎉' : `${winner?.name} wins!`}
+                        </p>
+
+                        {/* Final Scores */}
+                        <div style={{
+                          background: 'rgba(30, 41, 59, 0.8)',
+                          borderRadius: '16px',
+                          padding: '24px',
+                          maxWidth: '400px',
+                          margin: '0 auto 32px',
+                          border: '2px solid rgba(249, 115, 22, 0.3)',
+                        }}>
+                          <h3 style={{
+                            color: '#fdba74',
+                            fontSize: '14px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                            marginBottom: '16px',
+                          }}>
+                            Final Scores
+                          </h3>
+                          {gameState.players
+                            .filter(p => p.presence === 'active' || p.presence === 'disconnected')
+                            .sort((a, b) => (b.score || 0) - (a.score || 0))
+                            .map((player, idx) => (
+                              <div
+                                key={player.id}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  padding: '12px',
+                                  background: idx === 0 ? 'rgba(249, 115, 22, 0.15)' : 'transparent',
+                                  borderRadius: '8px',
+                                  marginBottom: '4px',
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <span style={{
+                                    fontSize: '18px',
+                                    width: '28px',
+                                    textAlign: 'center',
+                                  }}>
+                                    {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`}
+                                  </span>
+                                  <span style={{
+                                    color: player.id === playerId ? '#f97316' : '#e2e8f0',
+                                    fontWeight: player.id === playerId ? 'bold' : 'normal',
+                                  }}>
+                                    {player.name}
+                                    {player.id === playerId && ' (You)'}
+                                  </span>
+                                </div>
+                                <span style={{
+                                  color: idx === 0 ? '#f97316' : '#9ca3af',
+                                  fontWeight: 'bold',
+                                  fontSize: '18px',
+                                }}>
+                                  {player.score || 0}
+                                </span>
+                              </div>
+                            ))}
+                        </div>
+
+                        {/* Play Again button (lead only) */}
+                        {currentPlayer?.isLead && (
+                          <button
+                            onClick={() => {
+                              send({ type: 'action', action: { type: 'restartGame' } });
+                            }}
+                            style={{
+                              ...styles.button,
+                              padding: '16px 48px',
+                              fontSize: '16px',
+                            }}
+                          >
+                            Play Again
+                          </button>
+                        )}
+                        {!currentPlayer?.isLead && (
+                          <p style={{ color: '#9ca3af', fontSize: '14px' }}>
+                            Waiting for host to start a new game...
+                          </p>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
               )}
             </div>
 
