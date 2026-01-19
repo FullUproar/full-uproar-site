@@ -618,6 +618,7 @@ model MessageThread {
   updatedAt  DateTime      @default(now()) @updatedAt
   posts      MessagePost[]
   board      MessageBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  gameNights GameNight[]   // Game nights that use this thread as chat
 
   @@unique([boardId, slug])
   @@index([boardId])
@@ -1091,6 +1092,11 @@ model GameNight {
   vibe            GameNightVibe       @default(CHILL)
   theme           String?             // Custom theme like "80s Arcade Night"
   aiSuggestions   Json?               // Stored AI suggestions (games, snacks, etc.)
+  houseRules      String?             // Custom house rules for the game night
+
+  // Team chat - linked to forum infrastructure
+  chatThreadId    Int?                // Links to MessageThread for group chat
+  chatThread      MessageThread?      @relation(fields: [chatThreadId], references: [id])
 
   // Status
   status          GameNightStatus     @default(PLANNING)
@@ -1185,9 +1191,33 @@ model GameNightGame {
 
   createdAt       DateTime            @default(now())
 
+  // Voting
+  votes           GameNightGameVote[]
+
   @@index([gameNightId])
   @@index([gameId])
   @@index([playOrder])
+}
+
+// Voting for which games to play
+model GameNightGameVote {
+  id              String              @id @default(cuid())
+  gameNightGameId String
+  gameNightGame   GameNightGame       @relation(fields: [gameNightGameId], references: [id], onDelete: Cascade)
+
+  // Who voted (either guest or userId for host)
+  guestId         String?             // GameNightGuest ID
+  userId          String?             // For host voting
+
+  // Vote type
+  vote            Int                 @default(1) // 1 = upvote, -1 = downvote, 0 = meh
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
+
+  @@unique([gameNightGameId, guestId])
+  @@unique([gameNightGameId, userId])
+  @@index([gameNightGameId])
 }
 
 model GameNightMoment {

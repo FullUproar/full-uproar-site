@@ -133,6 +133,52 @@ export async function PUT(
   }
 }
 
+// PATCH /api/game-nights/[id] - Partial update (house rules, etc.)
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
+    // Verify ownership
+    const existingNight = await prisma.gameNight.findUnique({
+      where: { id },
+      select: { hostId: true }
+    });
+
+    if (!existingNight) {
+      return NextResponse.json({ error: 'Game night not found' }, { status: 404 });
+    }
+
+    if (existingNight.hostId !== user.id) {
+      return NextResponse.json({ error: 'Only the host can update this game night' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { houseRules } = body;
+
+    const updateData: any = {};
+    if (houseRules !== undefined) {
+      updateData.houseRules = houseRules;
+    }
+
+    const gameNight = await prisma.gameNight.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return NextResponse.json(gameNight);
+  } catch (error) {
+    console.error('Error patching game night:', error);
+    return NextResponse.json({ error: 'Failed to update game night' }, { status: 500 });
+  }
+}
+
 // DELETE /api/game-nights/[id] - Delete a game night
 export async function DELETE(
   request: NextRequest,

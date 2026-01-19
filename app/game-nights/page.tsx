@@ -20,7 +20,9 @@ import {
   PartyPopper,
   Coffee,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  Crown,
+  X as CloseIcon
 } from 'lucide-react';
 
 interface GameNight {
@@ -66,6 +68,8 @@ export default function GameNightsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [canCreateGameNight, setCanCreateGameNight] = useState(false);
 
   useEffect(() => {
     fetchGameNights();
@@ -77,11 +81,20 @@ export default function GameNightsPage() {
       if (response.ok) {
         const data = await response.json();
         setGameNights(data);
+        setCanCreateGameNight(data.canCreateGameNight ?? false);
       }
     } catch (error) {
       console.error('Failed to fetch game nights:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateClick = () => {
+    if (canCreateGameNight) {
+      setShowCreateModal(true);
+    } else {
+      setShowUpgradeModal(true);
     }
   };
 
@@ -216,7 +229,7 @@ export default function GameNightsPage() {
             <div style={{ textAlign: 'center' }}>
               {user ? (
                 <button
-                  onClick={() => setShowCreateModal(true)}
+                  onClick={handleCreateClick}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -284,7 +297,7 @@ export default function GameNightsPage() {
               </p>
 
               <button
-                onClick={() => setShowCreateModal(true)}
+                onClick={handleCreateClick}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -383,6 +396,11 @@ export default function GameNightsPage() {
             router.push(`/game-nights/${id}`);
           }}
         />
+      )}
+
+      {/* Upgrade Modal */}
+      {showUpgradeModal && (
+        <UpgradeModal onClose={() => setShowUpgradeModal(false)} />
       )}
 
       <style jsx>{`
@@ -1106,6 +1124,169 @@ function CreateGameNightModal({
             </div>
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+function UpgradeModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0, 0, 0, 0.85)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem',
+        zIndex: 1000,
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%',
+          maxWidth: '480px',
+          background: 'linear-gradient(145deg, #1a1f2e 0%, #0f1219 100%)',
+          borderRadius: '1.5rem',
+          border: '3px solid #a855f7',
+          padding: '2rem',
+          boxShadow: '0 25px 80px rgba(168, 85, 247, 0.25), 0 0 60px rgba(168, 85, 247, 0.1)',
+          textAlign: 'center',
+        }}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            background: 'transparent',
+            border: 'none',
+            color: '#6b7280',
+            cursor: 'pointer',
+            padding: '0.5rem',
+          }}
+        >
+          <CloseIcon size={24} />
+        </button>
+
+        {/* Crown icon */}
+        <div
+          style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.3))',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1.5rem',
+            border: '2px solid #a855f7',
+          }}
+        >
+          <Crown size={40} style={{ color: '#a855f7' }} />
+        </div>
+
+        <h2
+          style={{
+            fontSize: '1.75rem',
+            fontWeight: 900,
+            background: 'linear-gradient(135deg, #a855f7, #8b5cf6)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+            marginBottom: '0.75rem',
+          }}
+        >
+          Unlock Game Nights
+        </h2>
+
+        <p
+          style={{
+            color: '#94a3b8',
+            fontSize: '1rem',
+            marginBottom: '1.5rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Creating game nights is an Afterroar+ exclusive feature. Upgrade to host unlimited game nights with all the premium tools.
+        </p>
+
+        {/* Features list */}
+        <div
+          style={{
+            background: 'rgba(168, 85, 247, 0.1)',
+            border: '1px solid rgba(168, 85, 247, 0.3)',
+            borderRadius: '1rem',
+            padding: '1.25rem',
+            marginBottom: '1.5rem',
+            textAlign: 'left',
+          }}
+        >
+          <div style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#a855f7', marginBottom: '0.75rem' }}>
+            What you get with Afterroar+:
+          </div>
+          {[
+            'Create unlimited game nights',
+            'Email invitations from the app',
+            'Game voting & snack sign-ups',
+            'Team chat & house rules',
+            'Full event management tools',
+          ].map((feature, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <CheckCircle2 size={16} style={{ color: '#10b981', flexShrink: 0 }} />
+              <span style={{ color: '#e2e8f0', fontSize: '0.9rem' }}>{feature}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA buttons */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button
+            onClick={onClose}
+            style={{
+              flex: 1,
+              padding: '0.875rem',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '2px solid #374151',
+              borderRadius: '0.75rem',
+              color: '#94a3b8',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+          >
+            Maybe Later
+          </button>
+          <Link href="/afterroar" style={{ flex: 2, textDecoration: 'none' }}>
+            <button
+              style={{
+                width: '100%',
+                padding: '0.875rem',
+                background: 'linear-gradient(135deg, #a855f7, #8b5cf6)',
+                border: 'none',
+                borderRadius: '0.75rem',
+                color: '#fff',
+                fontWeight: 900,
+                fontSize: '1rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 10px 30px rgba(168, 85, 247, 0.3)',
+              }}
+            >
+              <Crown size={18} />
+              View Afterroar+
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );

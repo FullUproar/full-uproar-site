@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
@@ -33,6 +33,18 @@ import {
   MoreVertical,
   X,
   Loader2,
+  Mail,
+  RefreshCw,
+  UtensilsCrossed,
+  Pizza,
+  Wine,
+  Cookie,
+  Soup,
+  ThumbsUp,
+  ThumbsDown,
+  ScrollText,
+  MessageCircle,
+  Send as SendIcon,
 } from 'lucide-react';
 
 interface GameNight {
@@ -47,6 +59,7 @@ interface GameNight {
   theme: string | null;
   status: string;
   maxGuests: number | null;
+  houseRules: string | null;
   host: {
     id: string;
     displayName: string | null;
@@ -68,11 +81,14 @@ interface GameNight {
 interface Guest {
   id: string;
   guestName: string | null;
+  guestEmail: string | null;
   status: string;
   role: string;
   bringing: string | null;
   respondedAt: string | null;
   inviteToken: string;
+  inviteSentAt: string | null;
+  inviteMethod: string | null;
   user: {
     id: string;
     displayName: string | null;
@@ -95,6 +111,12 @@ interface GameNightGame {
     imageUrl: string | null;
     players: string | null;
   } | null;
+  // Voting
+  voteCount?: number;
+  upvotes?: number;
+  downvotes?: number;
+  userVote?: number;
+  voterCount?: number;
 }
 
 interface Moment {
@@ -112,6 +134,16 @@ interface Recap {
   id: string;
   aiSummary: string | null;
   generatedAt: string;
+}
+
+interface ChatMessage {
+  id: number;
+  content: string;
+  authorId: string;
+  authorName: string;
+  authorAvatar: string | null;
+  createdAt: string;
+  isEdited: boolean;
 }
 
 const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: string }> = {
@@ -145,6 +177,9 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
   const [error, setError] = useState<string | null>(null);
   const [showAddGuestModal, setShowAddGuestModal] = useState(false);
   const [showAddGameModal, setShowAddGameModal] = useState(false);
+  const [showSnackSignupModal, setShowSnackSignupModal] = useState(false);
+  const [editingHouseRules, setEditingHouseRules] = useState(false);
+  const [houseRulesText, setHouseRulesText] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showAISuggestions, setShowAISuggestions] = useState(false);
@@ -590,38 +625,15 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                 const name = guest.user?.displayName || guest.user?.username || guest.guestName || 'Guest';
 
                 return (
-                  <div
+                  <GuestRow
                     key={guest.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      padding: '0.75rem',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      borderRadius: '0.75rem',
-                    }}
-                  >
-                    <div style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      background: '#374151',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                    }}>
-                      {name[0].toUpperCase()}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ color: '#fff', fontWeight: 'bold' }}>{name}</div>
-                      {guest.bringing && (
-                        <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Bringing: {guest.bringing}</div>
-                      )}
-                    </div>
-                    <span style={{ fontSize: '1.25rem' }}>{guestStatus.icon}</span>
-                  </div>
+                    guest={guest}
+                    name={name}
+                    guestStatus={guestStatus}
+                    gameNightId={gameNight.id}
+                    isHost={gameNight.isHost}
+                    onUpdate={fetchGameNight}
+                  />
                 );
               })}
 
@@ -706,56 +718,81 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {gameNight.games.map((game, index) => (
-                  <div
+                {gameNight.games
+                  .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0)) // Sort by votes
+                  .map((game, index) => (
+                  <GameLineupItem
                     key={game.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      padding: '1rem',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      borderRadius: '0.75rem',
-                      border: game.status === 'PLAYING' ? '2px solid #f97316' : '2px solid transparent',
-                    }}
-                  >
-                    <div style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '0.5rem',
-                      background: game.status === 'COMPLETED' ? '#10b981' : game.status === 'PLAYING' ? '#f97316' : '#374151',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                    }}>
-                      {game.status === 'COMPLETED' ? '✓' : index + 1}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ color: '#fff', fontWeight: 'bold' }}>
-                        {game.game?.title || game.customGameName}
-                      </div>
-                      {game.winnerName && (
-                        <div style={{ color: '#fbbf24', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                          <Trophy size={14} />
-                          {game.winnerName}
-                        </div>
-                      )}
-                    </div>
-                    {game.chaosLevel && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#a855f7' }}>
-                        {[...Array(game.chaosLevel)].map((_, i) => (
-                          <Zap key={i} size={14} fill="#a855f7" />
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                    game={game}
+                    index={index}
+                    gameNightId={gameNight.id}
+                    onVote={fetchGameNight}
+                  />
                 ))}
               </div>
             )}
           </div>
         </div>
+
+        {/* Snack Roster Section */}
+        <div style={{
+          marginTop: '1.5rem',
+          background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.05))',
+          borderRadius: '1rem',
+          border: '2px solid rgba(251, 191, 36, 0.3)',
+          padding: '1.5rem',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h2 style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: '#fbbf24',
+              fontSize: '1.25rem',
+              fontWeight: 'bold',
+              margin: 0,
+            }}>
+              <UtensilsCrossed size={24} />
+              Snack Roster
+            </h2>
+            <button
+              onClick={() => setShowSnackSignupModal(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.5rem 1rem',
+                background: 'rgba(251, 191, 36, 0.2)',
+                border: '2px solid #fbbf24',
+                borderRadius: '0.5rem',
+                color: '#fbbf24',
+                fontWeight: 'bold',
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+              }}
+            >
+              <Plus size={16} />
+              Sign Up
+            </button>
+          </div>
+
+          <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+            Coordinate who's bringing what so nobody shows up with 5 bags of chips and no drinks
+          </p>
+
+          <SnackRosterDisplay guests={gameNight.guests} hostName={gameNight.host.displayName || gameNight.host.username} />
+        </div>
+
+        {/* House Rules Section */}
+        <HouseRulesSection
+          gameNightId={gameNight.id}
+          houseRules={gameNight.houseRules}
+          isHost={gameNight.isHost}
+          onUpdate={fetchGameNight}
+        />
+
+        {/* Team Chat Section */}
+        <TeamChatSection gameNightId={gameNight.id} />
 
         {/* AI Assistant Section */}
         {gameNight.isHost && (
@@ -1103,7 +1140,1173 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
         />
       )}
 
+      {/* Snack Signup Modal */}
+      {showSnackSignupModal && (
+        <SnackSignupModal
+          gameNightId={gameNight.id}
+          guests={gameNight.guests}
+          isHost={gameNight.isHost}
+          onClose={() => setShowSnackSignupModal(false)}
+          onUpdated={() => {
+            setShowSnackSignupModal(false);
+            fetchGameNight();
+          }}
+        />
+      )}
+
       <style jsx>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
+
+// Team Chat Section Component
+function TeamChatSection({ gameNightId }: { gameNightId: string }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(`/api/game-nights/${gameNightId}/chat`);
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data.messages || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch messages:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+    // Poll for new messages every 10 seconds when expanded
+    let interval: NodeJS.Timeout;
+    if (expanded) {
+      interval = setInterval(fetchMessages, 10000);
+    }
+    return () => clearInterval(interval);
+  }, [gameNightId, expanded]);
+
+  useEffect(() => {
+    // Scroll to bottom when new messages arrive
+    if (expanded && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, expanded]);
+
+  const handleSend = async () => {
+    if (!newMessage.trim() || sending) return;
+
+    setSending(true);
+    try {
+      const response = await fetch(`/api/game-nights/${gameNightId}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: newMessage }),
+      });
+
+      if (response.ok) {
+        const message = await response.json();
+        setMessages((prev) => [...prev, message]);
+        setNewMessage('');
+      }
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+
+    if (isToday) {
+      return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) +
+      ' ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  };
+
+  return (
+    <div style={{
+      marginTop: '1.5rem',
+      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05))',
+      borderRadius: '1rem',
+      border: '2px solid rgba(59, 130, 246, 0.3)',
+      overflow: 'hidden',
+    }}>
+      {/* Header - Always visible */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        style={{
+          width: '100%',
+          padding: '1rem 1.5rem',
+          background: 'transparent',
+          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+        }}
+      >
+        <h2 style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          color: '#3b82f6',
+          fontSize: '1.25rem',
+          fontWeight: 'bold',
+          margin: 0,
+        }}>
+          <MessageCircle size={24} />
+          Team Chat
+          {messages.length > 0 && (
+            <span style={{
+              marginLeft: '0.5rem',
+              padding: '0.125rem 0.5rem',
+              background: 'rgba(59, 130, 246, 0.3)',
+              borderRadius: '50px',
+              fontSize: '0.75rem',
+              color: '#60a5fa',
+            }}>
+              {messages.length}
+            </span>
+          )}
+        </h2>
+        <ChevronDown
+          size={20}
+          style={{
+            color: '#3b82f6',
+            transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s',
+          }}
+        />
+      </button>
+
+      {/* Chat content - Expandable */}
+      {expanded && (
+        <div style={{ padding: '0 1.5rem 1.5rem' }}>
+          <p style={{ color: '#94a3b8', fontSize: '0.8rem', marginBottom: '1rem' }}>
+            Coordinate with your squad before and during game night
+          </p>
+
+          {/* Messages */}
+          <div style={{
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '0.75rem',
+            padding: '1rem',
+            height: '300px',
+            overflowY: 'auto',
+            marginBottom: '1rem',
+          }}>
+            {loading ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
+                <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
+              </div>
+            ) : messages.length === 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
+                <MessageCircle size={32} style={{ opacity: 0.5, marginBottom: '0.5rem' }} />
+                <p style={{ margin: 0, fontSize: '0.9rem' }}>No messages yet</p>
+                <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem' }}>Start the conversation!</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {messages.map((msg) => (
+                  <div key={msg.id} style={{ display: 'flex', gap: '0.75rem' }}>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: '#374151',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      fontSize: '0.75rem',
+                      flexShrink: 0,
+                    }}>
+                      {msg.authorName[0].toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                        <span style={{ color: '#e2e8f0', fontWeight: 'bold', fontSize: '0.875rem' }}>
+                          {msg.authorName}
+                        </span>
+                        <span style={{ color: '#64748b', fontSize: '0.7rem' }}>
+                          {formatTime(msg.createdAt)}
+                        </span>
+                      </div>
+                      <p style={{ color: '#cbd5e1', margin: 0, fontSize: '0.875rem', lineHeight: '1.4', wordBreak: 'break-word' }}>
+                        {msg.content}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Input */}
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Type a message..."
+              style={{
+                flex: 1,
+                padding: '0.75rem 1rem',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '2px solid rgba(59, 130, 246, 0.3)',
+                borderRadius: '0.5rem',
+                color: '#fff',
+                fontSize: '0.9rem',
+              }}
+            />
+            <button
+              onClick={handleSend}
+              disabled={!newMessage.trim() || sending}
+              style={{
+                padding: '0.75rem 1.25rem',
+                background: newMessage.trim() && !sending ? 'linear-gradient(135deg, #3b82f6, #2563eb)' : '#374151',
+                border: 'none',
+                borderRadius: '0.5rem',
+                color: '#fff',
+                fontWeight: 'bold',
+                cursor: newMessage.trim() && !sending ? 'pointer' : 'not-allowed',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+              }}
+            >
+              {sending ? (
+                <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+              ) : (
+                <SendIcon size={18} />
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// House Rules Section Component
+function HouseRulesSection({
+  gameNightId,
+  houseRules,
+  isHost,
+  onUpdate,
+}: {
+  gameNightId: string;
+  houseRules: string | null;
+  isHost: boolean;
+  onUpdate: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [rulesText, setRulesText] = useState(houseRules || '');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/game-nights/${gameNightId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ houseRules: rulesText || null }),
+      });
+
+      if (response.ok) {
+        setEditing(false);
+        onUpdate();
+      }
+    } catch (err) {
+      console.error('Failed to save house rules:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Default house rules suggestions
+  const suggestionTemplates = [
+    '- No phones during gameplay',
+    '- Loser picks the next game',
+    '- Winner does a victory dance',
+    '- Snacks must be shared equally',
+    '- No rage quitting!',
+  ];
+
+  return (
+    <div style={{
+      marginTop: '1.5rem',
+      background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(219, 39, 119, 0.05))',
+      borderRadius: '1rem',
+      border: '2px solid rgba(236, 72, 153, 0.3)',
+      padding: '1.5rem',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <h2 style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          color: '#ec4899',
+          fontSize: '1.25rem',
+          fontWeight: 'bold',
+          margin: 0,
+        }}>
+          <ScrollText size={24} />
+          House Rules
+        </h2>
+        {isHost && !editing && (
+          <button
+            onClick={() => {
+              setRulesText(houseRules || '');
+              setEditing(true);
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.5rem 1rem',
+              background: 'rgba(236, 72, 153, 0.2)',
+              border: '2px solid #ec4899',
+              borderRadius: '0.5rem',
+              color: '#ec4899',
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+              cursor: 'pointer',
+            }}
+          >
+            <Edit3 size={16} />
+            {houseRules ? 'Edit' : 'Add Rules'}
+          </button>
+        )}
+      </div>
+
+      {editing ? (
+        <div>
+          <p style={{ color: '#94a3b8', fontSize: '0.8rem', marginBottom: '0.75rem' }}>
+            Quick ideas:
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+            {suggestionTemplates.map((suggestion) => (
+              <button
+                key={suggestion}
+                onClick={() => setRulesText((prev) => prev ? `${prev}\n${suggestion}` : suggestion)}
+                style={{
+                  padding: '0.375rem 0.75rem',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid transparent',
+                  borderRadius: '0.375rem',
+                  color: '#94a3b8',
+                  fontSize: '0.75rem',
+                  cursor: 'pointer',
+                }}
+              >
+                + {suggestion.replace('- ', '')}
+              </button>
+            ))}
+          </div>
+          <textarea
+            value={rulesText}
+            onChange={(e) => setRulesText(e.target.value)}
+            placeholder="Add your house rules here...&#10;&#10;- Rule 1&#10;- Rule 2&#10;- etc."
+            rows={6}
+            style={{
+              width: '100%',
+              padding: '1rem',
+              background: 'rgba(0, 0, 0, 0.3)',
+              border: '2px solid rgba(236, 72, 153, 0.3)',
+              borderRadius: '0.75rem',
+              color: '#e2e8f0',
+              fontSize: '0.9rem',
+              lineHeight: '1.6',
+              resize: 'vertical',
+              marginBottom: '1rem',
+            }}
+          />
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1.5rem',
+                background: saving ? '#374151' : 'linear-gradient(135deg, #ec4899, #db2777)',
+                border: 'none',
+                borderRadius: '0.5rem',
+                color: '#fff',
+                fontWeight: 'bold',
+                cursor: saving ? 'wait' : 'pointer',
+              }}
+            >
+              {saving ? (
+                <>
+                  <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Check size={16} />
+                  Save Rules
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              style={{
+                padding: '0.75rem 1.5rem',
+                background: 'transparent',
+                border: '2px solid #6b7280',
+                borderRadius: '0.5rem',
+                color: '#94a3b8',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : houseRules ? (
+        <div style={{
+          padding: '1rem',
+          background: 'rgba(0, 0, 0, 0.2)',
+          borderRadius: '0.75rem',
+          whiteSpace: 'pre-wrap',
+          color: '#e2e8f0',
+          fontSize: '0.9rem',
+          lineHeight: '1.8',
+        }}>
+          {houseRules}
+        </div>
+      ) : (
+        <div style={{ textAlign: 'center', padding: '1.5rem', color: '#6b7280' }}>
+          <ScrollText size={36} style={{ marginBottom: '0.5rem', opacity: 0.5 }} />
+          <p style={{ margin: 0, fontSize: '0.9rem' }}>No house rules set yet</p>
+          {isHost && (
+            <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem' }}>
+              Click "Add Rules" to set expectations for the night
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Game Lineup Item with Voting
+function GameLineupItem({
+  game,
+  index,
+  gameNightId,
+  onVote,
+}: {
+  game: GameNightGame;
+  index: number;
+  gameNightId: string;
+  onVote: () => void;
+}) {
+  const [voting, setVoting] = useState(false);
+  const [localVote, setLocalVote] = useState(game.userVote || 0);
+  const [localVoteCount, setLocalVoteCount] = useState(game.voteCount || 0);
+
+  const handleVote = async (voteValue: number) => {
+    const newVote = localVote === voteValue ? 0 : voteValue; // Toggle off if same vote
+    setVoting(true);
+
+    try {
+      const response = await fetch(`/api/game-nights/${gameNightId}/games`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gameNightGameId: game.id,
+          vote: newVote,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setLocalVote(data.userVote);
+        setLocalVoteCount(data.voteCount);
+        onVote(); // Refresh the full data
+      }
+    } catch (err) {
+      console.error('Failed to vote:', err);
+    } finally {
+      setVoting(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        padding: '1rem',
+        background: 'rgba(255, 255, 255, 0.05)',
+        borderRadius: '0.75rem',
+        border: game.status === 'PLAYING' ? '2px solid #f97316' : '2px solid transparent',
+      }}
+    >
+      {/* Vote Buttons */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.25rem',
+        minWidth: '40px',
+      }}>
+        <button
+          onClick={() => handleVote(1)}
+          disabled={voting}
+          style={{
+            background: localVote === 1 ? 'rgba(16, 185, 129, 0.3)' : 'transparent',
+            border: localVote === 1 ? '2px solid #10b981' : '2px solid transparent',
+            borderRadius: '0.375rem',
+            padding: '0.25rem',
+            cursor: voting ? 'wait' : 'pointer',
+            color: localVote === 1 ? '#10b981' : '#6b7280',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          title="Vote up"
+        >
+          <ThumbsUp size={16} fill={localVote === 1 ? '#10b981' : 'transparent'} />
+        </button>
+        <span style={{
+          color: localVoteCount > 0 ? '#10b981' : localVoteCount < 0 ? '#ef4444' : '#6b7280',
+          fontWeight: 'bold',
+          fontSize: '0.875rem',
+        }}>
+          {localVoteCount}
+        </span>
+        <button
+          onClick={() => handleVote(-1)}
+          disabled={voting}
+          style={{
+            background: localVote === -1 ? 'rgba(239, 68, 68, 0.3)' : 'transparent',
+            border: localVote === -1 ? '2px solid #ef4444' : '2px solid transparent',
+            borderRadius: '0.375rem',
+            padding: '0.25rem',
+            cursor: voting ? 'wait' : 'pointer',
+            color: localVote === -1 ? '#ef4444' : '#6b7280',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          title="Vote down"
+        >
+          <ThumbsDown size={16} fill={localVote === -1 ? '#ef4444' : 'transparent'} />
+        </button>
+      </div>
+
+      {/* Game Number */}
+      <div style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '0.5rem',
+        background: game.status === 'COMPLETED' ? '#10b981' : game.status === 'PLAYING' ? '#f97316' : '#374151',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: '0.875rem',
+        flexShrink: 0,
+      }}>
+        {game.status === 'COMPLETED' ? '✓' : index + 1}
+      </div>
+
+      {/* Game Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ color: '#fff', fontWeight: 'bold', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {game.game?.title || game.customGameName}
+        </div>
+        {game.winnerName && (
+          <div style={{ color: '#fbbf24', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <Trophy size={12} />
+            {game.winnerName}
+          </div>
+        )}
+        {(game.voterCount || 0) > 0 && (
+          <div style={{ color: '#64748b', fontSize: '0.7rem' }}>
+            {game.voterCount} vote{game.voterCount !== 1 ? 's' : ''}
+          </div>
+        )}
+      </div>
+
+      {/* Chaos Level */}
+      {game.chaosLevel && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.125rem', color: '#a855f7' }}>
+          {[...Array(Math.min(game.chaosLevel, 5))].map((_, i) => (
+            <Zap key={i} size={12} fill="#a855f7" />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Snack categories for the roster
+const snackCategories = [
+  { key: 'snacks', label: 'Snacks', icon: Pizza, color: '#f97316', emoji: '🍿' },
+  { key: 'drinks', label: 'Drinks', icon: Wine, color: '#3b82f6', emoji: '🥤' },
+  { key: 'desserts', label: 'Desserts', icon: Cookie, color: '#ec4899', emoji: '🍪' },
+  { key: 'main', label: 'Main Dishes', icon: Soup, color: '#10b981', emoji: '🍕' },
+  { key: 'other', label: 'Other', icon: UtensilsCrossed, color: '#a855f7', emoji: '🎁' },
+];
+
+// Snack Roster Display Component
+function SnackRosterDisplay({ guests, hostName }: { guests: Guest[]; hostName: string }) {
+  // Parse and categorize what people are bringing
+  const categorizedItems: Record<string, { name: string; item: string }[]> = {
+    snacks: [],
+    drinks: [],
+    desserts: [],
+    main: [],
+    other: [],
+  };
+
+  // Simple categorization based on keywords
+  const categorizeItem = (item: string): string => {
+    const lower = item.toLowerCase();
+    if (lower.includes('drink') || lower.includes('soda') || lower.includes('beer') || lower.includes('wine') || lower.includes('juice') || lower.includes('water')) {
+      return 'drinks';
+    }
+    if (lower.includes('dessert') || lower.includes('cake') || lower.includes('cookie') || lower.includes('brownie') || lower.includes('ice cream') || lower.includes('candy')) {
+      return 'desserts';
+    }
+    if (lower.includes('pizza') || lower.includes('wings') || lower.includes('sandwich') || lower.includes('tacos') || lower.includes('dinner') || lower.includes('main')) {
+      return 'main';
+    }
+    if (lower.includes('chips') || lower.includes('snack') || lower.includes('popcorn') || lower.includes('dip') || lower.includes('pretzels') || lower.includes('nuts')) {
+      return 'snacks';
+    }
+    return 'other';
+  };
+
+  guests.forEach((guest) => {
+    if (guest.bringing) {
+      const name = guest.user?.displayName || guest.user?.username || guest.guestName || 'Guest';
+      const category = categorizeItem(guest.bringing);
+      categorizedItems[category].push({ name, item: guest.bringing });
+    }
+  });
+
+  const totalItems = Object.values(categorizedItems).flat().length;
+
+  if (totalItems === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+        <UtensilsCrossed size={40} style={{ marginBottom: '0.5rem', opacity: 0.5 }} />
+        <p style={{ margin: 0, fontSize: '0.9rem' }}>Nobody has signed up to bring anything yet</p>
+        <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem' }}>Be the first to claim something!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+      {snackCategories.map((category) => {
+        const items = categorizedItems[category.key];
+        if (items.length === 0) return null;
+
+        const Icon = category.icon;
+        return (
+          <div
+            key={category.key}
+            style={{
+              background: `${category.color}10`,
+              borderRadius: '0.75rem',
+              border: `2px solid ${category.color}30`,
+              padding: '1rem',
+            }}
+          >
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginBottom: '0.75rem',
+              color: category.color,
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+            }}>
+              <Icon size={18} />
+              {category.label}
+              <span style={{
+                marginLeft: 'auto',
+                background: `${category.color}30`,
+                padding: '0.125rem 0.5rem',
+                borderRadius: '50px',
+                fontSize: '0.75rem',
+              }}>
+                {items.length}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {items.map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '0.5rem',
+                    padding: '0.5rem',
+                    background: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: '0.5rem',
+                  }}
+                >
+                  <span style={{ fontSize: '1rem' }}>{category.emoji}</span>
+                  <div>
+                    <div style={{ color: '#e2e8f0', fontSize: '0.875rem' }}>{item.item}</div>
+                    <div style={{ color: '#64748b', fontSize: '0.7rem' }}>by {item.name}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Snack Signup Modal
+function SnackSignupModal({
+  gameNightId,
+  guests,
+  isHost,
+  onClose,
+  onUpdated,
+}: {
+  gameNightId: string;
+  guests: Guest[];
+  isHost: boolean;
+  onClose: () => void;
+  onUpdated: () => void;
+}) {
+  const [selectedCategory, setSelectedCategory] = useState('snacks');
+  const [customItem, setCustomItem] = useState('');
+  const [selectedGuestId, setSelectedGuestId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // Preset suggestions per category
+  const suggestions: Record<string, string[]> = {
+    snacks: ['Chips & Dip', 'Popcorn', 'Pretzels', 'Mixed Nuts', 'Veggie Tray', 'Cheese Board'],
+    drinks: ['Soda Variety Pack', 'Beer', 'Wine', 'Sparkling Water', 'Juice Boxes', 'Energy Drinks'],
+    desserts: ['Cookies', 'Brownies', 'Cupcakes', 'Ice Cream', 'Candy', 'Fruit Platter'],
+    main: ['Pizza', 'Wings', 'Sandwiches', 'Tacos', 'Sliders', 'Hot Dogs'],
+    other: ['Napkins & Plates', 'Utensils', 'Ice', 'Cups', 'Decorations', 'Games'],
+  };
+
+  const handleSignUp = async () => {
+    if (!customItem.trim() || !selectedGuestId) return;
+
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/game-nights/${gameNightId}/guests`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guestId: selectedGuestId,
+          bringing: customItem,
+        }),
+      });
+
+      if (response.ok) {
+        onUpdated();
+      }
+    } catch (err) {
+      console.error('Failed to sign up:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const currentCategory = snackCategories.find(c => c.key === selectedCategory) || snackCategories[0];
+  const CategoryIcon = currentCategory.icon;
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0, 0, 0, 0.8)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem',
+        zIndex: 1000,
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%',
+          maxWidth: '500px',
+          background: 'linear-gradient(135deg, #1f2937, #111827)',
+          borderRadius: '1rem',
+          border: '2px solid #374151',
+          padding: '1.5rem',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <h3 style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <UtensilsCrossed size={24} style={{ color: '#fbbf24' }} />
+            Sign Up to Bring Something
+          </h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer' }}>
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Who's signing up */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            Who's bringing this?
+          </label>
+          <select
+            value={selectedGuestId || ''}
+            onChange={(e) => setSelectedGuestId(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              background: 'rgba(0, 0, 0, 0.3)',
+              border: '2px solid #374151',
+              borderRadius: '0.5rem',
+              color: '#fff',
+              fontSize: '1rem',
+            }}
+          >
+            <option value="">Select a guest...</option>
+            {guests.map((guest) => {
+              const name = guest.user?.displayName || guest.user?.username || guest.guestName || 'Guest';
+              return (
+                <option key={guest.id} value={guest.id}>
+                  {name} {guest.bringing ? `(already bringing: ${guest.bringing})` : ''}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        {/* Category Selection */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            Category
+          </label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            {snackCategories.map((cat) => {
+              const Icon = cat.icon;
+              const isSelected = selectedCategory === cat.key;
+              return (
+                <button
+                  key={cat.key}
+                  onClick={() => setSelectedCategory(cat.key)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.5rem 1rem',
+                    background: isSelected ? `${cat.color}30` : 'rgba(255, 255, 255, 0.05)',
+                    border: `2px solid ${isSelected ? cat.color : 'transparent'}`,
+                    borderRadius: '0.5rem',
+                    color: isSelected ? cat.color : '#94a3b8',
+                    fontWeight: isSelected ? 'bold' : 'normal',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon size={16} />
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Quick Suggestions */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+            Quick picks:
+          </label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            {suggestions[selectedCategory].map((item) => (
+              <button
+                key={item}
+                onClick={() => setCustomItem(item)}
+                style={{
+                  padding: '0.375rem 0.75rem',
+                  background: customItem === item ? `${currentCategory.color}30` : 'rgba(255, 255, 255, 0.05)',
+                  border: customItem === item ? `1px solid ${currentCategory.color}` : '1px solid transparent',
+                  borderRadius: '0.375rem',
+                  color: customItem === item ? currentCategory.color : '#94a3b8',
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                }}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Custom Item */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            What are you bringing?
+          </label>
+          <input
+            type="text"
+            value={customItem}
+            onChange={(e) => setCustomItem(e.target.value)}
+            placeholder="e.g., Homemade guacamole"
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              background: 'rgba(0, 0, 0, 0.3)',
+              border: `2px solid ${currentCategory.color}50`,
+              borderRadius: '0.5rem',
+              color: '#fff',
+              fontSize: '1rem',
+            }}
+          />
+        </div>
+
+        {/* Submit */}
+        <button
+          onClick={handleSignUp}
+          disabled={!customItem.trim() || !selectedGuestId || saving}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            background: customItem.trim() && selectedGuestId && !saving
+              ? `linear-gradient(135deg, ${currentCategory.color}, ${currentCategory.color}cc)`
+              : '#374151',
+            border: 'none',
+            borderRadius: '0.5rem',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: customItem.trim() && selectedGuestId && !saving ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+          }}
+        >
+          {saving ? (
+            <>
+              <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+              Signing Up...
+            </>
+          ) : (
+            <>
+              <CategoryIcon size={18} />
+              I'm Bringing This!
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Guest Row Component with email status and resend functionality
+function GuestRow({
+  guest,
+  name,
+  guestStatus,
+  gameNightId,
+  isHost,
+  onUpdate,
+}: {
+  guest: Guest;
+  name: string;
+  guestStatus: { color: string; label: string; icon: string };
+  gameNightId: string;
+  isHost: boolean;
+  onUpdate: () => void;
+}) {
+  const [showMenu, setShowMenu] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendResult, setResendResult] = useState<boolean | null>(null);
+
+  const handleResendInvite = async () => {
+    if (!guest.guestEmail) return;
+
+    setResending(true);
+    try {
+      const response = await fetch(`/api/game-nights/${gameNightId}/guests`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guestId: guest.id,
+          action: 'resend_invite',
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setResendResult(data.emailSent);
+        setTimeout(() => {
+          setResendResult(null);
+          setShowMenu(false);
+          onUpdate();
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Failed to resend invite:', err);
+    } finally {
+      setResending(false);
+    }
+  };
+
+  const hasEmail = !!guest.guestEmail;
+  const wasInvitedByEmail = guest.inviteMethod === 'email' && guest.inviteSentAt;
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        padding: '0.75rem',
+        background: 'rgba(255, 255, 255, 0.05)',
+        borderRadius: '0.75rem',
+        position: 'relative',
+      }}
+    >
+      <div style={{
+        width: '40px',
+        height: '40px',
+        borderRadius: '50%',
+        background: '#374151',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#fff',
+        fontWeight: 'bold',
+      }}>
+        {name[0].toUpperCase()}
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ color: '#fff', fontWeight: 'bold' }}>{name}</span>
+          {wasInvitedByEmail && (
+            <span title="Invited via email" style={{ color: '#10b981', display: 'flex', alignItems: 'center' }}>
+              <Mail size={12} />
+            </span>
+          )}
+        </div>
+        {guest.bringing && (
+          <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Bringing: {guest.bringing}</div>
+        )}
+        {hasEmail && !wasInvitedByEmail && guest.status === 'PENDING' && (
+          <div style={{ color: '#fbbf24', fontSize: '0.7rem' }}>
+            No email sent yet
+          </div>
+        )}
+      </div>
+      <span style={{ fontSize: '1.25rem' }}>{guestStatus.icon}</span>
+
+      {/* Menu for hosts */}
+      {isHost && hasEmail && (
+        <div style={{ position: 'relative' }}>
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#6b7280',
+              cursor: 'pointer',
+              padding: '0.25rem',
+            }}
+          >
+            <MoreVertical size={18} />
+          </button>
+
+          {showMenu && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '0.25rem',
+                background: '#1f2937',
+                border: '2px solid #374151',
+                borderRadius: '0.5rem',
+                padding: '0.25rem',
+                minWidth: '160px',
+                zIndex: 50,
+              }}
+            >
+              {resendResult !== null ? (
+                <div style={{
+                  padding: '0.75rem',
+                  color: resendResult ? '#10b981' : '#ef4444',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                }}>
+                  {resendResult ? <Check size={16} /> : <X size={16} />}
+                  {resendResult ? 'Sent!' : 'Failed'}
+                </div>
+              ) : (
+                <button
+                  onClick={handleResendInvite}
+                  disabled={resending}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    width: '100%',
+                    padding: '0.75rem',
+                    background: 'transparent',
+                    border: 'none',
+                    borderRadius: '0.25rem',
+                    color: '#e2e8f0',
+                    cursor: resending ? 'wait' : 'pointer',
+                    fontSize: '0.875rem',
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  {resending ? (
+                    <>
+                      <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw size={16} />
+                      {wasInvitedByEmail ? 'Resend Invite' : 'Send Invite'}
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -1120,21 +2323,37 @@ function AddGuestModal({
 }) {
   const [guestName, setGuestName] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
+  const [sendEmail, setSendEmail] = useState(true);
+  const [personalMessage, setPersonalMessage] = useState('');
   const [adding, setAdding] = useState(false);
+  const [result, setResult] = useState<{ success: boolean; emailSent?: boolean } | null>(null);
 
   const handleAdd = async () => {
     if (!guestName.trim()) return;
 
     setAdding(true);
+    setResult(null);
     try {
       const response = await fetch(`/api/game-nights/${gameNightId}/guests`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guestName, guestEmail }),
+        body: JSON.stringify({
+          guestName,
+          guestEmail: guestEmail || null,
+          sendEmail: sendEmail && !!guestEmail,
+          personalMessage: personalMessage || null,
+        }),
       });
 
       if (response.ok) {
-        onAdded();
+        const data = await response.json();
+        if (sendEmail && guestEmail) {
+          setResult({ success: true, emailSent: data.emailSent });
+          // Wait a moment to show the result before closing
+          setTimeout(() => onAdded(), 1500);
+        } else {
+          onAdded();
+        }
       }
     } catch (err) {
       console.error('Failed to add guest:', err);
@@ -1161,22 +2380,41 @@ function AddGuestModal({
         onClick={(e) => e.stopPropagation()}
         style={{
           width: '100%',
-          maxWidth: '400px',
+          maxWidth: '450px',
           background: 'linear-gradient(135deg, #1f2937, #111827)',
           borderRadius: '1rem',
           border: '2px solid #374151',
           padding: '1.5rem',
+          maxHeight: '90vh',
+          overflowY: 'auto',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
           <h3 style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <UserPlus size={24} style={{ color: '#f97316' }} />
-            Add Guest
+            Invite Guest
           </h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer' }}>
             <X size={24} />
           </button>
         </div>
+
+        {result && (
+          <div style={{
+            padding: '1rem',
+            marginBottom: '1rem',
+            borderRadius: '0.5rem',
+            background: result.emailSent ? 'rgba(16, 185, 129, 0.2)' : 'rgba(251, 191, 36, 0.2)',
+            border: `2px solid ${result.emailSent ? '#10b981' : '#fbbf24'}`,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: result.emailSent ? '#10b981' : '#fbbf24' }}>
+              {result.emailSent ? <Mail size={18} /> : <Check size={18} />}
+              <span style={{ fontWeight: 'bold' }}>
+                {result.emailSent ? 'Invitation sent!' : 'Guest added (email not sent)'}
+              </span>
+            </div>
+          </div>
+        )}
 
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
@@ -1199,15 +2437,15 @@ function AddGuestModal({
           />
         </div>
 
-        <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-            Email (optional)
+            Email
           </label>
           <input
             type="email"
             value={guestEmail}
             onChange={(e) => setGuestEmail(e.target.value)}
-            placeholder="For sending invite link"
+            placeholder="For sending invitation"
             style={{
               width: '100%',
               padding: '0.75rem',
@@ -1220,22 +2458,109 @@ function AddGuestModal({
           />
         </div>
 
+        {guestEmail && (
+          <>
+            <div style={{
+              marginBottom: '1rem',
+              padding: '0.75rem',
+              background: sendEmail ? 'rgba(16, 185, 129, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+              borderRadius: '0.5rem',
+              border: sendEmail ? '2px solid rgba(16, 185, 129, 0.3)' : '2px solid transparent',
+            }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                cursor: 'pointer',
+              }}>
+                <input
+                  type="checkbox"
+                  checked={sendEmail}
+                  onChange={(e) => setSendEmail(e.target.checked)}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    accentColor: '#10b981',
+                  }}
+                />
+                <div>
+                  <div style={{ color: sendEmail ? '#10b981' : '#94a3b8', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Mail size={16} />
+                    Send Email Invitation
+                  </div>
+                  <div style={{ color: '#64748b', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                    They'll get a beautiful invite with all the details
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            {sendEmail && (
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', color: '#94a3b8', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  Personal Message (optional)
+                </label>
+                <textarea
+                  value={personalMessage}
+                  onChange={(e) => setPersonalMessage(e.target.value)}
+                  placeholder="Add a personal touch to your invitation..."
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '2px solid #374151',
+                    borderRadius: '0.5rem',
+                    color: '#fff',
+                    fontSize: '0.9rem',
+                    resize: 'vertical',
+                  }}
+                />
+              </div>
+            )}
+          </>
+        )}
+
         <button
           onClick={handleAdd}
-          disabled={!guestName.trim() || adding}
+          disabled={!guestName.trim() || adding || !!result}
           style={{
             width: '100%',
             padding: '0.75rem',
-            background: guestName.trim() && !adding ? 'linear-gradient(135deg, #f97316, #ea580c)' : '#374151',
+            background: guestName.trim() && !adding && !result ? 'linear-gradient(135deg, #f97316, #ea580c)' : '#374151',
             border: 'none',
             borderRadius: '0.5rem',
             color: '#fff',
             fontWeight: 'bold',
-            cursor: guestName.trim() && !adding ? 'pointer' : 'not-allowed',
+            cursor: guestName.trim() && !adding && !result ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
           }}
         >
-          {adding ? 'Adding...' : 'Add to Squad'}
+          {adding ? (
+            <>
+              <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+              {sendEmail && guestEmail ? 'Sending Invite...' : 'Adding...'}
+            </>
+          ) : result ? (
+            'Done!'
+          ) : sendEmail && guestEmail ? (
+            <>
+              <Mail size={18} />
+              Send Invitation
+            </>
+          ) : (
+            'Add to Squad'
+          )}
         </button>
+
+        {!guestEmail && (
+          <p style={{ color: '#64748b', fontSize: '0.75rem', textAlign: 'center', marginTop: '0.75rem' }}>
+            Tip: Add an email to send them a direct invitation
+          </p>
+        )}
       </div>
     </div>
   );

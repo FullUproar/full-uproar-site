@@ -519,6 +519,213 @@ ${BASE_URL}/support/ticket/${data.accessToken}
   }
 }
 
+// ============================================
+// GAME NIGHT EMAIL INVITATIONS
+// ============================================
+
+interface GameNightInviteData {
+  guestName: string;
+  guestEmail: string;
+  hostName: string;
+  gameNightTitle: string;
+  gameNightDate: string;
+  gameNightTime: string | null;
+  gameNightLocation: string | null;
+  gameNightVibe: string;
+  inviteToken: string;
+  personalMessage?: string;
+}
+
+const vibeEmoji: Record<string, string> = {
+  CHILL: '☕',
+  COMPETITIVE: '🔥',
+  CHAOS: '⚡',
+  PARTY: '🎉',
+  COZY: '💖',
+};
+
+const vibeColors: Record<string, string> = {
+  CHILL: '#60a5fa',
+  COMPETITIVE: '#f97316',
+  CHAOS: '#a855f7',
+  PARTY: '#ec4899',
+  COZY: '#f472b6',
+};
+
+/**
+ * Send game night invitation email to a guest
+ */
+export async function sendGameNightInvite(data: GameNightInviteData): Promise<boolean> {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn('Email not configured - skipping game night invitation');
+    return false;
+  }
+
+  const vibeColor = vibeColors[data.gameNightVibe] || '#f97316';
+  const emoji = vibeEmoji[data.gameNightVibe] || '🎮';
+  const vibeName = data.gameNightVibe.charAt(0) + data.gameNightVibe.slice(1).toLowerCase();
+  const rsvpUrl = `${BASE_URL}/join/${data.inviteToken}`;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, ${vibeColor} 0%, ${vibeColor}cc 100%); padding: 35px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 10px;">${emoji}</div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: bold;">
+                You're Invited!
+              </h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">
+                ${data.hostName} wants you at their game night
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="color: #e2e8f0; font-size: 18px; margin: 0 0 25px 0;">
+                Hey ${data.guestName}!
+              </p>
+
+              ${data.personalMessage ? `
+              <div style="background-color: rgba(249, 115, 22, 0.1); border-radius: 8px; padding: 20px; border-left: 4px solid #f97316; margin-bottom: 25px;">
+                <p style="color: #fdba74; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
+                  Message from ${data.hostName}
+                </p>
+                <p style="color: #e2e8f0; font-size: 15px; line-height: 1.6; margin: 0; font-style: italic;">
+                  "${data.personalMessage}"
+                </p>
+              </div>
+              ` : ''}
+
+              <!-- Event Details Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 12px; margin-bottom: 30px; border: 2px solid ${vibeColor}33;">
+                <tr>
+                  <td style="padding: 25px;">
+                    <h2 style="color: #fff; font-size: 22px; margin: 0 0 20px 0; text-align: center;">
+                      ${data.gameNightTitle}
+                    </h2>
+
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #94a3b8; font-size: 14px;">📅 Date:</span>
+                          <span style="color: #e2e8f0; font-size: 14px; margin-left: 10px; font-weight: 500;">${data.gameNightDate}</span>
+                        </td>
+                      </tr>
+                      ${data.gameNightTime ? `
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #94a3b8; font-size: 14px;">🕖 Time:</span>
+                          <span style="color: #e2e8f0; font-size: 14px; margin-left: 10px; font-weight: 500;">${data.gameNightTime}</span>
+                        </td>
+                      </tr>
+                      ` : ''}
+                      ${data.gameNightLocation ? `
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #94a3b8; font-size: 14px;">📍 Where:</span>
+                          <span style="color: #e2e8f0; font-size: 14px; margin-left: 10px; font-weight: 500;">${data.gameNightLocation}</span>
+                        </td>
+                      </tr>
+                      ` : ''}
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #94a3b8; font-size: 14px;">${emoji} Vibe:</span>
+                          <span style="color: ${vibeColor}; font-size: 14px; margin-left: 10px; font-weight: bold;">${vibeName}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0; text-align: center;">
+                Let ${data.hostName} know if you can make it!
+              </p>
+
+              <!-- RSVP Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+                <tr>
+                  <td align="center">
+                    <a href="${rsvpUrl}"
+                       style="display: inline-block; background: linear-gradient(135deg, ${vibeColor}, ${vibeColor}cc); color: #ffffff; padding: 16px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px ${vibeColor}40;">
+                      RSVP Now
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
+                Click the button above to let everyone know if you're in, maybe, or can't make it.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
+              <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+                Powered by <span style="color: #f97316; font-weight: bold;">Full Uproar</span> Game Nights<br>
+                <span style="color: #94a3b8;">Where chaos becomes unforgettable memories</span>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  const text = `
+Hey ${data.guestName}!
+
+${data.hostName} has invited you to their game night!
+
+${data.personalMessage ? `Message from ${data.hostName}:\n"${data.personalMessage}"\n\n` : ''}
+EVENT DETAILS:
+- ${data.gameNightTitle}
+- Date: ${data.gameNightDate}
+${data.gameNightTime ? `- Time: ${data.gameNightTime}` : ''}
+${data.gameNightLocation ? `- Location: ${data.gameNightLocation}` : ''}
+- Vibe: ${vibeName} ${emoji}
+
+RSVP here: ${rsvpUrl}
+
+Let ${data.hostName} know if you can make it!
+
+- Full Uproar Game Nights
+`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Full Uproar Game Nights" <${process.env.GMAIL_USER}>`,
+      to: data.guestEmail,
+      subject: `${emoji} ${data.hostName} invited you to ${data.gameNightTitle}!`,
+      text,
+      html,
+    });
+    console.log(`Game night invitation sent to ${data.guestEmail}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send game night invitation:', error);
+    return false;
+  }
+}
+
 export async function sendCustomerReplyNotification(data: CustomerReplyData): Promise<boolean> {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     console.warn('Email not configured - skipping customer reply notification');
