@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import {
   MessageSquare, Clock, CheckCircle,
   AlertCircle, Search, User,
-  Package, CreditCard, Send, X, Plus
+  Package, CreditCard, Send, X, Plus, RefreshCw
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { adminStyles } from '../styles/adminStyles';
 import { useToastStore } from '@/lib/toastStore';
+
+const POLL_INTERVAL = 60000; // 60 seconds
 
 interface Ticket {
   id: number;
@@ -78,10 +80,95 @@ export default function SupportPage() {
     totalResolved: 0,
     avgResponseTime: 0
   });
+  const [isLive, setIsLive] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const previousTicketsRef = useRef<Ticket[]>([]);
 
+  // Manual refresh function
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await pollTickets();
+    setIsRefreshing(false);
+    addToast({ message: 'Tickets refreshed', type: 'success' });
+  };
+
+  // Scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Silent fetch for polling (doesn't reset loading state)
+  const pollTickets = useCallback(async () => {
+    try {
+      const params = new URLSearchParams({
+        ...(statusFilter !== 'all' && { status: statusFilter }),
+        ...(priorityFilter !== 'all' && { priority: priorityFilter }),
+        ...(categoryFilter !== 'all' && { category: categoryFilter })
+      });
+
+      const response = await fetch(`/api/admin/support/tickets?${params}`);
+      const data = await response.json();
+
+      const newTickets: Ticket[] = data.tickets || [];
+
+      // Check for new tickets or messages
+      const previousIds = new Set(previousTicketsRef.current.map(t => t.id));
+      const newTicketCount = newTickets.filter(t => !previousIds.has(t.id)).length;
+
+      // Check for new messages on existing tickets
+      let newMessageCount = 0;
+      newTickets.forEach(newTicket => {
+        const oldTicket = previousTicketsRef.current.find(t => t.id === newTicket.id);
+        if (oldTicket && newTicket.messages.length > oldTicket.messages.length) {
+          newMessageCount += newTicket.messages.length - oldTicket.messages.length;
+        }
+      });
+
+      // Show toast for new activity
+      if (newTicketCount > 0) {
+        addToast({
+          message: `🎫 ${newTicketCount} new ticket${newTicketCount > 1 ? 's' : ''} received!`,
+          type: 'info'
+        });
+      } else if (newMessageCount > 0) {
+        addToast({
+          message: `💬 ${newMessageCount} new message${newMessageCount > 1 ? 's' : ''} received!`,
+          type: 'info'
+        });
+      }
+
+      // Update selected ticket if it has new messages
+      if (selectedTicket) {
+        const updatedSelectedTicket = newTickets.find(t => t.id === selectedTicket.id);
+        if (updatedSelectedTicket && updatedSelectedTicket.messages.length > selectedTicket.messages.length) {
+          setSelectedTicket(updatedSelectedTicket);
+          setTimeout(scrollToBottom, 100);
+        }
+      }
+
+      previousTicketsRef.current = newTickets;
+      setTickets(newTickets);
+      setStats(data.stats || stats);
+      setLastUpdate(new Date());
+    } catch (error) {
+      console.error('Error polling tickets:', error);
+    }
+  }, [statusFilter, priorityFilter, categoryFilter, selectedTicket, addToast, stats]);
+
+  // Initial fetch
   useEffect(() => {
     fetchTickets();
   }, [statusFilter, priorityFilter, categoryFilter]);
+
+  // Polling interval
+  useEffect(() => {
+    if (!isLive) return;
+
+    const interval = setInterval(pollTickets, POLL_INTERVAL);
+    return () => clearInterval(interval);
+  }, [isLive, pollTickets]);
 
   const fetchTickets = async () => {
     try {
@@ -90,17 +177,20 @@ export default function SupportPage() {
         ...(priorityFilter !== 'all' && { priority: priorityFilter }),
         ...(categoryFilter !== 'all' && { category: categoryFilter })
       });
-      
+
       const response = await fetch(`/api/admin/support/tickets?${params}`);
       const data = await response.json();
-      
-      setTickets(data.tickets || []);
+
+      const fetchedTickets = data.tickets || [];
+      previousTicketsRef.current = fetchedTickets;
+      setTickets(fetchedTickets);
       setStats(data.stats || {
         totalOpen: 0,
         totalInProgress: 0,
         totalResolved: 0,
         avgResponseTime: 0
       });
+      setLastUpdate(new Date());
     } catch (error) {
       console.error('Error fetching tickets:', error);
     } finally {
@@ -237,12 +327,80 @@ export default function SupportPage() {
   return (
     <div style={adminStyles.container}>
       <div style={adminStyles.content}>
-        <div style={adminStyles.header}>
-          <h1 style={adminStyles.title}>Customer Support</h1>
-          <p style={adminStyles.subtitle}>
-            Manage support tickets and customer inquiries
-          </p>
+        <div style={{ ...adminStyles.header, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h1 style={adminStyles.title}>Customer Support</h1>
+            <p style={adminStyles.subtitle}>
+              Manage support tickets and customer inquiries
+            </p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Live indicator */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 12px',
+              background: isLive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+              borderRadius: '8px',
+              border: `1px solid ${isLive ? 'rgba(16, 185, 129, 0.3)' : 'rgba(107, 114, 128, 0.3)'}`,
+              cursor: 'pointer',
+            }}
+            onClick={() => setIsLive(!isLive)}
+            title={isLive ? 'Click to pause auto-refresh' : 'Click to enable auto-refresh'}
+            >
+              <div style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: isLive ? '#10b981' : '#6b7280',
+                animation: isLive ? 'pulse 2s infinite' : 'none',
+              }} />
+              <span style={{ fontSize: '13px', color: isLive ? '#10b981' : '#6b7280', fontWeight: '500' }}>
+                {isLive ? 'Live' : 'Paused'}
+              </span>
+              <span style={{ fontSize: '11px', color: '#64748b' }}>
+                {formatDistanceToNow(lastUpdate, { addSuffix: true })}
+              </span>
+            </div>
+
+            {/* Refresh button */}
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 16px',
+                background: '#f97316',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isRefreshing ? 'not-allowed' : 'pointer',
+                opacity: isRefreshing ? 0.7 : 1,
+                fontWeight: '600',
+                fontSize: '14px',
+              }}
+            >
+              <RefreshCw size={16} style={{
+                animation: isRefreshing ? 'spin 1s linear infinite' : 'none',
+              }} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            </button>
+          </div>
         </div>
+
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
 
         {/* Stats Cards */}
         <div style={{ 
@@ -528,20 +686,20 @@ export default function SupportPage() {
                     style={{
                       marginBottom: '16px',
                       padding: '16px',
-                      background: message.senderType === 'customer' 
+                      background: message.senderType === 'customer'
                         ? 'rgba(59, 130, 246, 0.1)'
                         : 'rgba(249, 115, 22, 0.1)',
                       borderRadius: '8px',
                       borderLeft: `4px solid ${message.senderType === 'customer' ? '#3b82f6' : '#f97316'}`
                     }}
                   >
-                    <div style={{ 
-                      display: 'flex', 
+                    <div style={{
+                      display: 'flex',
                       justifyContent: 'space-between',
                       marginBottom: '8px'
                     }}>
-                      <p style={{ 
-                        fontWeight: '600', 
+                      <p style={{
+                        fontWeight: '600',
                         color: message.senderType === 'customer' ? '#3b82f6' : '#f97316',
                         fontSize: '14px'
                       }}>
@@ -551,8 +709,8 @@ export default function SupportPage() {
                         {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
                       </p>
                     </div>
-                    <p style={{ 
-                      fontSize: '14px', 
+                    <p style={{
+                      fontSize: '14px',
                       color: '#e2e8f0',
                       whiteSpace: 'pre-wrap'
                     }}>
@@ -560,6 +718,7 @@ export default function SupportPage() {
                     </p>
                   </div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
 
               {/* Reply Box */}
