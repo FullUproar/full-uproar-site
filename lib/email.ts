@@ -31,7 +31,7 @@ const categoryLabels: Record<string, string> = {
 
 interface TicketEmailData {
   ticketNumber: string;
-  accessToken: string;
+  accessToken: string | null;
   customerName: string;
   customerEmail: string;
   category: string;
