@@ -520,9 +520,15 @@ export default function MultiplayerRoom() {
     setTimeout(() => setShowCopied(false), 2000);
   }, [room]);
 
+  // Track if we've auto-rejoined on this connection
+  const hasRejoined = useRef(false);
+
   // Connect to PartyKit
   useEffect(() => {
     let cancelled = false;
+    // Reset rejoin flag for new connection
+    hasRejoined.current = false;
+
     const protocol = PARTYKIT_HOST.startsWith('localhost') ? 'ws' : 'wss';
     const url = `${protocol}://${PARTYKIT_HOST}/party/${room}`;
 
@@ -594,8 +600,29 @@ export default function MultiplayerRoom() {
     switch (message.type) {
       case 'gameState':
         setGameState(message.state);
-        // Check if we can reconnect to an existing session
-        if (message.state && !playerId) {
+
+        // If we already have a playerId in state, auto-rejoin to re-associate this connection
+        if (message.state && playerId && playerName && !hasRejoined.current) {
+          const existingPlayer = message.state.players.find(
+            (p: Player) => p.id === playerId
+          );
+          if (existingPlayer) {
+            console.log('[PartyKit] Auto-rejoining as', playerName);
+            hasRejoined.current = true;
+            // Use setTimeout to ensure the WebSocket is ready
+            setTimeout(() => {
+              if (wsRef.current?.readyState === WebSocket.OPEN) {
+                wsRef.current.send(JSON.stringify({
+                  type: 'rejoinGame',
+                  playerId,
+                  playerName
+                }));
+              }
+            }, 100);
+          }
+        }
+        // Check if we can reconnect to an existing session (for new connections without playerId)
+        else if (message.state && !playerId) {
           try {
             const stored = localStorage.getItem(storageKey);
             if (stored) {
