@@ -566,8 +566,8 @@ export default function MultiplayerRoom() {
       setIsConnecting(false);
       console.log('[PartyKit] Disconnected');
 
-      // Auto-reconnect if we were in a game
-      if (playerId && reconnectAttempts < 5) {
+      // Auto-reconnect if we were in a game (use ref to avoid stale closure)
+      if (playerIdRef.current && reconnectAttempts < 5) {
         console.log(`[PartyKit] Attempting reconnect (${reconnectAttempts + 1}/5)...`);
         setReconnectAttempts(prev => prev + 1);
         reconnectTimeoutRef.current = setTimeout(() => {
@@ -606,7 +606,8 @@ export default function MultiplayerRoom() {
         reconnectTimeoutRef.current = null;
       }
     };
-  }, [room, playerId, reconnectAttempts]);
+    // Note: playerId intentionally NOT in deps - we use playerIdRef to avoid reconnecting on join
+  }, [room, reconnectAttempts]);
 
   // Handle server messages
   const handleServerMessage = (message: ServerMessage) => {
