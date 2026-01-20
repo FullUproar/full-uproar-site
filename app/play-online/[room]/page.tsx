@@ -485,6 +485,19 @@ export default function MultiplayerRoom() {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Refs to track current values for use in closures
+  const playerIdRef = useRef<string | null>(null);
+  const playerNameRef = useRef<string>('');
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    playerIdRef.current = playerId;
+  }, [playerId]);
+
+  useEffect(() => {
+    playerNameRef.current = playerName;
+  }, [playerName]);
+
   // Get storage key for this room
   const storageKey = `fu-game-room-${room.toUpperCase()}`;
 
@@ -601,28 +614,34 @@ export default function MultiplayerRoom() {
       case 'gameState':
         setGameState(message.state);
 
+        // Use refs to get current values (avoids stale closure issues)
+        const currentPlayerId = playerIdRef.current;
+        const currentPlayerName = playerNameRef.current;
+
+        console.log('[PartyKit] gameState received, playerId:', currentPlayerId, 'playerName:', currentPlayerName, 'hasRejoined:', hasRejoined.current);
+
         // If we already have a playerId in state, auto-rejoin to re-associate this connection
-        if (message.state && playerId && playerName && !hasRejoined.current) {
+        if (message.state && currentPlayerId && currentPlayerName && !hasRejoined.current) {
           const existingPlayer = message.state.players.find(
-            (p: Player) => p.id === playerId
+            (p: Player) => p.id === currentPlayerId
           );
           if (existingPlayer) {
-            console.log('[PartyKit] Auto-rejoining as', playerName);
+            console.log('[PartyKit] Auto-rejoining as', currentPlayerName);
             hasRejoined.current = true;
             // Use setTimeout to ensure the WebSocket is ready
             setTimeout(() => {
               if (wsRef.current?.readyState === WebSocket.OPEN) {
                 wsRef.current.send(JSON.stringify({
                   type: 'rejoinGame',
-                  playerId,
-                  playerName
+                  playerId: currentPlayerId,
+                  playerName: currentPlayerName
                 }));
               }
             }, 100);
           }
         }
         // Check if we can reconnect to an existing session (for new connections without playerId)
-        else if (message.state && !playerId) {
+        else if (message.state && !currentPlayerId) {
           try {
             const stored = localStorage.getItem(storageKey);
             if (stored) {
