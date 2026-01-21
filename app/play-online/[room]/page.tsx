@@ -585,8 +585,10 @@ export default function MultiplayerRoom() {
 
     ws.onmessage = (event) => {
       if (cancelled) return;
+      console.log('[PartyKit] Raw message received, length:', event.data.length);
       try {
         const message: ServerMessage = JSON.parse(event.data);
+        console.log('[PartyKit] Parsed message type:', message.type);
         handleServerMessage(message);
       } catch (err) {
         console.error('[PartyKit] Parse error:', err);
@@ -692,7 +694,10 @@ export default function MultiplayerRoom() {
   // Send message to server
   const send = useCallback((message: ClientMessage) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
+      console.log('[PartyKit] Sending message:', message.type, 'action' in message ? (message as any).action?.type : '');
       wsRef.current.send(JSON.stringify(message));
+    } else {
+      console.error('[PartyKit] Cannot send - WebSocket not open, state:', wsRef.current?.readyState);
     }
   }, []);
 
