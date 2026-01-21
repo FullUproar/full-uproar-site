@@ -127,6 +127,14 @@ export function applyAction(
       result = handleRoll(state, action);
       break;
 
+    case 'claimLead':
+      result = handleClaimLead(state, action);
+      break;
+
+    case 'transferLead':
+      result = handleTransferLead(state, action);
+      break;
+
     default:
       result = { state, events: [] };
   }
@@ -1179,4 +1187,83 @@ export function removePlayer(
   }
 
   return { state: finalState, events };
+}
+
+/**
+ * Claim lead when current lead is disconnected
+ */
+function handleClaimLead(
+  state: GameState,
+  action: GameAction
+): StateTransitionResult {
+  const timestamp = now();
+  const claimerId = action.playerId;
+
+  // Find current lead
+  const currentLead = state.players.find((p) => p.isLead);
+
+  // Can only claim if current lead is disconnected
+  if (currentLead && currentLead.presence === 'active') {
+    // Lead is still active - can't claim without their permission
+    return { state, events: [] };
+  }
+
+  // Find claimer
+  const claimer = findPlayer(state, claimerId);
+  if (!claimer || claimer.presence !== 'active') {
+    return { state, events: [] };
+  }
+
+  // Transfer lead
+  let newState = state;
+  if (currentLead) {
+    newState = updatePlayer(newState, currentLead.id, { isLead: false });
+  }
+  newState = updatePlayer(newState, claimerId, { isLead: true });
+  newState = {
+    ...newState,
+    roles: { ...newState.roles, lead: claimerId },
+  };
+
+  return {
+    state: newState,
+    events: [{ type: 'leadChanged', playerId: claimerId, timestamp }],
+  };
+}
+
+/**
+ * Transfer lead to another player (only current lead can do this)
+ */
+function handleTransferLead(
+  state: GameState,
+  action: GameAction
+): StateTransitionResult {
+  const timestamp = now();
+  const currentLeadId = action.playerId;
+  const targetPlayerId = (action.action as { type: 'transferLead'; targetPlayerId: string }).targetPlayerId;
+
+  // Verify caller is current lead
+  const currentLead = findPlayer(state, currentLeadId);
+  if (!currentLead?.isLead) {
+    return { state, events: [] };
+  }
+
+  // Find target player
+  const targetPlayer = findPlayer(state, targetPlayerId);
+  if (!targetPlayer || targetPlayer.presence !== 'active') {
+    return { state, events: [] };
+  }
+
+  // Transfer lead
+  let newState = updatePlayer(state, currentLeadId, { isLead: false });
+  newState = updatePlayer(newState, targetPlayerId, { isLead: true });
+  newState = {
+    ...newState,
+    roles: { ...newState.roles, lead: targetPlayerId },
+  };
+
+  return {
+    state: newState,
+    events: [{ type: 'leadChanged', playerId: targetPlayerId, timestamp }],
+  };
 }

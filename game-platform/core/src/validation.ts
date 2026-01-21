@@ -52,7 +52,7 @@ export function validateAction(
 
 function validateGameStatus(state: GameState, action: Action): ValidationResult {
   // Actions allowed regardless of status
-  const alwaysAllowed: ActionType[] = ['setPresence'];
+  const alwaysAllowed: ActionType[] = ['setPresence', 'claimLead', 'transferLead'];
 
   // Actions allowed in lobby
   const lobbyAllowed: ActionType[] = ['startGame', 'kickPlayer', 'setPresence'];

@@ -356,6 +356,8 @@ export type ActionType =
   | 'restartGame'
   | 'kickPlayer'
   | 'setPresence'
+  | 'claimLead'
+  | 'transferLead'
   | 'submitCards';
 
 /**
@@ -382,6 +384,9 @@ export type Action =
   | { type: 'kickPlayer'; playerId: string }
   // Player presence
   | { type: 'setPresence'; presence: PlayerPresence }
+  // Lead management
+  | { type: 'claimLead' }
+  | { type: 'transferLead'; targetPlayerId: string }
   // CAH-specific compound action
   | { type: 'submitCards'; cardIds: string[] };
 

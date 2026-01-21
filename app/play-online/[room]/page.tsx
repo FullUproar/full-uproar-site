@@ -1782,6 +1782,82 @@ export default function MultiplayerRoom() {
                     ))}
                 </div>
               </div>
+
+              {/* Host Management */}
+              <div style={styles.section}>
+                <h3 style={styles.sectionTitle}>Host</h3>
+                {(() => {
+                  const hostPlayer = gameState.players.find(p => p.isLead);
+                  const isHost = currentPlayer?.isLead;
+                  const hostDisconnected = hostPlayer?.presence === 'disconnected';
+
+                  return (
+                    <div style={{ fontSize: '13px' }}>
+                      <div style={{ color: '#9ca3af', marginBottom: '8px' }}>
+                        {hostPlayer?.name || 'Unknown'}
+                        {hostDisconnected && (
+                          <span style={{ color: '#ef4444', marginLeft: '4px' }}>
+                            (offline)
+                          </span>
+                        )}
+                        {hostPlayer?.presence === 'active' && (
+                          <span style={{ color: '#22c55e', marginLeft: '4px' }}>
+                            (online)
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Claim Host button - for non-hosts when host is disconnected */}
+                      {!isHost && hostDisconnected && (
+                        <button
+                          style={{
+                            ...styles.button,
+                            ...styles.buttonSecondary,
+                            padding: '6px 12px',
+                            fontSize: '12px',
+                            width: '100%',
+                          }}
+                          onClick={() => send({ type: 'action', action: { type: 'claimLead' } })}
+                        >
+                          Claim Host
+                        </button>
+                      )}
+
+                      {/* Transfer Host - for current host */}
+                      {isHost && gameState.players.filter(p => p.presence === 'active' && p.id !== playerId).length > 0 && (
+                        <div style={{ marginTop: '8px' }}>
+                          <select
+                            style={{
+                              width: '100%',
+                              padding: '6px 8px',
+                              background: 'rgba(30, 41, 59, 0.8)',
+                              border: '1px solid rgba(249, 115, 22, 0.3)',
+                              borderRadius: '6px',
+                              color: '#e2e8f0',
+                              fontSize: '12px',
+                              cursor: 'pointer',
+                            }}
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                send({ type: 'action', action: { type: 'transferLead', targetPlayerId: e.target.value } });
+                                e.target.value = '';
+                              }
+                            }}
+                            defaultValue=""
+                          >
+                            <option value="" disabled>Transfer host to...</option>
+                            {gameState.players
+                              .filter(p => p.presence === 'active' && p.id !== playerId)
+                              .map(p => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                              ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
             </aside>
           </>
         )}
