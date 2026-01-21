@@ -107,46 +107,51 @@ export default class GameRoom implements Party.Server {
 
   // Called when a message is received from a client
   async onMessage(message: string, sender: Party.Connection) {
-    let parsed: ClientMessage;
-
     try {
-      parsed = JSON.parse(message);
-    } catch {
-      this.sendError(sender, 'Invalid message format');
-      return;
-    }
+      let parsed: ClientMessage;
 
-    const connState = this.state.connections.get(sender.id);
-    if (!connState) {
-      this.sendError(sender, 'Connection not found');
-      return;
-    }
+      try {
+        parsed = JSON.parse(message);
+      } catch {
+        this.sendError(sender, 'Invalid message format');
+        return;
+      }
 
-    console.log(`[${this.room.id}] Message from ${sender.id}:`, parsed.type);
+      const connState = this.state.connections.get(sender.id);
+      if (!connState) {
+        this.sendError(sender, 'Connection not found');
+        return;
+      }
 
-    switch (parsed.type) {
-      case 'createGame':
-        await this.handleCreateGame(sender, connState, parsed.playerName);
-        break;
+      console.log(`[${this.room.id}] Message from ${sender.id}:`, parsed.type);
 
-      case 'joinGame':
-        await this.handleJoinGame(sender, connState, parsed.playerName);
-        break;
+      switch (parsed.type) {
+        case 'createGame':
+          await this.handleCreateGame(sender, connState, parsed.playerName);
+          break;
 
-      case 'rejoinGame':
-        await this.handleRejoinGame(sender, connState, parsed.playerId, parsed.playerName);
-        break;
+        case 'joinGame':
+          await this.handleJoinGame(sender, connState, parsed.playerName);
+          break;
 
-      case 'leaveGame':
-        await this.handleLeaveGame(sender, connState);
-        break;
+        case 'rejoinGame':
+          await this.handleRejoinGame(sender, connState, parsed.playerId, parsed.playerName);
+          break;
 
-      case 'action':
-        await this.handleAction(sender, connState, parsed.action);
-        break;
+        case 'leaveGame':
+          await this.handleLeaveGame(sender, connState);
+          break;
 
-      default:
-        this.sendError(sender, `Unknown message type: ${(parsed as any).type}`);
+        case 'action':
+          await this.handleAction(sender, connState, parsed.action);
+          break;
+
+        default:
+          this.sendError(sender, `Unknown message type: ${(parsed as any).type}`);
+      }
+    } catch (err) {
+      console.error(`[${this.room.id}] onMessage error:`, err);
+      this.sendError(sender, `Server error: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   }
 
@@ -330,30 +335,39 @@ export default class GameRoom implements Party.Server {
     connState: ConnectionState,
     action: GameAction['action']
   ) {
-    if (!connState.playerId || !this.state.gameState) {
-      this.sendError(connection, 'Not in a game');
-      return;
+    try {
+      console.log(`[${this.room.id}] handleAction called, playerId: ${connState.playerId}, hasGameState: ${!!this.state.gameState}`);
+
+      if (!connState.playerId || !this.state.gameState) {
+        console.log(`[${this.room.id}] Not in a game - playerId: ${connState.playerId}`);
+        this.sendError(connection, 'Not in a game');
+        return;
+      }
+
+      console.log(`[${this.room.id}] Processing action: ${action.type}`);
+      const startTime = Date.now();
+
+      const result = this.applyGameAction(connState.playerId, action);
+
+      if (!result) {
+        console.log(`[${this.room.id}] Action failed - applyGameAction returned null`);
+        this.sendError(connection, 'Action failed');
+        return;
+      }
+
+      console.log(`[${this.room.id}] Action applied in ${Date.now() - startTime}ms`);
+
+      await this.persistState();
+      console.log(`[${this.room.id}] State persisted in ${Date.now() - startTime}ms`);
+
+      this.broadcastGameState();
+      console.log(`[${this.room.id}] State broadcast in ${Date.now() - startTime}ms`);
+
+      this.broadcastEvents(result.events);
+    } catch (err) {
+      console.error(`[${this.room.id}] handleAction error:`, err);
+      this.sendError(connection, `Action error: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
-
-    console.log(`[${this.room.id}] Processing action: ${action.type}`);
-    const startTime = Date.now();
-
-    const result = this.applyGameAction(connState.playerId, action);
-
-    if (!result) {
-      this.sendError(connection, 'Action failed');
-      return;
-    }
-
-    console.log(`[${this.room.id}] Action applied in ${Date.now() - startTime}ms`);
-
-    await this.persistState();
-    console.log(`[${this.room.id}] State persisted in ${Date.now() - startTime}ms`);
-
-    this.broadcastGameState();
-    console.log(`[${this.room.id}] State broadcast in ${Date.now() - startTime}ms`);
-
-    this.broadcastEvents(result.events);
   }
 
   // =============================================================================
