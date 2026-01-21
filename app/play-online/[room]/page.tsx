@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import type {
   ClientGameState,
   GameEvent,
@@ -590,7 +590,9 @@ function CardComponent({
 export default function MultiplayerRoom() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const room = params.room as string;
+  const customGameId = searchParams.get('game') || undefined;
 
   // Connection state
   const [isConnected, setIsConnected] = useState(false);
@@ -841,7 +843,7 @@ export default function MultiplayerRoom() {
   // Create game
   const handleCreateGame = () => {
     if (!playerName.trim()) return;
-    send({ type: 'createGame', playerName: playerName.trim() });
+    send({ type: 'createGame', playerName: playerName.trim(), gameId: customGameId });
   };
 
   // Join game

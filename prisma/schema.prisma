@@ -423,6 +423,9 @@ model User {
   ritualsCreated      Ritual[]        @relation("RitualsCreated")
   ritualMemberships   RitualRegular[] @relation("RitualRegulars")
 
+  // Game Kit relations
+  createdCustomGames  CustomGameDefinition[] @relation("CreatedCustomGames")
+
   @@index([clerkId])
   @@index([email])
   @@index([username])
@@ -1578,4 +1581,104 @@ enum RecurrenceType {
   BIWEEKLY
   MONTHLY
   CUSTOM
+}
+
+// =============================================================================
+// GAME CONSTRUCTION KIT
+// =============================================================================
+
+enum CustomGameStatus {
+  DRAFT
+  TESTING
+  PUBLISHED
+  ARCHIVED
+}
+
+// Templates for game types (CAH-style, Trivia, etc.)
+model GameTemplate {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  description     String    @db.Text
+  category        String    // "party", "trivia", "voting"
+  iconEmoji       String?   // "📝", "❓", "🎭"
+  baseConfig      Json      // GameDefinition without cards
+  cardTypes       String[]  // ["black", "white"]
+  editorHints     Json?     // UI configuration for editor
+  isOfficial      Boolean   @default(true)
+  sortOrder       Int       @default(0)
+  createdAt       DateTime  @default(now())
+
+  games           CustomGameDefinition[]
+
+  @@index([category])
+}
+
+// User-created game definitions
+model CustomGameDefinition {
+  id              String    @id @default(cuid())
+  creatorId       String
+  creator         User      @relation("CreatedCustomGames", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  name            String
+  slug            String
+  description     String?   @db.Text
+  coverImageUrl   String?
+
+  minPlayers      Int       @default(3)
+  maxPlayers      Int       @default(10)
+
+  templateId      String
+  template        GameTemplate @relation(fields: [templateId], references: [id])
+  gameConfig      Json      // Full GameDefinition (phases, slots, etc.)
+
+  status          CustomGameStatus @default(DRAFT)
+  shareToken      String    @unique @default(cuid())
+
+  playCount       Int       @default(0)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  publishedAt     DateTime?
+
+  cardPacks       CustomCardPack[]
+
+  @@unique([creatorId, slug])
+  @@index([creatorId])
+  @@index([status])
+  @@index([shareToken])
+  @@index([templateId])
+}
+
+// Card packs within a custom game (like expansion packs)
+model CustomCardPack {
+  id              String    @id @default(cuid())
+  gameId          String
+  game            CustomGameDefinition @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  name            String
+  isCore          Boolean   @default(true)  // Is this the default/required pack?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  cards           CustomCard[]
+
+  @@index([gameId])
+}
+
+// Individual cards in a pack
+model CustomCard {
+  id              String    @id @default(cuid())
+  packId          String
+  pack            CustomCardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  cardType        String    // "black", "white", etc.
+  properties      Json      // { text: "...", pick: 1, ... }
+  sortOrder       Int       @default(0)
+
+  createdAt       DateTime  @default(now())
+
+  @@index([packId])
+  @@index([cardType])
 }

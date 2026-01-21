@@ -451,7 +451,7 @@ export type GameEvent =
  * Client → Server message format
  */
 export type ClientMessage =
-  | { type: 'createGame'; playerName: string }
+  | { type: 'createGame'; playerName: string; gameId?: string }
   | { type: 'joinGame'; playerName: string }
   | { type: 'rejoinGame'; playerId: string; playerName: string }
   | { type: 'leaveGame' }

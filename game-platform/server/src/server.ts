@@ -8,6 +8,9 @@ import type {
   Player,
   SanitizedDeck,
   ClientGameState,
+  GameDefinition,
+  CardPack,
+  GameContext,
 } from '@full-uproar/game-platform-core';
 import {
   createGame,
@@ -20,6 +23,9 @@ import {
   generateId,
   now,
 } from '@full-uproar/game-platform-core';
+
+// Site URL for loading custom games
+const SITE_URL = process.env.SITE_URL || 'https://fulluproar.com';
 
 // =============================================================================
 // TYPES
@@ -45,12 +51,47 @@ export default class GameRoom implements Party.Server {
     connections: new Map(),
   };
 
-  private gameContext = {
+  // Game context - can be loaded dynamically for custom games
+  private gameContext: GameContext = {
     definition: CAH_DEFINITION,
     packs: [combinePacks(getAllPacks())],
   };
 
+  // Track which custom game is loaded (if any)
+  private customGameId: string | null = null;
+
   constructor(readonly room: Party.Room) {}
+
+  /**
+   * Load a custom game definition from the Full Uproar API
+   */
+  private async loadCustomGame(gameId: string): Promise<GameContext | null> {
+    try {
+      console.log(`[${this.room.id}] Loading custom game: ${gameId}`);
+      const response = await fetch(`${SITE_URL}/api/game-kit/play/${gameId}`);
+
+      if (!response.ok) {
+        console.error(`[${this.room.id}] Failed to load custom game: ${response.status}`);
+        return null;
+      }
+
+      const data = await response.json();
+
+      // Convert API response to GameContext format
+      const definition = data.definition as GameDefinition;
+      const packs = data.packs as CardPack[];
+
+      console.log(`[${this.room.id}] Loaded custom game: ${definition.name} with ${packs.length} packs`);
+
+      return {
+        definition,
+        packs,
+      };
+    } catch (error) {
+      console.error(`[${this.room.id}] Error loading custom game:`, error);
+      return null;
+    }
+  }
 
   // Called when the party starts (room is created)
   async onStart() {
@@ -127,7 +168,7 @@ export default class GameRoom implements Party.Server {
 
       switch (parsed.type) {
         case 'createGame':
-          await this.handleCreateGame(sender, connState, parsed.playerName);
+          await this.handleCreateGame(sender, connState, parsed.playerName, parsed.gameId);
           break;
 
         case 'joinGame':
@@ -162,18 +203,39 @@ export default class GameRoom implements Party.Server {
   private async handleCreateGame(
     connection: Party.Connection,
     connState: ConnectionState,
-    playerName: string
+    playerName: string,
+    customGameId?: string
   ) {
     if (this.state.gameState) {
       this.sendError(connection, 'Game already exists in this room');
       return;
     }
 
+    // Load custom game if specified
+    if (customGameId) {
+      const customContext = await this.loadCustomGame(customGameId);
+      if (!customContext) {
+        this.sendError(connection, 'Failed to load custom game');
+        return;
+      }
+      this.gameContext = customContext;
+      this.customGameId = customGameId;
+      console.log(`[${this.room.id}] Using custom game: ${customContext.definition.name}`);
+    } else {
+      // Reset to default CAH
+      this.gameContext = {
+        definition: CAH_DEFINITION,
+        packs: [combinePacks(getAllPacks())],
+      };
+      this.customGameId = null;
+      console.log(`[${this.room.id}] Using default CAH game`);
+    }
+
     const playerId = generateId();
     const gameId = this.room.id;
 
-    // Create the game
-    let gameState = createGame(gameId, playerId, CAH_DEFINITION);
+    // Create the game with the appropriate definition
+    let gameState = createGame(gameId, playerId, this.gameContext.definition);
 
     // Add the host as a player
     const result = addPlayer(gameState, {
