@@ -685,6 +685,7 @@ export default function MultiplayerRoom() {
         setEvents((prev) => [...prev.slice(-50), message.event]);
         break;
       case 'error':
+        console.error('[PartyKit] Server error:', message.message);
         setError(message.message);
         setTimeout(() => setError(null), 3000);
         break;
