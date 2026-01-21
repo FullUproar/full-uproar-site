@@ -666,6 +666,8 @@ export default function MultiplayerRoom() {
         setGameState(message.gameState);
         setShowReconnectPrompt(false);
         setReconnectAttempts(0);
+        // Mark as rejoined so we don't trigger auto-rejoin on subsequent gameState messages
+        hasRejoined.current = true;
         break;
       case 'left':
         setPlayerId(null);
