@@ -987,7 +987,7 @@ export default function MultiplayerRoom() {
                   <h2 style={{ color: '#fdba74', marginBottom: '8px' }}>Game Lobby</h2>
                   <p style={{ color: '#9ca3af', marginBottom: '32px' }}>
                     {gameState.players.length} player{gameState.players.length !== 1 ? 's' : ''} ready
-                    {gameState.players.length < 3 && ` • Need ${3 - gameState.players.length} more`}
+                    {gameState.players.length < 2 && ` • Need ${2 - gameState.players.length} more`}
                   </p>
 
                   {/* Game Settings (Lead only) */}
@@ -1131,13 +1131,13 @@ export default function MultiplayerRoom() {
                         ...styles.button,
                         padding: '14px 48px',
                         fontSize: '16px',
-                        ...(gameState.players.length < 3 ? styles.buttonDisabled : {}),
+                        ...(gameState.players.length < 2 ? styles.buttonDisabled : {}),
                       }}
                       onClick={handleStartGame}
-                      disabled={gameState.players.length < 3}
+                      disabled={gameState.players.length < 2}
                     >
-                      {gameState.players.length < 3
-                        ? `Waiting for ${3 - gameState.players.length} more player${3 - gameState.players.length !== 1 ? 's' : ''}...`
+                      {gameState.players.length < 2
+                        ? `Waiting for ${2 - gameState.players.length} more player${2 - gameState.players.length !== 1 ? 's' : ''}...`
                         : 'Start Game'}
                     </button>
                   )}

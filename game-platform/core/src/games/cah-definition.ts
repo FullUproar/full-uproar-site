@@ -14,7 +14,7 @@ export const CAH_DEFINITION: GameDefinition = {
   id: 'cah',
   name: 'Cards Against Humanity',
   description: 'A party game for horrible people. Fill in the blank with the funniest response.',
-  minPlayers: 3,
+  minPlayers: 2, // Reduced from 3 for testing
   maxPlayers: 20,
 
   // Deck configuration - two decks: black (prompts) and white (responses)
