@@ -105,6 +105,72 @@ const animationStyles = `
   background: rgba(249, 115, 22, 0.15) !important;
   border: 1px solid rgba(249, 115, 22, 0.4) !important;
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .mobile-hide {
+    display: none !important;
+  }
+  .mobile-header {
+    padding: 8px 12px !important;
+  }
+  .mobile-logo {
+    font-size: 16px !important;
+  }
+  .mobile-room-code {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+  }
+  .mobile-game-area {
+    padding: 12px !important;
+    padding-top: 16px !important;
+  }
+  .mobile-card {
+    width: 110px !important;
+    min-height: 150px !important;
+    padding: 10px !important;
+  }
+  .mobile-card-text {
+    font-size: 10px !important;
+  }
+  .mobile-hand {
+    padding: 12px !important;
+    padding-bottom: 16px !important;
+  }
+  .mobile-hand-cards {
+    gap: 8px !important;
+    padding: 8px 0 !important;
+  }
+  .mobile-narrative {
+    font-size: 24px !important;
+    padding: 12px 20px !important;
+  }
+  .mobile-message {
+    font-size: 14px !important;
+  }
+  .mobile-phase-indicator {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-card {
+    width: 90px !important;
+    min-height: 120px !important;
+    padding: 8px !important;
+  }
+  .mobile-card-text {
+    font-size: 9px !important;
+  }
+  .mobile-hand-cards {
+    gap: 6px !important;
+  }
+  .mobile-narrative {
+    font-size: 20px !important;
+  }
+}
 `;
 
 // =============================================================================
@@ -480,10 +546,10 @@ function CardComponent({
     <div
       style={cardStyle}
       onClick={onClick}
-      className={onClick ? 'card-hover card-enter' : 'card-enter'}
+      className={`mobile-card ${onClick ? 'card-hover card-enter' : 'card-enter'}`}
     >
       {order !== undefined && <div style={styles.orderBadge}>{order}</div>}
-      <div style={{ ...styles.cardText, fontSize: small ? '11px' : '13px' }}>
+      <div style={{ ...styles.cardText, fontSize: small ? '11px' : '13px' }} className="mobile-card-text">
         {card.properties?.text ?? ''}
       </div>
       <div style={styles.cardFooter}>Full Uproar</div>
@@ -900,22 +966,23 @@ export default function MultiplayerRoom() {
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
 
       {/* Header */}
-      <header style={styles.header}>
-        <span style={styles.logo} onClick={() => router.push('/play-online')}>
+      <header style={styles.header} className="mobile-header">
+        <span style={styles.logo} className="mobile-logo" onClick={() => router.push('/play-online')}>
           Full Uproar
         </span>
         {/* Only show room code after player has joined */}
         {playerId ? (
           <button
             style={{ ...styles.roomCode, cursor: 'pointer', background: showCopied ? 'rgba(34, 197, 94, 0.2)' : styles.roomCode.background }}
+            className="mobile-room-code"
             onClick={copyRoomCode}
             title="Click to copy room code"
           >
-            {showCopied ? '✓ Copied!' : `Room: ${room.toUpperCase()}`}
+            {showCopied ? '✓ Copied!' : `${room.toUpperCase()}`}
           </button>
         ) : (
-          <span style={{ ...styles.roomCode, opacity: 0.5 }}>
-            Join to see room code
+          <span style={{ ...styles.roomCode, opacity: 0.5 }} className="mobile-room-code">
+            Join first
           </span>
         )}
         <div style={styles.connectionStatus}>
@@ -965,9 +1032,12 @@ export default function MultiplayerRoom() {
             zIndex: 200,
             textAlign: 'center',
             pointerEvents: 'none',
+            width: '90%',
+            maxWidth: '500px',
           }}
         >
           <div
+            className="mobile-narrative"
             style={{
               fontSize: '36px',
               fontWeight: 'bold',
@@ -1116,6 +1186,7 @@ export default function MultiplayerRoom() {
           <>
             {/* Game area */}
             <div
+              className="mobile-game-area"
               style={{
                 ...styles.gameArea,
                 paddingBottom: gameState.currentPhase === 'SUBMIT' && !isJudge && !hasSubmitted ? '280px' : '24px',
@@ -1294,16 +1365,19 @@ export default function MultiplayerRoom() {
               {gameState.status === 'playing' && (
                 <>
                   {/* Phase indicator with score progress */}
-                  <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                    <div style={{
-                      display: 'inline-flex',
-                      flexDirection: 'column',
-                      gap: '8px',
-                      background: 'rgba(30, 41, 59, 0.6)',
-                      padding: '12px 20px',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(249, 115, 22, 0.2)',
-                    }}>
+                  <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+                    <div
+                      className="mobile-phase-indicator"
+                      style={{
+                        display: 'inline-flex',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        background: 'rgba(30, 41, 59, 0.6)',
+                        padding: '10px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(249, 115, 22, 0.2)',
+                      }}
+                    >
                       <span
                         style={{
                           color: '#fdba74',
@@ -1312,7 +1386,7 @@ export default function MultiplayerRoom() {
                           textTransform: 'uppercase',
                         }}
                       >
-                        Round {gameState.round} • {judge?.name || 'Unknown'} is Card Czar
+                        R{gameState.round} • {judge?.name || '?'} judging
                       </span>
                       {/* Score progress bar */}
                       {(() => {
@@ -1605,8 +1679,8 @@ export default function MultiplayerRoom() {
               )}
             </div>
 
-            {/* Sidebar - Players */}
-            <aside style={styles.sidebar}>
+            {/* Sidebar - Players (hidden on mobile) */}
+            <aside style={styles.sidebar} className="mobile-hide">
               <div style={styles.section}>
                 <h3 style={styles.sectionTitle}>Players</h3>
                 {gameState.players
@@ -1692,11 +1766,11 @@ export default function MultiplayerRoom() {
           gameState.currentPhase === 'SUBMIT' &&
           !isJudge &&
           !hasSubmitted && (
-            <div style={styles.hand}>
+            <div style={styles.hand} className="mobile-hand">
               <div style={styles.handHeader}>
                 <span style={styles.handTitle}>
                   Your Hand
-                  {pickCount > 1 && ` - Select ${pickCount} cards (${selectedCards.length}/${pickCount})`}
+                  {pickCount > 1 && ` (${selectedCards.length}/${pickCount})`}
                 </span>
                 <button
                   style={{
@@ -1707,10 +1781,10 @@ export default function MultiplayerRoom() {
                   onClick={handleSubmit}
                   disabled={selectedCards.length !== pickCount}
                 >
-                  Submit {pickCount > 1 ? 'Cards' : 'Card'}
+                  Submit
                 </button>
               </div>
-              <div style={styles.handCards}>
+              <div style={styles.handCards} className="mobile-hand-cards">
                 {currentPlayer?.hand.map((card) => {
                   const selectedIndex = selectedCards.indexOf(card.id);
                   const isSelected = selectedIndex !== -1;
