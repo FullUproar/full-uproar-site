@@ -456,8 +456,7 @@ export default class GameRoom implements Party.Server {
   }
 
   private async persistState() {
-    if (this.state.gameState) {
-      await this.room.storage.put('gameState', this.state.gameState);
-    }
+    // Skip persistence - game state lives in memory during active session
+    // If needed later, host can persist to our backend
   }
 }
