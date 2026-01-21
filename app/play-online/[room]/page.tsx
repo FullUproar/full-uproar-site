@@ -542,6 +542,32 @@ function CardComponent({
     animationDelay: `${animationDelay * 0.1}s`,
   };
 
+  // Format text with styled blanks
+  const formatCardText = (text: string) => {
+    if (!text) return '';
+    // Replace underscores with styled blank spans
+    const parts = text.split('_');
+    if (parts.length === 1) return text;
+
+    return parts.map((part, idx) => (
+      <React.Fragment key={idx}>
+        {part}
+        {idx < parts.length - 1 && (
+          <span
+            style={{
+              display: 'inline-block',
+              minWidth: small ? '50px' : '70px',
+              borderBottom: '3px solid currentColor',
+              marginLeft: '2px',
+              marginRight: '2px',
+              verticalAlign: 'bottom',
+            }}
+          />
+        )}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <div
       style={cardStyle}
@@ -550,7 +576,7 @@ function CardComponent({
     >
       {order !== undefined && <div style={styles.orderBadge}>{order}</div>}
       <div style={{ ...styles.cardText, fontSize: small ? '11px' : '13px' }} className="mobile-card-text">
-        {card.properties?.text ?? ''}
+        {formatCardText(card.properties?.text ?? '')}
       </div>
       <div style={styles.cardFooter}>Full Uproar</div>
     </div>
