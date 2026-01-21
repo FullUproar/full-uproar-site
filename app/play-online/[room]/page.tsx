@@ -45,9 +45,33 @@ const animationStyles = `
   from { opacity: 0; transform: translateY(-30px) rotateX(20deg); }
   to { opacity: 1; transform: translateY(0) rotateX(0); }
 }
+@keyframes cardFlipIn {
+  0% { opacity: 0; transform: rotateY(-90deg) scale(0.8); }
+  50% { opacity: 1; }
+  100% { transform: rotateY(0deg) scale(1); }
+}
+@keyframes cardSubmit {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  50% { transform: translateY(-50px) scale(0.9); opacity: 0.8; }
+  100% { transform: translateY(-100px) scale(0.7); opacity: 0; }
+}
+@keyframes cardReveal {
+  0% { opacity: 0; transform: scale(0.5) rotateY(180deg); }
+  60% { transform: scale(1.1) rotateY(0deg); }
+  100% { opacity: 1; transform: scale(1) rotateY(0deg); }
+}
+@keyframes drumroll {
+  0%, 100% { transform: scale(1); }
+  10%, 30%, 50%, 70%, 90% { transform: scale(1.02); }
+  20%, 40%, 60%, 80% { transform: scale(0.98); }
+}
 @keyframes winnerGlow {
   0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.5); }
   50% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.8); }
+}
+@keyframes winnerBounce {
+  0%, 100% { transform: scale(1.05); }
+  50% { transform: scale(1.1); }
 }
 @keyframes confetti {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
@@ -57,11 +81,25 @@ const animationStyles = `
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+@keyframes narrativeAppear {
+  0% { opacity: 0; transform: scale(0.9); letter-spacing: 0.5em; }
+  100% { opacity: 1; transform: scale(1); letter-spacing: normal; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
 .card-hover:hover {
   transform: translateY(-8px) scale(1.03) !important;
 }
 .card-enter {
   animation: cardDeal 0.4s ease-out forwards;
+}
+.card-flip {
+  animation: cardFlipIn 0.6s ease-out forwards;
+}
+.card-reveal {
+  animation: cardReveal 0.5s ease-out forwards;
 }
 .submission-hover:hover {
   background: rgba(249, 115, 22, 0.15) !important;
@@ -481,6 +519,12 @@ export default function MultiplayerRoom() {
   const [showReconnectPrompt, setShowReconnectPrompt] = useState(false);
   const [storedPlayerName, setStoredPlayerName] = useState<string | null>(null);
 
+  // Animation/narrative state
+  const [narrativeText, setNarrativeText] = useState<string | null>(null);
+  const [showCardReveal, setShowCardReveal] = useState(false);
+  const prevPhaseRef = useRef<string | null>(null);
+  const prevRoundRef = useRef<number>(0);
+
   // WebSocket ref
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -792,6 +836,64 @@ export default function MultiplayerRoom() {
   // Connection status color
   const statusColor = isConnecting ? '#eab308' : isConnected ? '#22c55e' : '#ef4444';
 
+  // Phase transition effects with narrative text
+  useEffect(() => {
+    if (!gameState) return;
+
+    const currentPhase = gameState.currentPhase;
+    const currentRound = gameState.round;
+    const prevPhase = prevPhaseRef.current;
+    const prevRound = prevRoundRef.current;
+
+    // Detect phase/round changes
+    if (prevPhase !== currentPhase || prevRound !== currentRound) {
+      // New round starting
+      if (currentPhase === 'SUBMIT' && (prevPhase !== 'SUBMIT' || prevRound !== currentRound)) {
+        if (currentRound === 1 && prevPhase === 'LOBBY') {
+          // Game just started
+          setNarrativeText('🎴 Let the games begin!');
+          setTimeout(() => setNarrativeText(null), 2000);
+        } else if (prevRound !== currentRound) {
+          // New round
+          setNarrativeText(`Round ${currentRound}`);
+          setTimeout(() => setNarrativeText(null), 1500);
+        }
+      }
+
+      // Judging phase - cards revealed
+      if (currentPhase === 'JUDGE' && prevPhase === 'SUBMIT') {
+        setShowCardReveal(true);
+        setNarrativeText('📖 The submissions are in...');
+        setTimeout(() => {
+          setNarrativeText(null);
+          setShowCardReveal(false);
+        }, 2000);
+      }
+
+      // Winner selected
+      if (currentPhase === 'RESOLVE' && prevPhase === 'JUDGE') {
+        const winner = gameState.players.find(p => p.id === gameState.roundState?.winnerId);
+        if (winner) {
+          setNarrativeText(`🏆 ${winner.name} wins the round!`);
+          setTimeout(() => setNarrativeText(null), 2500);
+        }
+      }
+
+      // Game ended
+      if (gameState.status === 'ended' && prevPhase !== null) {
+        const winner = gameState.players.reduce((best, p) =>
+          (p.score || 0) > (best?.score || 0) ? p : best,
+          gameState.players[0]
+        );
+        setNarrativeText(`👑 ${winner?.name} is the winner!`);
+        setTimeout(() => setNarrativeText(null), 4000);
+      }
+
+      prevPhaseRef.current = currentPhase;
+      prevRoundRef.current = currentRound;
+    }
+  }, [gameState?.currentPhase, gameState?.round, gameState?.status, gameState?.roundState?.winnerId, gameState?.players]);
+
   return (
     <div style={styles.container}>
       {/* Inject CSS animations */}
@@ -802,13 +904,20 @@ export default function MultiplayerRoom() {
         <span style={styles.logo} onClick={() => router.push('/play-online')}>
           Full Uproar
         </span>
-        <button
-          style={{ ...styles.roomCode, cursor: 'pointer', background: showCopied ? 'rgba(34, 197, 94, 0.2)' : styles.roomCode.background }}
-          onClick={copyRoomCode}
-          title="Click to copy room code"
-        >
-          {showCopied ? '✓ Copied!' : `Room: ${room.toUpperCase()}`}
-        </button>
+        {/* Only show room code after player has joined */}
+        {playerId ? (
+          <button
+            style={{ ...styles.roomCode, cursor: 'pointer', background: showCopied ? 'rgba(34, 197, 94, 0.2)' : styles.roomCode.background }}
+            onClick={copyRoomCode}
+            title="Click to copy room code"
+          >
+            {showCopied ? '✓ Copied!' : `Room: ${room.toUpperCase()}`}
+          </button>
+        ) : (
+          <span style={{ ...styles.roomCode, opacity: 0.5 }}>
+            Join to see room code
+          </span>
+        )}
         <div style={styles.connectionStatus}>
           <div
             style={{
@@ -842,6 +951,36 @@ export default function MultiplayerRoom() {
           }}
         >
           {error}
+        </div>
+      )}
+
+      {/* Narrative overlay for phase transitions */}
+      {narrativeText && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 200,
+            textAlign: 'center',
+            pointerEvents: 'none',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '36px',
+              fontWeight: 'bold',
+              color: '#f97316',
+              textShadow: '0 0 40px rgba(249, 115, 22, 0.6), 0 4px 20px rgba(0, 0, 0, 0.8)',
+              animation: 'narrativeAppear 0.5s ease-out',
+              background: 'linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.1), transparent)',
+              padding: '20px 40px',
+              borderRadius: '16px',
+            }}
+          >
+            {narrativeText}
+          </div>
         </div>
       )}
 
@@ -1228,36 +1367,67 @@ export default function MultiplayerRoom() {
 
                   {/* Submit phase */}
                   {gameState.currentPhase === 'SUBMIT' && (
-                    <p style={styles.message}>
-                      {isJudge
-                        ? `Waiting for players to submit... (${Object.keys(submissions).length}/${gameState.players.filter((p) => p.id !== judgeId).length})`
-                        : hasSubmitted
-                        ? 'Submitted! Waiting for others...'
-                        : `Select ${pickCount} card${pickCount > 1 ? 's' : ''} from your hand`}
-                    </p>
+                    <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                      <p style={{
+                        ...styles.message,
+                        animation: hasSubmitted ? 'pulse 2s ease-in-out infinite' : 'fadeIn 0.3s ease-out',
+                      }}>
+                        {isJudge
+                          ? `⏳ Waiting for players... (${Object.keys(submissions).length}/${gameState.players.filter((p) => p.id !== judgeId).length})`
+                          : hasSubmitted
+                          ? '✓ Locked in! Waiting for others...'
+                          : `🃏 Pick ${pickCount} card${pickCount > 1 ? 's' : ''} from your hand`}
+                      </p>
+                      {/* Submission progress dots */}
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '12px' }}>
+                        {gameState.players.filter(p => p.id !== judgeId).map((player, idx) => {
+                          const hasPlayerSubmitted = submissions[player.id] !== undefined;
+                          return (
+                            <div
+                              key={player.id}
+                              title={player.name}
+                              style={{
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '50%',
+                                background: hasPlayerSubmitted ? '#22c55e' : 'rgba(100, 100, 100, 0.5)',
+                                transition: 'all 0.3s ease-out',
+                                animation: hasPlayerSubmitted ? 'fadeIn 0.3s ease-out' : undefined,
+                                boxShadow: hasPlayerSubmitted ? '0 0 8px rgba(34, 197, 94, 0.6)' : undefined,
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
                   )}
 
                   {/* Judge phase */}
                   {gameState.currentPhase === 'JUDGE' && (
                     <>
-                      <p style={styles.message}>
-                        {isJudge ? 'Pick the winning card!' : `${judge?.name} is choosing...`}
+                      <p style={{
+                        ...styles.message,
+                        animation: 'fadeIn 0.5s ease-out',
+                      }}>
+                        {isJudge ? '👆 Pick the winning card!' : `${judge?.name} is choosing...`}
                       </p>
                       <div style={styles.cardGrid}>
-                        {Object.entries(submissions).map(([pid, submission]) => (
+                        {Object.entries(submissions).map(([pid, submission], idx) => (
                           <div
                             key={pid}
+                            className="submission-hover"
                             style={{
                               ...styles.submissionGroup,
                               ...(isJudge && hoveredSubmission === pid ? styles.submissionGroupHover : {}),
                               cursor: isJudge ? 'pointer' : 'default',
+                              animation: `cardReveal 0.5s ease-out ${idx * 0.15}s both`,
                             }}
                             onClick={() => isJudge && handleSelectWinner(pid)}
                             onMouseEnter={() => isJudge && setHoveredSubmission(pid)}
                             onMouseLeave={() => setHoveredSubmission(null)}
                           >
-                            {(submission as Submission).cards.map((card) => (
-                              <CardComponent key={card.id} card={card} small />
+                            {(submission as Submission).cards.map((card, cardIdx) => (
+                              <CardComponent key={card.id} card={card} small animationDelay={cardIdx} />
                             ))}
                           </div>
                         ))}
