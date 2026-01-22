@@ -45,7 +45,9 @@ interface BlockTemplate {
 // =============================================================================
 
 const blockTemplates: BlockTemplate[] = [
-  // SCOPES
+  // ==========================================================================
+  // STRUCTURE - Scopes that contain other blocks
+  // ==========================================================================
   {
     type: 'round',
     kind: 'round',
@@ -79,8 +81,21 @@ const blockTemplates: BlockTemplate[] = [
     category: 'Structure',
     defaultProperties: { iterate: 'once' },
   },
+  {
+    type: 'simultaneously',
+    kind: 'phase',
+    name: 'Simultaneous',
+    icon: <Users size={16} />,
+    color: '#0ea5e9',
+    description: 'All players act at once',
+    canHaveChildren: true,
+    category: 'Structure',
+    defaultProperties: { players: 'all' },
+  },
 
-  // CARD ACTIONS
+  // ==========================================================================
+  // CARDS - Card movement and manipulation
+  // ==========================================================================
   {
     type: 'draw',
     kind: 'action',
@@ -140,8 +155,96 @@ const blockTemplates: BlockTemplate[] = [
     description: 'Hide cards from view',
     category: 'Cards',
   },
+  {
+    type: 'flip',
+    kind: 'action',
+    name: 'Flip Cards',
+    icon: <RotateCcw size={16} />,
+    color: '#f97316',
+    description: 'Flip cards over',
+    category: 'Cards',
+  },
+  {
+    type: 'move',
+    kind: 'action',
+    name: 'Move Cards',
+    icon: <ArrowRightLeft size={16} />,
+    color: '#f97316',
+    description: 'Move cards between zones',
+    category: 'Cards',
+    defaultProperties: { from: 'hand', to: 'table' },
+  },
 
-  // PLAYER ACTIONS
+  // ==========================================================================
+  // TRANSFERS - Player to player card movement
+  // ==========================================================================
+  {
+    type: 'give',
+    kind: 'action',
+    name: 'Give Cards',
+    icon: <ArrowRightLeft size={16} />,
+    color: '#a855f7',
+    description: 'Give cards to another player',
+    category: 'Transfer',
+    defaultProperties: { count: 1 },
+  },
+  {
+    type: 'take',
+    kind: 'action',
+    name: 'Take Cards',
+    icon: <ArrowRightLeft size={16} />,
+    color: '#a855f7',
+    description: 'Take cards from another player',
+    category: 'Transfer',
+    defaultProperties: { count: 1 },
+  },
+  {
+    type: 'transfer',
+    kind: 'action',
+    name: 'Transfer Cards',
+    icon: <ArrowRightLeft size={16} />,
+    color: '#a855f7',
+    description: 'Move cards between players',
+    category: 'Transfer',
+  },
+
+  // ==========================================================================
+  // SUBMISSIONS - For CAH-style games
+  // ==========================================================================
+  {
+    type: 'submitCards',
+    kind: 'action',
+    name: 'Submit Cards',
+    icon: <Target size={16} />,
+    color: '#ec4899',
+    description: 'Submit cards anonymously',
+    category: 'Submissions',
+    defaultProperties: { faceDown: true },
+  },
+  {
+    type: 'revealSubmissions',
+    kind: 'action',
+    name: 'Reveal Submissions',
+    icon: <Eye size={16} />,
+    color: '#ec4899',
+    description: 'Reveal all submissions',
+    category: 'Submissions',
+    defaultProperties: { shuffle: true },
+  },
+  {
+    type: 'awardSubmission',
+    kind: 'action',
+    name: 'Award Winner',
+    icon: <Award size={16} />,
+    color: '#ec4899',
+    description: 'Award points to submission owner',
+    category: 'Submissions',
+    defaultProperties: { points: 1 },
+  },
+
+  // ==========================================================================
+  // PLAYER ACTIONS - Player interaction
+  // ==========================================================================
   {
     type: 'chooseCards',
     kind: 'action',
@@ -172,8 +275,29 @@ const blockTemplates: BlockTemplate[] = [
     category: 'Player',
     defaultProperties: { to: 'all' },
   },
+  {
+    type: 'declare',
+    kind: 'action',
+    name: 'Declare',
+    icon: <MessageSquare size={16} />,
+    color: '#ec4899',
+    description: 'Player declares something (e.g., "Uno!")',
+    category: 'Player',
+    defaultProperties: { declaration: '' },
+  },
+  {
+    type: 'challenge',
+    kind: 'action',
+    name: 'Challenge',
+    icon: <Zap size={16} />,
+    color: '#ec4899',
+    description: 'Challenge another player',
+    category: 'Player',
+  },
 
-  // GAME FLOW
+  // ==========================================================================
+  // TURN FLOW - Turn management
+  // ==========================================================================
   {
     type: 'nextPlayer',
     kind: 'action',
@@ -181,7 +305,7 @@ const blockTemplates: BlockTemplate[] = [
     icon: <RotateCcw size={16} />,
     color: '#6366f1',
     description: 'Advance to next player',
-    category: 'Flow',
+    category: 'Turn',
   },
   {
     type: 'skipPlayer',
@@ -190,7 +314,7 @@ const blockTemplates: BlockTemplate[] = [
     icon: <RotateCcw size={16} />,
     color: '#6366f1',
     description: 'Skip one or more players',
-    category: 'Flow',
+    category: 'Turn',
     defaultProperties: { count: 1 },
   },
   {
@@ -200,20 +324,39 @@ const blockTemplates: BlockTemplate[] = [
     icon: <RotateCcw size={16} />,
     color: '#6366f1',
     description: 'Reverse turn direction',
-    category: 'Flow',
+    category: 'Turn',
+  },
+  {
+    type: 'grantExtraTurn',
+    kind: 'action',
+    name: 'Extra Turn',
+    icon: <Plus size={16} />,
+    color: '#6366f1',
+    description: 'Grant an extra turn',
+    category: 'Turn',
+  },
+  {
+    type: 'setJudge',
+    kind: 'action',
+    name: 'Set Judge',
+    icon: <Users size={16} />,
+    color: '#6366f1',
+    description: 'Set the current judge',
+    category: 'Turn',
+  },
+  {
+    type: 'rotateJudge',
+    kind: 'action',
+    name: 'Rotate Judge',
+    icon: <RotateCcw size={16} />,
+    color: '#6366f1',
+    description: 'Rotate to next judge',
+    category: 'Turn',
   },
 
-  // VARIABLES
-  {
-    type: 'setVariable',
-    kind: 'action',
-    name: 'Set Variable',
-    icon: <Box size={16} />,
-    color: '#14b8a6',
-    description: 'Set a variable value',
-    category: 'Data',
-    defaultProperties: { name: '', value: 0 },
-  },
+  // ==========================================================================
+  // SCORING - Points and scoring
+  // ==========================================================================
   {
     type: 'increment',
     kind: 'action',
@@ -221,11 +364,120 @@ const blockTemplates: BlockTemplate[] = [
     icon: <Award size={16} />,
     color: '#14b8a6',
     description: 'Add to a score or counter',
-    category: 'Data',
+    category: 'Scoring',
     defaultProperties: { variable: 'score', by: 1 },
   },
+  {
+    type: 'decrement',
+    kind: 'action',
+    name: 'Remove Points',
+    icon: <Award size={16} />,
+    color: '#14b8a6',
+    description: 'Subtract from score',
+    category: 'Scoring',
+    defaultProperties: { variable: 'score', by: 1 },
+  },
+  {
+    type: 'setVariable',
+    kind: 'action',
+    name: 'Set Variable',
+    icon: <Box size={16} />,
+    color: '#14b8a6',
+    description: 'Set a variable value',
+    category: 'Scoring',
+    defaultProperties: { name: '', value: 0 },
+  },
+  {
+    type: 'formSet',
+    kind: 'action',
+    name: 'Form Set',
+    icon: <Layers size={16} />,
+    color: '#14b8a6',
+    description: 'Group cards into a set',
+    category: 'Scoring',
+  },
+  {
+    type: 'scoreSet',
+    kind: 'action',
+    name: 'Score Set',
+    icon: <Award size={16} />,
+    color: '#14b8a6',
+    description: 'Score points for a set',
+    category: 'Scoring',
+  },
 
-  // CONDITIONS
+  // ==========================================================================
+  // BETTING - For poker-style games
+  // ==========================================================================
+  {
+    type: 'bet',
+    kind: 'action',
+    name: 'Bet',
+    icon: <Box size={16} />,
+    color: '#eab308',
+    description: 'Place a bet',
+    category: 'Betting',
+    defaultProperties: { amount: 10 },
+  },
+  {
+    type: 'call',
+    kind: 'action',
+    name: 'Call',
+    icon: <Box size={16} />,
+    color: '#eab308',
+    description: 'Match the current bet',
+    category: 'Betting',
+  },
+  {
+    type: 'raise',
+    kind: 'action',
+    name: 'Raise',
+    icon: <Box size={16} />,
+    color: '#eab308',
+    description: 'Raise the bet',
+    category: 'Betting',
+    defaultProperties: { amount: 10 },
+  },
+  {
+    type: 'fold',
+    kind: 'action',
+    name: 'Fold',
+    icon: <Box size={16} />,
+    color: '#eab308',
+    description: 'Fold and exit the hand',
+    category: 'Betting',
+  },
+  {
+    type: 'check',
+    kind: 'action',
+    name: 'Check',
+    icon: <Box size={16} />,
+    color: '#eab308',
+    description: 'Pass without betting',
+    category: 'Betting',
+  },
+  {
+    type: 'allIn',
+    kind: 'action',
+    name: 'All In',
+    icon: <Box size={16} />,
+    color: '#eab308',
+    description: 'Bet all remaining chips',
+    category: 'Betting',
+  },
+  {
+    type: 'awardPot',
+    kind: 'action',
+    name: 'Award Pot',
+    icon: <Award size={16} />,
+    color: '#eab308',
+    description: 'Award pot to winner',
+    category: 'Betting',
+  },
+
+  // ==========================================================================
+  // LOGIC - Conditionals and loops
+  // ==========================================================================
   {
     type: 'if',
     kind: 'condition',
@@ -248,8 +500,30 @@ const blockTemplates: BlockTemplate[] = [
     category: 'Logic',
     defaultProperties: { collection: 'players' },
   },
+  {
+    type: 'while',
+    kind: 'condition',
+    name: 'While',
+    icon: <Repeat size={16} />,
+    color: '#eab308',
+    description: 'Repeat while condition is true',
+    canHaveChildren: true,
+    category: 'Logic',
+  },
+  {
+    type: 'wait',
+    kind: 'action',
+    name: 'Wait',
+    icon: <Clock size={16} />,
+    color: '#eab308',
+    description: 'Wait for a duration',
+    category: 'Logic',
+    defaultProperties: { seconds: 3 },
+  },
 
-  // TRIGGERS
+  // ==========================================================================
+  // TRIGGERS & WIN CONDITIONS
+  // ==========================================================================
   {
     type: 'onEvent',
     kind: 'trigger',
@@ -270,6 +544,66 @@ const blockTemplates: BlockTemplate[] = [
     description: 'Define how to win',
     category: 'Triggers',
     defaultProperties: { condition: '' },
+  },
+  {
+    type: 'loseCondition',
+    kind: 'trigger',
+    name: 'Lose Condition',
+    icon: <Award size={16} />,
+    color: '#ef4444',
+    description: 'Define how to lose',
+    category: 'Triggers',
+    defaultProperties: { condition: '' },
+  },
+  {
+    type: 'applyCardEffect',
+    kind: 'action',
+    name: 'Card Effect',
+    icon: <Zap size={16} />,
+    color: '#ef4444',
+    description: 'Apply a card\'s effect',
+    category: 'Triggers',
+  },
+
+  // ==========================================================================
+  // COMPARISONS - For War, Poker, etc.
+  // ==========================================================================
+  {
+    type: 'compareCards',
+    kind: 'action',
+    name: 'Compare Cards',
+    icon: <GitBranch size={16} />,
+    color: '#0ea5e9',
+    description: 'Compare two cards',
+    category: 'Compare',
+    defaultProperties: { by: 'value' },
+  },
+  {
+    type: 'highestCard',
+    kind: 'action',
+    name: 'Find Highest',
+    icon: <Award size={16} />,
+    color: '#0ea5e9',
+    description: 'Find the highest card',
+    category: 'Compare',
+  },
+  {
+    type: 'lowestCard',
+    kind: 'action',
+    name: 'Find Lowest',
+    icon: <Award size={16} />,
+    color: '#0ea5e9',
+    description: 'Find the lowest card',
+    category: 'Compare',
+  },
+  {
+    type: 'checkMatch',
+    kind: 'action',
+    name: 'Check Match',
+    icon: <Target size={16} />,
+    color: '#0ea5e9',
+    description: 'Check if card matches condition',
+    category: 'Compare',
   },
 ];
 
@@ -967,6 +1301,39 @@ export default function GameBuilder() {
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [loading, setLoading] = useState(!!gameIdParam);
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+  const [recentlyUsed, setRecentlyUsed] = useState<string[]>(() => {
+    // Load from localStorage
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('gamekit-recent-blocks');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
+
+  // Track recently used blocks
+  const trackBlockUsage = useCallback((templateType: string) => {
+    setRecentlyUsed(prev => {
+      const updated = [templateType, ...prev.filter(t => t !== templateType)].slice(0, 8);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('gamekit-recent-blocks', JSON.stringify(updated));
+      }
+      return updated;
+    });
+  }, []);
+
+  // Toggle category collapse
+  const toggleCategory = useCallback((category: string) => {
+    setCollapsedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  }, []);
   const [blocks, setBlocks] = useState<Block[]>([
     {
       id: 'setup',
@@ -1072,6 +1439,7 @@ export default function GameBuilder() {
       children: template.canHaveChildren ? [] : undefined,
     };
     setBlocks(prev => addChildToBlock(prev, parentId, newBlock));
+    trackBlockUsage(template.type);
   };
 
   const handleDragStart = (e: React.DragEvent, template: BlockTemplate) => {
@@ -1094,6 +1462,7 @@ export default function GameBuilder() {
         children: template.canHaveChildren ? [] : undefined,
       };
       setBlocks(prev => [...prev, newBlock]);
+      trackBlockUsage(template.type);
     }
   };
 
@@ -1309,38 +1678,130 @@ export default function GameBuilder() {
             Block Palette
           </div>
           <div style={styles.sidebarContent}>
+            {/* Recently Used Section */}
+            {recentlyUsed.length > 0 && (
+              <div style={{ ...styles.category, marginBottom: '20px' }}>
+                <div
+                  style={{
+                    ...styles.categoryTitle,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    padding: '4px 8px',
+                    marginLeft: '-4px',
+                    marginRight: '-4px',
+                    borderRadius: '4px',
+                    background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                    color: '#fdba74',
+                  }}
+                  onClick={() => toggleCategory('_recent')}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Clock size={12} />
+                    Recently Used
+                  </span>
+                  {collapsedCategories.has('_recent') ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+                </div>
+                {!collapsedCategories.has('_recent') && (
+                  <div style={{ ...styles.templateList, marginTop: '8px' }}>
+                    {recentlyUsed.map(type => {
+                      const template = blockTemplates.find(t => t.type === type);
+                      if (!template) return null;
+                      return (
+                        <div
+                          key={`recent-${template.type}`}
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, template)}
+                          style={{
+                            ...styles.templateBlock,
+                            background: `${template.color}10`,
+                            padding: '8px 10px',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = `${template.color}20`;
+                            e.currentTarget.style.borderColor = `${template.color}40`;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = `${template.color}10`;
+                            e.currentTarget.style.borderColor = 'transparent';
+                          }}
+                        >
+                          <div style={{ ...styles.templateIcon, background: template.color, width: '24px', height: '24px' }}>
+                            {template.icon}
+                          </div>
+                          <div style={styles.templateInfo}>
+                            <div style={{ ...styles.templateName, fontSize: '12px' }}>{template.name}</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Category Sections */}
             {Object.entries(templatesByCategory).map(([category, templates]) => (
               <div key={category} style={styles.category}>
-                <div style={styles.categoryTitle}>{category}</div>
-                <div style={styles.templateList}>
-                  {templates.map(template => (
-                    <div
-                      key={template.type}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, template)}
-                      style={{
-                        ...styles.templateBlock,
-                        background: `${template.color}10`,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = `${template.color}20`;
-                        e.currentTarget.style.borderColor = `${template.color}40`;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = `${template.color}10`;
-                        e.currentTarget.style.borderColor = 'transparent';
-                      }}
-                    >
-                      <div style={{ ...styles.templateIcon, background: template.color }}>
-                        {template.icon}
-                      </div>
-                      <div style={styles.templateInfo}>
-                        <div style={styles.templateName}>{template.name}</div>
-                        <div style={styles.templateDesc}>{template.description}</div>
-                      </div>
-                    </div>
-                  ))}
+                <div
+                  style={{
+                    ...styles.categoryTitle,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    padding: '4px 8px',
+                    marginLeft: '-4px',
+                    marginRight: '-4px',
+                    borderRadius: '4px',
+                    transition: 'background 0.2s',
+                  }}
+                  onClick={() => toggleCategory(category)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                  }}
+                >
+                  <span>{category}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '10px', opacity: 0.6 }}>{templates.length}</span>
+                    {collapsedCategories.has(category) ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+                  </span>
                 </div>
+                {!collapsedCategories.has(category) && (
+                  <div style={styles.templateList}>
+                    {templates.map(template => (
+                      <div
+                        key={template.type}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, template)}
+                        style={{
+                          ...styles.templateBlock,
+                          background: `${template.color}10`,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = `${template.color}20`;
+                          e.currentTarget.style.borderColor = `${template.color}40`;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = `${template.color}10`;
+                          e.currentTarget.style.borderColor = 'transparent';
+                        }}
+                      >
+                        <div style={{ ...styles.templateIcon, background: template.color }}>
+                          {template.icon}
+                        </div>
+                        <div style={styles.templateInfo}>
+                          <div style={styles.templateName}>{template.name}</div>
+                          <div style={styles.templateDesc}>{template.description}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

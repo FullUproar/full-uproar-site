@@ -125,6 +125,40 @@ export type Expression =
   | { type: 'turnOrder' }
   | { type: 'roundNumber' }
   | { type: 'turnNumber' }
+  | { type: 'judge' } // Current judge/czar
+  | { type: 'dealer' } // Current dealer
+
+  // Card property comparisons (for matching games like Uno)
+  | { type: 'cardMatches'; card: Expression; condition: Expression }
+  | { type: 'cardProperty'; card: Expression; property: string }
+  | { type: 'cardType'; card: Expression }
+  | { type: 'cardOwner'; card: Expression }
+  | { type: 'cardSubmittedBy'; card: Expression } // Who submitted this card
+  | { type: 'topCard'; of: ZoneRef }
+  | { type: 'bottomCard'; of: ZoneRef }
+
+  // Card comparisons (for games like War, Poker)
+  | { type: 'compareCards'; card1: Expression; card2: Expression; by: 'rank' | 'value' | 'property'; property?: string }
+  | { type: 'highestCard'; cards: Expression; by?: 'rank' | 'value' | 'property'; property?: string }
+  | { type: 'lowestCard'; cards: Expression; by?: 'rank' | 'value' | 'property'; property?: string }
+  | { type: 'handRank'; cards: Expression } // Poker hand evaluation
+
+  // Player queries
+  | { type: 'playerProperty'; player: PlayerRef; property: string }
+  | { type: 'playerHasCards'; player: PlayerRef; in?: ZoneRef }
+  | { type: 'playerCardCount'; player: PlayerRef; in?: ZoneRef; filter?: Expression }
+
+  // Resource queries (for betting games)
+  | { type: 'playerResource'; player: PlayerRef; resource: string }
+  | { type: 'pot' } // Current pot in betting games
+  | { type: 'currentBet' }
+  | { type: 'minimumBet' }
+
+  // Turn state
+  | { type: 'isPlayerTurn'; player: PlayerRef }
+  | { type: 'turnDirection' } // 1 or -1
+  | { type: 'nextPlayer' }
+  | { type: 'previousPlayer' }
 
   // String operations
   | { type: 'concat'; parts: Expression[] }
@@ -230,6 +264,182 @@ export type Action =
   | {
       type: 'setCurrentPlayer';
       player: PlayerRef;
+    }
+  | {
+      type: 'grantExtraTurn';
+      player: PlayerRef;
+    }
+  | {
+      type: 'setJudge';
+      player: PlayerRef;
+    }
+  | {
+      type: 'rotateJudge';
+      direction?: 'forward' | 'backward';
+    }
+  | {
+      type: 'setDealer';
+      player: PlayerRef;
+    }
+  | {
+      type: 'rotateDealer';
+    }
+
+  // Simultaneous Actions (for games like War)
+  | {
+      type: 'simultaneously';
+      players: Expression; // Collection of players
+      action: Action;
+      timeout?: Expression;
+    }
+  | {
+      type: 'awaitAll';
+      players: Expression;
+      action: 'chooseCards' | 'prompt';
+      params: Record<string, Expression>;
+      storeIn: string; // Map of playerId -> result
+    }
+
+  // Card Transfer (player to player)
+  | {
+      type: 'transfer';
+      cards: CardRef;
+      from: PlayerRef;
+      to: PlayerRef;
+      zone?: 'hand' | 'custom';
+      zoneName?: string;
+    }
+  | {
+      type: 'give';
+      cards: CardRef;
+      to: PlayerRef;
+    }
+  | {
+      type: 'take';
+      cards: CardRef;
+      from: PlayerRef;
+    }
+
+  // Submission tracking (for CAH-style games)
+  | {
+      type: 'submitCards';
+      player: PlayerRef;
+      cards: CardRef;
+      to: ZoneRef;
+      faceDown?: boolean;
+    }
+  | {
+      type: 'revealSubmissions';
+      zone: ZoneRef;
+      shuffle?: boolean;
+    }
+  | {
+      type: 'awardSubmission';
+      submission: Expression; // The winning submission
+      pointsTo: 'submitter';
+      points?: Expression;
+    }
+
+  // Resources & Betting (for poker-style games)
+  | {
+      type: 'giveResource';
+      player: PlayerRef;
+      resource: string;
+      amount: Expression;
+    }
+  | {
+      type: 'takeResource';
+      player: PlayerRef;
+      resource: string;
+      amount: Expression;
+    }
+  | {
+      type: 'transferResource';
+      from: PlayerRef;
+      to: PlayerRef | 'pot';
+      resource: string;
+      amount: Expression;
+    }
+  | {
+      type: 'bet';
+      player: PlayerRef;
+      amount: Expression;
+    }
+  | {
+      type: 'call';
+      player: PlayerRef;
+    }
+  | {
+      type: 'raise';
+      player: PlayerRef;
+      amount: Expression;
+    }
+  | {
+      type: 'fold';
+      player: PlayerRef;
+    }
+  | {
+      type: 'check';
+      player: PlayerRef;
+    }
+  | {
+      type: 'allIn';
+      player: PlayerRef;
+    }
+  | {
+      type: 'awardPot';
+      to: PlayerRef;
+      pot?: string; // For side pots
+    }
+
+  // Card Effects (for Uno-style games)
+  | {
+      type: 'applyCardEffect';
+      card: CardRef;
+    }
+  | {
+      type: 'triggerOnPlay';
+      card: CardRef;
+    }
+
+  // Sets & Collections (for Go Fish, Rummy)
+  | {
+      type: 'formSet';
+      player: PlayerRef;
+      cards: CardRef;
+      setName?: string;
+    }
+  | {
+      type: 'scoreSet';
+      player: PlayerRef;
+      set: Expression;
+      points?: Expression;
+    }
+  | {
+      type: 'checkForSets';
+      player: PlayerRef;
+      setSize: Expression;
+      groupBy: string; // Property to group by (e.g., 'rank')
+      autoScore?: boolean;
+    }
+
+  // Declarations (for Uno calling, etc.)
+  | {
+      type: 'declare';
+      player: PlayerRef;
+      declaration: string;
+      valid?: Expression; // Is the declaration valid?
+      penalty?: Action[]; // What happens if invalid
+    }
+  | {
+      type: 'challenge';
+      challenger: PlayerRef;
+      target: PlayerRef;
+      challengeType: string;
+      resolution: {
+        ifValid: Action[];
+        ifInvalid: Action[];
+      };
     }
 
   // Player Interaction
@@ -669,3 +879,55 @@ export const currentPlayer: Expression = { type: 'currentPlayer' };
 
 /** All players reference */
 export const allPlayers: Expression = { type: 'players', filter: 'all' };
+
+/** Get top card of a zone */
+export const topCard = (zone: ZoneRef): Expression =>
+  ({ type: 'topCard', of: zone });
+
+/** Get a card's property */
+export const cardProp = (card: Expression, property: string): Expression =>
+  ({ type: 'cardProperty', card, property });
+
+/** Check if card matches condition */
+export const cardMatches = (card: Expression, condition: Expression): Expression =>
+  ({ type: 'cardMatches', card, condition });
+
+/** Get who submitted a card */
+export const submittedBy = (card: Expression): Expression =>
+  ({ type: 'cardSubmittedBy', card });
+
+/** Get a player's resource */
+export const playerResource = (player: PlayerRef, resource: string): Expression =>
+  ({ type: 'playerResource', player, resource });
+
+/** Get a player's property */
+export const playerProp = (player: PlayerRef, property: string): Expression =>
+  ({ type: 'playerProperty', player, property });
+
+/** Compare two cards */
+export const compareCards = (card1: Expression, card2: Expression, by: 'rank' | 'value' = 'value'): Expression =>
+  ({ type: 'compareCards', card1, card2, by });
+
+/** Get highest card from collection */
+export const highestCard = (cards: Expression, by: 'rank' | 'value' = 'value'): Expression =>
+  ({ type: 'highestCard', cards, by });
+
+/** Check if player has cards */
+export const hasCards = (player: PlayerRef, zone?: ZoneRef): Expression =>
+  ({ type: 'playerHasCards', player, in: zone });
+
+/** Count player's cards */
+export const playerCardCount = (player: PlayerRef, zone?: ZoneRef): Expression =>
+  ({ type: 'playerCardCount', player, in: zone });
+
+/** Current judge reference */
+export const judge: Expression = { type: 'judge' };
+
+/** Current dealer reference */
+export const dealer: Expression = { type: 'dealer' };
+
+/** Current pot amount */
+export const pot: Expression = { type: 'pot' };
+
+/** Turn direction */
+export const turnDirection: Expression = { type: 'turnDirection' };
