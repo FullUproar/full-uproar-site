@@ -82,6 +82,300 @@ interface ResourceDefinition {
 type BuilderTab = 'flow' | 'components';
 
 // =============================================================================
+// COMPONENT PRESETS - Quick-add templates for common game components
+// =============================================================================
+
+interface ComponentPreset {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  category: 'cards' | 'zones' | 'resources';
+  cardTypes?: CardTypeDefinition[];
+  zones?: ZoneDefinition[];
+  resources?: ResourceDefinition[];
+}
+
+const componentPresets: ComponentPreset[] = [
+  // Card Type Presets
+  {
+    id: 'standard-deck',
+    name: 'Standard Playing Cards',
+    icon: '🃏',
+    description: '52-card deck with suits and ranks',
+    category: 'cards',
+    cardTypes: [
+      {
+        id: 'playing-card',
+        type: 'playing_card',
+        name: 'Playing Card',
+        color: '#ffffff',
+        textColor: '#1a1a1a',
+        properties: [
+          { name: 'suit', type: 'string', label: 'Suit' },
+          { name: 'rank', type: 'string', label: 'Rank' },
+          { name: 'value', type: 'number', label: 'Value' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'standard-deck-jokers',
+    name: 'Playing Cards + Jokers',
+    icon: '🎭',
+    description: '54-card deck with 2 jokers',
+    category: 'cards',
+    cardTypes: [
+      {
+        id: 'playing-card',
+        type: 'playing_card',
+        name: 'Playing Card',
+        color: '#ffffff',
+        textColor: '#1a1a1a',
+        properties: [
+          { name: 'suit', type: 'string', label: 'Suit' },
+          { name: 'rank', type: 'string', label: 'Rank' },
+          { name: 'value', type: 'number', label: 'Value' },
+        ],
+      },
+      {
+        id: 'joker',
+        type: 'joker',
+        name: 'Joker',
+        color: '#ef4444',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'color', type: 'string', label: 'Color' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'uno-cards',
+    name: 'Uno-style Cards',
+    icon: '🔴',
+    description: 'Colored number and action cards',
+    category: 'cards',
+    cardTypes: [
+      {
+        id: 'number-card',
+        type: 'number',
+        name: 'Number Card',
+        color: '#3b82f6',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'color', type: 'string', label: 'Card Color' },
+          { name: 'number', type: 'number', label: 'Number' },
+        ],
+      },
+      {
+        id: 'action-card',
+        type: 'action',
+        name: 'Action Card',
+        color: '#f97316',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'color', type: 'string', label: 'Card Color' },
+          { name: 'action', type: 'string', label: 'Action Type' },
+        ],
+      },
+      {
+        id: 'wild-card',
+        type: 'wild',
+        name: 'Wild Card',
+        color: '#1a1a1a',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'action', type: 'string', label: 'Action Type' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'cah-cards',
+    name: 'Prompt & Response',
+    icon: '⬛',
+    description: 'Black prompts, white responses (CAH-style)',
+    category: 'cards',
+    cardTypes: [
+      {
+        id: 'prompt',
+        type: 'prompt',
+        name: 'Prompt Card',
+        color: '#1a1a1a',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'text', type: 'string', label: 'Prompt Text' },
+          { name: 'pick', type: 'number', label: 'Cards to Pick', default: 1 },
+        ],
+      },
+      {
+        id: 'response',
+        type: 'response',
+        name: 'Response Card',
+        color: '#ffffff',
+        textColor: '#1a1a1a',
+        properties: [
+          { name: 'text', type: 'string', label: 'Response Text' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'trivia-cards',
+    name: 'Trivia Cards',
+    icon: '❓',
+    description: 'Questions with multiple choice answers',
+    category: 'cards',
+    cardTypes: [
+      {
+        id: 'question',
+        type: 'question',
+        name: 'Question Card',
+        color: '#8b5cf6',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'question', type: 'string', label: 'Question' },
+          { name: 'answer', type: 'string', label: 'Correct Answer' },
+          { name: 'category', type: 'string', label: 'Category' },
+          { name: 'difficulty', type: 'number', label: 'Difficulty (1-5)' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'role-cards',
+    name: 'Role Cards',
+    icon: '🎭',
+    description: 'Secret role/identity cards (Mafia, Werewolf)',
+    category: 'cards',
+    cardTypes: [
+      {
+        id: 'role',
+        type: 'role',
+        name: 'Role Card',
+        color: '#6366f1',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'role', type: 'string', label: 'Role Name' },
+          { name: 'team', type: 'string', label: 'Team' },
+          { name: 'ability', type: 'string', label: 'Special Ability' },
+        ],
+      },
+    ],
+  },
+
+  // Zone Presets
+  {
+    id: 'basic-zones',
+    name: 'Basic Card Zones',
+    icon: '📂',
+    description: 'Deck, hand, discard pile',
+    category: 'zones',
+    zones: [
+      { id: 'deck', name: 'deck', scope: 'shared', visibility: 'private' },
+      { id: 'hand', name: 'hand', scope: 'perPlayer', visibility: 'owner' },
+      { id: 'discard', name: 'discard', scope: 'shared', visibility: 'public' },
+    ],
+  },
+  {
+    id: 'table-zones',
+    name: 'Table + Draw Pile',
+    icon: '🎯',
+    description: 'With central play area',
+    category: 'zones',
+    zones: [
+      { id: 'deck', name: 'deck', scope: 'shared', visibility: 'private' },
+      { id: 'hand', name: 'hand', scope: 'perPlayer', visibility: 'owner' },
+      { id: 'discard', name: 'discard', scope: 'shared', visibility: 'public' },
+      { id: 'table', name: 'table', scope: 'shared', visibility: 'public' },
+    ],
+  },
+  {
+    id: 'submission-zones',
+    name: 'Submission Zones',
+    icon: '📥',
+    description: 'For judged games (CAH-style)',
+    category: 'zones',
+    zones: [
+      { id: 'prompt-deck', name: 'promptDeck', scope: 'shared', visibility: 'private' },
+      { id: 'response-deck', name: 'responseDeck', scope: 'shared', visibility: 'private' },
+      { id: 'hand', name: 'hand', scope: 'perPlayer', visibility: 'owner' },
+      { id: 'submissions', name: 'submissions', scope: 'shared', visibility: 'private' },
+      { id: 'current-prompt', name: 'currentPrompt', scope: 'shared', visibility: 'public' },
+      { id: 'discard', name: 'discard', scope: 'shared', visibility: 'public' },
+    ],
+  },
+  {
+    id: 'poker-zones',
+    name: 'Poker Zones',
+    icon: '🎰',
+    description: 'Community cards, hole cards, muck',
+    category: 'zones',
+    zones: [
+      { id: 'deck', name: 'deck', scope: 'shared', visibility: 'private' },
+      { id: 'hand', name: 'hand', scope: 'perPlayer', visibility: 'owner' },
+      { id: 'community', name: 'community', scope: 'shared', visibility: 'public' },
+      { id: 'muck', name: 'muck', scope: 'shared', visibility: 'private' },
+    ],
+  },
+
+  // Resource Presets
+  {
+    id: 'simple-score',
+    name: 'Score Counter',
+    icon: '🏆',
+    description: 'Basic points tracking',
+    category: 'resources',
+    resources: [
+      { id: 'score', name: 'score', initialValue: 0, min: 0 },
+    ],
+  },
+  {
+    id: 'poker-chips',
+    name: 'Poker Chips',
+    icon: '💰',
+    description: 'Chips for betting games',
+    category: 'resources',
+    resources: [
+      { id: 'chips', name: 'chips', initialValue: 1000, min: 0 },
+    ],
+  },
+  {
+    id: 'health-points',
+    name: 'Health Points',
+    icon: '❤️',
+    description: 'HP with max limit',
+    category: 'resources',
+    resources: [
+      { id: 'health', name: 'health', initialValue: 100, min: 0, max: 100 },
+    ],
+  },
+  {
+    id: 'lives-system',
+    name: 'Lives System',
+    icon: '💖',
+    description: '3 lives, lose them all = eliminated',
+    category: 'resources',
+    resources: [
+      { id: 'lives', name: 'lives', initialValue: 3, min: 0, max: 5 },
+    ],
+  },
+  {
+    id: 'full-rpg',
+    name: 'RPG Stats',
+    icon: '⚔️',
+    description: 'Health, mana, gold',
+    category: 'resources',
+    resources: [
+      { id: 'health', name: 'health', initialValue: 100, min: 0, max: 100 },
+      { id: 'mana', name: 'mana', initialValue: 50, min: 0, max: 50 },
+      { id: 'gold', name: 'gold', initialValue: 100, min: 0 },
+    ],
+  },
+];
+
+// =============================================================================
 // BLOCK TEMPLATES
 // =============================================================================
 
@@ -1925,6 +2219,170 @@ export default function GameBuilder() {
         {activeTab === 'components' && (
           <div style={styles.componentsContainer}>
             <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+              {/* Quick Add Section */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%)',
+                border: '1px solid rgba(139, 92, 246, 0.3)',
+                borderRadius: '12px',
+                padding: '20px',
+                marginBottom: '24px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                  <Sparkles size={18} style={{ color: '#a78bfa' }} />
+                  <span style={{ fontWeight: 'bold', color: '#c4b5fd', fontSize: '16px' }}>Quick Add Presets</span>
+                </div>
+
+                {/* Card Presets */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Card Types
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {componentPresets.filter(p => p.category === 'cards').map(preset => (
+                      <button
+                        key={preset.id}
+                        onClick={() => {
+                          if (preset.cardTypes) {
+                            setCardTypes(prev => [
+                              ...prev,
+                              ...preset.cardTypes!.map(ct => ({
+                                ...ct,
+                                id: `${ct.id}-${Date.now()}`,
+                              })),
+                            ]);
+                          }
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '8px 12px',
+                          background: 'rgba(30, 41, 59, 0.6)',
+                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          borderRadius: '8px',
+                          color: '#e2e8f0',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#8b5cf6';
+                          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
+                        }}
+                        title={preset.description}
+                      >
+                        <span>{preset.icon}</span>
+                        <span>{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Zone Presets */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Zones
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {componentPresets.filter(p => p.category === 'zones').map(preset => (
+                      <button
+                        key={preset.id}
+                        onClick={() => {
+                          if (preset.zones) {
+                            setZones(prev => [
+                              ...prev,
+                              ...preset.zones!.map(z => ({
+                                ...z,
+                                id: `${z.id}-${Date.now()}`,
+                              })),
+                            ]);
+                          }
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '8px 12px',
+                          background: 'rgba(30, 41, 59, 0.6)',
+                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          borderRadius: '8px',
+                          color: '#e2e8f0',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#8b5cf6';
+                          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
+                        }}
+                        title={preset.description}
+                      >
+                        <span>{preset.icon}</span>
+                        <span>{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Resource Presets */}
+                <div>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Resources
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {componentPresets.filter(p => p.category === 'resources').map(preset => (
+                      <button
+                        key={preset.id}
+                        onClick={() => {
+                          if (preset.resources) {
+                            setResources(prev => [
+                              ...prev,
+                              ...preset.resources!.map(r => ({
+                                ...r,
+                                id: `${r.id}-${Date.now()}`,
+                              })),
+                            ]);
+                          }
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '8px 12px',
+                          background: 'rgba(30, 41, 59, 0.6)',
+                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          borderRadius: '8px',
+                          color: '#e2e8f0',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#8b5cf6';
+                          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
+                        }}
+                        title={preset.description}
+                      >
+                        <span>{preset.icon}</span>
+                        <span>{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               {/* Card Types Section */}
               <div style={styles.componentSection}>
                 <div style={styles.componentHeader}>
