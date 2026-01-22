@@ -40,6 +40,47 @@ interface BlockTemplate {
   category: string;
 }
 
+// Game Component Types
+interface CardProperty {
+  name: string;
+  type: 'string' | 'number' | 'boolean';
+  label: string;
+  default?: any;
+}
+
+interface CardTypeDefinition {
+  id: string;
+  type: string;
+  name: string;
+  color: string;
+  textColor: string;
+  properties: CardProperty[];
+}
+
+interface ZoneDefinition {
+  id: string;
+  name: string;
+  scope: 'shared' | 'perPlayer';
+  visibility: 'public' | 'private' | 'owner';
+}
+
+interface DeckDefinition {
+  id: string;
+  name: string;
+  cardType: string;
+  cards: Array<{ id: string; properties: Record<string, any> }>;
+}
+
+interface ResourceDefinition {
+  id: string;
+  name: string;
+  initialValue: number;
+  min?: number;
+  max?: number;
+}
+
+type BuilderTab = 'flow' | 'components';
+
 // =============================================================================
 // BLOCK TEMPLATES
 // =============================================================================
@@ -796,6 +837,129 @@ const styles = {
     overflow: 'auto',
     padding: '16px',
   },
+  tabBar: {
+    display: 'flex',
+    gap: '4px',
+    padding: '8px 24px',
+    background: 'rgba(15, 23, 42, 0.4)',
+    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+  },
+  tab: {
+    padding: '10px 20px',
+    borderRadius: '8px 8px 0 0',
+    border: 'none',
+    background: 'transparent',
+    color: '#64748b',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  tabActive: {
+    background: 'rgba(249, 115, 22, 0.15)',
+    color: '#fdba74',
+    borderBottom: '2px solid #f97316',
+  },
+  componentsContainer: {
+    flex: 1,
+    overflow: 'auto',
+    padding: '24px',
+  },
+  componentSection: {
+    background: 'rgba(30, 41, 59, 0.6)',
+    border: '1px solid rgba(249, 115, 22, 0.2)',
+    borderRadius: '12px',
+    marginBottom: '24px',
+  },
+  componentHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '16px 20px',
+    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+  },
+  componentTitle: {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#fdba74',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  componentList: {
+    padding: '16px',
+  },
+  componentItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '12px 16px',
+    background: 'rgba(15, 23, 42, 0.4)',
+    borderRadius: '8px',
+    marginBottom: '8px',
+    border: '1px solid rgba(249, 115, 22, 0.1)',
+  },
+  componentItemPreview: {
+    width: '40px',
+    height: '56px',
+    borderRadius: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '10px',
+    fontWeight: 'bold',
+  },
+  componentItemInfo: {
+    flex: 1,
+  },
+  componentItemName: {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#e2e8f0',
+  },
+  componentItemMeta: {
+    fontSize: '12px',
+    color: '#64748b',
+  },
+  componentItemActions: {
+    display: 'flex',
+    gap: '8px',
+  },
+  addButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '8px 16px',
+    background: 'rgba(249, 115, 22, 0.1)',
+    border: '1px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '8px',
+    color: '#fdba74',
+    fontSize: '13px',
+    fontWeight: '600',
+    cursor: 'pointer',
+  },
+  smallInput: {
+    padding: '6px 10px',
+    background: 'rgba(15, 23, 42, 0.6)',
+    border: '1px solid rgba(249, 115, 22, 0.2)',
+    borderRadius: '6px',
+    color: '#e2e8f0',
+    fontSize: '13px',
+    outline: 'none',
+    width: '120px',
+  },
+  colorPicker: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '6px',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    cursor: 'pointer',
+    padding: 0,
+    overflow: 'hidden',
+  },
   emptyState: {
     textAlign: 'center' as const,
     padding: '40px 20px',
@@ -1302,6 +1466,7 @@ export default function GameBuilder() {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [loading, setLoading] = useState(!!gameIdParam);
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState<BuilderTab>('flow');
   const [recentlyUsed, setRecentlyUsed] = useState<string[]>(() => {
     // Load from localStorage
     if (typeof window !== 'undefined') {
@@ -1310,6 +1475,21 @@ export default function GameBuilder() {
     }
     return [];
   });
+
+  // Game Components State
+  const [cardTypes, setCardTypes] = useState<CardTypeDefinition[]>([
+    { id: 'white', type: 'white', name: 'Response Card', color: '#ffffff', textColor: '#1a1a1a', properties: [{ name: 'text', type: 'string', label: 'Card Text' }] },
+    { id: 'black', type: 'black', name: 'Prompt Card', color: '#1a1a1a', textColor: '#ffffff', properties: [{ name: 'text', type: 'string', label: 'Prompt Text' }, { name: 'pick', type: 'number', label: 'Cards to Pick' }] },
+  ]);
+  const [zones, setZones] = useState<ZoneDefinition[]>([
+    { id: 'deck', name: 'deck', scope: 'shared', visibility: 'private' },
+    { id: 'discard', name: 'discard', scope: 'shared', visibility: 'public' },
+    { id: 'hand', name: 'hand', scope: 'perPlayer', visibility: 'owner' },
+    { id: 'table', name: 'table', scope: 'shared', visibility: 'public' },
+  ]);
+  const [resources, setResources] = useState<ResourceDefinition[]>([
+    { id: 'score', name: 'score', initialValue: 0, min: 0 },
+  ]);
 
   // Track recently used blocks
   const trackBlockUsage = useCallback((templateType: string) => {
@@ -1474,22 +1654,34 @@ export default function GameBuilder() {
       version: '1.0.0',
       description: 'A custom card game built with the visual editor',
       players: { min: 3, max: 10, initial: [] },
-      cardTypes: [
-        { type: 'white', name: 'Response Card', display: { color: '#ffffff', textColor: '#1a1a1a', template: '{{text}}' }, properties: [{ name: 'text', type: 'string', label: 'Card Text' }] },
-        { type: 'black', name: 'Prompt Card', display: { color: '#1a1a1a', textColor: '#ffffff', template: '{{text}}' }, properties: [{ name: 'text', type: 'string', label: 'Prompt Text' }, { name: 'pick', type: 'number', default: { type: 'literal', value: 1 }, label: 'Cards to Pick' }] },
-      ],
+      cardTypes: cardTypes.map(ct => ({
+        type: ct.type,
+        name: ct.name,
+        display: { color: ct.color, textColor: ct.textColor, template: '{{text}}' },
+        properties: ct.properties.map(p => ({
+          name: p.name,
+          type: p.type,
+          label: p.label,
+          ...(p.default !== undefined ? { default: { type: 'literal', value: p.default } } : {}),
+        })),
+      })),
       decks: [],
-      zones: [
-        { name: 'deck', scope: 'shared', visibility: 'private' },
-        { name: 'discard', scope: 'shared', visibility: 'public' },
-        { name: 'hand', scope: 'perPlayer', visibility: 'owner' },
-        { name: 'table', scope: 'shared', visibility: 'public' },
-      ],
+      zones: zones.map(z => ({
+        name: z.name,
+        scope: z.scope,
+        visibility: z.visibility,
+      })),
+      resources: resources.map(r => ({
+        name: r.name,
+        initialValue: r.initialValue,
+        min: r.min,
+        max: r.max,
+      })),
       setup: { id: 'setup', name: 'Setup', kind: 'phase', children: [] },
       main: { id: 'main', name: 'Main Game', kind: 'game', children: blocks },
       winConditions: [],
     };
-  }, [gameId, gameName, blocks]);
+  }, [gameId, gameName, blocks, cardTypes, zones, resources]);
 
   // Load existing game
   useEffect(() => {
@@ -1505,9 +1697,43 @@ export default function GameBuilder() {
         const game = await res.json();
         setGameName(game.name);
         setGameId(game.id);
+
         // Load blocks from gameConfig if it has a main scope with children
         if (game.gameConfig?.main?.children) {
           setBlocks(game.gameConfig.main.children);
+        }
+
+        // Load card types
+        if (game.gameConfig?.cardTypes?.length) {
+          setCardTypes(game.gameConfig.cardTypes.map((ct: any, idx: number) => ({
+            id: ct.type || `card-${idx}`,
+            type: ct.type,
+            name: ct.name,
+            color: ct.display?.color || '#3b82f6',
+            textColor: ct.display?.textColor || '#ffffff',
+            properties: ct.properties || [],
+          })));
+        }
+
+        // Load zones
+        if (game.gameConfig?.zones?.length) {
+          setZones(game.gameConfig.zones.map((z: any, idx: number) => ({
+            id: z.name || `zone-${idx}`,
+            name: z.name,
+            scope: z.scope || 'shared',
+            visibility: z.visibility || 'public',
+          })));
+        }
+
+        // Load resources
+        if (game.gameConfig?.resources?.length) {
+          setResources(game.gameConfig.resources.map((r: any, idx: number) => ({
+            id: r.name || `resource-${idx}`,
+            name: r.name,
+            initialValue: r.initialValue || 0,
+            min: r.min,
+            max: r.max,
+          })));
         }
       } catch (error) {
         console.error('Failed to load game:', error);
@@ -1669,10 +1895,371 @@ export default function GameBuilder() {
         </div>
       </header>
 
+      {/* Tab Bar */}
+      <div style={styles.tabBar}>
+        <button
+          style={{
+            ...styles.tab,
+            ...(activeTab === 'flow' ? styles.tabActive : {}),
+          }}
+          onClick={() => setActiveTab('flow')}
+        >
+          <GitBranch size={16} />
+          Game Flow
+        </button>
+        <button
+          style={{
+            ...styles.tab,
+            ...(activeTab === 'components' ? styles.tabActive : {}),
+          }}
+          onClick={() => setActiveTab('components')}
+        >
+          <Box size={16} />
+          Components
+        </button>
+      </div>
+
       {/* Main Content */}
       <div style={styles.main}>
-        {/* Left Sidebar - Block Palette */}
-        <div style={styles.sidebar}>
+        {/* Components Tab */}
+        {activeTab === 'components' && (
+          <div style={styles.componentsContainer}>
+            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+              {/* Card Types Section */}
+              <div style={styles.componentSection}>
+                <div style={styles.componentHeader}>
+                  <div style={styles.componentTitle}>
+                    <Palette size={18} />
+                    Card Types
+                  </div>
+                  <button
+                    style={styles.addButton}
+                    onClick={() => {
+                      const id = `card-${Date.now()}`;
+                      setCardTypes(prev => [...prev, {
+                        id,
+                        type: `card${prev.length + 1}`,
+                        name: `Card Type ${prev.length + 1}`,
+                        color: '#3b82f6',
+                        textColor: '#ffffff',
+                        properties: [{ name: 'text', type: 'string', label: 'Card Text' }],
+                      }]);
+                    }}
+                  >
+                    <Plus size={14} />
+                    Add Card Type
+                  </button>
+                </div>
+                <div style={styles.componentList}>
+                  {cardTypes.map((ct, idx) => (
+                    <div key={ct.id} style={styles.componentItem}>
+                      <div
+                        style={{
+                          ...styles.componentItemPreview,
+                          background: ct.color,
+                          color: ct.textColor,
+                          border: ct.color === '#ffffff' ? '1px solid #333' : 'none',
+                        }}
+                      >
+                        Aa
+                      </div>
+                      <div style={styles.componentItemInfo}>
+                        <input
+                          style={{ ...styles.smallInput, fontWeight: '600' }}
+                          value={ct.name}
+                          onChange={(e) => {
+                            const updated = [...cardTypes];
+                            updated[idx].name = e.target.value;
+                            setCardTypes(updated);
+                          }}
+                        />
+                        <div style={styles.componentItemMeta}>
+                          Type: <input
+                            style={{ ...styles.smallInput, width: '80px', marginLeft: '4px' }}
+                            value={ct.type}
+                            onChange={(e) => {
+                              const updated = [...cardTypes];
+                              updated[idx].type = e.target.value.toLowerCase().replace(/\s+/g, '_');
+                              setCardTypes(updated);
+                            }}
+                          /> • {ct.properties.length} properties
+                        </div>
+                      </div>
+                      <div style={styles.componentItemActions}>
+                        <input
+                          type="color"
+                          value={ct.color}
+                          onChange={(e) => {
+                            const updated = [...cardTypes];
+                            updated[idx].color = e.target.value;
+                            setCardTypes(updated);
+                          }}
+                          style={styles.colorPicker}
+                          title="Card color"
+                        />
+                        <input
+                          type="color"
+                          value={ct.textColor}
+                          onChange={(e) => {
+                            const updated = [...cardTypes];
+                            updated[idx].textColor = e.target.value;
+                            setCardTypes(updated);
+                          }}
+                          style={styles.colorPicker}
+                          title="Text color"
+                        />
+                        <button
+                          style={{
+                            ...styles.blockActionBtn,
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#ef4444',
+                          }}
+                          onClick={() => {
+                            if (cardTypes.length > 1) {
+                              setCardTypes(prev => prev.filter(c => c.id !== ct.id));
+                            }
+                          }}
+                          title="Delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Zones Section */}
+              <div style={styles.componentSection}>
+                <div style={styles.componentHeader}>
+                  <div style={styles.componentTitle}>
+                    <Layers size={18} />
+                    Zones
+                  </div>
+                  <button
+                    style={styles.addButton}
+                    onClick={() => {
+                      const id = `zone-${Date.now()}`;
+                      setZones(prev => [...prev, {
+                        id,
+                        name: `zone${prev.length + 1}`,
+                        scope: 'shared',
+                        visibility: 'public',
+                      }]);
+                    }}
+                  >
+                    <Plus size={14} />
+                    Add Zone
+                  </button>
+                </div>
+                <div style={styles.componentList}>
+                  {zones.map((zone, idx) => (
+                    <div key={zone.id} style={styles.componentItem}>
+                      <div
+                        style={{
+                          ...styles.componentItemPreview,
+                          background: 'rgba(139, 92, 246, 0.2)',
+                          border: '2px dashed #8b5cf6',
+                          fontSize: '18px',
+                        }}
+                      >
+                        📂
+                      </div>
+                      <div style={styles.componentItemInfo}>
+                        <input
+                          style={{ ...styles.smallInput, fontWeight: '600' }}
+                          value={zone.name}
+                          onChange={(e) => {
+                            const updated = [...zones];
+                            updated[idx].name = e.target.value.toLowerCase().replace(/\s+/g, '_');
+                            setZones(updated);
+                          }}
+                        />
+                        <div style={styles.componentItemMeta}>
+                          <select
+                            style={{ ...styles.smallInput, width: '100px' }}
+                            value={zone.scope}
+                            onChange={(e) => {
+                              const updated = [...zones];
+                              updated[idx].scope = e.target.value as 'shared' | 'perPlayer';
+                              setZones(updated);
+                            }}
+                          >
+                            <option value="shared">Shared</option>
+                            <option value="perPlayer">Per Player</option>
+                          </select>
+                          <select
+                            style={{ ...styles.smallInput, width: '100px', marginLeft: '8px' }}
+                            value={zone.visibility}
+                            onChange={(e) => {
+                              const updated = [...zones];
+                              updated[idx].visibility = e.target.value as 'public' | 'private' | 'owner';
+                              setZones(updated);
+                            }}
+                          >
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                            <option value="owner">Owner Only</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div style={styles.componentItemActions}>
+                        <button
+                          style={{
+                            ...styles.blockActionBtn,
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#ef4444',
+                          }}
+                          onClick={() => {
+                            if (zones.length > 1) {
+                              setZones(prev => prev.filter(z => z.id !== zone.id));
+                            }
+                          }}
+                          title="Delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Resources Section */}
+              <div style={styles.componentSection}>
+                <div style={styles.componentHeader}>
+                  <div style={styles.componentTitle}>
+                    <Award size={18} />
+                    Player Resources
+                  </div>
+                  <button
+                    style={styles.addButton}
+                    onClick={() => {
+                      const id = `resource-${Date.now()}`;
+                      setResources(prev => [...prev, {
+                        id,
+                        name: `resource${prev.length + 1}`,
+                        initialValue: 0,
+                        min: 0,
+                      }]);
+                    }}
+                  >
+                    <Plus size={14} />
+                    Add Resource
+                  </button>
+                </div>
+                <div style={styles.componentList}>
+                  {resources.map((resource, idx) => (
+                    <div key={resource.id} style={styles.componentItem}>
+                      <div
+                        style={{
+                          ...styles.componentItemPreview,
+                          background: 'linear-gradient(135deg, #eab308 0%, #f97316 100%)',
+                          color: '#000',
+                          fontSize: '14px',
+                        }}
+                      >
+                        {resource.initialValue}
+                      </div>
+                      <div style={styles.componentItemInfo}>
+                        <input
+                          style={{ ...styles.smallInput, fontWeight: '600' }}
+                          value={resource.name}
+                          onChange={(e) => {
+                            const updated = [...resources];
+                            updated[idx].name = e.target.value.toLowerCase().replace(/\s+/g, '_');
+                            setResources(updated);
+                          }}
+                        />
+                        <div style={styles.componentItemMeta}>
+                          Start:
+                          <input
+                            type="number"
+                            style={{ ...styles.smallInput, width: '60px', marginLeft: '4px' }}
+                            value={resource.initialValue}
+                            onChange={(e) => {
+                              const updated = [...resources];
+                              updated[idx].initialValue = parseInt(e.target.value) || 0;
+                              setResources(updated);
+                            }}
+                          />
+                          Min:
+                          <input
+                            type="number"
+                            style={{ ...styles.smallInput, width: '50px', marginLeft: '4px' }}
+                            value={resource.min ?? ''}
+                            placeholder="∞"
+                            onChange={(e) => {
+                              const updated = [...resources];
+                              updated[idx].min = e.target.value ? parseInt(e.target.value) : undefined;
+                              setResources(updated);
+                            }}
+                          />
+                          Max:
+                          <input
+                            type="number"
+                            style={{ ...styles.smallInput, width: '50px', marginLeft: '4px' }}
+                            value={resource.max ?? ''}
+                            placeholder="∞"
+                            onChange={(e) => {
+                              const updated = [...resources];
+                              updated[idx].max = e.target.value ? parseInt(e.target.value) : undefined;
+                              setResources(updated);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div style={styles.componentItemActions}>
+                        <button
+                          style={{
+                            ...styles.blockActionBtn,
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#ef4444',
+                          }}
+                          onClick={() => {
+                            setResources(prev => prev.filter(r => r.id !== resource.id));
+                          }}
+                          title="Delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {resources.length === 0 && (
+                    <div style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>
+                      No resources defined. Add one to track things like score, chips, or health.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Help Info */}
+              <div style={{
+                background: 'rgba(59, 130, 246, 0.1)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                borderRadius: '12px',
+                padding: '20px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <HelpCircle size={20} style={{ color: '#60a5fa', flexShrink: 0, marginTop: '2px' }} />
+                  <div>
+                    <div style={{ fontWeight: '600', color: '#60a5fa', marginBottom: '8px' }}>About Game Components</div>
+                    <div style={{ color: '#94a3b8', fontSize: '13px', lineHeight: '1.6' }}>
+                      <strong>Card Types</strong> define what kinds of cards exist in your game (e.g., Question cards, Answer cards, Action cards).<br />
+                      <strong>Zones</strong> are where cards can be placed (e.g., deck, hand, discard pile, table).<br />
+                      <strong>Resources</strong> track player values like score, chips, health, or money.<br /><br />
+                      These components are used in your Game Flow to define how the game works.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Left Sidebar - Block Palette (only in Flow tab) */}
+        {activeTab === 'flow' && <div style={styles.sidebar}>
           <div style={styles.sidebarHeader}>
             <Palette size={14} style={{ marginRight: '8px' }} />
             Block Palette
@@ -1805,66 +2392,70 @@ export default function GameBuilder() {
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
-        {/* Center - Canvas */}
-        <div
-          style={styles.canvas}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleCanvasDrop}
-        >
-          <div style={styles.canvasInner}>
-            {/* Game Info Block */}
-            <div style={styles.gameBlock}>
-              <div style={styles.gameBlockHeader}>
-                <Sparkles size={24} style={{ color: '#f97316' }} />
-                <div style={styles.gameBlockTitle}>{gameName}</div>
-              </div>
-
-              {/* Blocks */}
-              {blocks.map(block => (
-                <BlockComponent
-                  key={block.id}
-                  block={block}
-                  depth={0}
-                  selected={selectedBlock}
-                  onSelect={setSelectedBlock}
-                  onUpdate={handleUpdate}
-                  onDelete={handleDelete}
-                  onAddChild={handleAddChild}
-                  onDrop={(targetId, template) => handleAddChild(targetId, template)}
-                />
-              ))}
-
-              {/* Root drop zone */}
-              {blocks.length === 0 && (
-                <div style={{ ...styles.dropZone, padding: '40px' }}>
-                  <Plus size={24} style={{ marginBottom: '8px', opacity: 0.5 }} />
-                  <div style={{ fontSize: '15px', marginBottom: '4px' }}>
-                    Drag blocks here to start building
-                  </div>
-                  <div style={{ fontSize: '12px', opacity: 0.7 }}>
-                    Add rounds, turns, and actions to define your game
-                  </div>
+        {/* Center - Canvas (only in Flow tab) */}
+        {activeTab === 'flow' && (
+          <div
+            style={styles.canvas}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleCanvasDrop}
+          >
+            <div style={styles.canvasInner}>
+              {/* Game Info Block */}
+              <div style={styles.gameBlock}>
+                <div style={styles.gameBlockHeader}>
+                  <Sparkles size={24} style={{ color: '#f97316' }} />
+                  <div style={styles.gameBlockTitle}>{gameName}</div>
                 </div>
-              )}
+
+                {/* Blocks */}
+                {blocks.map(block => (
+                  <BlockComponent
+                    key={block.id}
+                    block={block}
+                    depth={0}
+                    selected={selectedBlock}
+                    onSelect={setSelectedBlock}
+                    onUpdate={handleUpdate}
+                    onDelete={handleDelete}
+                    onAddChild={handleAddChild}
+                    onDrop={(targetId, template) => handleAddChild(targetId, template)}
+                  />
+                ))}
+
+                {/* Root drop zone */}
+                {blocks.length === 0 && (
+                  <div style={{ ...styles.dropZone, padding: '40px' }}>
+                    <Plus size={24} style={{ marginBottom: '8px', opacity: 0.5 }} />
+                    <div style={{ fontSize: '15px', marginBottom: '4px' }}>
+                      Drag blocks here to start building
+                    </div>
+                    <div style={{ fontSize: '12px', opacity: 0.7 }}>
+                      Add rounds, turns, and actions to define your game
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Right Sidebar - Properties */}
-        <div style={styles.propertiesPanel}>
-          <div style={styles.propertiesHeader}>
-            <Settings size={16} />
-            Properties
+        {/* Right Sidebar - Properties (only in Flow tab) */}
+        {activeTab === 'flow' && (
+          <div style={styles.propertiesPanel}>
+            <div style={styles.propertiesHeader}>
+              <Settings size={16} />
+              Properties
+            </div>
+            <div style={styles.propertiesContent}>
+              <PropertyEditor
+                block={selectedBlockData}
+                onUpdate={handleUpdate}
+              />
+            </div>
           </div>
-          <div style={styles.propertiesContent}>
-            <PropertyEditor
-              block={selectedBlockData}
-              onUpdate={handleUpdate}
-            />
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
