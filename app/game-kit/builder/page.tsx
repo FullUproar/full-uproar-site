@@ -1125,6 +1125,8 @@ const styles = {
   },
   sidebar: {
     width: '280px',
+    minWidth: '200px',
+    flexShrink: 0,
     background: 'rgba(30, 41, 59, 0.4)',
     borderRight: '1px solid rgba(249, 115, 22, 0.1)',
     display: 'flex',
@@ -1139,6 +1141,7 @@ const styles = {
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
     color: '#fdba74',
+    flexShrink: 0,
   },
   sidebarContent: {
     flex: 1,
@@ -1209,6 +1212,9 @@ const styles = {
   },
   propertiesPanel: {
     width: '320px',
+    minWidth: '240px',
+    maxWidth: '400px',
+    flexShrink: 1,
     background: 'rgba(30, 41, 59, 0.4)',
     borderLeft: '1px solid rgba(249, 115, 22, 0.1)',
     display: 'flex',
@@ -1224,6 +1230,7 @@ const styles = {
     fontSize: '14px',
     fontWeight: '600',
     color: '#fdba74',
+    flexShrink: 0,
   },
   propertiesContent: {
     flex: 1,
@@ -1858,7 +1865,12 @@ export default function GameBuilder() {
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [loading, setLoading] = useState(!!gameIdParam);
-  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+  // Start with all categories collapsed - collect all category names + _recent
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(() => {
+    const allCategories = new Set(blockTemplates.map(t => t.category));
+    allCategories.add('_recent'); // Also collapse recently used
+    return allCategories;
+  });
   const [activeTab, setActiveTab] = useState<BuilderTab>('flow');
   const [recentlyUsed, setRecentlyUsed] = useState<string[]>(() => {
     // Load from localStorage
