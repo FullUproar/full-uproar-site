@@ -90,11 +90,54 @@ interface ComponentPreset {
   name: string;
   icon: string;
   description: string;
-  category: 'cards' | 'zones' | 'resources';
+  category: 'cards' | 'zones' | 'resources' | 'decks';
   cardTypes?: CardTypeDefinition[];
   zones?: ZoneDefinition[];
   resources?: ResourceDefinition[];
+  decks?: DeckDefinition[];
 }
+
+// Helper to generate standard 52-card deck
+const generateStandardDeck = (): DeckDefinition => {
+  const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
+  const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+  const cards: Array<{ id: string; properties: Record<string, any> }> = [];
+
+  suits.forEach(suit => {
+    ranks.forEach((rank, idx) => {
+      cards.push({
+        id: `${rank}-${suit}`,
+        properties: {
+          suit,
+          rank,
+          value: idx + 1, // A=1, 2=2, ... K=13
+        },
+      });
+    });
+  });
+
+  return {
+    id: 'standard-deck',
+    name: 'deck',
+    cardType: 'playing_card',
+    cards,
+  };
+};
+
+// Helper to generate standard deck with jokers
+const generateDeckWithJokers = (): DeckDefinition[] => {
+  const standardDeck = generateStandardDeck();
+  const jokerDeck: DeckDefinition = {
+    id: 'jokers',
+    name: 'jokers',
+    cardType: 'joker',
+    cards: [
+      { id: 'joker-red', properties: { color: 'red' } },
+      { id: 'joker-black', properties: { color: 'black' } },
+    ],
+  };
+  return [standardDeck, jokerDeck];
+};
 
 const componentPresets: ComponentPreset[] = [
   // Card Type Presets
@@ -372,6 +415,62 @@ const componentPresets: ComponentPreset[] = [
       { id: 'mana', name: 'mana', initialValue: 50, min: 0, max: 50 },
       { id: 'gold', name: 'gold', initialValue: 100, min: 0 },
     ],
+  },
+
+  // Deck Presets (with actual cards!)
+  {
+    id: 'deck-standard-52',
+    name: 'Standard 52-Card Deck',
+    icon: '🃏',
+    description: 'Full deck: A-K in 4 suits',
+    category: 'decks',
+    cardTypes: [
+      {
+        id: 'playing-card',
+        type: 'playing_card',
+        name: 'Playing Card',
+        color: '#ffffff',
+        textColor: '#1a1a1a',
+        properties: [
+          { name: 'suit', type: 'string', label: 'Suit' },
+          { name: 'rank', type: 'string', label: 'Rank' },
+          { name: 'value', type: 'number', label: 'Value' },
+        ],
+      },
+    ],
+    decks: [generateStandardDeck()],
+  },
+  {
+    id: 'deck-with-jokers',
+    name: '54-Card Deck + Jokers',
+    icon: '🎭',
+    description: 'Standard deck + 2 jokers',
+    category: 'decks',
+    cardTypes: [
+      {
+        id: 'playing-card',
+        type: 'playing_card',
+        name: 'Playing Card',
+        color: '#ffffff',
+        textColor: '#1a1a1a',
+        properties: [
+          { name: 'suit', type: 'string', label: 'Suit' },
+          { name: 'rank', type: 'string', label: 'Rank' },
+          { name: 'value', type: 'number', label: 'Value' },
+        ],
+      },
+      {
+        id: 'joker',
+        type: 'joker',
+        name: 'Joker',
+        color: '#ef4444',
+        textColor: '#ffffff',
+        properties: [
+          { name: 'color', type: 'string', label: 'Color' },
+        ],
+      },
+    ],
+    decks: generateDeckWithJokers(),
   },
 ];
 
@@ -1784,6 +1883,7 @@ export default function GameBuilder() {
   const [resources, setResources] = useState<ResourceDefinition[]>([
     { id: 'score', name: 'score', initialValue: 0, min: 0 },
   ]);
+  const [decks, setDecks] = useState<DeckDefinition[]>([]);
 
   // Track recently used blocks
   const trackBlockUsage = useCallback((templateType: string) => {
@@ -1959,7 +2059,6 @@ export default function GameBuilder() {
           ...(p.default !== undefined ? { default: { type: 'literal', value: p.default } } : {}),
         })),
       })),
-      decks: [],
       zones: zones.map(z => ({
         name: z.name,
         scope: z.scope,
@@ -1971,11 +2070,16 @@ export default function GameBuilder() {
         min: r.min,
         max: r.max,
       })),
+      decks: decks.map(d => ({
+        name: d.name,
+        cardType: d.cardType,
+        cards: d.cards,
+      })),
       setup: { id: 'setup', name: 'Setup', kind: 'phase', children: [] },
       main: { id: 'main', name: 'Main Game', kind: 'game', children: blocks },
       winConditions: [],
     };
-  }, [gameId, gameName, blocks, cardTypes, zones, resources]);
+  }, [gameId, gameName, blocks, cardTypes, zones, resources, decks]);
 
   // Load existing game
   useEffect(() => {
@@ -2027,6 +2131,16 @@ export default function GameBuilder() {
             initialValue: r.initialValue || 0,
             min: r.min,
             max: r.max,
+          })));
+        }
+
+        // Load decks
+        if (game.gameConfig?.decks?.length) {
+          setDecks(game.gameConfig.decks.map((d: any, idx: number) => ({
+            id: d.name || `deck-${idx}`,
+            name: d.name,
+            cardType: d.cardType,
+            cards: d.cards || [],
           })));
         }
       } catch (error) {
@@ -2333,7 +2447,7 @@ export default function GameBuilder() {
                 </div>
 
                 {/* Resource Presets */}
-                <div>
+                <div style={{ marginBottom: '16px' }}>
                   <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     Resources
                   </div>
@@ -2377,6 +2491,70 @@ export default function GameBuilder() {
                       >
                         <span>{preset.icon}</span>
                         <span>{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Deck Presets */}
+                <div>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Pre-built Decks (with cards!)
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {componentPresets.filter(p => p.category === 'decks').map(preset => (
+                      <button
+                        key={preset.id}
+                        onClick={() => {
+                          // Add card types if provided
+                          if (preset.cardTypes) {
+                            setCardTypes(prev => [
+                              ...prev,
+                              ...preset.cardTypes!.map(ct => ({
+                                ...ct,
+                                id: `${ct.id}-${Date.now()}`,
+                              })),
+                            ]);
+                          }
+                          // Add decks if provided
+                          if (preset.decks) {
+                            setDecks(prev => [
+                              ...prev,
+                              ...preset.decks!.map(d => ({
+                                ...d,
+                                id: `${d.id}-${Date.now()}`,
+                              })),
+                            ]);
+                          }
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '8px 12px',
+                          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
+                          border: '1px solid rgba(59, 130, 246, 0.4)',
+                          borderRadius: '8px',
+                          color: '#e2e8f0',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#3b82f6';
+                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)';
+                        }}
+                        title={preset.description}
+                      >
+                        <span>{preset.icon}</span>
+                        <span>{preset.name}</span>
+                        <span style={{ fontSize: '11px', opacity: 0.7, marginLeft: '4px' }}>
+                          ({preset.decks?.reduce((sum, d) => sum + d.cards.length, 0) || 0} cards)
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -2440,7 +2618,12 @@ export default function GameBuilder() {
                               updated[idx].type = e.target.value.toLowerCase().replace(/\s+/g, '_');
                               setCardTypes(updated);
                             }}
-                          /> • {ct.properties.length} properties
+                          />
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+                          Properties: {ct.properties.length > 0
+                            ? ct.properties.map(p => p.name).join(', ')
+                            : <span style={{ fontStyle: 'italic' }}>none</span>}
                         </div>
                       </div>
                       <div style={styles.componentItemActions}>
@@ -2684,6 +2867,94 @@ export default function GameBuilder() {
                 </div>
               </div>
 
+              {/* Decks Section */}
+              <div style={styles.componentSection}>
+                <div style={styles.componentHeader}>
+                  <div style={styles.componentTitle}>
+                    <Layers size={18} />
+                    Decks ({decks.reduce((sum, d) => sum + d.cards.length, 0)} cards total)
+                  </div>
+                  <button
+                    style={styles.addButton}
+                    onClick={() => {
+                      const id = `deck-${Date.now()}`;
+                      setDecks(prev => [...prev, {
+                        id,
+                        name: `deck${prev.length + 1}`,
+                        cardType: cardTypes[0]?.type || 'card',
+                        cards: [],
+                      }]);
+                    }}
+                  >
+                    <Plus size={14} />
+                    Add Deck
+                  </button>
+                </div>
+                <div style={styles.componentList}>
+                  {decks.map((deck, idx) => (
+                    <div key={deck.id} style={styles.componentItem}>
+                      <div
+                        style={{
+                          ...styles.componentItemPreview,
+                          background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                          color: '#fff',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {deck.cards.length}
+                      </div>
+                      <div style={styles.componentItemInfo}>
+                        <input
+                          style={{ ...styles.smallInput, fontWeight: '600' }}
+                          value={deck.name}
+                          onChange={(e) => {
+                            const updated = [...decks];
+                            updated[idx].name = e.target.value.toLowerCase().replace(/\s+/g, '_');
+                            setDecks(updated);
+                          }}
+                        />
+                        <div style={styles.componentItemMeta}>
+                          Card type:
+                          <select
+                            style={{ ...styles.smallInput, width: '120px', marginLeft: '4px' }}
+                            value={deck.cardType}
+                            onChange={(e) => {
+                              const updated = [...decks];
+                              updated[idx].cardType = e.target.value;
+                              setDecks(updated);
+                            }}
+                          >
+                            {cardTypes.map(ct => (
+                              <option key={ct.type} value={ct.type}>{ct.name}</option>
+                            ))}
+                          </select>
+                          • {deck.cards.length} cards
+                        </div>
+                      </div>
+                      <div style={styles.componentItemActions}>
+                        <button
+                          style={{
+                            ...styles.blockActionBtn,
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#ef4444',
+                          }}
+                          onClick={() => setDecks(prev => prev.filter(d => d.id !== deck.id))}
+                          title="Delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {decks.length === 0 && (
+                    <div style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>
+                      No decks defined. Use Quick Add presets above to add a standard deck, or add one manually.
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Help Info */}
               <div style={{
                 background: 'rgba(59, 130, 246, 0.1)',
@@ -2698,7 +2969,8 @@ export default function GameBuilder() {
                     <div style={{ color: '#94a3b8', fontSize: '13px', lineHeight: '1.6' }}>
                       <strong>Card Types</strong> define what kinds of cards exist in your game (e.g., Question cards, Answer cards, Action cards).<br />
                       <strong>Zones</strong> are where cards can be placed (e.g., deck, hand, discard pile, table).<br />
-                      <strong>Resources</strong> track player values like score, chips, health, or money.<br /><br />
+                      <strong>Resources</strong> track player values like score, chips, health, or money.<br />
+                      <strong>Decks</strong> contain the actual cards in your game. Use presets for standard decks.<br /><br />
                       These components are used in your Game Flow to define how the game works.
                     </div>
                   </div>
