@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu, X, ShoppingCart, Package, User, Settings, Gamepad2, ChevronDown } from 'lucide-react';
+import { Menu, X, ShoppingCart, Package, User, Settings, Gamepad2, ChevronDown, Wand2 } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 import FuglyLogo from './FuglyLogo';
 import CartButton from './CartButton';
@@ -79,10 +79,11 @@ export default function Navigation() {
     },
     {
       href: '/game-nights',
-      label: 'GAME NIGHTS',
+      label: 'PLAY',
       children: [
         { href: '/game-nights', label: 'My Game Nights' },
-        { href: '/game-nights/play-online', label: 'Play Online' },
+        { href: '/play-online', label: 'Play Online' },
+        { href: '/game-kit', label: '✨ Game Kit' },
       ]
     },
   ];
@@ -320,6 +321,11 @@ export default function Navigation() {
                   >
                     <UserButton.MenuItems>
                       <UserButton.Link
+                        label="Game Kit"
+                        labelIcon={<Wand2 size={16} />}
+                        href="/game-kit"
+                      />
+                      <UserButton.Link
                         label="Game Nights"
                         labelIcon={<Gamepad2 size={16} />}
                         href="/game-nights"
@@ -486,6 +492,14 @@ export default function Navigation() {
           </SignedOut>
 
           <SignedIn>
+            <Link
+              href="/game-kit"
+              style={{ ...styles.navLink, display: 'flex', alignItems: 'center', padding: '0.5rem', gap: '8px' }}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Wand2 size={20} />
+              GAME KIT
+            </Link>
             <Link
               href="/track-order"
               style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
