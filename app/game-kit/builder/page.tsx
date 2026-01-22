@@ -1500,6 +1500,61 @@ const styles = {
     outline: 'none',
     cursor: 'pointer',
   },
+  // Modal styles
+  modalOverlay: {
+    position: 'fixed' as const,
+    inset: 0,
+    background: 'rgba(0, 0, 0, 0.7)',
+    backdropFilter: 'blur(4px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+    padding: '20px',
+  },
+  modalContent: {
+    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '16px',
+    width: '100%',
+    maxWidth: '480px',
+    maxHeight: '80vh',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column' as const,
+  },
+  modalHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '16px 20px',
+    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+  },
+  modalTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#fdba74',
+  },
+  modalClose: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '8px',
+    border: 'none',
+    background: 'rgba(249, 115, 22, 0.1)',
+    color: '#fdba74',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalBody: {
+    flex: 1,
+    overflow: 'auto',
+    padding: '20px',
+  },
 };
 
 // =============================================================================
@@ -1509,23 +1564,21 @@ const styles = {
 interface BlockComponentProps {
   block: Block;
   depth: number;
-  selected: string | null;
-  onSelect: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Block>) => void;
   onDelete: (id: string) => void;
   onAddChild: (parentId: string, template: BlockTemplate) => void;
   onDrop: (targetId: string, template: BlockTemplate) => void;
+  onEditProperties: (id: string) => void;
 }
 
 function BlockComponent({
   block,
   depth,
-  selected,
-  onSelect,
   onUpdate,
   onDelete,
   onAddChild,
   onDrop,
+  onEditProperties,
 }: BlockComponentProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -1533,7 +1586,6 @@ function BlockComponent({
   const template = blockTemplates.find(t => t.type === block.type);
   const color = template?.color || '#64748b';
   const canHaveChildren = template?.canHaveChildren || block.kind !== 'action';
-  const isSelected = selected === block.id;
 
   const handleDragOver = (e: React.DragEvent) => {
     if (!canHaveChildren) return;
@@ -1563,9 +1615,8 @@ function BlockComponent({
       <div
         style={{
           ...styles.block,
-          borderColor: isSelected ? color : `${color}40`,
+          borderColor: `${color}40`,
           background: `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`,
-          boxShadow: isSelected ? `0 0 20px ${color}30` : 'none',
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -1579,7 +1630,6 @@ function BlockComponent({
             ...styles.blockHeader,
             background: isDragOver ? `${color}20` : 'transparent',
           }}
-          onClick={() => onSelect(block.id)}
         >
           {/* Collapse toggle */}
           {canHaveChildren && (
@@ -1617,6 +1667,16 @@ function BlockComponent({
               style={styles.blockActionBtn}
               onClick={(e) => {
                 e.stopPropagation();
+                onEditProperties(block.id);
+              }}
+              title="Edit Properties"
+            >
+              <Settings size={14} />
+            </button>
+            <button
+              style={styles.blockActionBtn}
+              onClick={(e) => {
+                e.stopPropagation();
                 onDelete(block.id);
               }}
               title="Delete"
@@ -1634,12 +1694,11 @@ function BlockComponent({
                 key={child.id}
                 block={child}
                 depth={depth + 1}
-                selected={selected}
-                onSelect={onSelect}
                 onUpdate={onUpdate}
                 onDelete={onDelete}
                 onAddChild={onAddChild}
                 onDrop={onDrop}
+                onEditProperties={onEditProperties}
               />
             ))}
 
@@ -1860,7 +1919,7 @@ export default function GameBuilder() {
   const gameIdParam = searchParams.get('id');
 
   const [gameName, setGameName] = useState('My Custom Game');
-  const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+  const [editingBlockId, setEditingBlockId] = useState<string | null>(null);
   const [gameId, setGameId] = useState<string | null>(gameIdParam);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -2011,7 +2070,7 @@ export default function GameBuilder() {
 
   const handleDelete = (id: string) => {
     setBlocks(prev => deleteBlockById(prev, id));
-    if (selectedBlock === id) setSelectedBlock(null);
+    if (editingBlockId === id) setEditingBlockId(null);
   };
 
   const handleAddChild = (parentId: string, template: BlockTemplate) => {
@@ -2219,7 +2278,7 @@ export default function GameBuilder() {
     }
   };
 
-  const selectedBlockData = selectedBlock ? findBlockById(blocks, selectedBlock) : null;
+  const editingBlockData = editingBlockId ? findBlockById(blocks, editingBlockId) : null;
 
   if (loading) {
     return (
@@ -3149,12 +3208,11 @@ export default function GameBuilder() {
                     key={block.id}
                     block={block}
                     depth={0}
-                    selected={selectedBlock}
-                    onSelect={setSelectedBlock}
                     onUpdate={handleUpdate}
                     onDelete={handleDelete}
                     onAddChild={handleAddChild}
                     onDrop={(targetId, template) => handleAddChild(targetId, template)}
+                    onEditProperties={setEditingBlockId}
                   />
                 ))}
 
@@ -3175,22 +3233,39 @@ export default function GameBuilder() {
           </div>
         )}
 
-        {/* Right Sidebar - Properties (only in Flow tab) */}
-        {activeTab === 'flow' && (
-          <div style={styles.propertiesPanel}>
-            <div style={styles.propertiesHeader}>
-              <Settings size={16} />
-              Properties
+      </div>
+
+      {/* Properties Modal */}
+      {editingBlockId && editingBlockData && (
+        <div
+          style={styles.modalOverlay}
+          onClick={() => setEditingBlockId(null)}
+        >
+          <div
+            style={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={styles.modalHeader}>
+              <div style={styles.modalTitle}>
+                <Settings size={18} />
+                Edit Block Properties
+              </div>
+              <button
+                style={styles.modalClose}
+                onClick={() => setEditingBlockId(null)}
+              >
+                ✕
+              </button>
             </div>
-            <div style={styles.propertiesContent}>
+            <div style={styles.modalBody}>
               <PropertyEditor
-                block={selectedBlockData}
+                block={editingBlockData}
                 onUpdate={handleUpdate}
               />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
