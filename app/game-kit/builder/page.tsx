@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ArrowLeft, Play, Save, Plus, Trash2, ChevronRight, ChevronDown,
   Copy, Settings, Zap, RotateCcw, Users, Layers, Target, Clock,
   Shuffle, Eye, EyeOff, ArrowRightLeft, MessageSquare, Award,
   GitBranch, Repeat, Filter, Box, Sparkles, GripVertical,
-  HelpCircle, Code, Palette
+  HelpCircle, Code, Palette, Loader2, Check
 } from 'lucide-react';
 
 // =============================================================================
@@ -956,8 +957,16 @@ function PropertyEditor({ block, onUpdate }: PropertyEditorProps) {
 // =============================================================================
 
 export default function GameBuilder() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const gameIdParam = searchParams.get('id');
+
   const [gameName, setGameName] = useState('My Custom Game');
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+  const [gameId, setGameId] = useState<string | null>(gameIdParam);
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [loading, setLoading] = useState(!!gameIdParam);
   const [blocks, setBlocks] = useState<Block[]>([
     {
       id: 'setup',
@@ -1088,7 +1097,124 @@ export default function GameBuilder() {
     }
   };
 
+  // Convert blocks to DSL format for saving
+  const blocksToDSL = useCallback(() => {
+    return {
+      id: gameId || 'new-game',
+      name: gameName,
+      version: '1.0.0',
+      description: 'A custom card game built with the visual editor',
+      players: { min: 3, max: 10, initial: [] },
+      cardTypes: [
+        { type: 'white', name: 'Response Card', display: { color: '#ffffff', textColor: '#1a1a1a', template: '{{text}}' }, properties: [{ name: 'text', type: 'string', label: 'Card Text' }] },
+        { type: 'black', name: 'Prompt Card', display: { color: '#1a1a1a', textColor: '#ffffff', template: '{{text}}' }, properties: [{ name: 'text', type: 'string', label: 'Prompt Text' }, { name: 'pick', type: 'number', default: { type: 'literal', value: 1 }, label: 'Cards to Pick' }] },
+      ],
+      decks: [],
+      zones: [
+        { name: 'deck', scope: 'shared', visibility: 'private' },
+        { name: 'discard', scope: 'shared', visibility: 'public' },
+        { name: 'hand', scope: 'perPlayer', visibility: 'owner' },
+        { name: 'table', scope: 'shared', visibility: 'public' },
+      ],
+      setup: { id: 'setup', name: 'Setup', kind: 'phase', children: [] },
+      main: { id: 'main', name: 'Main Game', kind: 'game', children: blocks },
+      winConditions: [],
+    };
+  }, [gameId, gameName, blocks]);
+
+  // Load existing game
+  useEffect(() => {
+    if (!gameIdParam) {
+      setLoading(false);
+      return;
+    }
+
+    const loadGame = async () => {
+      try {
+        const res = await fetch(`/api/game-kit/dsl/${gameIdParam}`);
+        if (!res.ok) throw new Error('Failed to load game');
+        const game = await res.json();
+        setGameName(game.name);
+        setGameId(game.id);
+        // Load blocks from gameConfig if it has a main scope with children
+        if (game.gameConfig?.main?.children) {
+          setBlocks(game.gameConfig.main.children);
+        }
+      } catch (error) {
+        console.error('Failed to load game:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGame();
+  }, [gameIdParam]);
+
+  // Save game
+  const saveGame = async (): Promise<string | null> => {
+    setSaving(true);
+    setSaveStatus('saving');
+    try {
+      const dslDefinition = blocksToDSL();
+
+      if (gameId) {
+        // Update existing
+        const res = await fetch(`/api/game-kit/dsl/${gameId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: gameName, dslDefinition }),
+        });
+        if (!res.ok) throw new Error('Failed to save');
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 2000);
+        return gameId;
+      } else {
+        // Create new
+        const res = await fetch('/api/game-kit/dsl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: gameName, dslDefinition }),
+        });
+        if (!res.ok) throw new Error('Failed to create');
+        const game = await res.json();
+        setGameId(game.id);
+        // Update URL without full navigation
+        window.history.replaceState({}, '', `/game-kit/builder?id=${game.id}`);
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 2000);
+        return game.id;
+      }
+    } catch (error) {
+      console.error('Save failed:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+      return null;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Play game
+  const handlePlay = async () => {
+    const savedId = await saveGame();
+    if (savedId) {
+      // Generate a room code
+      const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      router.push(`/play-online/${roomCode}?game=${savedId}`);
+    }
+  };
+
   const selectedBlockData = selectedBlock ? findBlockById(blocks, selectedBlock) : null;
+
+  if (loading) {
+    return (
+      <div style={{ ...styles.container, justifyContent: 'center', alignItems: 'center' }}>
+        <Loader2 size={48} style={{ color: '#f97316', animation: 'spin 1s linear infinite' }} />
+        <div style={{ marginTop: '16px', color: '#94a3b8' }}>Loading game...</div>
+        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
@@ -1130,15 +1256,44 @@ export default function GameBuilder() {
         </div>
 
         <div style={styles.headerRight}>
-          <button style={{ ...styles.button, ...styles.secondaryButton }}>
+          <button
+            style={{ ...styles.button, ...styles.secondaryButton }}
+            onClick={() => {
+              const dsl = blocksToDSL();
+              console.log('DSL Definition:', JSON.stringify(dsl, null, 2));
+              alert('DSL logged to console');
+            }}
+          >
             <Code size={16} />
             View Code
           </button>
-          <button style={{ ...styles.button, ...styles.secondaryButton }}>
-            <Save size={16} />
-            Save
+          <button
+            style={{
+              ...styles.button,
+              ...styles.secondaryButton,
+              opacity: saving ? 0.7 : 1,
+            }}
+            onClick={saveGame}
+            disabled={saving}
+          >
+            {saveStatus === 'saving' ? (
+              <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+            ) : saveStatus === 'saved' ? (
+              <Check size={16} style={{ color: '#10b981' }} />
+            ) : (
+              <Save size={16} />
+            )}
+            {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved!' : 'Save'}
           </button>
-          <button style={{ ...styles.button, ...styles.primaryButton }}>
+          <button
+            style={{
+              ...styles.button,
+              ...styles.primaryButton,
+              opacity: saving ? 0.7 : 1,
+            }}
+            onClick={handlePlay}
+            disabled={saving}
+          >
             <Play size={16} />
             Test Game
           </button>

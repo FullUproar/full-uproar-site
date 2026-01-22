@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
 
 interface Template {
@@ -227,6 +227,40 @@ export default function NewGamePage() {
         </div>
 
         <div style={styles.templateGrid}>
+          {/* Blank Canvas - Visual Builder */}
+          <div
+            style={{
+              ...styles.templateCard,
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+              borderColor: 'rgba(139, 92, 246, 0.4)',
+            }}
+            onClick={() => router.push('/game-kit/builder')}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#8b5cf6';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 10px 40px rgba(139, 92, 246, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <div style={{ ...styles.templateIcon, display: 'flex', justifyContent: 'center', gap: '8px' }}>
+              <Wand2 size={40} style={{ color: '#8b5cf6' }} />
+              <Sparkles size={40} style={{ color: '#f97316' }} />
+            </div>
+            <div style={{ ...styles.templateName, color: '#c4b5fd' }}>Blank Canvas</div>
+            <div style={styles.templateDescription}>
+              Build any card game from scratch using our visual block editor. Full creative control!
+            </div>
+            <div style={styles.templateCardTypes}>
+              <span style={{ ...styles.cardTypeBadge, background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', color: '#ffffff' }}>
+                Advanced
+              </span>
+            </div>
+          </div>
+
           {templates.map((template) => (
             <div
               key={template.id}

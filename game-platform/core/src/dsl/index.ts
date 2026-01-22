@@ -5,4 +5,5 @@
  */
 
 export * from './types';
+export * from './interpreter';
 export { default as cardsAgainstHumanityExample } from './examples/cards-against-humanity';
