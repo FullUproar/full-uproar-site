@@ -2472,11 +2472,7 @@ export default function GameBuilder() {
                             background: 'rgba(239, 68, 68, 0.1)',
                             color: '#ef4444',
                           }}
-                          onClick={() => {
-                            if (cardTypes.length > 1) {
-                              setCardTypes(prev => prev.filter(c => c.id !== ct.id));
-                            }
-                          }}
+                          onClick={() => setCardTypes(prev => prev.filter(c => c.id !== ct.id))}
                           title="Delete"
                         >
                           <Trash2 size={14} />
@@ -2568,11 +2564,7 @@ export default function GameBuilder() {
                             background: 'rgba(239, 68, 68, 0.1)',
                             color: '#ef4444',
                           }}
-                          onClick={() => {
-                            if (zones.length > 1) {
-                              setZones(prev => prev.filter(z => z.id !== zone.id));
-                            }
-                          }}
+                          onClick={() => setZones(prev => prev.filter(z => z.id !== zone.id))}
                           title="Delete"
                         >
                           <Trash2 size={14} />
