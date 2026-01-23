@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, Play, Edit, Trash2, Copy, Share2, ArrowLeft, Gamepad2 } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 interface GameDefinition {
   id: string;
@@ -162,7 +163,8 @@ export default function GameKitDashboard() {
   }
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="gk-container">
+      <style jsx global>{gameKitResponsiveCSS}</style>
       <div style={styles.content}>
         {/* Navigation */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -230,7 +232,7 @@ export default function GameKitDashboard() {
             </div>
           </div>
         ) : (
-          <div style={styles.grid}>
+          <div style={styles.grid} className="gk-game-grid">
             {games.map((game) => (
               <div
                 key={game.id}

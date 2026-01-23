@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Gamepad2, Sparkles } from 'lucide-react';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 // =============================================================================
 // STYLES
@@ -237,7 +238,8 @@ export default function JoinGame() {
   const isComplete = code.every(c => c);
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="gk-container">
+      <style jsx global>{gameKitResponsiveCSS}</style>
       <Link href="/game-kit" style={styles.backButton}>
         <ArrowLeft size={16} />
         Back
@@ -245,8 +247,8 @@ export default function JoinGame() {
 
       <div style={styles.card}>
         <div style={styles.logo}>🎮</div>
-        <h1 style={styles.title}>Join Game</h1>
-        <p style={styles.subtitle}>Enter the room code shown on the host's screen</p>
+        <h1 style={styles.title} className="gk-title">Join Game</h1>
+        <p style={styles.subtitle} className="gk-subtitle">Enter the room code shown on the host's screen</p>
 
         <label style={styles.label}>Room Code</label>
 
@@ -261,6 +263,7 @@ export default function JoinGame() {
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
+              className="gk-code-input"
               style={{
                 ...styles.codeInput,
                 borderColor: char ? '#f97316' : 'rgba(249, 115, 22, 0.3)',

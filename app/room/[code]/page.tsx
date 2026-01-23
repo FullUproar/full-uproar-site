@@ -7,6 +7,7 @@ import {
   Loader2, Users, Crown, Eye, CheckCircle, XCircle,
   Send, MessageSquare, LogOut, Wifi, WifiOff
 } from 'lucide-react';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 // =============================================================================
 // TYPES
@@ -597,12 +598,15 @@ export default function PlayRoom() {
 
     return (
       <div style={styles.container}>
-        <div style={styles.header}>
+        {/* Responsive Styles */}
+        <style jsx global>{gameKitResponsiveCSS}</style>
+
+        <div style={styles.header} className="gk-header">
           <div>
             <div style={{ fontSize: '12px', color: '#64748b' }}>Round {roomState.gameState.currentRound}</div>
             <div style={styles.roomCode}>{roomCode}</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }} className="gk-header-actions">
             <div style={styles.connectionStatus}>
               {isMyTurn ? (
                 <span style={{ color: '#f97316', fontWeight: 'bold' }}>YOUR TURN</span>
@@ -631,7 +635,7 @@ export default function PlayRoom() {
           </div>
         </div>
 
-        <div style={styles.main}>
+        <div style={styles.main} className="gk-main">
           {/* Hand */}
           <div style={styles.card}>
             <div style={styles.cardTitle}>Your Hand</div>
@@ -640,6 +644,7 @@ export default function PlayRoom() {
                 <div
                   key={index}
                   onClick={() => toggleCardSelection(index)}
+                  className="gk-card-in-hand"
                   style={{
                     ...styles.cardInHand,
                     background: card.color || '#ffffff',

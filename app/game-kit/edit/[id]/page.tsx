@@ -8,6 +8,7 @@ import {
   GripVertical, Sparkles, AlertCircle, Loader2
 } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 // =============================================================================
 // TYPES
@@ -955,8 +956,9 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
   const progress = recommendedCards > 0 ? Math.min((currentTypeCards.length / recommendedCards) * 100, 100) : 0;
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="gk-container">
       <style>{animationStyles}</style>
+      <style jsx global>{gameKitResponsiveCSS}</style>
 
       <div style={styles.content}>
         {/* Back Button */}
@@ -971,9 +973,9 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
         </Link>
 
         {/* Header */}
-        <div style={styles.header}>
+        <div style={styles.header} className="gk-header">
           <div style={styles.headerLeft}>
-            <h1 style={styles.title}>
+            <h1 style={styles.title} className="gk-title">
               <span style={{ fontSize: '36px' }}>{game.template.iconEmoji}</span>
               {game.name}
             </h1>
@@ -981,7 +983,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
               {game.description || `Create your own ${game.template.name} cards`}
             </p>
           </div>
-          <div style={styles.headerRight}>
+          <div style={styles.headerRight} className="gk-header-actions">
             <button
               style={{
                 ...adminStyles.button,

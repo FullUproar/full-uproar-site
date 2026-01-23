@@ -8,8 +8,9 @@ import {
   Copy, Settings, Zap, RotateCcw, Users, Layers, Target, Clock,
   Shuffle, Eye, EyeOff, ArrowRightLeft, MessageSquare, Award,
   GitBranch, Repeat, Filter, Box, Sparkles, GripVertical,
-  HelpCircle, Code, Palette, Loader2, Check
+  HelpCircle, Code, Palette, Loader2, Check, Menu
 } from 'lucide-react';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 // =============================================================================
 // TYPES
@@ -2313,9 +2314,10 @@ export default function GameBuilder() {
 
   return (
     <div style={styles.container}>
+      <style jsx global>{gameKitResponsiveCSS}</style>
       {/* Header */}
-      <header style={styles.header}>
-        <div style={styles.headerLeft}>
+      <header style={styles.header} className="gk-builder-header">
+        <div style={styles.headerLeft} className="gk-builder-header-left">
           <Link
             href="/game-kit"
             style={styles.backButton}
@@ -2350,7 +2352,7 @@ export default function GameBuilder() {
           </div>
         </div>
 
-        <div style={styles.headerRight}>
+        <div style={styles.headerRight} className="gk-builder-header-right">
           <button
             style={{ ...styles.button, ...styles.secondaryButton }}
             onClick={() => {
@@ -2396,12 +2398,13 @@ export default function GameBuilder() {
       </header>
 
       {/* Tab Bar */}
-      <div style={styles.tabBar}>
+      <div style={styles.tabBar} className="gk-builder-tab-bar">
         <button
           style={{
             ...styles.tab,
             ...(activeTab === 'flow' ? styles.tabActive : {}),
           }}
+          className="gk-builder-tab"
           onClick={() => setActiveTab('flow')}
         >
           <GitBranch size={16} />
@@ -2412,6 +2415,7 @@ export default function GameBuilder() {
             ...styles.tab,
             ...(activeTab === 'components' ? styles.tabActive : {}),
           }}
+          className="gk-builder-tab"
           onClick={() => setActiveTab('components')}
         >
           <Box size={16} />
@@ -2420,10 +2424,10 @@ export default function GameBuilder() {
       </div>
 
       {/* Main Content */}
-      <div style={styles.main}>
+      <div style={styles.main} className="gk-builder-main">
         {/* Components Tab */}
         {activeTab === 'components' && (
-          <div style={styles.componentsContainer}>
+          <div style={styles.componentsContainer} className="gk-components-container">
             <div style={{ maxWidth: '900px', margin: '0 auto' }}>
               {/* Quick Add Section */}
               <div style={{
@@ -2432,7 +2436,7 @@ export default function GameBuilder() {
                 borderRadius: '12px',
                 padding: '20px',
                 marginBottom: '24px',
-              }}>
+              }} className="gk-quick-add-section">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
                   <Sparkles size={18} style={{ color: '#a78bfa' }} />
                   <span style={{ fontWeight: 'bold', color: '#c4b5fd', fontSize: '16px' }}>Quick Add Presets</span>
@@ -3073,7 +3077,7 @@ export default function GameBuilder() {
         )}
 
         {/* Left Sidebar - Block Palette (only in Flow tab) */}
-        {activeTab === 'flow' && <div style={styles.sidebar}>
+        {activeTab === 'flow' && <div style={styles.sidebar} className="gk-builder-sidebar">
           <div style={styles.sidebarHeader}>
             <Palette size={14} style={{ marginRight: '8px' }} />
             Block Palette
@@ -3212,6 +3216,7 @@ export default function GameBuilder() {
         {activeTab === 'flow' && (
           <div
             style={styles.canvas}
+            className="gk-builder-canvas"
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleCanvasDrop}
           >

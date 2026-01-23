@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Play, Users, Loader2, ArrowLeft } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 interface GameMeta {
   gameId: string;
@@ -176,7 +177,8 @@ export default function PlayGamePage({ params }: { params: Promise<{ shareToken:
   }, 0);
 
   return (
-    <div style={{ ...styles.container, ...styles.playContainer }}>
+    <div style={{ ...styles.container, ...styles.playContainer }} className="gk-container">
+      <style jsx global>{gameKitResponsiveCSS}</style>
       {/* Back navigation */}
       <Link
         href="/game-kit"
@@ -201,12 +203,12 @@ export default function PlayGamePage({ params }: { params: Promise<{ shareToken:
 
       <div style={styles.gameCard}>
         <div style={styles.gameIcon}>🎮</div>
-        <h1 style={styles.gameName}>{gameInfo.definition.name}</h1>
+        <h1 style={styles.gameName} className="gk-title">{gameInfo.definition.name}</h1>
         <p style={styles.gameDescription}>
           {gameInfo.definition.description || 'A custom card game created with Game Kit'}
         </p>
 
-        <div style={styles.statsRow}>
+        <div style={styles.statsRow} className="gk-stats-row">
           <div style={styles.stat}>
             <span style={styles.statValue}>
               {gameInfo.definition.minPlayers}-{gameInfo.definition.maxPlayers}

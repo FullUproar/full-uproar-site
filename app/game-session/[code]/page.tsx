@@ -8,6 +8,7 @@ import {
   QrCode, Copy, Check, Wifi, WifiOff, Volume2,
   UserPlus, Trash2, Trophy, CheckCircle, LogOut
 } from 'lucide-react';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 // =============================================================================
 // TYPES
@@ -714,18 +715,21 @@ export default function HostView() {
     const waitingSlots = Math.max(0, 4 - players.length);
 
     return (
-      <div style={styles.container}>
+      <div style={styles.container} className="gk-container">
+        {/* Responsive Styles */}
+        <style jsx global>{gameKitResponsiveCSS}</style>
+
         {/* Header */}
-        <div style={styles.header}>
-          <div style={styles.logo}>Full Uproar</div>
-          <div style={styles.roomCodeDisplay}>
+        <div style={styles.header} className="gk-header">
+          <div style={styles.logo} className="gk-logo">Full Uproar</div>
+          <div style={styles.roomCodeDisplay} className="gk-room-code-display">
             <div>
               <div style={styles.roomCodeLabel}>Join at</div>
-              <div style={styles.joinUrl}>{baseUrl}/join</div>
+              <div style={styles.joinUrl} className="gk-join-url">{baseUrl}/join</div>
             </div>
-            <div style={styles.roomCode}>{roomCode}</div>
+            <div style={styles.roomCode} className="gk-room-code">{roomCode}</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }} className="gk-header-actions">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8' }}>
               {isConnected ? (
                 <><Wifi size={20} style={{ color: '#22c55e' }} /> Live</>
@@ -759,15 +763,15 @@ export default function HostView() {
         </div>
 
         {/* Main Content */}
-        <div style={styles.main}>
-          <div style={styles.lobbyContent}>
+        <div style={styles.main} className="gk-main">
+          <div style={styles.lobbyContent} className="gk-lobby-content">
             {/* Players */}
             <div style={styles.playersSection}>
-              <div style={styles.sectionTitle}>
+              <div style={styles.sectionTitle} className="gk-section-title">
                 <Users size={18} />
                 Players ({players.length}/{roomState.settings.maxPlayers})
               </div>
-              <div style={styles.playersGrid}>
+              <div style={styles.playersGrid} className="gk-players-grid">
                 {players.map(player => (
                   <div
                     key={player.id}
@@ -777,8 +781,8 @@ export default function HostView() {
                       ...(player.isProxy ? { borderColor: 'rgba(139, 92, 246, 0.4)' } : {}),
                     }}
                   >
-                    <div style={styles.playerAvatar}>{player.avatarEmoji}</div>
-                    <div style={styles.playerName}>
+                    <div style={styles.playerAvatar} className="gk-player-avatar">{player.avatarEmoji}</div>
+                    <div style={styles.playerName} className="gk-player-name">
                       {player.nickname}
                       {player.isHost && <Crown size={16} style={{ color: '#f97316' }} />}
                     </div>
@@ -820,12 +824,12 @@ export default function HostView() {
               </div>
 
               {/* IRL Player Management */}
-              <div style={styles.irlSection}>
+              <div style={styles.irlSection} className="gk-irl-section">
                 <div style={styles.irlTitle}>
                   <UserPlus size={18} />
                   Add IRL Players (Physical Cards)
                 </div>
-                <div style={styles.irlInputRow}>
+                <div style={styles.irlInputRow} className="gk-irl-input-row">
                   <input
                     type="text"
                     placeholder="Player name..."
@@ -869,9 +873,9 @@ export default function HostView() {
             </div>
 
             {/* Sidebar */}
-            <div style={styles.sidebar}>
-              <div style={styles.qrCard}>
-                <div style={styles.qrPlaceholder}>
+            <div style={styles.sidebar} className="gk-sidebar">
+              <div style={styles.qrCard} className="gk-qr-card">
+                <div style={styles.qrPlaceholder} className="gk-qr-placeholder">
                   {roomCode}
                 </div>
                 <div style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px' }}>

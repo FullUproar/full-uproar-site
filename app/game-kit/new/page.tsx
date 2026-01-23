@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
+import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 
 interface Template {
   id: string;
@@ -220,7 +221,8 @@ export default function NewGamePage() {
   }
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="gk-container">
+      <style jsx global>{gameKitResponsiveCSS}</style>
       <div style={styles.content}>
         <Link href="/game-kit" style={styles.backButton}>
           <ArrowLeft size={20} />
@@ -232,7 +234,7 @@ export default function NewGamePage() {
           <p style={styles.subtitle}>Pick a game type to get started</p>
         </div>
 
-        <div style={styles.templateGrid}>
+        <div style={styles.templateGrid} className="gk-template-grid">
           {/* Blank Canvas - Visual Builder */}
           <div
             style={{
@@ -309,7 +311,7 @@ export default function NewGamePage() {
       {/* Creation Modal */}
       {selectedTemplate && (
         <div style={styles.modal} onClick={() => setSelectedTemplate(null)}>
-          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div style={styles.modalContent} className="gk-modal-content" onClick={(e) => e.stopPropagation()}>
             <h2 style={{ ...styles.sectionTitle, marginBottom: '24px' }}>
               {selectedTemplate.iconEmoji} Create {selectedTemplate.name} Game
             </h2>
@@ -336,7 +338,7 @@ export default function NewGamePage() {
               />
             </div>
 
-            <div style={styles.buttonRow}>
+            <div style={styles.buttonRow} className="gk-button-row">
               <button
                 style={styles.cancelButton}
                 onClick={() => setSelectedTemplate(null)}
