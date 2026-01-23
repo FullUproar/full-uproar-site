@@ -2268,13 +2268,34 @@ export default function GameBuilder() {
     }
   };
 
-  // Play game
+  // Play game - creates a session and opens host view
   const handlePlay = async () => {
     const savedId = await saveGame();
     if (savedId) {
-      // Generate a room code
-      const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-      router.push(`/play-online/${roomCode}?game=${savedId}`);
+      try {
+        // Create a game session via API
+        const response = await fetch('/api/game-kit/sessions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gameDefinitionId: savedId,
+            hostNickname: 'Host', // Default host name
+            maxPlayers: 10,
+          }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Failed to create session');
+        }
+
+        const data = await response.json();
+        // Navigate to host view
+        router.push(data.session.hostUrl);
+      } catch (error) {
+        console.error('Failed to start game:', error);
+        alert('Failed to start game. Please try again.');
+      }
     }
   };
 
