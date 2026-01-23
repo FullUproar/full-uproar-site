@@ -34,7 +34,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Full Uproar - Fugly Approved Games',
+  title: 'Full Uproar',
   description: 'Game modifiers so chaotic, Fugly approves. Turn any game night into beautiful disaster.',
   keywords: 'board games, party games, fugly, chaos games, tabletop games, game night, Full Uproar',
   authors: [{ name: 'Full Uproar Games' }],
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://fulluproar.com',
     siteName: 'Full Uproar',
-    title: 'Full Uproar - Fugly Approved Games',
+    title: 'Full Uproar',
     description: 'Game modifiers so chaotic, Fugly approves. Turn any game night into beautiful disaster.',
     images: [
       {
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Full Uproar - Fugly Approved Games',
+    title: 'Full Uproar',
     description: 'Game modifiers so chaotic, Fugly approves. Turn any game night into beautiful disaster.',
     images: ['/og-image.png'],
     creator: '@fulluproar',

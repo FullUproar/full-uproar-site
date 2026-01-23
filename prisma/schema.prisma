@@ -1636,12 +1636,22 @@ model CustomGameDefinition {
   shareToken      String    @unique @default(cuid())
 
   playCount       Int       @default(0)
+  remixCount      Int       @default(0)
+
+  // Remix tracking
+  isRemixOf       String?
+  parent          CustomGameDefinition?  @relation("Remixes", fields: [isRemixOf], references: [id], onDelete: SetNull)
+  remixes         CustomGameDefinition[] @relation("Remixes")
+
+  // Featured/discovery
+  featuredAt      DateTime?
 
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   publishedAt     DateTime?
 
   cardPacks       CustomCardPack[]
+  sessions        GameSession[]
 
   @@unique([creatorId, slug])
   @@index([creatorId])
@@ -1681,4 +1691,103 @@ model CustomCard {
 
   @@index([packId])
   @@index([cardType])
+}
+
+// =============================================================================
+// LIVE GAME SESSIONS (Real-time multiplayer)
+// =============================================================================
+
+enum SessionStatus {
+  WAITING     // Lobby, waiting for players
+  STARTING    // Game about to start
+  IN_PROGRESS // Game is active
+  PAUSED      // Game paused
+  COMPLETED   // Game finished normally
+  ABANDONED   // Game ended early (host left, etc.)
+}
+
+// A live game session (room)
+model GameSession {
+  id              String        @id @default(cuid())
+  roomCode        String        @unique // 6-character code like "ABCD12"
+
+  // Link to game definition (can be from builder or template)
+  gameDefinitionId String?
+  gameDefinition   CustomGameDefinition? @relation(fields: [gameDefinitionId], references: [id])
+
+  // Or use a built-in template
+  templateSlug    String?       // "cah", "trivia", "uno", etc.
+
+  // Game configuration snapshot (copied at session start)
+  gameConfig      Json?         // Full game config for this session
+
+  // Host info
+  hostId          String?       // Clerk user ID (null for anonymous host)
+  hostNickname    String        // Display name for host
+
+  // Session state
+  status          SessionStatus @default(WAITING)
+  currentRound    Int           @default(0)
+  currentPhase    String?       // Current phase identifier
+  gameState       Json?         // Live game state (scores, cards, etc.)
+
+  // Counts
+  playerCount     Int           @default(0)
+  spectatorCount  Int           @default(0)
+  maxPlayers      Int           @default(16)
+
+  // Settings
+  isPrivate       Boolean       @default(false)
+  password        String?       // Optional password for private games
+  allowSpectators Boolean       @default(true)
+  turnTimeLimit   Int?          // Seconds per turn (null = no limit)
+
+  // Timestamps
+  createdAt       DateTime      @default(now())
+  startedAt       DateTime?
+  endedAt         DateTime?
+  lastActivityAt  DateTime      @default(now())
+
+  // Relations
+  players         SessionPlayer[]
+
+  @@index([roomCode])
+  @@index([status])
+  @@index([hostId])
+  @@index([lastActivityAt])
+}
+
+// A player in a game session
+model SessionPlayer {
+  id              String        @id @default(cuid())
+  sessionId       String
+  session         GameSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  // Player identity
+  clerkId         String?       // Null for anonymous players
+  nickname        String        // Display name
+  avatarUrl       String?       // Optional avatar
+  avatarEmoji     String?       // Fallback emoji avatar
+
+  // Role in session
+  isHost          Boolean       @default(false)
+  isSpectator     Boolean       @default(false)
+
+  // Player state
+  isConnected     Boolean       @default(true)
+  isReady         Boolean       @default(false)
+  score           Int           @default(0)
+  playerState     Json?         // Hand, role, etc.
+
+  // Turn order
+  turnOrder       Int?          // Position in turn order
+
+  // Connection tracking
+  joinedAt        DateTime      @default(now())
+  lastSeenAt      DateTime      @default(now())
+  disconnectedAt  DateTime?
+
+  @@unique([sessionId, nickname]) // No duplicate nicknames in same session
+  @@index([sessionId])
+  @@index([clerkId])
 }

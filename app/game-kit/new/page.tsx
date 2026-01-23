@@ -135,6 +135,12 @@ const cardTypeColors: Record<string, { bg: string; color: string }> = {
   white: { bg: '#ffffff', color: '#1a1a1a' },
   question: { bg: '#3b82f6', color: '#ffffff' },
   answer: { bg: '#22c55e', color: '#ffffff' },
+  number: { bg: '#ef4444', color: '#ffffff' },
+  action: { bg: '#eab308', color: '#1a1a1a' },
+  wild: { bg: '#1a1a1a', color: '#ffffff' },
+  playing: { bg: '#dc2626', color: '#ffffff' },
+  prompt: { bg: '#1a1a1a', color: '#ffffff' },
+  response: { bg: '#ffffff', color: '#1a1a1a' },
 };
 
 export default function NewGamePage() {
@@ -297,25 +303,6 @@ export default function NewGamePage() {
             </div>
           ))}
 
-          {/* Coming Soon template */}
-          <div
-            style={{
-              ...styles.templateCard,
-              opacity: 0.5,
-              cursor: 'not-allowed',
-            }}
-          >
-            <div style={styles.templateIcon}>❓</div>
-            <div style={styles.templateName}>Trivia</div>
-            <div style={styles.templateDescription}>
-              Create trivia games with questions and multiple choice answers. Coming soon!
-            </div>
-            <div style={styles.templateCardTypes}>
-              <span style={{ ...styles.cardTypeBadge, background: '#475569', color: '#94a3b8' }}>
-                Coming Soon
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 

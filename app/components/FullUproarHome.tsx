@@ -117,7 +117,6 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
               </div>
               <div>
                 <span className="font-black text-2xl text-orange-500">FULL UPROAR</span>
-                <span className="block text-xs text-orange-300 -mt-1">Fugly Approved Games™</span>
               </div>
             </div>
             

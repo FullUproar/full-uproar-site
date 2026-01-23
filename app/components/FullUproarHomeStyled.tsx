@@ -1544,7 +1544,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
               <FuglyLogo size={50} />
               <div>
                 <div style={{ fontWeight: 900, fontSize: '1.25rem', color: '#FF8200' }}>FULL UPROAR</div>
-                <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>Fugly Approved Games™</div>
               </div>
             </div>
             <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: 1.6 }}>

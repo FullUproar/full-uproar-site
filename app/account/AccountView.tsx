@@ -821,7 +821,7 @@ export default function AccountView() {
                       </div>
                       <div style={{ flex: 1 }}>
                         <p style={{ fontWeight: 'bold' }}>Order Placed</p>
-                        <p style={{ fontSize: '14px', color: '#94a3b8' }}>You ordered Fugly Approved T-Shirt</p>
+                        <p style={{ fontSize: '14px', color: '#94a3b8' }}>You ordered Full Uproar T-Shirt</p>
                       </div>
                       <p style={{ fontSize: '14px', color: '#64748b' }}>2 hours ago</p>
                     </div>
@@ -1035,7 +1035,7 @@ export default function AccountView() {
                       onChange={(e) => setPreferences({ ...preferences, theme: e.target.value })}
                       style={styles.input}
                     >
-                      <option value="dark">Dark (Fugly Approved)</option>
+                      <option value="dark">Dark</option>
                       <option value="light">Light (Not Recommended)</option>
                       <option value="auto">Auto</option>
                     </select>

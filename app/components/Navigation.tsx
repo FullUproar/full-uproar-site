@@ -195,7 +195,6 @@ export default function Navigation() {
               <FuglyLogo size={isMobile ? 50 : 75} />
               <div>
                 <span style={styles.logoText}>FULL UPROAR</span>
-                <div style={styles.logoSubtext}>Fugly Approved Games™</div>
               </div>
             </Link>
             

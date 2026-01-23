@@ -187,7 +187,7 @@ export default function GameProductClientEnhanced({ game, similarGames }: GamePr
                 </div>
                 <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 text-center border border-orange-500/20">
                   <BadgeCheck className="h-6 w-6 text-orange-500 mx-auto mb-1" />
-                  <span className="text-xs text-gray-300 font-semibold">Fugly Approved</span>
+                  <span className="text-xs text-gray-300 font-semibold">Quality Guaranteed</span>
                 </div>
               </div>
             </div>
@@ -578,7 +578,7 @@ export default function GameProductClientEnhanced({ game, similarGames }: GamePr
             </div>
             <div className="text-center">
               <div className="text-4xl font-black text-orange-500 mb-2">100%</div>
-              <p className="text-gray-400">Fugly Approved</p>
+              <p className="text-gray-400">Satisfaction Rate</p>
             </div>
           </div>
         </div>
