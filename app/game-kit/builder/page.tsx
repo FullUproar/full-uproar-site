@@ -11,6 +11,8 @@ import {
   HelpCircle, Code, Palette, Loader2, Check, Menu
 } from 'lucide-react';
 import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
+import { useToastStore } from '@/lib/toastStore';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES, LOADING_MESSAGES } from '@/lib/game-kit/constants';
 
 // =============================================================================
 // TYPES
@@ -1918,6 +1920,7 @@ export default function GameBuilder() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const gameIdParam = searchParams.get('id');
+  const addToast = useToastStore((state) => state.addToast);
 
   const [gameName, setGameName] = useState('My Custom Game');
   const [editingBlockId, setEditingBlockId] = useState<string | null>(null);
@@ -2295,7 +2298,7 @@ export default function GameBuilder() {
         router.push(data.session.hostUrl);
       } catch (error) {
         console.error('Failed to start game:', error);
-        alert('Failed to start game. Please try again.');
+        addToast({ message: ERROR_MESSAGES.GAME_START_FAILED, type: 'error' });
       }
     }
   };
@@ -2355,14 +2358,22 @@ export default function GameBuilder() {
         <div style={styles.headerRight} className="gk-builder-header-right">
           <button
             style={{ ...styles.button, ...styles.secondaryButton }}
-            onClick={() => {
+            onClick={async () => {
               const dsl = blocksToDSL();
-              console.log('DSL Definition:', JSON.stringify(dsl, null, 2));
-              alert('DSL logged to console');
+              const json = JSON.stringify(dsl, null, 2);
+              try {
+                await navigator.clipboard.writeText(json);
+                addToast({ message: 'Game definition copied to clipboard!', type: 'success' });
+              } catch {
+                // Fallback: open in new window
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+              }
             }}
           >
             <Code size={16} />
-            View Code
+            Copy Code
           </button>
           <button
             style={{

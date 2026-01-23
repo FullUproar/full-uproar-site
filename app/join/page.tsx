@@ -252,7 +252,7 @@ export default function JoinGame() {
 
         <label style={styles.label}>Room Code</label>
 
-        <div style={styles.codeInputContainer}>
+        <div style={styles.codeInputContainer} role="group" aria-label="Room code input">
           {code.map((char, index) => (
             <input
               key={index}
@@ -272,11 +272,12 @@ export default function JoinGame() {
               autoComplete="off"
               autoCorrect="off"
               spellCheck={false}
+              aria-label={`Code digit ${index + 1} of 6`}
             />
           ))}
         </div>
 
-        {error && <div style={styles.error}>{error}</div>}
+        {error && <div style={styles.error} role="alert">{error}</div>}
 
         <button
           style={{

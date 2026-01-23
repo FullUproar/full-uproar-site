@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { ArrowLeft, Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
 import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
+import { useToastStore } from '@/lib/toastStore';
+import { ERROR_MESSAGES, getErrorMessage } from '@/lib/game-kit/constants';
 
 interface Template {
   id: string;
@@ -146,6 +148,7 @@ const cardTypeColors: Record<string, { bg: string; color: string }> = {
 
 export default function NewGamePage() {
   const router = useRouter();
+  const addToast = useToastStore((state) => state.addToast);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
@@ -196,12 +199,12 @@ export default function NewGamePage() {
         const game = await res.json();
         router.push(`/game-kit/edit/${game.id}`);
       } else {
-        const error = await res.json();
-        alert(error.error || 'Failed to create game');
+        const errorData = await res.json();
+        addToast({ message: getErrorMessage(errorData, ERROR_MESSAGES.GAME_CREATE_FAILED), type: 'error' });
       }
     } catch (error) {
       console.error('Failed to create game:', error);
-      alert('Failed to create game');
+      addToast({ message: ERROR_MESSAGES.GAME_CREATE_FAILED, type: 'error' });
     } finally {
       setCreating(false);
     }

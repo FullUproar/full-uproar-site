@@ -501,7 +501,7 @@ export default function PlayRoom() {
             </div>
 
             {error && (
-              <div style={{ color: '#ef4444', fontSize: '14px', marginBottom: '12px', textAlign: 'center' }}>
+              <div style={{ color: '#ef4444', fontSize: '14px', marginBottom: '12px', textAlign: 'center' }} role="alert">
                 {error}
               </div>
             )}
