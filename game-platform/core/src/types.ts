@@ -137,6 +137,10 @@ export interface Player {
     [slotId: string]: Card[];
   };
   score: number;
+
+  // Proxy player support (IRL players managed by host)
+  isProxy?: boolean; // true if this is an IRL player without a device
+  proxyManagedBy?: string; // player ID of who manages this proxy (usually lead)
 }
 
 // =============================================================================
@@ -455,7 +459,11 @@ export type ClientMessage =
   | { type: 'joinGame'; playerName: string }
   | { type: 'rejoinGame'; playerId: string; playerName: string }
   | { type: 'leaveGame' }
-  | { type: 'action'; action: Action };
+  | { type: 'action'; action: Action }
+  // Proxy player messages (lead only)
+  | { type: 'addProxy'; playerName: string }
+  | { type: 'removeProxy'; playerId: string }
+  | { type: 'proxyAction'; playerId: string; action: Action };
 
 /**
  * Sanitized deck info sent to clients (no actual cards)

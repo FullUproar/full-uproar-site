@@ -619,6 +619,10 @@ export default function MultiplayerRoom() {
   const prevPhaseRef = useRef<string | null>(null);
   const prevRoundRef = useRef<number>(0);
 
+  // IRL player management (for lead)
+  const [irlPlayerName, setIrlPlayerName] = useState('');
+  const [addingIrl, setAddingIrl] = useState(false);
+
   // WebSocket ref
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -915,6 +919,20 @@ export default function MultiplayerRoom() {
   // Select winner
   const handleSelectWinner = (winnerId: string) => {
     send({ type: 'action', action: { type: 'selectWinner', playerId: winnerId } });
+  };
+
+  // Add IRL player (lead only)
+  const handleAddIrlPlayer = () => {
+    if (!irlPlayerName.trim() || addingIrl) return;
+    setAddingIrl(true);
+    send({ type: 'addProxy', playerName: irlPlayerName.trim() });
+    setIrlPlayerName('');
+    setAddingIrl(false);
+  };
+
+  // Remove IRL player (lead only)
+  const handleRemoveIrlPlayer = (proxyId: string) => {
+    send({ type: 'removeProxy', playerId: proxyId });
   };
 
   // Derived state
@@ -1320,6 +1338,108 @@ export default function MultiplayerRoom() {
                     </div>
                   )}
 
+                  {/* IRL Players Section (Lead only) */}
+                  {currentPlayer?.isLead && (
+                    <div style={{
+                      background: 'rgba(139, 92, 246, 0.1)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      borderRadius: '12px',
+                      padding: '16px',
+                      marginBottom: '24px',
+                      textAlign: 'left',
+                    }}>
+                      <h3 style={{
+                        color: '#c4b5fd',
+                        fontSize: '12px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        marginBottom: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}>
+                        <span style={{ fontSize: '14px' }}>🎴</span> Add IRL Players
+                      </h3>
+                      <p style={{ color: '#9ca3af', fontSize: '12px', marginBottom: '12px' }}>
+                        Add friends playing with physical cards. You'll manage their submissions.
+                      </p>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                          type="text"
+                          placeholder="Player name..."
+                          value={irlPlayerName}
+                          onChange={(e) => setIrlPlayerName(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleAddIrlPlayer()}
+                          style={{
+                            flex: 1,
+                            padding: '10px 12px',
+                            background: 'rgba(15, 23, 42, 0.8)',
+                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            borderRadius: '8px',
+                            color: '#fff',
+                            fontSize: '14px',
+                            outline: 'none',
+                          }}
+                        />
+                        <button
+                          onClick={handleAddIrlPlayer}
+                          disabled={!irlPlayerName.trim() || addingIrl}
+                          style={{
+                            padding: '10px 16px',
+                            background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                            border: 'none',
+                            borderRadius: '8px',
+                            color: '#fff',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            cursor: !irlPlayerName.trim() || addingIrl ? 'not-allowed' : 'pointer',
+                            opacity: !irlPlayerName.trim() || addingIrl ? 0.5 : 1,
+                          }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                      {/* List of IRL players */}
+                      {gameState.players.filter(p => p.isProxy).length > 0 && (
+                        <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {gameState.players.filter(p => p.isProxy).map(player => (
+                            <div
+                              key={player.id}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                background: 'rgba(139, 92, 246, 0.2)',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                padding: '6px 12px',
+                                borderRadius: '20px',
+                                fontSize: '14px',
+                                color: '#c4b5fd',
+                              }}
+                            >
+                              <span>🎴</span>
+                              <span>{player.name}</span>
+                              <button
+                                onClick={() => handleRemoveIrlPlayer(player.id)}
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  color: '#ef4444',
+                                  cursor: 'pointer',
+                                  padding: '2px',
+                                  fontSize: '16px',
+                                  lineHeight: 1,
+                                }}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Player list preview */}
                   <div style={{
                     background: 'rgba(30, 41, 59, 0.4)',
@@ -1358,6 +1478,19 @@ export default function MultiplayerRoom() {
                           <span style={{ color: '#e2e8f0', fontSize: '14px' }}>
                             {player.name}
                             {player.isLead && ' 👑'}
+                            {player.isProxy && (
+                              <span style={{
+                                marginLeft: '6px',
+                                fontSize: '10px',
+                                padding: '2px 6px',
+                                background: 'rgba(139, 92, 246, 0.3)',
+                                color: '#c4b5fd',
+                                borderRadius: '4px',
+                                textTransform: 'uppercase',
+                              }}>
+                                IRL
+                              </span>
+                            )}
                           </span>
                         </div>
                       ))}

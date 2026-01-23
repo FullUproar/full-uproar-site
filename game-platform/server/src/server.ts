@@ -187,6 +187,19 @@ export default class GameRoom implements Party.Server {
           await this.handleAction(sender, connState, parsed.action);
           break;
 
+        // Proxy player handlers (lead only)
+        case 'addProxy':
+          await this.handleAddProxy(sender, connState, parsed.playerName);
+          break;
+
+        case 'removeProxy':
+          await this.handleRemoveProxy(sender, connState, parsed.playerId);
+          break;
+
+        case 'proxyAction':
+          await this.handleProxyAction(sender, connState, parsed.playerId, parsed.action);
+          break;
+
         default:
           this.sendError(sender, `Unknown message type: ${(parsed as any).type}`);
       }
@@ -430,6 +443,130 @@ export default class GameRoom implements Party.Server {
       console.error(`[${this.room.id}] handleAction error:`, err);
       this.sendError(connection, `Action error: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
+  }
+
+  // =============================================================================
+  // PROXY PLAYER HANDLERS (IRL players managed by lead)
+  // =============================================================================
+
+  private async handleAddProxy(
+    connection: Party.Connection,
+    connState: ConnectionState,
+    playerName: string
+  ) {
+    if (!this.state.gameState) {
+      this.sendError(connection, 'No game exists');
+      return;
+    }
+
+    // Only lead can add proxy players
+    const leadPlayer = this.state.gameState.players.find(p => p.id === connState.playerId);
+    if (!leadPlayer?.isLead) {
+      this.sendError(connection, 'Only the host can add IRL players');
+      return;
+    }
+
+    // Check if name is already taken
+    const nameTaken = this.state.gameState.players.some(
+      p => p.name.toLowerCase() === playerName.toLowerCase()
+    );
+    if (nameTaken) {
+      this.sendError(connection, 'Name already taken');
+      return;
+    }
+
+    // Create proxy player
+    const proxyId = generateId();
+    const result = addPlayer(this.state.gameState, {
+      id: proxyId,
+      name: playerName,
+      isLead: false,
+      presence: 'active',
+      joinedAt: now(),
+      isProxy: true,
+      proxyManagedBy: connState.playerId!,
+    });
+
+    this.state.gameState = result.state;
+    await this.persistState();
+    this.broadcastGameState();
+    this.broadcastEvents(result.events);
+
+    console.log(`[${this.room.id}] Proxy player added: ${playerName} (${proxyId})`);
+  }
+
+  private async handleRemoveProxy(
+    connection: Party.Connection,
+    connState: ConnectionState,
+    proxyId: string
+  ) {
+    if (!this.state.gameState) {
+      this.sendError(connection, 'No game exists');
+      return;
+    }
+
+    // Only lead can remove proxy players
+    const leadPlayer = this.state.gameState.players.find(p => p.id === connState.playerId);
+    if (!leadPlayer?.isLead) {
+      this.sendError(connection, 'Only the host can remove IRL players');
+      return;
+    }
+
+    // Find the proxy player
+    const proxyPlayer = this.state.gameState.players.find(p => p.id === proxyId);
+    if (!proxyPlayer || !proxyPlayer.isProxy) {
+      this.sendError(connection, 'Player not found or not an IRL player');
+      return;
+    }
+
+    // Remove proxy player
+    const result = removePlayer(this.state.gameState, proxyId);
+
+    this.state.gameState = result.state;
+    await this.persistState();
+    this.broadcastGameState();
+    this.broadcastEvents(result.events);
+
+    console.log(`[${this.room.id}] Proxy player removed: ${proxyPlayer.name} (${proxyId})`);
+  }
+
+  private async handleProxyAction(
+    connection: Party.Connection,
+    connState: ConnectionState,
+    proxyId: string,
+    action: GameAction['action']
+  ) {
+    if (!this.state.gameState) {
+      this.sendError(connection, 'No game exists');
+      return;
+    }
+
+    // Only lead can perform actions for proxy players
+    const leadPlayer = this.state.gameState.players.find(p => p.id === connState.playerId);
+    if (!leadPlayer?.isLead) {
+      this.sendError(connection, 'Only the host can control IRL players');
+      return;
+    }
+
+    // Verify proxy player exists and is managed by this lead
+    const proxyPlayer = this.state.gameState.players.find(p => p.id === proxyId);
+    if (!proxyPlayer || !proxyPlayer.isProxy || proxyPlayer.proxyManagedBy !== connState.playerId) {
+      this.sendError(connection, 'Invalid proxy player');
+      return;
+    }
+
+    // Apply the action on behalf of the proxy player
+    const result = this.applyGameAction(proxyId, action);
+    if (!result) {
+      this.sendError(connection, 'Action failed');
+      return;
+    }
+
+    await this.persistState();
+    this.broadcastGameState();
+    this.broadcastEvents(result.events);
+
+    console.log(`[${this.room.id}] Proxy action: ${action.type} for ${proxyPlayer.name}`);
   }
 
   // =============================================================================
