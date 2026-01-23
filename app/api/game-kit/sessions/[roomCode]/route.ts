@@ -57,6 +57,8 @@ export async function GET(
             isReady: true,
             isConnected: true,
             score: true,
+            isProxy: true,
+            proxyManagedBy: true,
           },
           orderBy: { turnOrder: 'asc' },
         },

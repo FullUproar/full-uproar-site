@@ -5,7 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import usePartySocket from 'partysocket/react';
 import {
   Loader2, Users, Crown, Eye, Play, Settings,
-  QrCode, Copy, Check, Wifi, WifiOff, Volume2
+  QrCode, Copy, Check, Wifi, WifiOff, Volume2,
+  UserPlus, Trash2, Trophy, CheckCircle
 } from 'lucide-react';
 
 // =============================================================================
@@ -21,6 +22,8 @@ interface Player {
   isReady: boolean;
   isConnected: boolean;
   score: number;
+  isProxy?: boolean;
+  proxyManagedBy?: string;
 }
 
 interface GameState {
@@ -28,8 +31,11 @@ interface GameState {
   currentRound: number;
   currentTurn: number;
   currentPlayerId?: string;
+  judgeId?: string;
   table?: any[];
   submissions?: any[];
+  proxySubmissions?: string[];
+  roundWinner?: string;
 }
 
 interface RoomState {
@@ -288,6 +294,121 @@ const styles = {
     minHeight: '100vh',
     gap: '16px',
   },
+  // IRL Player Management
+  irlSection: {
+    marginTop: '32px',
+    padding: '24px',
+    background: 'rgba(139, 92, 246, 0.1)',
+    border: '2px solid rgba(139, 92, 246, 0.3)',
+    borderRadius: '16px',
+  },
+  irlTitle: {
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: '#c4b5fd',
+    marginBottom: '16px',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '2px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  irlInputRow: {
+    display: 'flex',
+    gap: '12px',
+    marginBottom: '16px',
+  },
+  irlInput: {
+    flex: 1,
+    padding: '12px 16px',
+    background: 'rgba(15, 23, 42, 0.8)',
+    border: '2px solid rgba(139, 92, 246, 0.3)',
+    borderRadius: '8px',
+    color: '#e2e8f0',
+    fontSize: '16px',
+    outline: 'none',
+  },
+  irlAddButton: {
+    padding: '12px 20px',
+    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+    border: 'none',
+    borderRadius: '8px',
+    color: '#ffffff',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  irlPlayerChip: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '8px 16px',
+    background: 'rgba(139, 92, 246, 0.2)',
+    border: '1px solid rgba(139, 92, 246, 0.3)',
+    borderRadius: '20px',
+    marginRight: '8px',
+    marginBottom: '8px',
+  },
+  irlRemoveButton: {
+    background: 'none',
+    border: 'none',
+    color: '#ef4444',
+    cursor: 'pointer',
+    padding: '4px',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  proxyBadge: {
+    fontSize: '10px',
+    padding: '2px 6px',
+    background: 'rgba(139, 92, 246, 0.3)',
+    color: '#c4b5fd',
+    borderRadius: '4px',
+    textTransform: 'uppercase' as const,
+  },
+  // Host Controls
+  hostControls: {
+    padding: '24px',
+    background: 'rgba(30, 41, 59, 0.8)',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '16px',
+  },
+  hostButton: {
+    padding: '16px 24px',
+    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    border: 'none',
+    borderRadius: '12px',
+    color: '#000',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
+    width: '100%',
+    marginBottom: '12px',
+  },
+  hostButtonSecondary: {
+    background: 'rgba(249, 115, 22, 0.2)',
+    color: '#fdba74',
+    border: '2px solid rgba(249, 115, 22, 0.3)',
+  },
+  winnerSelectCard: {
+    padding: '16px',
+    background: 'rgba(30, 41, 59, 0.6)',
+    border: '2px solid rgba(249, 115, 22, 0.2)',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '8px',
+  },
 };
 
 // =============================================================================
@@ -305,6 +426,11 @@ export default function HostView() {
   const [roomState, setRoomState] = useState<RoomState | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // IRL Player Management State
+  const [irlPlayerName, setIrlPlayerName] = useState('');
+  const [addingIrl, setAddingIrl] = useState(false);
+  const [showWinnerSelect, setShowWinnerSelect] = useState(false);
 
   const PARTYKIT_HOST = process.env.NEXT_PUBLIC_PARTYKIT_HOST || 'localhost:1999';
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
@@ -324,6 +450,57 @@ export default function HostView() {
       handleServerMessage(message);
     },
   });
+
+  // Add IRL player (proxy)
+  const addIrlPlayer = async () => {
+    if (!irlPlayerName.trim() || addingIrl) return;
+
+    setAddingIrl(true);
+    try {
+      // Send to PartyKit
+      socket.send(JSON.stringify({
+        type: 'add_proxy',
+        nickname: irlPlayerName.trim(),
+        avatarEmoji: '🎴',
+      }));
+      setIrlPlayerName('');
+    } finally {
+      setAddingIrl(false);
+    }
+  };
+
+  // Remove IRL player (proxy)
+  const removeIrlPlayer = (playerId: string) => {
+    socket.send(JSON.stringify({
+      type: 'remove_proxy',
+      playerId,
+    }));
+  };
+
+  // Mark all IRL players as submitted
+  const markIrlSubmitted = () => {
+    if (!roomState) return;
+
+    const proxyPlayerIds = Object.values(roomState.players)
+      .filter(p => p.isProxy)
+      .map(p => p.id);
+
+    if (proxyPlayerIds.length > 0) {
+      socket.send(JSON.stringify({
+        type: 'proxy_submit',
+        playerIds: proxyPlayerIds,
+      }));
+    }
+  };
+
+  // Mark a player as the round winner
+  const markWinner = (playerId: string) => {
+    socket.send(JSON.stringify({
+      type: 'mark_winner',
+      playerId,
+    }));
+    setShowWinnerSelect(false);
+  };
 
   // Handle messages from PartyKit server
   const handleServerMessage = useCallback((message: any) => {
@@ -382,6 +559,51 @@ export default function HostView() {
 
       case 'error':
         setError(message.message);
+        break;
+
+      case 'proxy_added':
+        setRoomState(prev => prev ? {
+          ...prev,
+          players: { ...prev.players, [message.player.id]: message.player },
+        } : null);
+        break;
+
+      case 'proxy_removed':
+        setRoomState(prev => {
+          if (!prev) return null;
+          const { [message.playerId]: _, ...players } = prev.players;
+          return { ...prev, players };
+        });
+        break;
+
+      case 'proxy_submitted':
+        setRoomState(prev => prev ? {
+          ...prev,
+          gameState: {
+            ...prev.gameState,
+            proxySubmissions: [
+              ...(prev.gameState.proxySubmissions || []),
+              ...message.playerIds,
+            ],
+          },
+        } : null);
+        break;
+
+      case 'round_end':
+        setRoomState(prev => prev ? {
+          ...prev,
+          gameState: {
+            ...prev.gameState,
+            roundWinner: message.winner,
+          },
+          players: Object.fromEntries(
+            Object.entries(prev.players).map(([id, player]) => [
+              id,
+              { ...player, score: message.scores[id] || player.score },
+            ])
+          ),
+        } : null);
+        setShowWinnerSelect(false);
         break;
     }
   }, []);
@@ -467,6 +689,8 @@ export default function HostView() {
   // Lobby
   if (phase === 'lobby' && roomState) {
     const players = Object.values(roomState.players);
+    const virtualPlayers = players.filter(p => !p.isProxy);
+    const proxyPlayers = players.filter(p => p.isProxy);
     const allReady = players.length >= 2 && players.every(p => p.isReady);
     const waitingSlots = Math.max(0, 4 - players.length);
 
@@ -507,6 +731,7 @@ export default function HostView() {
                     style={{
                       ...styles.playerCard,
                       ...(player.isReady ? styles.playerCardReady : {}),
+                      ...(player.isProxy ? { borderColor: 'rgba(139, 92, 246, 0.4)' } : {}),
                     }}
                   >
                     <div style={styles.playerAvatar}>{player.avatarEmoji}</div>
@@ -514,12 +739,34 @@ export default function HostView() {
                       {player.nickname}
                       {player.isHost && <Crown size={16} style={{ color: '#f97316' }} />}
                     </div>
-                    <div style={{
-                      ...styles.playerStatus,
-                      ...(player.isReady ? styles.playerStatusReady : {}),
-                    }}>
-                      {player.isReady ? '✓ Ready' : 'Waiting...'}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {player.isProxy && (
+                        <span style={styles.proxyBadge}>IRL</span>
+                      )}
+                      <div style={{
+                        ...styles.playerStatus,
+                        ...(player.isReady ? styles.playerStatusReady : {}),
+                      }}>
+                        {player.isReady ? '✓ Ready' : 'Waiting...'}
+                      </div>
                     </div>
+                    {player.isProxy && (
+                      <button
+                        onClick={() => removeIrlPlayer(player.id)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#ef4444',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          marginTop: '8px',
+                          fontSize: '12px',
+                        }}
+                      >
+                        <Trash2 size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                        Remove
+                      </button>
+                    )}
                   </div>
                 ))}
                 {[...Array(waitingSlots)].map((_, i) => (
@@ -527,6 +774,54 @@ export default function HostView() {
                     Waiting for player...
                   </div>
                 ))}
+              </div>
+
+              {/* IRL Player Management */}
+              <div style={styles.irlSection}>
+                <div style={styles.irlTitle}>
+                  <UserPlus size={18} />
+                  Add IRL Players (Physical Cards)
+                </div>
+                <div style={styles.irlInputRow}>
+                  <input
+                    type="text"
+                    placeholder="Player name..."
+                    value={irlPlayerName}
+                    onChange={(e) => setIrlPlayerName(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addIrlPlayer()}
+                    style={styles.irlInput}
+                  />
+                  <button
+                    onClick={addIrlPlayer}
+                    disabled={!irlPlayerName.trim() || addingIrl}
+                    style={{
+                      ...styles.irlAddButton,
+                      opacity: !irlPlayerName.trim() || addingIrl ? 0.5 : 1,
+                    }}
+                  >
+                    <UserPlus size={16} />
+                    Add
+                  </button>
+                </div>
+                <div style={{ fontSize: '13px', color: '#94a3b8' }}>
+                  IRL players use physical cards. You'll manage their submissions and votes.
+                </div>
+                {proxyPlayers.length > 0 && (
+                  <div style={{ marginTop: '12px' }}>
+                    <strong style={{ color: '#c4b5fd' }}>IRL Players: </strong>
+                    {proxyPlayers.map(p => (
+                      <span key={p.id} style={styles.irlPlayerChip}>
+                        {p.avatarEmoji} {p.nickname}
+                        <button
+                          onClick={() => removeIrlPlayer(p.id)}
+                          style={styles.irlRemoveButton}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -569,8 +864,16 @@ export default function HostView() {
   // Playing
   if (phase === 'playing' && roomState) {
     const players = Object.values(roomState.players);
+    const proxyPlayers = players.filter(p => p.isProxy);
+    const hasProxyPlayers = proxyPlayers.length > 0;
+    const allProxiesSubmitted = proxyPlayers.every(p =>
+      roomState.gameState.proxySubmissions?.includes(p.id)
+    );
     const currentPlayer = roomState.gameState.currentPlayerId
       ? roomState.players[roomState.gameState.currentPlayerId]
+      : null;
+    const judge = roomState.gameState.judgeId
+      ? roomState.players[roomState.gameState.judgeId]
       : null;
 
     return (
@@ -611,45 +914,196 @@ export default function HostView() {
 
         {/* Game Area */}
         <div style={styles.main}>
-          <div style={styles.gameArea}>
-            {currentPlayer && (
-              <div style={{ fontSize: '24px', color: '#fdba74', marginBottom: '20px' }}>
-                {currentPlayer.avatarEmoji} {currentPlayer.nickname}'s turn
-              </div>
-            )}
-
-            {/* Table - Cards played */}
-            <div style={styles.tableArea}>
-              {roomState.gameState.table?.map((card, index) => (
-                <div
-                  key={index}
-                  style={{
-                    ...styles.cardOnTable,
-                    background: card.color || '#ffffff',
-                    color: card.textColor || '#1a1a1a',
-                  }}
-                >
-                  <div style={{ fontWeight: 'bold' }}>
-                    {card.properties?.text || card.name || 'Card'}
-                  </div>
-                  {card.playedBy && (
-                    <div style={{ fontSize: '12px', opacity: 0.7 }}>
-                      Played by {roomState.players[card.playedBy]?.nickname || 'Unknown'}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              {(!roomState.gameState.table || roomState.gameState.table.length === 0) && (
-                <div style={{
-                  padding: '60px',
-                  color: '#64748b',
-                  fontSize: '20px',
-                  textAlign: 'center',
-                }}>
-                  Waiting for cards to be played...
+          <div style={{ display: 'flex', gap: '40px' }}>
+            {/* Main Game Area */}
+            <div style={{ ...styles.gameArea, flex: 1 }}>
+              {judge && (
+                <div style={{ fontSize: '24px', color: '#fdba74', marginBottom: '20px' }}>
+                  <Crown size={24} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                  {judge.avatarEmoji} {judge.nickname} is judging
+                  {judge.isProxy && <span style={{ ...styles.proxyBadge, marginLeft: '8px' }}>IRL</span>}
                 </div>
               )}
+
+              {/* Submissions Display */}
+              <div style={styles.tableArea}>
+                {/* Virtual player submissions */}
+                {roomState.gameState.submissions?.map((submission, index) => {
+                  const submitter = roomState.players[submission.playerId];
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        ...styles.cardOnTable,
+                        background: '#ffffff',
+                        color: '#1a1a1a',
+                        cursor: showWinnerSelect ? 'pointer' : 'default',
+                        border: showWinnerSelect ? '3px solid transparent' : 'none',
+                      }}
+                      onClick={() => showWinnerSelect && markWinner(submission.playerId)}
+                      onMouseEnter={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = '#f97316')}
+                      onMouseLeave={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = 'transparent')}
+                    >
+                      <div style={{ fontWeight: 'bold' }}>
+                        {submission.cards?.[0]?.properties?.text || 'Submitted'}
+                      </div>
+                      {showWinnerSelect && (
+                        <div style={{ marginTop: '8px', fontSize: '12px', color: '#64748b' }}>
+                          Click to pick winner
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* Proxy player submissions (shown as placeholder cards) */}
+                {roomState.gameState.proxySubmissions?.map((playerId, index) => {
+                  const player = roomState.players[playerId];
+                  return (
+                    <div
+                      key={`proxy-${playerId}`}
+                      style={{
+                        ...styles.cardOnTable,
+                        background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                        color: '#ffffff',
+                        cursor: showWinnerSelect ? 'pointer' : 'default',
+                        border: showWinnerSelect ? '3px solid transparent' : 'none',
+                      }}
+                      onClick={() => showWinnerSelect && markWinner(playerId)}
+                      onMouseEnter={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = '#f97316')}
+                      onMouseLeave={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = 'transparent')}
+                    >
+                      <div style={{ fontSize: '40px', textAlign: 'center', marginBottom: '8px' }}>🎴</div>
+                      <div style={{ fontWeight: 'bold', textAlign: 'center' }}>
+                        Physical Card
+                      </div>
+                      <div style={{ fontSize: '12px', textAlign: 'center', opacity: 0.8 }}>
+                        {player?.nickname || 'IRL Player'}
+                      </div>
+                      {showWinnerSelect && (
+                        <div style={{ marginTop: '8px', fontSize: '12px', textAlign: 'center' }}>
+                          Click to pick winner
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {(!roomState.gameState.submissions?.length && !roomState.gameState.proxySubmissions?.length) && (
+                  <div style={{
+                    padding: '60px',
+                    color: '#64748b',
+                    fontSize: '20px',
+                    textAlign: 'center',
+                  }}>
+                    Waiting for submissions...
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Host Controls Sidebar */}
+            <div style={{ width: '300px' }}>
+              <div style={styles.hostControls}>
+                <div style={styles.sectionTitle}>
+                  <Settings size={18} />
+                  Host Controls
+                </div>
+
+                {/* IRL Submission Control */}
+                {hasProxyPlayers && !allProxiesSubmitted && (
+                  <button
+                    onClick={markIrlSubmitted}
+                    style={styles.hostButton}
+                  >
+                    <CheckCircle size={20} />
+                    Mark IRL Submitted
+                  </button>
+                )}
+
+                {/* Winner Selection */}
+                {!showWinnerSelect ? (
+                  <button
+                    onClick={() => setShowWinnerSelect(true)}
+                    style={{
+                      ...styles.hostButton,
+                      ...styles.hostButtonSecondary,
+                    }}
+                  >
+                    <Trophy size={20} />
+                    Pick Winner
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowWinnerSelect(false)}
+                    style={{
+                      ...styles.hostButton,
+                      ...styles.hostButtonSecondary,
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+
+                {showWinnerSelect && (
+                  <div style={{ marginTop: '16px' }}>
+                    <div style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '12px' }}>
+                      Click a card above or select a player below:
+                    </div>
+                    {players.filter(p => !p.isSpectator && p.id !== roomState.gameState.judgeId).map(player => (
+                      <div
+                        key={player.id}
+                        onClick={() => markWinner(player.id)}
+                        style={{
+                          ...styles.winnerSelectCard,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#f97316';
+                          e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                          e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
+                        }}
+                      >
+                        <span style={{ fontSize: '24px' }}>{player.avatarEmoji}</span>
+                        <div>
+                          <div style={{ fontWeight: 'bold' }}>{player.nickname}</div>
+                          <div style={{ fontSize: '12px', color: '#64748b' }}>
+                            Score: {player.score}
+                            {player.isProxy && <span style={{ ...styles.proxyBadge, marginLeft: '8px' }}>IRL</span>}
+                          </div>
+                        </div>
+                        <Trophy size={18} style={{ marginLeft: 'auto', color: '#f97316' }} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* IRL Player List */}
+                {hasProxyPlayers && (
+                  <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(249, 115, 22, 0.2)' }}>
+                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '8px' }}>
+                      IRL Players:
+                    </div>
+                    {proxyPlayers.map(p => (
+                      <div key={p.id} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '4px',
+                        fontSize: '14px',
+                      }}>
+                        <span>{p.avatarEmoji}</span>
+                        <span>{p.nickname}</span>
+                        {roomState.gameState.proxySubmissions?.includes(p.id) && (
+                          <Check size={14} style={{ color: '#22c55e', marginLeft: 'auto' }} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

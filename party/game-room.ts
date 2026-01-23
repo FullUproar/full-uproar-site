@@ -15,6 +15,9 @@ interface Player {
   score: number;
   hand?: any[]; // Cards in hand (hidden from others)
   turnOrder?: number;
+  // Proxy player support (IRL players managed by host)
+  isProxy: boolean;
+  proxyManagedBy?: string; // Player ID of who manages this proxy
 }
 
 interface GameState {
@@ -23,10 +26,12 @@ interface GameState {
   currentTurn: number;
   currentPlayerId?: string;
   currentPhase?: string;
+  judgeId?: string; // For CAH-style games
   deck?: any[];
   discard?: any[];
   table?: any[];
   submissions?: any[];
+  proxySubmissions?: string[]; // Player IDs of proxy players who have "submitted"
   roundWinner?: string;
   gameWinner?: string;
   customState?: Record<string, any>;
@@ -59,7 +64,13 @@ type ClientMessage =
   | { type: 'vote'; targetPlayerId: string }
   | { type: 'action'; action: string; data?: any }
   | { type: 'chat'; message: string }
-  | { type: 'leave' };
+  | { type: 'leave' }
+  // Proxy player messages (host only)
+  | { type: 'add_proxy'; nickname: string; avatarEmoji?: string }
+  | { type: 'remove_proxy'; playerId: string }
+  | { type: 'proxy_submit'; playerIds: string[] } // Mark IRL players as having submitted
+  | { type: 'mark_winner'; playerId: string } // Host picks round winner
+  | { type: 'proxy_ready'; playerId: string; ready: boolean };
 
 type ServerMessage =
   | { type: 'room_state'; state: Partial<RoomState> }
@@ -71,10 +82,14 @@ type ServerMessage =
   | { type: 'your_hand'; hand: any[] }
   | { type: 'turn_change'; playerId: string; timeLimit?: number }
   | { type: 'card_played'; playerId: string; card?: any }
-  | { type: 'round_end'; winner?: string; scores: Record<string, number> }
+  | { type: 'round_end'; winner?: string; winnerNickname?: string; scores: Record<string, number> }
   | { type: 'game_end'; winner: string; finalScores: Record<string, number> }
   | { type: 'chat'; playerId: string; nickname: string; message: string }
-  | { type: 'error'; message: string };
+  | { type: 'error'; message: string }
+  // Proxy player events
+  | { type: 'proxy_added'; player: Player }
+  | { type: 'proxy_removed'; playerId: string }
+  | { type: 'proxy_submitted'; playerIds: string[] };
 
 // =============================================================================
 // GAME ROOM SERVER
@@ -178,6 +193,22 @@ export default class GameRoom implements Party.Server {
         case 'leave':
           this.handleLeave(sender);
           break;
+        // Proxy player handlers
+        case 'add_proxy':
+          this.handleAddProxy(sender, data.nickname, data.avatarEmoji);
+          break;
+        case 'remove_proxy':
+          this.handleRemoveProxy(sender, data.playerId);
+          break;
+        case 'proxy_submit':
+          this.handleProxySubmit(sender, data.playerIds);
+          break;
+        case 'mark_winner':
+          this.handleMarkWinner(sender, data.playerId);
+          break;
+        case 'proxy_ready':
+          this.handleProxyReady(sender, data.playerId, data.ready);
+          break;
       }
     } catch (error) {
       sender.send(JSON.stringify({
@@ -228,6 +259,7 @@ export default class GameRoom implements Party.Server {
       isReady: false,
       isConnected: true,
       score: 0,
+      isProxy: false,
     };
 
     if (isSpectator) {
@@ -461,6 +493,269 @@ export default class GameRoom implements Party.Server {
   }
 
   // ==========================================================================
+  // PROXY PLAYER HANDLERS (IRL players managed by host)
+  // ==========================================================================
+
+  private handleAddProxy(conn: Party.Connection, nickname: string, avatarEmoji?: string) {
+    const sender = this.state.players[conn.id];
+    if (!sender?.isHost) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Only the host can add proxy players',
+      } as ServerMessage));
+      return;
+    }
+
+    // Check room capacity
+    const playerCount = Object.keys(this.state.players).length;
+    if (playerCount >= this.state.settings.maxPlayers) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Room is full',
+      } as ServerMessage));
+      return;
+    }
+
+    // Check for duplicate nickname
+    const existingNicknames = [
+      ...Object.values(this.state.players).map(p => p.nickname.toLowerCase()),
+      ...Object.values(this.state.spectators).map(p => p.nickname.toLowerCase()),
+    ];
+    if (existingNicknames.includes(nickname.toLowerCase())) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Nickname already taken',
+      } as ServerMessage));
+      return;
+    }
+
+    // Generate unique ID for proxy player
+    const proxyId = `proxy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    const proxyPlayer: Player = {
+      id: proxyId,
+      nickname,
+      avatarEmoji: avatarEmoji || this.getRandomEmoji(),
+      isHost: false,
+      isSpectator: false,
+      isReady: true, // Proxy players are always "ready" (managed by host)
+      isConnected: true, // They're "connected" via the host
+      score: 0,
+      isProxy: true,
+      proxyManagedBy: conn.id,
+      turnOrder: playerCount,
+    };
+
+    this.state.players[proxyId] = proxyPlayer;
+
+    // Notify everyone
+    this.broadcast({
+      type: 'proxy_added',
+      player: this.getPublicPlayer(proxyPlayer),
+    });
+
+    this.broadcast({
+      type: 'player_joined',
+      player: this.getPublicPlayer(proxyPlayer),
+    });
+  }
+
+  private handleRemoveProxy(conn: Party.Connection, proxyId: string) {
+    const sender = this.state.players[conn.id];
+    if (!sender?.isHost) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Only the host can remove proxy players',
+      } as ServerMessage));
+      return;
+    }
+
+    const proxyPlayer = this.state.players[proxyId];
+    if (!proxyPlayer || !proxyPlayer.isProxy) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Player not found or not a proxy',
+      } as ServerMessage));
+      return;
+    }
+
+    delete this.state.players[proxyId];
+
+    this.broadcast({
+      type: 'proxy_removed',
+      playerId: proxyId,
+    });
+
+    this.broadcast({
+      type: 'player_left',
+      playerId: proxyId,
+    });
+  }
+
+  private handleProxySubmit(conn: Party.Connection, playerIds: string[]) {
+    const sender = this.state.players[conn.id];
+    if (!sender?.isHost) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Only the host can mark proxy submissions',
+      } as ServerMessage));
+      return;
+    }
+
+    // Validate all playerIds are proxies managed by this host
+    for (const playerId of playerIds) {
+      const player = this.state.players[playerId];
+      if (!player || !player.isProxy || player.proxyManagedBy !== conn.id) {
+        conn.send(JSON.stringify({
+          type: 'error',
+          message: `Invalid proxy player: ${playerId}`,
+        } as ServerMessage));
+        return;
+      }
+    }
+
+    // Initialize proxySubmissions if needed
+    if (!this.state.gameState.proxySubmissions) {
+      this.state.gameState.proxySubmissions = [];
+    }
+
+    // Add to proxy submissions (avoid duplicates)
+    for (const playerId of playerIds) {
+      if (!this.state.gameState.proxySubmissions.includes(playerId)) {
+        this.state.gameState.proxySubmissions.push(playerId);
+      }
+    }
+
+    // Notify everyone that proxy players have submitted
+    this.broadcast({
+      type: 'proxy_submitted',
+      playerIds,
+    });
+
+    // Also send game state update
+    this.broadcast({
+      type: 'game_state_update',
+      gameState: {
+        proxySubmissions: this.state.gameState.proxySubmissions,
+      },
+    });
+  }
+
+  private handleMarkWinner(conn: Party.Connection, winnerId: string) {
+    const sender = this.state.players[conn.id];
+    if (!sender?.isHost) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Only the host can mark winners',
+      } as ServerMessage));
+      return;
+    }
+
+    const winner = this.state.players[winnerId];
+    if (!winner) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Player not found',
+      } as ServerMessage));
+      return;
+    }
+
+    // Award point to winner
+    winner.score += 1;
+
+    // Record round winner
+    this.state.gameState.roundWinner = winnerId;
+
+    // Get all scores
+    const scores: Record<string, number> = {};
+    for (const [id, player] of Object.entries(this.state.players)) {
+      scores[id] = player.score;
+    }
+
+    // Broadcast round end
+    this.broadcast({
+      type: 'round_end',
+      winner: winnerId,
+      winnerNickname: winner.nickname,
+      scores,
+    });
+
+    // Clear submissions for next round
+    this.state.gameState.submissions = [];
+    this.state.gameState.proxySubmissions = [];
+
+    // Advance round
+    this.state.gameState.currentRound += 1;
+
+    // Check for game end (could be configurable)
+    const winningScore = this.state.gameConfig?.winningScore || 10;
+    if (winner.score >= winningScore) {
+      this.state.gameState.phase = 'game_end';
+      this.state.gameState.gameWinner = winnerId;
+      this.broadcast({
+        type: 'game_end',
+        winner: winnerId,
+        finalScores: scores,
+      });
+    } else {
+      // Rotate judge if applicable
+      this.rotateJudge();
+
+      // Broadcast updated game state
+      this.broadcast({
+        type: 'game_state_update',
+        gameState: {
+          currentRound: this.state.gameState.currentRound,
+          judgeId: this.state.gameState.judgeId,
+          roundWinner: undefined, // Clear for next round
+          submissions: [],
+          proxySubmissions: [],
+        },
+      });
+    }
+  }
+
+  private handleProxyReady(conn: Party.Connection, proxyId: string, ready: boolean) {
+    const sender = this.state.players[conn.id];
+    if (!sender?.isHost) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Only the host can set proxy ready status',
+      } as ServerMessage));
+      return;
+    }
+
+    const proxyPlayer = this.state.players[proxyId];
+    if (!proxyPlayer || !proxyPlayer.isProxy) {
+      conn.send(JSON.stringify({
+        type: 'error',
+        message: 'Player not found or not a proxy',
+      } as ServerMessage));
+      return;
+    }
+
+    proxyPlayer.isReady = ready;
+
+    this.broadcast({
+      type: 'player_ready',
+      playerId: proxyId,
+      ready,
+    });
+  }
+
+  private rotateJudge() {
+    const players = Object.values(this.state.players)
+      .filter(p => !p.isSpectator)
+      .sort((a, b) => (a.turnOrder || 0) - (b.turnOrder || 0));
+
+    if (players.length === 0) return;
+
+    const currentJudgeIndex = players.findIndex(p => p.id === this.state.gameState.judgeId);
+    const nextJudgeIndex = (currentJudgeIndex + 1) % players.length;
+    this.state.gameState.judgeId = players[nextJudgeIndex].id;
+  }
+
+  // ==========================================================================
   // GAME LOGIC HELPERS
   // ==========================================================================
 
@@ -542,6 +837,7 @@ export default class GameRoom implements Party.Server {
           playerId: s.playerId,
           cardCount: s.cards?.length || 0,
         })),
+        proxySubmissions: this.state.gameState.proxySubmissions || [],
       },
       settings: this.state.settings,
       createdAt: this.state.createdAt,
@@ -549,9 +845,19 @@ export default class GameRoom implements Party.Server {
     };
   }
 
-  private getPublicPlayer(player: Player): Player {
+  private getPublicPlayer(player: Player): Omit<Player, 'hand'> & { hand?: undefined } {
     return {
-      ...player,
+      id: player.id,
+      nickname: player.nickname,
+      avatarEmoji: player.avatarEmoji,
+      isHost: player.isHost,
+      isSpectator: player.isSpectator,
+      isReady: player.isReady,
+      isConnected: player.isConnected,
+      score: player.score,
+      turnOrder: player.turnOrder,
+      isProxy: player.isProxy,
+      proxyManagedBy: player.proxyManagedBy,
       hand: undefined, // Never expose hands publicly
     };
   }

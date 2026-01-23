@@ -1773,6 +1773,10 @@ model SessionPlayer {
   isHost          Boolean       @default(false)
   isSpectator     Boolean       @default(false)
 
+  // Proxy player support (IRL players managed by host)
+  isProxy         Boolean       @default(false)  // True if this is an IRL player
+  proxyManagedBy  String?       // SessionPlayer ID of who manages this proxy (usually host)
+
   // Player state
   isConnected     Boolean       @default(true)
   isReady         Boolean       @default(false)
