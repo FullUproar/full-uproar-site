@@ -426,6 +426,8 @@ export default function HostView() {
   const [roomState, setRoomState] = useState<RoomState | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [sessionData, setSessionData] = useState<any>(null);
+  const [hasJoined, setHasJoined] = useState(false);
 
   // IRL Player Management State
   const [irlPlayerName, setIrlPlayerName] = useState('');
@@ -621,6 +623,8 @@ export default function HostView() {
           return;
         }
 
+        // Store session data for joining
+        setSessionData(data.session);
         setPhase('lobby');
       } catch (err) {
         setError('Failed to connect to server');
@@ -632,6 +636,21 @@ export default function HostView() {
       checkRoom();
     }
   }, [roomCode]);
+
+  // Join as host when connected and have session data
+  useEffect(() => {
+    if (isConnected && sessionData && !hasJoined) {
+      // Find the host from the session's players list, or use hostNickname
+      const hostNickname = sessionData.hostNickname || 'Host';
+
+      socket.send(JSON.stringify({
+        type: 'join',
+        nickname: hostNickname,
+        avatarEmoji: '👑',
+      }));
+      setHasJoined(true);
+    }
+  }, [isConnected, sessionData, hasJoined, socket]);
 
   // Start game
   const startGame = () => {
