@@ -6,7 +6,7 @@ import usePartySocket from 'partysocket/react';
 import {
   Loader2, Users, Crown, Eye, Play, Settings,
   QrCode, Copy, Check, Wifi, WifiOff, Volume2,
-  UserPlus, Trash2, Trophy, CheckCircle
+  UserPlus, Trash2, Trophy, CheckCircle, LogOut
 } from 'lucide-react';
 
 // =============================================================================
@@ -725,12 +725,36 @@ export default function HostView() {
             </div>
             <div style={styles.roomCode}>{roomCode}</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {isConnected ? (
-              <><Wifi size={20} style={{ color: '#22c55e' }} /> Live</>
-            ) : (
-              <><WifiOff size={20} style={{ color: '#ef4444' }} /> Reconnecting...</>
-            )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8' }}>
+              {isConnected ? (
+                <><Wifi size={20} style={{ color: '#22c55e' }} /> Live</>
+              ) : (
+                <><WifiOff size={20} style={{ color: '#ef4444' }} /> Reconnecting...</>
+              )}
+            </div>
+            <button
+              onClick={() => {
+                if (confirm('Are you sure you want to end this session?')) {
+                  router.push('/game-kit');
+                }
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 12px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '8px',
+                color: '#f87171',
+                fontSize: '14px',
+                cursor: 'pointer',
+              }}
+            >
+              <LogOut size={16} />
+              Exit
+            </button>
           </div>
         </div>
 
@@ -922,12 +946,34 @@ export default function HostView() {
               </div>
             ))}
           </div>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {isConnected ? (
               <Wifi size={20} style={{ color: '#22c55e' }} />
             ) : (
               <WifiOff size={20} style={{ color: '#ef4444' }} />
             )}
+            <button
+              onClick={() => {
+                if (confirm('Are you sure you want to end this session?')) {
+                  router.push('/game-kit');
+                }
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 10px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '6px',
+                color: '#f87171',
+                fontSize: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              <LogOut size={14} />
+              Exit
+            </button>
           </div>
         </div>
 

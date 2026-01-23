@@ -602,12 +602,32 @@ export default function PlayRoom() {
             <div style={{ fontSize: '12px', color: '#64748b' }}>Round {roomState.gameState.currentRound}</div>
             <div style={styles.roomCode}>{roomCode}</div>
           </div>
-          <div style={styles.connectionStatus}>
-            {isMyTurn ? (
-              <span style={{ color: '#f97316', fontWeight: 'bold' }}>YOUR TURN</span>
-            ) : (
-              <span style={{ color: '#64748b' }}>Waiting...</span>
-            )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={styles.connectionStatus}>
+              {isMyTurn ? (
+                <span style={{ color: '#f97316', fontWeight: 'bold' }}>YOUR TURN</span>
+              ) : (
+                <span style={{ color: '#64748b' }}>Waiting...</span>
+              )}
+            </div>
+            <button
+              onClick={leaveRoom}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '6px 10px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '6px',
+                color: '#f87171',
+                fontSize: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              <LogOut size={14} />
+              Leave
+            </button>
           </div>
         </div>
 

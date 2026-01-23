@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Play, Users, Loader2 } from 'lucide-react';
+import { Play, Users, Loader2, ArrowLeft } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
 
 interface GameMeta {
@@ -177,6 +177,28 @@ export default function PlayGamePage({ params }: { params: Promise<{ shareToken:
 
   return (
     <div style={{ ...styles.container, ...styles.playContainer }}>
+      {/* Back navigation */}
+      <Link
+        href="/game-kit"
+        style={{
+          position: 'absolute',
+          top: '20px',
+          left: '20px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: '#94a3b8',
+          textDecoration: 'none',
+          fontSize: '14px',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          transition: 'all 0.2s',
+        }}
+      >
+        <ArrowLeft size={18} />
+        Back
+      </Link>
+
       <div style={styles.gameCard}>
         <div style={styles.gameIcon}>🎮</div>
         <h1 style={styles.gameName}>{gameInfo.definition.name}</h1>

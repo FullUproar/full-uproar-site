@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Play, Edit, Trash2, Copy, Share2 } from 'lucide-react';
+import { Plus, Play, Edit, Trash2, Copy, Share2, ArrowLeft, Gamepad2 } from 'lucide-react';
 import { adminStyles } from '@/app/admin/styles/adminStyles';
 
 interface GameDefinition {
@@ -164,6 +164,42 @@ export default function GameKitDashboard() {
   return (
     <div style={styles.container}>
       <div style={styles.content}>
+        {/* Navigation */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <Link
+            href="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: '#94a3b8',
+              textDecoration: 'none',
+              fontSize: '14px',
+            }}
+          >
+            <ArrowLeft size={18} />
+            Home
+          </Link>
+          <Link
+            href="/join"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: '#fdba74',
+              textDecoration: 'none',
+              fontSize: '14px',
+              padding: '8px 16px',
+              background: 'rgba(249, 115, 22, 0.1)',
+              border: '1px solid rgba(249, 115, 22, 0.3)',
+              borderRadius: '8px',
+            }}
+          >
+            <Gamepad2 size={16} />
+            Join a Game
+          </Link>
+        </div>
+
         <div style={styles.header}>
           <h1 style={styles.title}>🎮 Game Kit</h1>
           <p style={styles.subtitle}>Create and share your own card games</p>
