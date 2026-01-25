@@ -605,7 +605,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     <td style={adminStyles.tableCell}>
                       {item.game && (
                         <Link
-                          href={`/games/${item.game.slug}`}
+                          href={`/shop/games/${item.game.slug}`}
                           target="_blank"
                           style={{
                             ...adminStyles.outlineButton,
@@ -618,7 +618,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                       )}
                       {item.merch && (
                         <Link
-                          href={`/merch/${item.merch.slug}`}
+                          href={`/shop/merch/${item.merch.slug}`}
                           target="_blank"
                           style={{
                             ...adminStyles.outlineButton,

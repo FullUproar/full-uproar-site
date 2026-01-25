@@ -461,7 +461,7 @@ function ShopContent() {
                       </div>
                     )}
 
-                    <Link href={`/games/${game.slug}`} style={{ textDecoration: 'none', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <Link href={`/shop/games/${game.slug}`} style={{ textDecoration: 'none', flex: 1, display: 'flex', flexDirection: 'column' }}>
                       <div style={{ padding: '1.5rem', paddingBottom: '0', flex: 1, display: 'flex', flexDirection: 'column' }}>
                         {game.imageUrl && (
                           <img

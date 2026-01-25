@@ -1310,7 +1310,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                       ${(featuredGame.priceCents / 100).toFixed(2)}
                     </span>
                     <Link
-                      href={`/games/${featuredGame.slug || featuredGame.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+                      href={`/shop/games/${featuredGame.slug || featuredGame.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                       style={{
                         background: '#FF8200',
                         color: '#111827',

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 
 export default function ReturnsPolicy() {
@@ -105,6 +106,71 @@ export default function ReturnsPolicy() {
                 returns@fulluproar.com
               </a>
             </p>
+          </div>
+
+          {/* Navigation Section */}
+          <div style={{
+            marginTop: '2rem',
+            padding: '1.5rem',
+            background: 'rgba(249, 115, 22, 0.1)',
+            borderRadius: '8px',
+            border: '1px solid rgba(249, 115, 22, 0.3)',
+          }}>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <Link
+                href="/"
+                style={{
+                  color: '#f97316',
+                  textDecoration: 'none',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '6px',
+                  border: '1px solid #f97316',
+                  fontWeight: '600',
+                  transition: 'all 0.2s'
+                }}
+              >
+                ← Back to Home
+              </Link>
+              <Link
+                href="/contact"
+                style={{
+                  color: '#94a3b8',
+                  textDecoration: 'none',
+                  padding: '0.5rem 1rem',
+                  transition: 'color 0.2s'
+                }}
+              >
+                Contact Support
+              </Link>
+              <Link
+                href="/terms"
+                style={{
+                  color: '#94a3b8',
+                  textDecoration: 'none',
+                  padding: '0.5rem 1rem',
+                  transition: 'color 0.2s'
+                }}
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="/discover/faq"
+                style={{
+                  color: '#94a3b8',
+                  textDecoration: 'none',
+                  padding: '0.5rem 1rem',
+                  transition: 'color 0.2s'
+                }}
+              >
+                FAQ
+              </Link>
+            </div>
           </div>
         </div>
       </div>

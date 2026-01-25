@@ -346,7 +346,7 @@ export default function GamesAdminPage() {
                   borderTop: '1px solid rgba(249, 115, 22, 0.2)',
                 }}>
                   <Link
-                    href={`/games/${game.slug}`}
+                    href={`/shop/games/${game.slug}`}
                     style={{
                       ...adminStyles.outlineButton,
                       flex: 1,

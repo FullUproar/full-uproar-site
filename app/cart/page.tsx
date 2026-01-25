@@ -96,7 +96,7 @@ export default function CartPage() {
             }}>
               Fugly is disappointed. Add some chaos!
             </p>
-            <Link href="/games">
+            <Link href="/shop">
               <button style={{
                 background: '#f97316',
                 color: '#111827',
@@ -379,7 +379,7 @@ export default function CartPage() {
                 <ArrowRight size={20} />
               </button>
               
-              <Link href="/games">
+              <Link href="/shop">
                 <button style={{
                   width: '100%',
                   background: 'transparent',
