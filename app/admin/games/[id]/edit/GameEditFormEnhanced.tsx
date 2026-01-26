@@ -40,6 +40,7 @@ interface Game {
   videoUrl: string | null;
   bggUrl: string | null;
   launchDate: string | null;
+  isHidden?: boolean;
 }
 
 interface GameEditFormEnhancedProps {
@@ -704,6 +705,33 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
               />
               <label htmlFor="isBundle" style={styles.label}>This is a Bundle</label>
             </div>
+          </div>
+
+          {/* Hidden Product Option - Standalone with highlight */}
+          <div style={{
+            marginTop: '24px',
+            background: formData.isHidden ? 'rgba(234, 179, 8, 0.2)' : 'rgba(239, 68, 68, 0.1)',
+            padding: '16px',
+            borderRadius: '8px',
+            border: formData.isHidden ? '2px solid #eab308' : '2px solid rgba(239, 68, 68, 0.3)'
+          }}>
+            <div style={styles.checkbox}>
+              <input
+                type="checkbox"
+                id="isHidden"
+                checked={formData.isHidden || false}
+                onChange={(e) => setFormData({ ...formData, isHidden: e.target.checked })}
+                style={styles.checkboxInput}
+              />
+              <label htmlFor="isHidden" style={{ ...styles.label, color: formData.isHidden ? '#eab308' : '#fca5a5' }}>
+                Hidden from Public Shop (Test Product)
+              </label>
+            </div>
+            <p style={{ ...styles.helpText, marginTop: '8px', color: formData.isHidden ? '#fde68a' : '#fca5a5' }}>
+              {formData.isHidden
+                ? 'This product is hidden from the public shop. Only accessible via direct URL.'
+                : 'Check this to hide the product from the public shop (for testing).'}
+            </p>
           </div>
         </div>
       </div>
