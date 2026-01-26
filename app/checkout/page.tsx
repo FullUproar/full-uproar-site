@@ -13,9 +13,9 @@ import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import TrustBadges from '@/app/components/TrustBadges';
 import SMSOptIn from '@/app/components/SMSOptIn';
 
-// Store status configuration
+// Store status configuration - controlled by env var
 const STORE_STATUS = {
-  isOpen: false,
+  isOpen: process.env.NEXT_PUBLIC_STORE_OPEN === 'true',
   launchDate: 'Spring 2026',
   allowTestOrders: false // When true, admins can test the full flow
 };

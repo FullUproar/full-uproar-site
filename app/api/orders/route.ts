@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 
-// Store is not yet open for orders - set to true when ready to launch
-const STORE_OPEN = false;
+// Store open status - controlled by env var NEXT_PUBLIC_STORE_OPEN
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
 
 // Order management API routes
 
