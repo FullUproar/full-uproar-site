@@ -8,6 +8,7 @@ import Turnstile from '@/app/components/Turnstile';
 
 export default function ContactPage() {
   const { user, isLoaded } = useUser();
+  const [isMobile, setIsMobile] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,6 +20,14 @@ export default function ContactPage() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [ticketNumber, setTicketNumber] = useState<string | null>(null);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Auto-fill name and email for logged-in users
   useEffect(() => {
@@ -127,8 +136,8 @@ export default function ContactPage() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-            gap: '3rem',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))',
+            gap: isMobile ? '2rem' : '3rem',
             marginBottom: '3rem'
           }}>
             {/* Contact Form */}
@@ -212,7 +221,7 @@ export default function ContactPage() {
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div>
-                    <label style={{
+                    <label htmlFor="contact-name" style={{
                       display: 'block',
                       color: '#e5e7eb',
                       fontSize: '0.875rem',
@@ -222,6 +231,7 @@ export default function ContactPage() {
                       Name
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       required
                       value={formData.name}
@@ -241,7 +251,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label style={{
+                    <label htmlFor="contact-email" style={{
                       display: 'block',
                       color: '#e5e7eb',
                       fontSize: '0.875rem',
@@ -251,6 +261,7 @@ export default function ContactPage() {
                       Email
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       required
                       value={formData.email}
@@ -270,7 +281,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label style={{
+                    <label htmlFor="contact-subject" style={{
                       display: 'block',
                       color: '#e5e7eb',
                       fontSize: '0.875rem',
@@ -280,6 +291,7 @@ export default function ContactPage() {
                       What's this about?
                     </label>
                     <select
+                      id="contact-subject"
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       style={{
@@ -303,7 +315,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label style={{
+                    <label htmlFor="contact-message" style={{
                       display: 'block',
                       color: '#e5e7eb',
                       fontSize: '0.875rem',
@@ -313,6 +325,7 @@ export default function ContactPage() {
                       Message
                     </label>
                     <textarea
+                      id="contact-message"
                       required
                       rows={6}
                       value={formData.message}

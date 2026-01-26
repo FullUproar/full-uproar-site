@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { Gamepad2, Users, BookOpen, HelpCircle, Heart, Compass } from 'lucide-react';
+import { Gamepad2, Users, BookOpen, HelpCircle, Heart, Compass, ArrowLeft } from 'lucide-react';
 
 const discoverSections = [
   {
@@ -55,6 +55,24 @@ export default function DiscoverPage() {
       <Navigation />
 
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '6rem 1rem 3rem' }}>
+        {/* Back Link */}
+        <Link
+          href="/"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            color: '#94a3b8',
+            textDecoration: 'none',
+            fontSize: '0.875rem',
+            marginBottom: '2rem',
+            transition: 'color 0.2s'
+          }}
+        >
+          <ArrowLeft size={16} />
+          Back to Home
+        </Link>
+
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h1 style={{

@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    
+
     // Check admin permission
     await requirePermission('admin:access');
 
@@ -89,7 +89,7 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    
+
     // Check admin permission
     await requirePermission('admin:access');
 
@@ -98,6 +98,16 @@ export async function PATCH(
 
     // Start a transaction to update order and potentially create status history
     const result = await prisma.$transaction(async (tx) => {
+      // Get the current order state first
+      const existingOrder = await tx.order.findUnique({
+        where: { id },
+        include: { items: true }
+      });
+
+      if (!existingOrder) {
+        throw new Error('Order not found');
+      }
+
       // Update order
       const order = await tx.order.update({
         where: { id },
@@ -114,7 +124,7 @@ export async function PATCH(
       });
 
       // Create status history entry if status changed
-      if (status) {
+      if (status && status !== existingOrder.status) {
         await tx.orderStatusHistory.create({
           data: {
             orderId: id,
@@ -123,31 +133,88 @@ export async function PATCH(
           }
         });
 
-        // Handle inventory updates based on status
-        if (status === 'cancelled' || status === 'refunded') {
-          // Return inventory to stock
-          const orderItems = await tx.orderItem.findMany({
-            where: { orderId: id }
-          });
+        // Handle inventory updates based on status transition
+        // Only process if actually changing to cancelled/refunded from a non-terminal state
+        if ((status === 'cancelled' || status === 'refunded') &&
+            !['cancelled', 'refunded'].includes(existingOrder.status)) {
 
-          for (const item of orderItems) {
+          const wasShipped = ['shipped', 'delivered'].includes(existingOrder.status);
+
+          for (const item of existingOrder.items) {
+            if (item.itemType === 'game' && item.gameId) {
+              if (wasShipped) {
+                // Order was shipped - need to restore quantity (inventory was committed)
+                await tx.gameInventory.updateMany({
+                  where: { gameId: item.gameId },
+                  data: {
+                    quantity: { increment: item.quantity }
+                  }
+                });
+              } else {
+                // Order wasn't shipped - just release the reservation
+                await tx.gameInventory.updateMany({
+                  where: { gameId: item.gameId },
+                  data: {
+                    reserved: { decrement: item.quantity }
+                  }
+                });
+              }
+              // Always restore Game.stock for backward compatibility
+              await tx.game.update({
+                where: { id: item.gameId },
+                data: {
+                  stock: { increment: item.quantity }
+                }
+              });
+            } else if (item.itemType === 'merch' && item.merchId) {
+              // FIX: Handle both sized AND non-sized merch items
+              if (wasShipped) {
+                // Order was shipped - restore quantity
+                await tx.inventory.updateMany({
+                  where: {
+                    merchId: item.merchId,
+                    size: item.merchSize || null
+                  },
+                  data: {
+                    quantity: { increment: item.quantity }
+                  }
+                });
+              } else {
+                // Order wasn't shipped - just release reservation
+                await tx.inventory.updateMany({
+                  where: {
+                    merchId: item.merchId,
+                    size: item.merchSize || null
+                  },
+                  data: {
+                    reserved: { decrement: item.quantity }
+                  }
+                });
+              }
+            }
+          }
+        }
+
+        // Handle shipped status - commit inventory (decrease both quantity and reserved)
+        if (status === 'shipped' && existingOrder.status !== 'shipped') {
+          for (const item of existingOrder.items) {
             if (item.itemType === 'game' && item.gameId) {
               await tx.gameInventory.updateMany({
                 where: { gameId: item.gameId },
                 data: {
-                  quantity: { increment: item.quantity },
-                  reserved: { decrement: Math.min(item.quantity, 0) }
+                  quantity: { decrement: item.quantity },
+                  reserved: { decrement: item.quantity }
                 }
               });
-            } else if (item.itemType === 'merch' && item.merchId && item.merchSize) {
+            } else if (item.itemType === 'merch' && item.merchId) {
               await tx.inventory.updateMany({
-                where: { 
+                where: {
                   merchId: item.merchId,
-                  size: item.merchSize
+                  size: item.merchSize || null
                 },
                 data: {
-                  quantity: { increment: item.quantity },
-                  reserved: { decrement: Math.min(item.quantity, 0) }
+                  quantity: { decrement: item.quantity },
+                  reserved: { decrement: item.quantity }
                 }
               });
             }
@@ -162,7 +229,12 @@ export async function PATCH(
     const updatedOrder = await prisma.order.findUnique({
       where: { id },
       include: {
-        items: true,
+        items: {
+          include: {
+            game: true,
+            merch: true
+          }
+        },
         statusHistory: {
           orderBy: {
             createdAt: 'desc'
@@ -176,7 +248,7 @@ export async function PATCH(
     console.error('Error updating order:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to update order' },
-      { status: error.message === 'Admin access required' ? 403 : 500 }
+      { status: error.message === 'Admin access required' ? 403 : error.message === 'Order not found' ? 404 : 500 }
     );
   }
 }
@@ -187,23 +259,73 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    
+
     // Check super admin permission for deletion
     await requirePermission('admin:super');
 
-    // Soft delete by setting status to cancelled
-    const order = await prisma.order.update({
-      where: { id },
-      data: {
-        status: 'cancelled',
-        cancelledAt: new Date(),
-        statusHistory: {
-          create: {
-            status: 'cancelled',
-            notes: 'Order cancelled by admin'
+    // Use transaction to properly release inventory when cancelling
+    const order = await prisma.$transaction(async (tx) => {
+      const existingOrder = await tx.order.findUnique({
+        where: { id },
+        include: { items: true }
+      });
+
+      if (!existingOrder) {
+        throw new Error('Order not found');
+      }
+
+      // Skip inventory release if already cancelled
+      if (existingOrder.status !== 'cancelled') {
+        const wasShipped = ['shipped', 'delivered'].includes(existingOrder.status);
+
+        // Release inventory
+        for (const item of existingOrder.items) {
+          if (item.itemType === 'game' && item.gameId) {
+            if (wasShipped) {
+              await tx.gameInventory.updateMany({
+                where: { gameId: item.gameId },
+                data: { quantity: { increment: item.quantity } }
+              });
+            } else {
+              await tx.gameInventory.updateMany({
+                where: { gameId: item.gameId },
+                data: { reserved: { decrement: item.quantity } }
+              });
+            }
+            await tx.game.update({
+              where: { id: item.gameId },
+              data: { stock: { increment: item.quantity } }
+            });
+          } else if (item.itemType === 'merch' && item.merchId) {
+            if (wasShipped) {
+              await tx.inventory.updateMany({
+                where: { merchId: item.merchId, size: item.merchSize || null },
+                data: { quantity: { increment: item.quantity } }
+              });
+            } else {
+              await tx.inventory.updateMany({
+                where: { merchId: item.merchId, size: item.merchSize || null },
+                data: { reserved: { decrement: item.quantity } }
+              });
+            }
           }
         }
       }
+
+      // Soft delete by setting status to cancelled
+      return tx.order.update({
+        where: { id },
+        data: {
+          status: 'cancelled',
+          cancelledAt: new Date(),
+          statusHistory: {
+            create: {
+              status: 'cancelled',
+              notes: 'Order cancelled by admin'
+            }
+          }
+        }
+      });
     });
 
     return NextResponse.json({ success: true, order });
@@ -211,7 +333,7 @@ export async function DELETE(
     console.error('Error deleting order:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to delete order' },
-      { status: error.message === 'Super admin access required' ? 403 : 500 }
+      { status: error.message === 'Super admin access required' ? 403 : error.message === 'Order not found' ? 404 : 500 }
     );
   }
 }

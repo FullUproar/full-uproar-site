@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
-import { ShoppingCart, Calendar, Users, Play, Package, Sparkles, Dice1, Map, Zap, Shield, Shuffle, Trophy, Filter, Tag, Gamepad2, Shirt } from 'lucide-react';
+import { ShoppingCart, Calendar, Users, Play, Package, Sparkles, Dice1, Map, Zap, Shield, Shuffle, Trophy, Filter, Tag, Gamepad2, Shirt, Search, ArrowUpDown } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import AddToCartButton from '../components/AddToCartButton';
 import { analytics, useAnalytics } from '@/lib/analytics/analytics';
@@ -64,6 +64,10 @@ function ShopContent() {
   const categoryFromUrl = searchParams.get('category');
 
   const [activeTab, setActiveTab] = useState<ShopTab>(tabFromUrl === 'merch' ? 'merch' : 'games');
+
+  // Search and sort state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOption, setSortOption] = useState<'default' | 'price-asc' | 'price-desc' | 'name' | 'newest'>('default');
 
   // Games state
   const [games, setGames] = useState<Game[]>([]);
@@ -162,9 +166,43 @@ function ShopContent() {
     analytics.trackAddToCart(game.id.toString(), game.title, game.priceCents);
   };
 
-  const filteredGames = games.filter(game =>
-    game.category === selectedCategory || (!game.category && selectedCategory === 'MOD')
-  );
+  // Filter and sort games
+  const filteredGames = games
+    .filter(game => {
+      const matchesCategory = game.category === selectedCategory || (!game.category && selectedCategory === 'MOD');
+      const matchesSearch = !searchQuery ||
+        game.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        game.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (game.tagline && game.tagline.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesCategory && matchesSearch;
+    })
+    .sort((a, b) => {
+      switch (sortOption) {
+        case 'price-asc': return a.priceCents - b.priceCents;
+        case 'price-desc': return b.priceCents - a.priceCents;
+        case 'name': return a.title.localeCompare(b.title);
+        case 'newest': return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        default: return 0;
+      }
+    });
+
+  // Filter and sort merch
+  const filteredMerch = merch
+    .filter(item => {
+      const matchesSearch = !searchQuery ||
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesSearch;
+    })
+    .sort((a, b) => {
+      switch (sortOption) {
+        case 'price-asc': return a.priceCents - b.priceCents;
+        case 'price-desc': return b.priceCents - a.priceCents;
+        case 'name': return a.name.localeCompare(b.name);
+        case 'newest': return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        default: return 0;
+      }
+    });
 
   const activeGameCategory = gameCategories.find(c => c.id === selectedCategory);
 
@@ -262,6 +300,97 @@ function ShopContent() {
               <Shirt size={24} />
               MERCH
             </button>
+          </div>
+
+          {/* Search and Sort Bar */}
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            marginBottom: '1rem'
+          }}>
+            {/* Search Input */}
+            <div style={{
+              position: 'relative',
+              minWidth: '250px',
+              maxWidth: '400px',
+              flex: 1
+            }}>
+              <Search
+                size={18}
+                style={{
+                  position: 'absolute',
+                  left: '1rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: '#9ca3af',
+                  pointerEvents: 'none'
+                }}
+              />
+              <input
+                type="text"
+                placeholder={activeTab === 'games' ? 'Search games...' : 'Search merch...'}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem 0.75rem 2.75rem',
+                  background: 'rgba(31, 41, 55, 0.8)',
+                  border: `2px solid ${activeTab === 'games' ? '#374151' : '#4c1d95'}`,
+                  borderRadius: '50px',
+                  color: '#e2e8f0',
+                  fontSize: '0.875rem',
+                  outline: 'none',
+                  transition: 'all 0.2s'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = activeTab === 'games' ? '#FF8200' : '#a855f7';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = activeTab === 'games' ? '#374151' : '#4c1d95';
+                }}
+              />
+            </div>
+
+            {/* Sort Dropdown */}
+            <div style={{ position: 'relative' }}>
+              <ArrowUpDown
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: '#9ca3af',
+                  pointerEvents: 'none'
+                }}
+              />
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as typeof sortOption)}
+                aria-label="Sort products"
+                style={{
+                  appearance: 'none',
+                  padding: '0.75rem 2.5rem 0.75rem 2.25rem',
+                  background: 'rgba(31, 41, 55, 0.8)',
+                  border: `2px solid ${activeTab === 'games' ? '#374151' : '#4c1d95'}`,
+                  borderRadius: '50px',
+                  color: '#e2e8f0',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                <option value="default">Sort: Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name">Name: A-Z</option>
+                <option value="newest">Newest First</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -405,10 +534,37 @@ function ShopContent() {
                 borderRadius: '1rem',
                 border: '2px dashed #374151'
               }}>
-                <p style={{ fontSize: '1.25rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
-                  No {activeGameCategory?.name.toLowerCase()} available yet
-                </p>
-                <p style={{ color: '#6b7280' }}>Check back soon for more chaos!</p>
+                {searchQuery ? (
+                  <>
+                    <Search size={48} style={{ color: '#9ca3af', marginBottom: '1rem' }} />
+                    <p style={{ fontSize: '1.25rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+                      No results for "{searchQuery}"
+                    </p>
+                    <p style={{ color: '#6b7280' }}>Try a different search term or browse all {activeGameCategory?.name.toLowerCase()}</p>
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      style={{
+                        marginTop: '1rem',
+                        padding: '0.5rem 1.5rem',
+                        background: 'transparent',
+                        border: '2px solid #FF8200',
+                        borderRadius: '50px',
+                        color: '#FF8200',
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Clear Search
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p style={{ fontSize: '1.25rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+                      No {activeGameCategory?.name.toLowerCase()} available yet
+                    </p>
+                    <p style={{ color: '#6b7280' }}>Check back soon for more chaos!</p>
+                  </>
+                )}
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
@@ -653,7 +809,7 @@ function ShopContent() {
               <div style={{ textAlign: 'center', padding: '4rem' }}>
                 <div style={{ fontSize: '1.5rem', color: '#a855f7' }}>Loading swag...</div>
               </div>
-            ) : merch.length === 0 ? (
+            ) : filteredMerch.length === 0 ? (
               <div style={{
                 textAlign: 'center',
                 padding: '4rem',
@@ -661,16 +817,45 @@ function ShopContent() {
                 borderRadius: '1rem',
                 border: '3px dashed #a855f7'
               }}>
-                <p style={{ fontSize: '1.5rem', color: '#a855f7', fontWeight: 'bold' }}>
-                  No swag found in this category!
-                </p>
-                <p style={{ fontSize: '1rem', color: '#c4b5fd', marginTop: '0.5rem' }}>
-                  Fugly is still designing chaos-inducing apparel...
-                </p>
+                {searchQuery ? (
+                  <>
+                    <Search size={48} style={{ color: '#a855f7', marginBottom: '1rem' }} />
+                    <p style={{ fontSize: '1.5rem', color: '#a855f7', fontWeight: 'bold' }}>
+                      No results for "{searchQuery}"
+                    </p>
+                    <p style={{ fontSize: '1rem', color: '#c4b5fd', marginTop: '0.5rem' }}>
+                      Try a different search term or browse all merch
+                    </p>
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      style={{
+                        marginTop: '1rem',
+                        padding: '0.5rem 1.5rem',
+                        background: 'transparent',
+                        border: '2px solid #a855f7',
+                        borderRadius: '50px',
+                        color: '#a855f7',
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Clear Search
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p style={{ fontSize: '1.5rem', color: '#a855f7', fontWeight: 'bold' }}>
+                      No swag found in this category!
+                    </p>
+                    <p style={{ fontSize: '1rem', color: '#c4b5fd', marginTop: '0.5rem' }}>
+                      Fugly is still designing chaos-inducing apparel...
+                    </p>
+                  </>
+                )}
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-                {merch.map((item, index) => (
+                {filteredMerch.map((item, index) => (
                   <div
                     key={item.id}
                     style={{

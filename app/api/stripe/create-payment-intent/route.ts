@@ -3,8 +3,8 @@ import { stripe } from '@/lib/stripe';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
-// Store is not yet open for orders - set to true when ready to launch
-const STORE_OPEN = false;
+// Store open status - controlled by env var NEXT_PUBLIC_STORE_OPEN
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,6 +41,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Order not found' },
         { status: 404 }
+      );
+    }
+
+    // Validate order status - don't create payment intent for already paid/cancelled orders
+    const invalidStatuses = ['paid', 'shipped', 'delivered', 'cancelled', 'refunded'];
+    if (invalidStatuses.includes(order.status)) {
+      return NextResponse.json(
+        { error: `Cannot create payment for order with status: ${order.status}` },
+        { status: 400 }
       );
     }
 

@@ -6,6 +6,7 @@ import { CheckCircle, Package, Truck, Mail, ArrowRight, Copy } from 'lucide-reac
 import FuglyLogo from '@/app/components/FuglyLogo';
 import Link from 'next/link';
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
+import { useCartStore } from '@/lib/cartStore';
 
 interface OrderDetails {
   id: string;
@@ -35,6 +36,7 @@ function OrderConfirmationContent() {
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const { clearCart } = useCartStore();
 
   useEffect(() => {
     if (!orderId) {
@@ -51,7 +53,11 @@ function OrderConfirmationContent() {
       if (!response.ok) throw new Error('Order not found');
       const data = await response.json();
       setOrder(data);
-      
+
+      // Clear the cart after successful order confirmation
+      // This ensures cart is cleared even if checkout redirect was interrupted
+      clearCart();
+
       // Track purchase completion with Meta Pixel
       if (data) {
         const contentIds = data.items.map((item: any) => `${item.itemType}_${item.id}`);

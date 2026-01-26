@@ -88,7 +88,7 @@ export default function GlobalFooter() {
           </a>
         </div>
         
-        <p style={{ color: '#6b7280', fontWeight: 600 }}>
+        <p style={{ color: '#9ca3af', fontWeight: 600 }}>
           © {new Date().getFullYear()} Full Uproar Games Inc. All rights reserved. Fugly is a registered troublemaker.
         </p>
       </div>

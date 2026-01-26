@@ -18,8 +18,9 @@ export default function CartButton() {
   const cartItems = mounted ? getTotalItems() : 0;
 
   return (
-    <button 
-      onClick={() => router.push('/cart')} 
+    <button
+      onClick={() => router.push('/cart')}
+      aria-label={`Shopping cart${cartItems > 0 ? `, ${cartItems} items` : ''}`}
       {...getTestId(TestId.CART_BUTTON)}
       style={{
         position: 'relative',

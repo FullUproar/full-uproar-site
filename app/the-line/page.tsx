@@ -8,6 +8,7 @@ import Navigation from '../components/Navigation';
 export default function TheLinePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [hugImageUrl, setHugImageUrl] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   // Detect mobile on mount
   useEffect(() => {
@@ -94,12 +95,12 @@ export default function TheLinePage() {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          {hugImageUrl && (
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: '1.5rem',
-            }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '1.5rem',
+          }}>
+            {hugImageUrl && !imageError ? (
               <img
                 src={hugImageUrl}
                 alt="Fugly giving a hug"
@@ -108,9 +109,23 @@ export default function TheLinePage() {
                   height: 'auto',
                   objectFit: 'contain',
                 }}
+                onError={() => setImageError(true)}
               />
-            </div>
-          )}
+            ) : (
+              <div style={{
+                width: isMobile ? '180px' : '220px',
+                height: isMobile ? '180px' : '220px',
+                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(255, 130, 0, 0.2))',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '3px solid rgba(168, 85, 247, 0.3)',
+              }}>
+                <Heart size={isMobile ? 64 : 80} color="#a855f7" />
+              </div>
+            )}
+          </div>
           <h1 style={{
             fontSize: isMobile ? '2.5rem' : '3.5rem',
             fontWeight: 900,

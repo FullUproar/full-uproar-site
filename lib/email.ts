@@ -900,3 +900,434 @@ Reply to: ${data.customerEmail}
     return false;
   }
 }
+
+// ============================================
+// ORDER CONFIRMATION EMAILS
+// ============================================
+
+export interface OrderItem {
+  quantity: number;
+  priceCents: number;
+  merchSize?: string | null;
+  game?: { title: string; slug: string } | null;
+  merch?: { name: string; slug: string } | null;
+}
+
+export interface OrderConfirmationData {
+  orderId: string;
+  customerName: string;
+  customerEmail: string;
+  shippingAddress: string;
+  items: OrderItem[];
+  totalCents: number;
+  shippingCents: number;
+  taxCents: number;
+  paidAt: Date;
+}
+
+/**
+ * Send order confirmation email to customer after successful payment
+ */
+export async function sendOrderConfirmation(data: OrderConfirmationData): Promise<boolean> {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn('Email not configured - skipping order confirmation');
+    return false;
+  }
+
+  const subtotalCents = data.items.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
+  const orderDate = new Date(data.paidAt).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // Generate items HTML
+  const itemsHtml = data.items.map(item => {
+    const name = item.game?.title || item.merch?.name || 'Unknown Item';
+    const sizeText = item.merchSize ? ` (${item.merchSize})` : '';
+    return `
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #374151;">
+          <p style="color: #e2e8f0; font-size: 14px; margin: 0; font-weight: 500;">
+            ${name}${sizeText}
+          </p>
+        </td>
+        <td style="padding: 12px 0; border-bottom: 1px solid #374151; text-align: center;">
+          <span style="color: #94a3b8; font-size: 14px;">×${item.quantity}</span>
+        </td>
+        <td style="padding: 12px 0; border-bottom: 1px solid #374151; text-align: right;">
+          <span style="color: #fde68a; font-size: 14px; font-weight: 500;">$${((item.priceCents * item.quantity) / 100).toFixed(2)}</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  // Generate items text
+  const itemsText = data.items.map(item => {
+    const name = item.game?.title || item.merch?.name || 'Unknown Item';
+    const sizeText = item.merchSize ? ` (${item.merchSize})` : '';
+    return `- ${name}${sizeText} x${item.quantity}: $${((item.priceCents * item.quantity) / 100).toFixed(2)}`;
+  }).join('\n');
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 35px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 10px;">🎉</div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                Order Confirmed!
+              </h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 14px;">
+                Thanks for your order, chaos is on the way!
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="color: #e2e8f0; font-size: 18px; margin: 0 0 20px 0;">
+                Hey ${data.customerName}!
+              </p>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                Great news! Your payment went through and we're getting your order ready. Here's what you ordered:
+              </p>
+
+              <!-- Order Info Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="50%">
+                          <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 5px 0;">
+                            Order Number
+                          </p>
+                          <p style="color: #f97316; font-size: 16px; font-weight: bold; margin: 0; font-family: monospace;">
+                            ${data.orderId.slice(0, 8).toUpperCase()}
+                          </p>
+                        </td>
+                        <td width="50%">
+                          <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 5px 0;">
+                            Order Date
+                          </p>
+                          <p style="color: #e2e8f0; font-size: 14px; margin: 0;">
+                            ${orderDate}
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Items Table -->
+              <p style="color: #fdba74; font-size: 14px; font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;">
+                Your Items
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+                <thead>
+                  <tr>
+                    <th style="text-align: left; padding: 8px 0; border-bottom: 2px solid #f97316; color: #94a3b8; font-size: 12px; font-weight: 500;">Item</th>
+                    <th style="text-align: center; padding: 8px 0; border-bottom: 2px solid #f97316; color: #94a3b8; font-size: 12px; font-weight: 500;">Qty</th>
+                    <th style="text-align: right; padding: 8px 0; border-bottom: 2px solid #f97316; color: #94a3b8; font-size: 12px; font-weight: 500;">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemsHtml}
+                </tbody>
+              </table>
+
+              <!-- Totals -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding: 4px 0;">
+                          <span style="color: #94a3b8; font-size: 14px;">Subtotal:</span>
+                        </td>
+                        <td style="padding: 4px 0; text-align: right;">
+                          <span style="color: #e2e8f0; font-size: 14px;">$${(subtotalCents / 100).toFixed(2)}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0;">
+                          <span style="color: #94a3b8; font-size: 14px;">Shipping:</span>
+                        </td>
+                        <td style="padding: 4px 0; text-align: right;">
+                          <span style="color: #e2e8f0; font-size: 14px;">$${(data.shippingCents / 100).toFixed(2)}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0;">
+                          <span style="color: #94a3b8; font-size: 14px;">Tax:</span>
+                        </td>
+                        <td style="padding: 4px 0; text-align: right;">
+                          <span style="color: #e2e8f0; font-size: 14px;">$${(data.taxCents / 100).toFixed(2)}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; border-top: 1px solid #374151;">
+                          <span style="color: #fdba74; font-size: 16px; font-weight: bold;">Total:</span>
+                        </td>
+                        <td style="padding: 8px 0; border-top: 1px solid #374151; text-align: right;">
+                          <span style="color: #fde68a; font-size: 18px; font-weight: bold;">$${(data.totalCents / 100).toFixed(2)}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Shipping Address -->
+              <p style="color: #fdba74; font-size: 14px; font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;">
+                Shipping To
+              </p>
+              <div style="background-color: #1f2937; border-radius: 8px; padding: 16px; margin-bottom: 25px;">
+                <p style="color: #e2e8f0; font-size: 14px; line-height: 1.6; margin: 0; white-space: pre-line;">
+                  ${data.shippingAddress}
+                </p>
+              </div>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">
+                We'll send you another email with tracking info once your order ships. Get ready for some serious game night chaos!
+              </p>
+
+              <!-- Support Link -->
+              <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
+                Questions? Hit us up at <a href="mailto:support@fulluproar.com" style="color: #f97316; text-decoration: none;">support@fulluproar.com</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
+              <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+                Full Uproar Games Inc.<br>
+                <span style="color: #f97316;">Professionally ruining game nights since day one.</span>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  const text = `
+Hey ${data.customerName}!
+
+ORDER CONFIRMED!
+
+Great news! Your payment went through and we're getting your order ready.
+
+Order Number: ${data.orderId.slice(0, 8).toUpperCase()}
+Order Date: ${orderDate}
+
+YOUR ITEMS:
+${itemsText}
+
+Subtotal: $${(subtotalCents / 100).toFixed(2)}
+Shipping: $${(data.shippingCents / 100).toFixed(2)}
+Tax: $${(data.taxCents / 100).toFixed(2)}
+Total: $${(data.totalCents / 100).toFixed(2)}
+
+SHIPPING TO:
+${data.shippingAddress}
+
+We'll send you another email with tracking info once your order ships.
+
+Questions? Hit us up at support@fulluproar.com
+
+- The Full Uproar Team
+`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Full Uproar Games" <${process.env.GMAIL_USER}>`,
+      to: data.customerEmail,
+      subject: `Order Confirmed! Your Full Uproar order #${data.orderId.slice(0, 8).toUpperCase()}`,
+      text,
+      html,
+    });
+    console.log(`Order confirmation sent to ${data.customerEmail} for order ${data.orderId}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send order confirmation:', error);
+    return false;
+  }
+}
+
+/**
+ * Send order shipped notification to customer
+ */
+export async function sendOrderShippedNotification(data: {
+  orderId: string;
+  customerName: string;
+  customerEmail: string;
+  trackingNumber: string;
+  shippingCarrier: string;
+  items: OrderItem[];
+}): Promise<boolean> {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn('Email not configured - skipping shipping notification');
+    return false;
+  }
+
+  // Generate tracking URL based on carrier
+  const getTrackingUrl = (carrier: string, tracking: string) => {
+    const carrierLower = carrier.toLowerCase();
+    if (carrierLower.includes('usps')) {
+      return `https://tools.usps.com/go/TrackConfirmAction?tLabels=${tracking}`;
+    } else if (carrierLower.includes('ups')) {
+      return `https://www.ups.com/track?tracknum=${tracking}`;
+    } else if (carrierLower.includes('fedex')) {
+      return `https://www.fedex.com/fedextrack/?trknbr=${tracking}`;
+    } else if (carrierLower.includes('dhl')) {
+      return `https://www.dhl.com/en/express/tracking.html?AWB=${tracking}`;
+    }
+    return null;
+  };
+
+  const trackingUrl = getTrackingUrl(data.shippingCarrier, data.trackingNumber);
+  const itemsList = data.items.map(item => {
+    const name = item.game?.title || item.merch?.name || 'Unknown Item';
+    return name;
+  }).join(', ');
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 35px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 10px;">📦</div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                Your Order Shipped!
+              </h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 14px;">
+                The chaos is on its way to you!
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="color: #e2e8f0; font-size: 18px; margin: 0 0 20px 0;">
+                Hey ${data.customerName}!
+              </p>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                Great news! Your order is on its way. Here's your tracking info:
+              </p>
+
+              <!-- Tracking Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px; border: 2px solid #8b5cf6;">
+                <tr>
+                  <td style="padding: 25px; text-align: center;">
+                    <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
+                      Tracking Number
+                    </p>
+                    <p style="color: #a78bfa; font-size: 20px; font-weight: bold; margin: 0 0 15px 0; font-family: monospace;">
+                      ${data.trackingNumber}
+                    </p>
+                    <p style="color: #64748b; font-size: 14px; margin: 0 0 20px 0;">
+                      via ${data.shippingCarrier}
+                    </p>
+                    ${trackingUrl ? `
+                    <a href="${trackingUrl}"
+                       style="display: inline-block; background-color: #8b5cf6; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                      Track Your Package
+                    </a>
+                    ` : ''}
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #94a3b8; font-size: 14px; margin: 0 0 20px 0;">
+                <strong style="color: #e2e8f0;">What's in the box:</strong> ${itemsList}
+              </p>
+
+              <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
+                Questions? Hit us up at <a href="mailto:support@fulluproar.com" style="color: #f97316; text-decoration: none;">support@fulluproar.com</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
+              <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+                Full Uproar Games Inc.<br>
+                <span style="color: #f97316;">Professionally ruining game nights since day one.</span>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  const text = `
+Hey ${data.customerName}!
+
+YOUR ORDER SHIPPED!
+
+Great news! Your order is on its way.
+
+Tracking Number: ${data.trackingNumber}
+Carrier: ${data.shippingCarrier}
+${trackingUrl ? `Track here: ${trackingUrl}` : ''}
+
+What's in the box: ${itemsList}
+
+Questions? Hit us up at support@fulluproar.com
+
+- The Full Uproar Team
+`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Full Uproar Games" <${process.env.GMAIL_USER}>`,
+      to: data.customerEmail,
+      subject: `Your order shipped! Track it here`,
+      text,
+      html,
+    });
+    console.log(`Shipping notification sent to ${data.customerEmail}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send shipping notification:', error);
+    return false;
+  }
+}

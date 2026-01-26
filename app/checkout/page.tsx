@@ -63,6 +63,7 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
+  const [isNavigatingAway, setIsNavigatingAway] = useState(false);
   
   useAnalytics();
   
@@ -111,9 +112,9 @@ export default function CheckoutPage() {
       }
     }
 
-    if (items.length === 0) {
+    if (items.length === 0 && !isNavigatingAway) {
       router.push('/');
-    } else {
+    } else if (items.length > 0) {
       const cartValue = getTotalPrice();
 
       // Track analytics
@@ -131,7 +132,7 @@ export default function CheckoutPage() {
         'USD'
       );
     }
-  }, [items, router]);
+  }, [items, router, isNavigatingAway]);
 
   // Persist form data to sessionStorage whenever it changes
   useEffect(() => {
@@ -262,6 +263,10 @@ export default function CheckoutPage() {
         setIsProcessing(false);
         return;
       }
+
+      // Mark that we're navigating away BEFORE clearing cart to prevent race condition
+      // The useEffect that checks for empty cart would otherwise redirect to home
+      setIsNavigatingAway(true);
 
       // Clear cart, form data, and redirect to success page
       clearCart();

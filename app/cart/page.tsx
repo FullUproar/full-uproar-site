@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, ArrowLeft } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Truck, Package } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import Navigation from '../components/Navigation';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
@@ -310,15 +310,70 @@ export default function CartPage() {
               position: isMobile ? 'static' : 'sticky',
               top: '2rem'
             }}>
-              <h2 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold', 
-                color: '#fdba74', 
-                marginBottom: '2rem' 
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#fdba74',
+                marginBottom: '2rem'
               }}>
                 Order Summary
               </h2>
-              
+
+              {/* Shipping Estimate Box */}
+              <div style={{
+                background: getTotalPrice() >= 5000 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(249, 115, 22, 0.1)',
+                border: `2px solid ${getTotalPrice() >= 5000 ? '#10b981' : '#f97316'}`,
+                borderRadius: '0.75rem',
+                padding: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                  <Truck size={18} style={{ color: getTotalPrice() >= 5000 ? '#10b981' : '#f97316' }} />
+                  <span style={{ fontWeight: 'bold', color: getTotalPrice() >= 5000 ? '#10b981' : '#fdba74' }}>
+                    {getTotalPrice() >= 5000 ? 'Free Shipping Unlocked!' : 'Shipping Estimate'}
+                  </span>
+                </div>
+
+                {getTotalPrice() < 5000 && (
+                  <>
+                    <div style={{
+                      background: '#374151',
+                      borderRadius: '50px',
+                      height: '8px',
+                      overflow: 'hidden',
+                      marginBottom: '0.5rem'
+                    }}>
+                      <div style={{
+                        background: 'linear-gradient(90deg, #f97316, #fbbf24)',
+                        height: '100%',
+                        width: `${Math.min((getTotalPrice() / 5000) * 100, 100)}%`,
+                        borderRadius: '50px',
+                        transition: 'width 0.3s'
+                      }} />
+                    </div>
+                    <p style={{ fontSize: '0.875rem', color: '#fdba74' }}>
+                      Add <span style={{ fontWeight: 'bold', color: '#f97316' }}>
+                        ${((5000 - getTotalPrice()) / 100).toFixed(2)}
+                      </span> more for FREE shipping!
+                    </p>
+                  </>
+                )}
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  marginTop: '0.75rem',
+                  paddingTop: '0.75rem',
+                  borderTop: '1px solid rgba(255,255,255,0.1)'
+                }}>
+                  <Package size={14} style={{ color: '#9ca3af' }} />
+                  <span style={{ fontSize: '0.8125rem', color: '#9ca3af' }}>
+                    Estimated delivery: <span style={{ color: '#d1d5db', fontWeight: '600' }}>5-7 business days</span>
+                  </span>
+                </div>
+              </div>
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d1d5db' }}>
                   <span>Subtotal ({getTotalItems()} items)</span>
@@ -328,8 +383,8 @@ export default function CartPage() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d1d5db' }}>
                   <span>Shipping</span>
-                  <span style={{ fontWeight: 'bold' }}>
-                    {getTotalPrice() > 5000 ? 'FREE' : '$9.99'}
+                  <span style={{ fontWeight: 'bold', color: getTotalPrice() >= 5000 ? '#10b981' : 'inherit' }}>
+                    {getTotalPrice() >= 5000 ? 'FREE' : '$9.99'}
                   </span>
                 </div>
                 <div style={{ height: '2px', background: '#374151', margin: '0.5rem 0' }} />

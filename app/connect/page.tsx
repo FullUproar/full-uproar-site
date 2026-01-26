@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { MessageSquare, Mail, Users, Heart } from 'lucide-react';
+import { MessageSquare, Mail, Users, Heart, ArrowLeft } from 'lucide-react';
 
 const connectOptions = [
   {
@@ -27,6 +27,24 @@ export default function ConnectPage() {
       <Navigation />
 
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '6rem 1rem 3rem' }}>
+        {/* Back Link */}
+        <Link
+          href="/"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            color: '#94a3b8',
+            textDecoration: 'none',
+            fontSize: '0.875rem',
+            marginBottom: '2rem',
+            transition: 'color 0.2s'
+          }}
+        >
+          <ArrowLeft size={16} />
+          Back to Home
+        </Link>
+
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <div style={{
@@ -121,9 +139,70 @@ export default function ConnectPage() {
           <h3 style={{ color: '#f97316', marginBottom: '0.5rem' }}>
             Follow the Chaos
           </h3>
-          <p style={{ color: '#fdba74', fontSize: '0.875rem' }}>
+          <p style={{ color: '#fdba74', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
             Stay updated with new games, events, and community highlights on our social channels.
           </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {/* Social links - update hrefs when accounts are ready */}
+            <a
+              href="https://discord.gg/fulluproar"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1.25rem',
+                background: '#5865F2',
+                color: '#fff',
+                borderRadius: '0.5rem',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '0.875rem'
+              }}
+            >
+              Discord
+            </a>
+            <a
+              href="https://instagram.com/fulluproar"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1.25rem',
+                background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)',
+                color: '#fff',
+                borderRadius: '0.5rem',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '0.875rem'
+              }}
+            >
+              Instagram
+            </a>
+            <a
+              href="https://tiktok.com/@fulluproar"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1.25rem',
+                background: '#000',
+                color: '#fff',
+                borderRadius: '0.5rem',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '0.875rem',
+                border: '1px solid #333'
+              }}
+            >
+              TikTok
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -1039,7 +1039,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <span style={{
                     background: '#a855f7',
-                    color: '#fff',
+                    color: '#0a0a0a',
                     padding: '0.25rem 0.75rem',
                     borderRadius: '50px',
                     fontSize: '0.75rem',
@@ -1163,7 +1163,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            color: '#6b7280',
+            color: '#9ca3af',
             fontSize: isMobile ? '0.875rem' : '0.95rem',
             fontWeight: 500,
           }}>
@@ -1177,7 +1177,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            color: '#6b7280',
+            color: '#9ca3af',
             fontSize: isMobile ? '0.875rem' : '0.95rem',
             fontWeight: 500,
           }}>
@@ -1191,7 +1191,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            color: '#6b7280',
+            color: '#9ca3af',
             fontSize: isMobile ? '0.875rem' : '0.95rem',
             fontWeight: 500,
           }}>
@@ -1394,10 +1394,13 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
               {/* Game selector dots with countdown */}
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '1.5rem' }}>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  {games.map((_, index) => (
+                <div style={{ display: 'flex', gap: '0.5rem' }} role="tablist" aria-label="Featured games">
+                  {games.map((game, index) => (
                     <button
                       key={index}
+                      role="tab"
+                      aria-selected={index === activeGame}
+                      aria-label={`View ${game.title || `game ${index + 1}`}`}
                       onClick={() => {
                         setActiveGame(index);
                         setCountdown(7);
@@ -1515,7 +1518,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
           <p style={{
             fontSize: '0.875rem',
-            color: '#6b7280',
+            color: '#9ca3af',
           }}>
             No spam. Just chaos. Unsubscribe anytime.
           </p>
@@ -1546,7 +1549,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 <div style={{ fontWeight: 900, fontSize: '1.25rem', color: '#FF8200' }}>FULL UPROAR</div>
               </div>
             </div>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: 1.6 }}>
               Making game nights legendary since... well, we're working on it.
             </p>
           </div>
@@ -1555,9 +1558,9 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           <div>
             <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>SHOP</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <Link href="/shop" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>All Products</Link>
-              <Link href="/shop?tab=games&category=MOD" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Game Mods</Link>
-              <Link href="/shop?tab=merch" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Merch</Link>
+              <Link href="/shop" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>All Products</Link>
+              <Link href="/shop?tab=games&category=MOD" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>Game Mods</Link>
+              <Link href="/shop?tab=merch" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>Merch</Link>
             </div>
           </div>
 
@@ -1565,9 +1568,9 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           <div>
             <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>COMMUNITY</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <Link href="/game-nights" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Game Nights</Link>
-              <Link href="/connect/forum" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Forum</Link>
-              <Link href="/discover/fugly" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Meet Fugly</Link>
+              <Link href="/game-nights" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>Game Nights</Link>
+              <Link href="/connect/forum" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>Forum</Link>
+              <Link href="/discover/fugly" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>Meet Fugly</Link>
             </div>
           </div>
 
@@ -1575,9 +1578,9 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           <div>
             <h4 style={{ fontWeight: 900, color: '#FBDB65', marginBottom: '1rem', fontSize: '0.95rem' }}>COMPANY</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <Link href="/discover/about" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>About Us</Link>
-              <Link href="/track-order" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Track Order</Link>
-              <a href="mailto:hello@fulluproar.com" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Contact</a>
+              <Link href="/discover/about" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>About Us</Link>
+              <Link href="/track-order" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>Track Order</Link>
+              <a href="mailto:hello@fulluproar.com" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem' }}>Contact</a>
             </div>
           </div>
         </div>
@@ -1592,12 +1595,12 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           alignItems: 'center',
           gap: '1rem',
         }}>
-          <p style={{ fontSize: '0.8rem', color: '#4b5563', margin: 0 }}>
+          <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: 0 }}>
             © {new Date().getFullYear()} Full Uproar Games. All rights reserved.
           </p>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Link href="/privacy" style={{ fontSize: '0.8rem', color: '#4b5563', textDecoration: 'none' }}>Privacy</Link>
-            <Link href="/terms" style={{ fontSize: '0.8rem', color: '#4b5563', textDecoration: 'none' }}>Terms</Link>
+            <Link href="/privacy" style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'none' }}>Privacy</Link>
+            <Link href="/terms" style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'none' }}>Terms</Link>
           </div>
         </div>
       </footer>

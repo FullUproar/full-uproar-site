@@ -65,6 +65,15 @@ export default function ForumView() {
   const [recentThreads, setRecentThreads] = useState<MessageThread[]>([]);
   const [stats, setStats] = useState<ForumStats>({ threadCount: 0, postCount: 0, userCount: 0 });
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     fetchForumData();
@@ -185,19 +194,21 @@ export default function ForumView() {
         <div
           style={{
             display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: isMobile ? 'stretch' : 'center',
+            gap: isMobile ? '16px' : '0',
             marginBottom: '24px',
           }}
         >
           {/* Stats */}
-          <div style={{ display: 'flex', gap: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: forumColors.textSecondary }}>
-              <MessageSquare size={18} />
+          <div style={{ display: 'flex', gap: isMobile ? '16px' : '24px', justifyContent: isMobile ? 'center' : 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: forumColors.textSecondary, fontSize: isMobile ? '14px' : '16px' }}>
+              <MessageSquare size={isMobile ? 16 : 18} />
               <span>{stats.threadCount} threads</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: forumColors.textSecondary }}>
-              <MessageCircle size={18} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: forumColors.textSecondary, fontSize: isMobile ? '14px' : '16px' }}>
+              <MessageCircle size={isMobile ? 16 : 18} />
               <span>{stats.postCount} posts</span>
             </div>
           </div>
@@ -205,7 +216,7 @@ export default function ForumView() {
           {/* New Thread Button */}
           <button
             onClick={() => router.push('/forum/new-thread')}
-            style={forumStyles.primaryButton}
+            style={{ ...forumStyles.primaryButton, width: isMobile ? '100%' : 'auto', justifyContent: 'center' }}
           >
             <Plus size={18} />
             New Thread
@@ -227,7 +238,7 @@ export default function ForumView() {
         </div>
 
         {/* Popular & Recent Threads */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginBottom: '48px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '24px' : '32px', marginBottom: '48px' }}>
           {/* Popular Threads */}
           <div>
             <h2
