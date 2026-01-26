@@ -1,17 +1,35 @@
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
+// Stripe mode: 'test' or 'live' (defaults to 'live')
+export const STRIPE_MODE = process.env.STRIPE_MODE || 'live';
+export const isStripeTestMode = STRIPE_MODE === 'test';
+
+// Get the appropriate secret key based on mode
+const getSecretKey = () => {
+  if (isStripeTestMode) {
+    return process.env.STRIPE_SECRET_KEY_TEST || process.env.STRIPE_SECRET_KEY;
+  }
+  return process.env.STRIPE_SECRET_KEY;
+};
+
+const secretKey = getSecretKey();
+
+if (!secretKey) {
   console.warn('STRIPE_SECRET_KEY is not set. Stripe functionality will be limited.');
 }
 
-export const stripe = process.env.STRIPE_SECRET_KEY 
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+export const stripe = secretKey
+  ? new Stripe(secretKey, {
       apiVersion: '2025-07-30.basil',
       typescript: true,
     })
   : null;
 
 export const getStripePublishableKey = () => {
+  if (isStripeTestMode) {
+    return process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_TEST ||
+           process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
+  }
   return process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 };
 

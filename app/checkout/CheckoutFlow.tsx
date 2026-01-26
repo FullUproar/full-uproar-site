@@ -12,7 +12,12 @@ import {
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+// Support test/live mode switching via NEXT_PUBLIC_STRIPE_MODE
+const isTestMode = process.env.NEXT_PUBLIC_STRIPE_MODE === 'test';
+const stripePublishableKey = isTestMode
+  ? (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_TEST || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
+  : (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+const stripePromise = loadStripe(stripePublishableKey);
 
 interface Address {
   id: string;
