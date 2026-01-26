@@ -25,6 +25,15 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
+  /* Snapshot directory for visual regression tests */
+  snapshotDir: './tests/e2e/__snapshots__',
+  /* Snapshot comparison settings */
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.02, // 2% pixel difference allowed
+      animations: 'disabled',
+    },
+  },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

@@ -5,10 +5,17 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const featured = searchParams.get('featured');
-    
-    const where: any = { 
+    const includeHidden = searchParams.get('includeHidden') === 'true';
+
+    const where: any = {
       archived: { not: true }
     };
+
+    // Filter out hidden games unless explicitly requested (admin use)
+    if (!includeHidden) {
+      where.isHidden = { not: true };
+    }
+
     if (featured === 'true') where.featured = true;
     
     const games = await prisma.game.findMany({

@@ -27,6 +27,7 @@ interface Game {
   components: string | null;
   videoUrl: string | null;
   launchDate: string | null;
+  isHidden?: boolean;
 }
 
 interface GameEditFormProps {
@@ -54,7 +55,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
     howToPlay: game.howToPlay || '',
     components: game.components || '',
     videoUrl: game.videoUrl || '',
-    launchDate: game.launchDate ? new Date(game.launchDate).toISOString().split('T')[0] : ''
+    launchDate: game.launchDate ? new Date(game.launchDate).toISOString().split('T')[0] : '',
+    isHidden: game.isHidden || false
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -476,6 +478,24 @@ export default function GameEditForm({ game }: GameEditFormProps) {
             style={styles.checkboxInput}
           />
           <label htmlFor="isPreorder" style={styles.label}>Available for Pre-order</label>
+        </div>
+        <div style={{
+          ...styles.checkbox,
+          background: formData.isHidden ? 'rgba(234, 179, 8, 0.2)' : 'transparent',
+          padding: '0.75rem',
+          borderRadius: '0.5rem',
+          border: formData.isHidden ? '2px solid #eab308' : '2px solid transparent'
+        }}>
+          <input
+            type="checkbox"
+            id="isHidden"
+            checked={formData.isHidden}
+            onChange={(e) => setFormData({ ...formData, isHidden: e.target.checked })}
+            style={styles.checkboxInput}
+          />
+          <label htmlFor="isHidden" style={styles.label}>
+            Hidden from Public Shop (Test Product)
+          </label>
         </div>
       </div>
 
