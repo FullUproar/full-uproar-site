@@ -418,11 +418,15 @@ export default function TrackOrderPage() {
         {/* Search Form */}
         <div style={styles.card}>
           <h2 style={{
-            ...styles.title,
+            fontSize: '1.75rem',
+            fontWeight: 900,
+            fontStyle: 'normal',
+            color: '#f97316',
             textAlign: 'center',
-            justifyContent: 'center'
+            textTransform: 'uppercase',
+            marginBottom: '1.5rem'
           }}>
-            {isSignedIn ? 'Lookup Another Order' : 'Hunt Down Your Order'}
+            {isSignedIn ? 'LOOKUP ANOTHER ORDER' : 'HUNT DOWN YOUR ORDER'}
           </h2>
 
           {!isSignedIn && (
@@ -434,21 +438,42 @@ export default function TrackOrderPage() {
             </p>
           )}
 
-          <form onSubmit={handleSearch} style={{ maxWidth: '32rem', margin: '0 auto' }}>
-            <div style={{ position: 'relative' }}>
+          <form onSubmit={handleSearch} style={{ maxWidth: '36rem', margin: '0 auto', marginTop: '1rem' }}>
+            <div style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              background: '#374151',
+              borderRadius: '0.75rem',
+              border: '2px solid #4b5563',
+              overflow: 'hidden'
+            }}>
               <input
                 type="text"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Enter order ID or email"
-                style={styles.input}
+                style={{
+                  flex: 1,
+                  padding: '1rem 1.25rem',
+                  background: 'transparent',
+                  color: '#fff',
+                  fontSize: '1rem',
+                  border: 'none',
+                  outline: 'none'
+                }}
               />
               <button
                 type="submit"
                 disabled={loading}
                 style={{
-                  ...styles.searchButton,
-                  background: loading ? '#4b5563' : '#f97316'
+                  padding: '0.875rem 1.25rem',
+                  background: loading ? '#4b5563' : '#f97316',
+                  border: 'none',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 <Search style={{ width: 24, height: 24, color: '#111827' }} />
