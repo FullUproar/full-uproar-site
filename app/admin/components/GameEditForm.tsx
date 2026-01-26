@@ -40,6 +40,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     isBestseller: false,
     launchDate: null as Date | null,
     stock: 0,
+    isHidden: false,
   });
 
   const [saving, setSaving] = useState(false);
@@ -229,6 +230,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
       isBestseller: false,
       launchDate: null,
       stock: 100,
+      isHidden: false,
     });
   };
 
@@ -639,6 +641,39 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
               />
               Bundle
             </label>
+          </div>
+
+          {/* Hidden Product Option */}
+          <div style={{
+            marginTop: '16px',
+            padding: '16px',
+            borderRadius: '8px',
+            background: formData.isHidden ? 'rgba(234, 179, 8, 0.2)' : 'rgba(239, 68, 68, 0.1)',
+            border: formData.isHidden ? '2px solid #eab308' : '2px solid rgba(239, 68, 68, 0.3)',
+          }}>
+            <label style={{
+              ...adminStyles.checkboxLabel,
+              color: formData.isHidden ? '#eab308' : '#fca5a5',
+              fontWeight: 'bold',
+            }}>
+              <input
+                type="checkbox"
+                checked={formData.isHidden}
+                onChange={(e) => setFormData({ ...formData, isHidden: e.target.checked })}
+                style={adminStyles.checkbox}
+              />
+              Hidden from Public Shop (Test Product)
+            </label>
+            <p style={{
+              fontSize: '12px',
+              color: formData.isHidden ? '#fde68a' : '#94a3b8',
+              marginTop: '8px',
+              marginLeft: '24px'
+            }}>
+              {formData.isHidden
+                ? 'This product is hidden from the public shop. Only accessible via direct URL.'
+                : 'Check this to hide the product from shop listings (for E2E testing).'}
+            </p>
           </div>
 
           {formData.isBundle && (
