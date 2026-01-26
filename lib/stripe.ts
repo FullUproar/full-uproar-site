@@ -1,7 +1,8 @@
 import Stripe from 'stripe';
 
 // Stripe mode: 'test' or 'live' (defaults to 'live')
-export const STRIPE_MODE = process.env.STRIPE_MODE || 'live';
+// Uses NEXT_PUBLIC_ so it's available on both server and client
+export const STRIPE_MODE = process.env.NEXT_PUBLIC_STRIPE_MODE || 'live';
 export const isStripeTestMode = STRIPE_MODE === 'test';
 
 // Get the appropriate secret key based on mode
