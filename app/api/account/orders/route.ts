@@ -9,10 +9,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch user's orders with related data
+    // Fetch user's orders - match by userId OR by email (for orders placed before account linking)
     const orders = await prisma.order.findMany({
       where: {
-        userId: user.id
+        OR: [
+          { userId: user.id },
+          { customerEmail: user.email }
+        ]
       },
       include: {
         items: {

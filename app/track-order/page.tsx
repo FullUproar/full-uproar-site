@@ -5,6 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import { Search, Package, Truck, CheckCircle, Clock, AlertCircle, User, ChevronDown, ChevronRight } from 'lucide-react';
 import FuglyLogo from '@/app/components/FuglyLogo';
 import Link from 'next/link';
+import Navigation from '@/app/components/Navigation';
 
 interface OrderDetails {
   id: string;
@@ -56,6 +57,96 @@ interface UserOrder {
   }>;
 }
 
+// Styles
+const styles = {
+  container: {
+    minHeight: '100vh',
+    background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)'
+  },
+  content: {
+    maxWidth: '56rem',
+    margin: '0 auto',
+    padding: '3rem 1rem'
+  },
+  card: {
+    background: '#1f2937',
+    borderRadius: '1rem',
+    padding: '1.5rem',
+    border: '4px solid rgba(249, 115, 22, 0.2)',
+    marginBottom: '2rem'
+  },
+  title: {
+    fontSize: '2rem',
+    fontWeight: 900,
+    color: '#f97316',
+    marginBottom: '1.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.75rem'
+  },
+  input: {
+    width: '100%',
+    padding: '1rem 1.5rem',
+    paddingRight: '4rem',
+    background: '#374151',
+    color: '#fff',
+    borderRadius: '0.5rem',
+    border: '2px solid #4b5563',
+    fontSize: '1.125rem',
+    outline: 'none'
+  },
+  searchButton: {
+    position: 'absolute' as const,
+    right: '0.5rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    padding: '0.75rem',
+    background: '#f97316',
+    borderRadius: '0.5rem',
+    border: 'none',
+    cursor: 'pointer'
+  },
+  orderCard: {
+    background: 'rgba(55, 65, 81, 0.5)',
+    borderRadius: '0.75rem',
+    overflow: 'hidden',
+    marginBottom: '1rem'
+  },
+  orderHeader: {
+    width: '100%',
+    padding: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'background 0.2s'
+  },
+  statusBadge: (status: string) => {
+    const colors: Record<string, { bg: string; text: string }> = {
+      pending: { bg: 'rgba(234, 179, 8, 0.2)', text: '#facc15' },
+      payment_pending: { bg: 'rgba(234, 179, 8, 0.2)', text: '#facc15' },
+      paid: { bg: 'rgba(59, 130, 246, 0.2)', text: '#60a5fa' },
+      processing: { bg: 'rgba(59, 130, 246, 0.2)', text: '#60a5fa' },
+      shipped: { bg: 'rgba(168, 85, 247, 0.2)', text: '#c084fc' },
+      delivered: { bg: 'rgba(34, 197, 94, 0.2)', text: '#4ade80' },
+      cancelled: { bg: 'rgba(239, 68, 68, 0.2)', text: '#f87171' },
+      refunded: { bg: 'rgba(239, 68, 68, 0.2)', text: '#f87171' },
+      payment_failed: { bg: 'rgba(239, 68, 68, 0.2)', text: '#f87171' }
+    };
+    const color = colors[status] || { bg: 'rgba(107, 114, 128, 0.2)', text: '#9ca3af' };
+    return {
+      padding: '0.25rem 0.75rem',
+      borderRadius: '9999px',
+      fontSize: '0.875rem',
+      fontWeight: 700,
+      background: color.bg,
+      color: color.text
+    };
+  }
+};
+
 export default function TrackOrderPage() {
   const { user, isSignedIn, isLoaded } = useUser();
   const [searchValue, setSearchValue] = useState('');
@@ -80,7 +171,6 @@ export default function TrackOrderPage() {
       if (response.ok) {
         const orders = await response.json();
         setUserOrders(orders);
-        // Auto-expand the first order if there are any
         if (orders.length > 0) {
           setExpandedOrderId(orders[0].id);
         }
@@ -101,16 +191,13 @@ export default function TrackOrderPage() {
     setOrder(null);
 
     try {
-      // Try searching by order ID first
       let response = await fetch(`/api/orders/${searchValue.trim()}`);
 
       if (!response.ok) {
-        // If not found by ID, try searching by email
         response = await fetch(`/api/orders?email=${encodeURIComponent(searchValue.trim())}`);
         if (response.ok) {
           const orders = await response.json();
           if (orders.length > 0) {
-            // Show the most recent order
             setOrder(orders[0]);
           } else {
             setError('No orders found with that email address');
@@ -130,56 +217,34 @@ export default function TrackOrderPage() {
   };
 
   const getStatusIcon = (status: string) => {
+    const iconStyle = { width: 24, height: 24 };
     switch (status) {
       case 'pending':
       case 'payment_pending':
-        return <Clock className="h-6 w-6 text-yellow-500" />;
+        return <Clock style={{ ...iconStyle, color: '#facc15' }} />;
       case 'paid':
       case 'processing':
-        return <Package className="h-6 w-6 text-blue-500" />;
+        return <Package style={{ ...iconStyle, color: '#60a5fa' }} />;
       case 'shipped':
-        return <Truck className="h-6 w-6 text-purple-500" />;
+        return <Truck style={{ ...iconStyle, color: '#c084fc' }} />;
       case 'delivered':
-        return <CheckCircle className="h-6 w-6 text-green-500" />;
+        return <CheckCircle style={{ ...iconStyle, color: '#4ade80' }} />;
       case 'cancelled':
       case 'refunded':
       case 'payment_failed':
-        return <AlertCircle className="h-6 w-6 text-red-500" />;
+        return <AlertCircle style={{ ...iconStyle, color: '#f87171' }} />;
       default:
-        return <Clock className="h-6 w-6 text-gray-500" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-      case 'payment_pending':
-        return 'bg-yellow-500/20 text-yellow-400';
-      case 'paid':
-      case 'processing':
-        return 'bg-blue-500/20 text-blue-400';
-      case 'shipped':
-        return 'bg-purple-500/20 text-purple-400';
-      case 'delivered':
-        return 'bg-green-500/20 text-green-400';
-      case 'cancelled':
-      case 'refunded':
-      case 'payment_failed':
-        return 'bg-red-500/20 text-red-400';
-      default:
-        return 'bg-gray-500/20 text-gray-400';
+        return <Clock style={{ ...iconStyle, color: '#9ca3af' }} />;
     }
   };
 
   const getStatusText = (status: string) => {
-    switch (status) {
-      case 'payment_pending':
-        return 'Payment Pending';
-      case 'payment_failed':
-        return 'Payment Failed';
-      default:
-        return status.charAt(0).toUpperCase() + status.slice(1);
-    }
+    const statusMap: Record<string, string> = {
+      payment_pending: 'Payment Pending',
+      payment_failed: 'Payment Failed',
+      partially_refunded: 'Partially Refunded'
+    };
+    return statusMap[status] || status.charAt(0).toUpperCase() + status.slice(1);
   };
 
   const formatDate = (dateString: string) => {
@@ -201,104 +266,120 @@ export default function TrackOrderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-600">
-      {/* Header */}
-      <div className="bg-gray-900/90 backdrop-blur-md border-b-4 border-orange-500">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3">
-              <FuglyLogo size={60} />
-              <div>
-                <h1 className="text-2xl font-black text-orange-500">TRACK YOUR CHAOS</h1>
-                <p className="text-sm text-yellow-400 font-bold">Where's my stuff, Fugly?</p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div style={styles.container}>
+      <Navigation />
 
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* User's Orders Section - Only show when signed in */}
+      <div style={styles.content}>
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: 900,
+          color: '#f97316',
+          textAlign: 'center',
+          marginBottom: '2rem',
+          textTransform: 'uppercase'
+        }}>
+          Track Your Chaos
+        </h1>
+
+        {/* User's Orders Section */}
         {isLoaded && isSignedIn && (
-          <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20 mb-8">
-            <div className="flex items-center gap-3 mb-6">
-              <User className="h-6 w-6 text-orange-500" />
-              <h2 className="text-2xl font-black text-orange-500">YOUR ORDERS</h2>
-            </div>
+          <div style={styles.card}>
+            <h2 style={styles.title}>
+              <User style={{ width: 28, height: 28, color: '#f97316' }} />
+              Your Orders
+            </h2>
 
             {loadingUserOrders ? (
-              <div className="text-center py-8">
-                <div className="mx-auto mb-4 animate-spin" style={{ width: 'fit-content' }}>
+              <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+                <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>
                   <FuglyLogo size={60} />
                 </div>
-                <p className="text-orange-500 font-bold">Loading your orders...</p>
+                <p style={{ color: '#f97316', fontWeight: 700, marginTop: '1rem' }}>Loading your orders...</p>
               </div>
             ) : userOrders.length === 0 ? (
-              <div className="text-center py-8">
-                <Package className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 text-lg mb-2">No orders yet!</p>
-                <p className="text-gray-500">Time to unleash some chaos?</p>
+              <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+                <Package style={{ width: 64, height: 64, color: '#4b5563', margin: '0 auto 1rem' }} />
+                <p style={{ color: '#9ca3af', fontSize: '1.125rem', marginBottom: '0.5rem' }}>No orders yet!</p>
+                <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>Time to unleash some chaos?</p>
                 <Link
                   href="/shop"
-                  className="inline-block mt-4 px-6 py-3 bg-orange-500 text-gray-900 font-bold rounded-lg hover:bg-orange-600 transition-colors"
+                  style={{
+                    display: 'inline-block',
+                    padding: '0.75rem 1.5rem',
+                    background: '#f97316',
+                    color: '#111827',
+                    fontWeight: 700,
+                    borderRadius: '0.5rem',
+                    textDecoration: 'none'
+                  }}
                 >
                   Shop Now
                 </Link>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div>
                 {userOrders.map((userOrder) => (
-                  <div
-                    key={userOrder.id}
-                    className="bg-gray-700/50 rounded-lg overflow-hidden"
-                  >
-                    {/* Order Header - Clickable */}
+                  <div key={userOrder.id} style={styles.orderCard}>
                     <button
                       onClick={() => setExpandedOrderId(expandedOrderId === userOrder.id ? null : userOrder.id)}
-                      className="w-full p-4 flex items-center justify-between hover:bg-gray-700/70 transition-colors"
+                      style={{
+                        ...styles.orderHeader,
+                        background: expandedOrderId === userOrder.id ? 'rgba(55, 65, 81, 0.3)' : 'transparent'
+                      }}
                     >
-                      <div className="flex items-center gap-4">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         {getStatusIcon(userOrder.status)}
-                        <div className="text-left">
-                          <p className="font-bold text-yellow-400">
+                        <div style={{ textAlign: 'left' }}>
+                          <p style={{ fontWeight: 700, color: '#fde68a', margin: 0 }}>
                             Order #{userOrder.id.slice(-8).toUpperCase()}
                           </p>
-                          <p className="text-sm text-gray-400">
+                          <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>
                             {formatShortDate(userOrder.createdAt)} • {userOrder.items.length} item{userOrder.items.length !== 1 ? 's' : ''}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <div className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(userOrder.status)}`}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={styles.statusBadge(userOrder.status)}>
                             {getStatusText(userOrder.status)}
                           </div>
-                          <p className="text-white font-bold mt-1">
+                          <p style={{ color: '#fff', fontWeight: 700, marginTop: '0.25rem' }}>
                             ${(userOrder.totalAmount / 100).toFixed(2)}
                           </p>
                         </div>
                         {expandedOrderId === userOrder.id ? (
-                          <ChevronDown className="h-5 w-5 text-gray-400" />
+                          <ChevronDown style={{ width: 20, height: 20, color: '#9ca3af' }} />
                         ) : (
-                          <ChevronRight className="h-5 w-5 text-gray-400" />
+                          <ChevronRight style={{ width: 20, height: 20, color: '#9ca3af' }} />
                         )}
                       </div>
                     </button>
 
-                    {/* Expanded Order Details */}
                     {expandedOrderId === userOrder.id && (
-                      <div className="border-t border-gray-600 p-4 bg-gray-800/50">
+                      <div style={{
+                        borderTop: '1px solid #4b5563',
+                        padding: '1rem',
+                        background: 'rgba(31, 41, 55, 0.5)'
+                      }}>
                         {/* Items */}
-                        <div className="space-y-3 mb-4">
+                        <div style={{ marginBottom: '1rem' }}>
                           {userOrder.items.map((item) => (
-                            <div key={item.id} className="flex justify-between items-center">
+                            <div key={item.id} style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              padding: '0.5rem 0',
+                              borderBottom: '1px solid #374151'
+                            }}>
                               <div>
-                                <p className="text-white font-bold">
+                                <p style={{ color: '#fff', fontWeight: 700, margin: 0 }}>
                                   {item.product?.title || item.product?.name || 'Unknown Item'}
                                 </p>
-                                <p className="text-sm text-gray-400">Qty: {item.quantity}</p>
+                                <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>
+                                  Qty: {item.quantity}
+                                </p>
                               </div>
-                              <p className="text-orange-500 font-bold">
+                              <p style={{ color: '#f97316', fontWeight: 700, margin: 0 }}>
                                 ${((item.priceCents * item.quantity) / 100).toFixed(2)}
                               </p>
                             </div>
@@ -307,16 +388,23 @@ export default function TrackOrderPage() {
 
                         {/* Tracking */}
                         {userOrder.trackingNumber && (
-                          <div className="bg-gray-700/50 rounded-lg p-3 mb-4">
-                            <p className="text-sm text-gray-400">Tracking Number:</p>
-                            <p className="font-mono font-bold text-orange-500">{userOrder.trackingNumber}</p>
+                          <div style={{
+                            background: 'rgba(55, 65, 81, 0.5)',
+                            borderRadius: '0.5rem',
+                            padding: '0.75rem',
+                            marginBottom: '1rem'
+                          }}>
+                            <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Tracking Number:</p>
+                            <p style={{ fontFamily: 'monospace', fontWeight: 700, color: '#f97316', margin: 0 }}>
+                              {userOrder.trackingNumber}
+                            </p>
                           </div>
                         )}
 
                         {/* Shipping Address */}
-                        <div className="text-sm">
-                          <p className="text-gray-400 mb-1">Shipping to:</p>
-                          <p className="text-white">{userOrder.shippingAddress}</p>
+                        <div>
+                          <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.25rem' }}>Shipping to:</p>
+                          <p style={{ color: '#fff', margin: 0 }}>{userOrder.shippingAddress}</p>
                         </div>
                       </div>
                     )}
@@ -328,105 +416,143 @@ export default function TrackOrderPage() {
         )}
 
         {/* Search Form */}
-        <div className="bg-gray-800 rounded-xl p-8 border-4 border-orange-500/20 mb-8">
-          <h2 className="text-3xl font-black text-orange-500 mb-2 text-center">
-            {isSignedIn ? 'LOOKUP ANOTHER ORDER' : 'HUNT DOWN YOUR ORDER'}
+        <div style={styles.card}>
+          <h2 style={{
+            ...styles.title,
+            textAlign: 'center',
+            justifyContent: 'center'
+          }}>
+            {isSignedIn ? 'Lookup Another Order' : 'Hunt Down Your Order'}
           </h2>
+
           {!isSignedIn && (
-            <p className="text-gray-400 text-center mb-6">
-              <Link href="/sign-in" className="text-orange-500 hover:text-orange-400 font-bold">
+            <p style={{ color: '#9ca3af', textAlign: 'center', marginBottom: '1.5rem' }}>
+              <Link href="/sign-in" style={{ color: '#f97316', fontWeight: 700, textDecoration: 'none' }}>
                 Sign in
               </Link>
               {' '}to see all your orders automatically
             </p>
           )}
 
-          <form onSubmit={handleSearch} className="max-w-xl mx-auto">
-            <div className="relative">
+          <form onSubmit={handleSearch} style={{ maxWidth: '32rem', margin: '0 auto' }}>
+            <div style={{ position: 'relative' }}>
               <input
                 type="text"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Enter order ID or email"
-                className="w-full px-6 py-4 pr-14 bg-gray-700 text-white rounded-lg text-lg
-                         focus:outline-none focus:ring-4 focus:ring-orange-500/50
-                         placeholder-gray-400"
+                style={styles.input}
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-orange-500
-                         hover:bg-orange-600 rounded-lg transition-colors disabled:bg-gray-600"
+                style={{
+                  ...styles.searchButton,
+                  background: loading ? '#4b5563' : '#f97316'
+                }}
               >
-                <Search className="h-6 w-6 text-gray-900" />
+                <Search style={{ width: 24, height: 24, color: '#111827' }} />
               </button>
             </div>
 
             {error && (
-              <p className="text-red-400 text-center mt-4 font-bold">{error}</p>
+              <p style={{ color: '#f87171', textAlign: 'center', marginTop: '1rem', fontWeight: 700 }}>
+                {error}
+              </p>
             )}
           </form>
         </div>
 
         {/* Loading State */}
         {loading && (
-          <div className="text-center py-12">
-            <div className="mx-auto mb-4 animate-spin" style={{ width: 'fit-content' }}>
+          <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+            <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>
               <FuglyLogo size={80} />
             </div>
-            <p className="text-xl font-bold text-orange-500">Searching the chaos realm...</p>
+            <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f97316', marginTop: '1rem' }}>
+              Searching the chaos realm...
+            </p>
           </div>
         )}
 
         {/* Searched Order Details */}
         {order && !loading && (
-          <div className="space-y-6">
+          <div>
             {/* Order Header */}
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20">
-              <div className="flex items-start justify-between mb-4">
+            <div style={styles.card}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div>
-                  <h3 className="text-2xl font-black text-yellow-400">Order #{order.id}</h3>
-                  <p className="text-gray-400 mt-1">Placed on {formatDate(order.createdAt)}</p>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fde68a', margin: 0 }}>
+                    Order #{order.id}
+                  </h3>
+                  <p style={{ color: '#9ca3af', marginTop: '0.25rem' }}>
+                    Placed on {formatDate(order.createdAt)}
+                  </p>
                 </div>
-                <div className={`px-4 py-2 rounded-full font-bold ${getStatusColor(order.status)}`}>
-                  <div className="flex items-center gap-2">
-                    {getStatusIcon(order.status)}
-                    <span className="uppercase">{getStatusText(order.status)}</span>
-                  </div>
+                <div style={{
+                  ...styles.statusBadge(order.status),
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.5rem 1rem'
+                }}>
+                  {getStatusIcon(order.status)}
+                  <span style={{ textTransform: 'uppercase' }}>{getStatusText(order.status)}</span>
                 </div>
               </div>
 
               {order.trackingNumber && (
-                <div className="bg-gray-700/50 rounded-lg p-4">
-                  <p className="text-sm text-gray-400 mb-1">Tracking Number:</p>
-                  <p className="font-mono font-bold text-orange-500">{order.trackingNumber}</p>
+                <div style={{
+                  background: 'rgba(55, 65, 81, 0.5)',
+                  borderRadius: '0.5rem',
+                  padding: '1rem'
+                }}>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.25rem' }}>Tracking Number:</p>
+                  <p style={{ fontFamily: 'monospace', fontWeight: 700, color: '#f97316', margin: 0 }}>
+                    {order.trackingNumber}
+                  </p>
                 </div>
               )}
             </div>
 
             {/* Status Timeline */}
             {order.statusHistory && order.statusHistory.length > 0 && (
-              <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20">
-                <h4 className="text-xl font-black text-orange-500 mb-6">Chaos Progress</h4>
+              <div style={styles.card}>
+                <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', marginBottom: '1.5rem' }}>
+                  Chaos Progress
+                </h4>
 
-                <div className="space-y-4">
+                <div>
                   {order.statusHistory.map((history, index) => (
-                    <div key={history.id} className="flex gap-4">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center
-                          ${index === 0 ? 'bg-orange-500' : 'bg-gray-700'}`}>
+                    <div key={history.id} style={{ display: 'flex', gap: '1rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: index === 0 ? '#f97316' : '#374151'
+                        }}>
                           {getStatusIcon(history.status)}
                         </div>
                         {index < order.statusHistory.length - 1 && (
-                          <div className="w-0.5 h-16 bg-gray-700 mt-2" />
+                          <div style={{ width: 2, height: 64, background: '#374151', marginTop: 8 }} />
                         )}
                       </div>
-                      <div className="flex-1 pb-8">
-                        <p className="font-bold text-yellow-400 capitalize">{getStatusText(history.status)}</p>
+                      <div style={{ flex: 1, paddingBottom: '2rem' }}>
+                        <p style={{ fontWeight: 700, color: '#fde68a', textTransform: 'capitalize', margin: 0 }}>
+                          {getStatusText(history.status)}
+                        </p>
                         {history.notes && (
-                          <p className="text-gray-400 text-sm mt-1">{history.notes}</p>
+                          <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+                            {history.notes}
+                          </p>
                         )}
-                        <p className="text-gray-500 text-xs mt-2">{formatDate(history.createdAt)}</p>
+                        <p style={{ color: '#6b7280', fontSize: '0.75rem', marginTop: '0.5rem' }}>
+                          {formatDate(history.createdAt)}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -435,62 +561,82 @@ export default function TrackOrderPage() {
             )}
 
             {/* Order Items */}
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20">
-              <h4 className="text-xl font-black text-orange-500 mb-4">Order Contents</h4>
+            <div style={styles.card}>
+              <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', marginBottom: '1rem' }}>
+                Order Contents
+              </h4>
 
-              <div className="space-y-3">
+              <div>
                 {order.items.map((item) => (
-                  <div key={item.id} className="flex justify-between py-3 border-b border-gray-700 last:border-0">
+                  <div key={item.id} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '0.75rem 0',
+                    borderBottom: '1px solid #374151'
+                  }}>
                     <div>
-                      <p className="font-bold text-yellow-400">
+                      <p style={{ fontWeight: 700, color: '#fde68a', margin: 0 }}>
                         {item.itemType === 'game' ? item.game?.title : item.merch?.name}
                       </p>
                       {item.merchSize && (
-                        <p className="text-sm text-gray-400">Size: {item.merchSize}</p>
+                        <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Size: {item.merchSize}</p>
                       )}
-                      <p className="text-sm text-gray-400">Quantity: {item.quantity}</p>
+                      <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Quantity: {item.quantity}</p>
                     </div>
-                    <p className="font-bold text-white">
+                    <p style={{ fontWeight: 700, color: '#fff', margin: 0 }}>
                       ${((item.priceCents * item.quantity) / 100).toFixed(2)}
                     </p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-700">
-                <div className="flex justify-between">
-                  <span className="text-xl font-black text-orange-500">Total Chaos</span>
-                  <span className="text-xl font-black text-white">
-                    ${(order.totalCents / 100).toFixed(2)}
-                  </span>
-                </div>
+              <div style={{
+                marginTop: '1.5rem',
+                paddingTop: '1.5rem',
+                borderTop: '1px solid #374151',
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}>
+                <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316' }}>Total Chaos</span>
+                <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff' }}>
+                  ${(order.totalCents / 100).toFixed(2)}
+                </span>
               </div>
             </div>
 
             {/* Delivery Info */}
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20">
-              <h4 className="text-xl font-black text-orange-500 mb-4">Delivery Details</h4>
+            <div style={styles.card}>
+              <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', marginBottom: '1rem' }}>
+                Delivery Details
+              </h4>
 
-              <div className="space-y-3">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div>
-                  <p className="text-sm text-gray-400">Delivering to:</p>
-                  <p className="text-yellow-400 font-bold">{order.customerName}</p>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Delivering to:</p>
+                  <p style={{ fontWeight: 700, color: '#fde68a', margin: 0 }}>{order.customerName}</p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-400">Address:</p>
-                  <p className="text-white">{order.shippingAddress}</p>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Address:</p>
+                  <p style={{ color: '#fff', margin: 0 }}>{order.shippingAddress}</p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-400">Email:</p>
-                  <p className="text-white">{order.customerEmail}</p>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Email:</p>
+                  <p style={{ color: '#fff', margin: 0 }}>{order.customerEmail}</p>
                 </div>
               </div>
             </div>
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
