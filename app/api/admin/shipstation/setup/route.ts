@@ -29,7 +29,11 @@ export async function GET(request: NextRequest) {
     // Get existing webhooks
     let webhooks: any[] = [];
     try {
-      webhooks = await shipStation.listWebhooks();
+      const webhooksResponse: any = await shipStation.listWebhooks();
+      // ShipStation API might return { webhooks: [...] } or just [...]
+      webhooks = Array.isArray(webhooksResponse)
+        ? webhooksResponse
+        : (webhooksResponse?.webhooks || []);
     } catch (error) {
       console.error('Failed to list webhooks:', error);
     }
@@ -37,28 +41,32 @@ export async function GET(request: NextRequest) {
     // Get available carriers
     let carriers: any[] = [];
     try {
-      carriers = await shipStation.listCarriers();
+      const carriersResponse: any = await shipStation.listCarriers();
+      // ShipStation API might return { carriers: [...] } or just [...]
+      carriers = Array.isArray(carriersResponse)
+        ? carriersResponse
+        : (carriersResponse?.carriers || []);
     } catch (error) {
       console.error('Failed to list carriers:', error);
     }
 
     // Check if our webhook is registered
     const webhookUrl = `${SITE_URL}/api/webhooks/shipstation`;
-    const ourWebhook = webhooks.find((w: any) =>
-      w.target_url === webhookUrl || w.Url === webhookUrl
-    );
+    const ourWebhook = Array.isArray(webhooks)
+      ? webhooks.find((w: any) => w.target_url === webhookUrl || w.Url === webhookUrl)
+      : null;
 
     return NextResponse.json({
       configured: true,
       webhookUrl,
       webhookRegistered: !!ourWebhook,
       existingWebhooks: webhooks,
-      availableCarriers: carriers.map((c: any) => ({
+      availableCarriers: Array.isArray(carriers) ? carriers.map((c: any) => ({
         code: c.code,
         name: c.name,
         accountNumber: c.accountNumber,
         primary: c.primary,
-      })),
+      })) : [],
       setupInstructions: !ourWebhook ? [
         'Your ShipStation webhook is not registered.',
         'Click the "Register Webhook" button below or POST to this endpoint.',
@@ -93,7 +101,10 @@ export async function POST(request: NextRequest) {
     const webhookUrl = `${SITE_URL}/api/webhooks/shipstation`;
 
     // Check if webhook already exists
-    const existingWebhooks = await shipStation.listWebhooks();
+    const webhooksResponse: any = await shipStation.listWebhooks();
+    const existingWebhooks = Array.isArray(webhooksResponse)
+      ? webhooksResponse
+      : (webhooksResponse?.webhooks || []);
     const alreadyRegistered = existingWebhooks.find((w: any) =>
       w.target_url === webhookUrl || w.Url === webhookUrl
     );
@@ -141,7 +152,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     const shipStation = getShipStation();
-    const webhooks = await shipStation.listWebhooks();
+    const webhooksResponse: any = await shipStation.listWebhooks();
+    const webhooks = Array.isArray(webhooksResponse)
+      ? webhooksResponse
+      : (webhooksResponse?.webhooks || []);
 
     // Delete all webhooks (or just ours)
     const webhookUrl = `${SITE_URL}/api/webhooks/shipstation`;
