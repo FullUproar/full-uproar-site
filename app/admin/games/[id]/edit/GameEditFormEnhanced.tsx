@@ -41,6 +41,7 @@ interface Game {
   bggUrl: string | null;
   launchDate: string | null;
   isHidden?: boolean;
+  weightOz?: number | null;
 }
 
 interface GameEditFormEnhancedProps {
@@ -109,7 +110,8 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
           tags: JSON.stringify(tags),
           priceCents: parseInt(formData.priceCents.toString()),
           stock: parseInt(formData.stock.toString()),
-          releaseYear: formData.releaseYear ? parseInt(formData.releaseYear.toString()) : null
+          releaseYear: formData.releaseYear ? parseInt(formData.releaseYear.toString()) : null,
+          weightOz: formData.weightOz ? parseInt(formData.weightOz.toString()) : null
         })
       });
 
@@ -567,6 +569,21 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
               style={styles.input}
               placeholder="https://..."
             />
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Weight (oz)</label>
+            <input
+              type="number"
+              value={formData.weightOz || ''}
+              onChange={(e) => setFormData({ ...formData, weightOz: e.target.value ? parseInt(e.target.value) : null })}
+              style={styles.input}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              placeholder="e.g., 32"
+              min="1"
+            />
+            <span style={styles.helpText}>Product weight in ounces for shipping (16 oz = 1 lb)</span>
           </div>
         </div>
       </div>

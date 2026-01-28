@@ -107,6 +107,7 @@ model Game {
   viewCount           Int            @default(0)
   archived            Boolean        @default(false)
   isHidden            Boolean        @default(false)  // Hidden from public shop, visible to admins for testing
+  weightOz            Int?           // Weight in ounces for shipping calculations
   images              GameImage[]
   inventory           GameInventory?
   orderItems          OrderItem[]
