@@ -319,46 +319,23 @@ export default function CartPage() {
                 Order Summary
               </h2>
 
-              {/* Shipping Estimate Box */}
+              {/* Shipping Info Box */}
               <div style={{
-                background: getTotalPrice() >= 5000 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(249, 115, 22, 0.1)',
-                border: `2px solid ${getTotalPrice() >= 5000 ? '#10b981' : '#f97316'}`,
+                background: 'rgba(249, 115, 22, 0.1)',
+                border: '2px solid #f97316',
                 borderRadius: '0.75rem',
                 padding: '1rem',
                 marginBottom: '1.5rem'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <Truck size={18} style={{ color: getTotalPrice() >= 5000 ? '#10b981' : '#f97316' }} />
-                  <span style={{ fontWeight: 'bold', color: getTotalPrice() >= 5000 ? '#10b981' : '#fdba74' }}>
-                    {getTotalPrice() >= 5000 ? 'Free Shipping Unlocked!' : 'Shipping Estimate'}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <Truck size={18} style={{ color: '#f97316' }} />
+                  <span style={{ fontWeight: 'bold', color: '#fdba74' }}>
+                    Shipping
                   </span>
                 </div>
-
-                {getTotalPrice() < 5000 && (
-                  <>
-                    <div style={{
-                      background: '#374151',
-                      borderRadius: '50px',
-                      height: '8px',
-                      overflow: 'hidden',
-                      marginBottom: '0.5rem'
-                    }}>
-                      <div style={{
-                        background: 'linear-gradient(90deg, #f97316, #fbbf24)',
-                        height: '100%',
-                        width: `${Math.min((getTotalPrice() / 5000) * 100, 100)}%`,
-                        borderRadius: '50px',
-                        transition: 'width 0.3s'
-                      }} />
-                    </div>
-                    <p style={{ fontSize: '0.875rem', color: '#fdba74' }}>
-                      Add <span style={{ fontWeight: 'bold', color: '#f97316' }}>
-                        ${((5000 - getTotalPrice()) / 100).toFixed(2)}
-                      </span> more for FREE shipping!
-                    </p>
-                  </>
-                )}
-
+                <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>
+                  Rates calculated at checkout based on your location
+                </p>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -369,7 +346,7 @@ export default function CartPage() {
                 }}>
                   <Package size={14} style={{ color: '#9ca3af' }} />
                   <span style={{ fontSize: '0.8125rem', color: '#9ca3af' }}>
-                    Estimated delivery: <span style={{ color: '#d1d5db', fontWeight: '600' }}>5-7 business days</span>
+                    USPS & FedEx options available
                   </span>
                 </div>
               </div>
@@ -383,8 +360,8 @@ export default function CartPage() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d1d5db' }}>
                   <span>Shipping</span>
-                  <span style={{ fontWeight: 'bold', color: getTotalPrice() >= 5000 ? '#10b981' : 'inherit' }}>
-                    {getTotalPrice() >= 5000 ? 'FREE' : '$9.99'}
+                  <span style={{ fontStyle: 'italic', color: '#9ca3af' }}>
+                    Calculated at checkout
                   </span>
                 </div>
                 <div style={{ height: '2px', background: '#374151', margin: '0.5rem 0' }} />

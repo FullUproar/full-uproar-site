@@ -872,20 +872,22 @@ export default function CheckoutPage() {
 
                   {/* Shipping Method Selection */}
                   <div style={{ marginTop: '1.5rem' }}>
-                    <label style={labelStyle}>Shipping Method</label>
-                    {isLoadingShipping ? (
+                    <label style={labelStyle}>
+                      Shipping Method
+                      {isLoadingShipping && shippingRates.length > 0 && (
+                        <span style={{ fontWeight: 'normal', fontSize: '0.75rem', color: '#9ca3af', marginLeft: '0.5rem' }}>
+                          updating...
+                        </span>
+                      )}
+                    </label>
+                    {shippingRates.length > 0 ? (
                       <div style={{
-                        padding: '1rem',
-                        background: '#111827',
-                        borderRadius: '0.5rem',
-                        border: '2px solid #374151',
-                        textAlign: 'center',
-                        color: '#fdba74'
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.75rem',
+                        opacity: isLoadingShipping ? 0.7 : 1,
+                        transition: 'opacity 0.2s'
                       }}>
-                        Loading shipping options...
-                      </div>
-                    ) : shippingRates.length > 0 ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         {shippingRates.map((rate) => (
                           <label
                             key={`${rate.carrierCode}-${rate.serviceCode}`}
@@ -925,6 +927,33 @@ export default function CheckoutPage() {
                               ${(rate.priceCents / 100).toFixed(2)}
                             </span>
                           </label>
+                        ))}
+                      </div>
+                    ) : isLoadingShipping ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {/* Skeleton loaders */}
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '1rem',
+                              background: '#111827',
+                              borderRadius: '0.75rem',
+                              border: '2px solid #374151',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                              <div style={{ width: '1.25rem', height: '1.25rem', borderRadius: '50%', background: '#374151' }} />
+                              <div>
+                                <div style={{ width: '120px', height: '1rem', background: '#374151', borderRadius: '4px', marginBottom: '0.25rem' }} />
+                                <div style={{ width: '80px', height: '0.75rem', background: '#2d3748', borderRadius: '4px' }} />
+                              </div>
+                            </div>
+                            <div style={{ width: '50px', height: '1.25rem', background: '#374151', borderRadius: '4px' }} />
+                          </div>
                         ))}
                       </div>
                     ) : form.shippingAddress.zipCode && form.shippingAddress.state ? (

@@ -55,7 +55,6 @@ function OrderConfirmationContent() {
       setOrder(data);
 
       // Clear the cart after successful order confirmation
-      // This ensures cart is cleared even if checkout redirect was interrupted
       clearCart();
 
       // Track purchase completion with Meta Pixel
@@ -63,7 +62,7 @@ function OrderConfirmationContent() {
         const contentIds = data.items.map((item: any) => `${item.itemType}_${item.id}`);
         const totalValue = data.totalCents / 100;
         const numItems = data.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
-        
+
         MetaPixelEvents.purchase(
           totalValue,
           contentIds,
@@ -90,12 +89,18 @@ function OrderConfirmationContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-600 flex items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto mb-4 animate-bounce">
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '1rem' }}>
             <FuglyLogo size={100} />
           </div>
-          <p className="text-2xl font-black text-orange-500">Loading your chaos...</p>
+          <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f97316' }}>Loading your chaos...</p>
         </div>
       </div>
     );
@@ -106,135 +111,196 @@ function OrderConfirmationContent() {
   const subtotal = order.items.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-600">
-      {/* Confetti effect */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-fall"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 2}s`
-            }}
-          >
-            <div
-              className={`w-3 h-3 ${i % 3 === 0 ? 'bg-orange-500' : i % 3 === 1 ? 'bg-yellow-400' : 'bg-red-500'} rounded-full`}
-              style={{ transform: `rotate(${Math.random() * 360}deg)` }}
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="relative z-10">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)'
+    }}>
+      {/* Content */}
+      <div style={{ position: 'relative', zIndex: 10 }}>
         {/* Header */}
-        <div className="max-w-4xl mx-auto px-4 py-12">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-green-500 rounded-full mb-6 animate-bounce">
-              <CheckCircle className="h-16 w-16 text-white" />
+        <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '3rem 1rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '6rem',
+              height: '6rem',
+              background: '#22c55e',
+              borderRadius: '50%',
+              marginBottom: '1.5rem'
+            }}>
+              <CheckCircle style={{ width: '4rem', height: '4rem', color: 'white' }} />
             </div>
-            
-            <h1 className="text-5xl font-black text-white mb-4">
+
+            <h1 style={{
+              fontSize: '3rem',
+              fontWeight: 900,
+              color: 'white',
+              marginBottom: '1rem'
+            }}>
               CHAOS INCOMING!
             </h1>
-            
-            <p className="text-2xl text-yellow-400 font-bold mb-2">
+
+            <p style={{
+              fontSize: '1.5rem',
+              color: '#fbbf24',
+              fontWeight: 'bold',
+              marginBottom: '0.5rem'
+            }}>
               Your order has been placed successfully
             </p>
-            
-            <div className="inline-flex items-center gap-2 bg-gray-800 rounded-lg px-4 py-2 mt-4">
-              <span className="text-gray-400">Order ID:</span>
-              <span className="text-orange-500 font-mono font-bold">{orderId}</span>
+
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: '#1f2937',
+              borderRadius: '0.5rem',
+              padding: '0.5rem 1rem',
+              marginTop: '1rem'
+            }}>
+              <span style={{ color: '#9ca3af' }}>Order ID:</span>
+              <span style={{ color: '#f97316', fontFamily: 'monospace', fontWeight: 'bold' }}>{orderId}</span>
               <button
                 onClick={copyOrderId}
-                className="ml-2 p-1 hover:bg-gray-700 rounded transition-colors"
+                style={{
+                  marginLeft: '0.5rem',
+                  padding: '0.25rem',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  borderRadius: '0.25rem'
+                }}
               >
-                <Copy className="h-4 w-4 text-gray-400" />
+                <Copy style={{ width: '1rem', height: '1rem', color: '#9ca3af' }} />
               </button>
               {copied && (
-                <span className="text-green-400 text-sm ml-2">Copied!</span>
+                <span style={{ color: '#4ade80', fontSize: '0.875rem', marginLeft: '0.5rem' }}>Copied!</span>
               )}
             </div>
           </div>
 
           {/* Order Details */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem',
+            marginBottom: '3rem'
+          }}>
             {/* Delivery Info */}
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20">
-              <h2 className="text-xl font-black text-orange-500 mb-4 flex items-center gap-2">
-                <Truck className="h-6 w-6" />
+            <div style={{
+              background: '#1f2937',
+              borderRadius: '0.75rem',
+              padding: '1.5rem',
+              border: '4px solid rgba(249, 115, 22, 0.2)'
+            }}>
+              <h2 style={{
+                fontSize: '1.25rem',
+                fontWeight: 900,
+                color: '#f97316',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <Truck style={{ width: '1.5rem', height: '1.5rem' }} />
                 Delivery Details
               </h2>
-              
-              <div className="space-y-3">
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div>
-                  <p className="text-gray-400 text-sm">Delivering to:</p>
-                  <p className="text-yellow-400 font-bold">{order.customerName}</p>
+                  <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Delivering to:</p>
+                  <p style={{ color: '#fbbf24', fontWeight: 'bold', margin: 0 }}>{order.customerName}</p>
                 </div>
-                
+
                 <div>
-                  <p className="text-gray-400 text-sm">Shipping address:</p>
-                  <p className="text-white">{order.shippingAddress}</p>
+                  <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Shipping address:</p>
+                  <p style={{ color: 'white', margin: 0 }}>{order.shippingAddress}</p>
                 </div>
-                
+
                 <div>
-                  <p className="text-gray-400 text-sm">Email:</p>
-                  <p className="text-white">{order.customerEmail}</p>
+                  <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Email:</p>
+                  <p style={{ color: 'white', margin: 0 }}>{order.customerEmail}</p>
                 </div>
-                
-                <div className="pt-3 border-t border-gray-700">
-                  <p className="text-gray-400 text-sm">Estimated delivery:</p>
-                  <p className="text-yellow-400 font-bold">5-7 business days of pure chaos</p>
+
+                <div style={{ paddingTop: '0.75rem', borderTop: '1px solid #374151' }}>
+                  <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Estimated delivery:</p>
+                  <p style={{ color: '#fbbf24', fontWeight: 'bold', margin: 0 }}>5-7 business days</p>
                 </div>
               </div>
             </div>
 
             {/* Order Summary */}
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-orange-500/20">
-              <h2 className="text-xl font-black text-orange-500 mb-4 flex items-center gap-2">
-                <Package className="h-6 w-6" />
+            <div style={{
+              background: '#1f2937',
+              borderRadius: '0.75rem',
+              padding: '1.5rem',
+              border: '4px solid rgba(249, 115, 22, 0.2)'
+            }}>
+              <h2 style={{
+                fontSize: '1.25rem',
+                fontWeight: 900,
+                color: '#f97316',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <Package style={{ width: '1.5rem', height: '1.5rem' }} />
                 Order Summary
               </h2>
-              
-              <div className="space-y-3 mb-6">
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 {order.items.map((item) => (
-                  <div key={item.id} className="flex justify-between">
-                    <div className="flex-1">
-                      <p className="font-bold text-yellow-400">
+                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontWeight: 'bold', color: '#fbbf24', margin: 0 }}>
                         {item.itemType === 'game' ? item.game?.title : item.merch?.name}
                       </p>
                       {item.merchSize && (
-                        <p className="text-sm text-gray-400">Size: {item.merchSize}</p>
+                        <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Size: {item.merchSize}</p>
                       )}
-                      <p className="text-sm text-gray-400">Qty: {item.quantity}</p>
+                      <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Qty: {item.quantity}</p>
                     </div>
-                    <p className="font-bold text-white">
+                    <p style={{ fontWeight: 'bold', color: 'white', margin: 0 }}>
                       ${((item.priceCents * item.quantity) / 100).toFixed(2)}
                     </p>
                   </div>
                 ))}
               </div>
-              
-              <div className="space-y-2 border-t border-gray-700 pt-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Subtotal</span>
-                  <span className="text-white">${(subtotal / 100).toFixed(2)}</span>
+
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                borderTop: '1px solid #374151',
+                paddingTop: '1rem'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: '#9ca3af' }}>Subtotal</span>
+                  <span style={{ color: 'white' }}>${(subtotal / 100).toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Shipping</span>
-                  <span className="text-white">
-                    {order.shippingCents === 0 ? 'FREE' : `$${(order.shippingCents / 100).toFixed(2)}`}
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: '#9ca3af' }}>Shipping</span>
+                  <span style={{ color: 'white' }}>
+                    ${(order.shippingCents / 100).toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Tax</span>
-                  <span className="text-white">${(order.taxCents / 100).toFixed(2)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: '#9ca3af' }}>Tax</span>
+                  <span style={{ color: 'white' }}>${(order.taxCents / 100).toFixed(2)}</span>
                 </div>
-                
-                <div className="flex justify-between border-t border-gray-700 pt-4">
-                  <span className="text-xl font-black text-orange-500">Total</span>
-                  <span className="text-xl font-black text-white">
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  borderTop: '1px solid #374151',
+                  paddingTop: '1rem',
+                  marginTop: '0.5rem'
+                }}>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316' }}>Total</span>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 900, color: 'white' }}>
                     ${(order.totalCents / 100).toFixed(2)}
                   </span>
                 </div>
@@ -243,78 +309,134 @@ function OrderConfirmationContent() {
           </div>
 
           {/* What's Next */}
-          <div className="bg-gray-800 rounded-xl p-8 border-4 border-orange-500/20 text-center">
-            <div className="mx-auto mb-4" style={{ width: 'fit-content' }}>
+          <div style={{
+            background: '#1f2937',
+            borderRadius: '0.75rem',
+            padding: '2rem',
+            border: '4px solid rgba(249, 115, 22, 0.2)',
+            textAlign: 'center'
+          }}>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
               <FuglyLogo size={80} />
             </div>
-            
-            <h2 className="text-2xl font-black text-orange-500 mb-4">
+
+            <h2 style={{
+              fontSize: '1.5rem',
+              fontWeight: 900,
+              color: '#f97316',
+              marginBottom: '1rem'
+            }}>
               What Happens Next?
             </h2>
-            
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Mail className="h-8 w-8 text-orange-500" />
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '1.5rem',
+              marginBottom: '2rem'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  width: '4rem',
+                  height: '4rem',
+                  background: 'rgba(249, 115, 22, 0.2)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 0.75rem'
+                }}>
+                  <Mail style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
                 </div>
-                <p className="text-yellow-400 font-bold mb-1">Step 1</p>
-                <p className="text-gray-400">You'll receive a confirmation email from Fugly himself</p>
+                <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 1</p>
+                <p style={{ color: '#9ca3af', margin: 0 }}>You'll receive a confirmation email</p>
               </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Package className="h-8 w-8 text-orange-500" />
+
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  width: '4rem',
+                  height: '4rem',
+                  background: 'rgba(249, 115, 22, 0.2)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 0.75rem'
+                }}>
+                  <Package style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
                 </div>
-                <p className="text-yellow-400 font-bold mb-1">Step 2</p>
-                <p className="text-gray-400">We'll pack your order with extra chaos and care</p>
+                <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 2</p>
+                <p style={{ color: '#9ca3af', margin: 0 }}>We'll pack your order with extra care</p>
               </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Truck className="h-8 w-8 text-orange-500" />
+
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  width: '4rem',
+                  height: '4rem',
+                  background: 'rgba(249, 115, 22, 0.2)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 0.75rem'
+                }}>
+                  <Truck style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
                 </div>
-                <p className="text-yellow-400 font-bold mb-1">Step 3</p>
-                <p className="text-gray-400">Track your shipment as it spreads chaos across the land</p>
+                <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 3</p>
+                <p style={{ color: '#9ca3af', margin: 0 }}>Track your shipment as it heads your way</p>
               </div>
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              justifyContent: 'center'
+            }}>
               <Link
                 href="/"
-                className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-gray-900 font-black px-8 py-4 rounded-lg transition-all transform hover:scale-105"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  background: '#f97316',
+                  color: '#111827',
+                  fontWeight: 900,
+                  padding: '1rem 2rem',
+                  borderRadius: '0.5rem',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s'
+                }}
               >
                 Continue Shopping
-                <ArrowRight className="h-5 w-5" />
+                <ArrowRight style={{ width: '1.25rem', height: '1.25rem' }} />
               </Link>
-              
+
               <Link
                 href="/track-order"
-                className="inline-flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-black px-8 py-4 rounded-lg transition-all"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  background: '#374151',
+                  color: 'white',
+                  fontWeight: 900,
+                  padding: '1rem 2rem',
+                  borderRadius: '0.5rem',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s'
+                }}
               >
                 Track Your Order
-                <Truck className="h-5 w-5" />
+                <Truck style={{ width: '1.25rem', height: '1.25rem' }} />
               </Link>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fall {
-          0% {
-            transform: translateY(-100vh) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-          }
-        }
-        
-        .animate-fall {
-          animation: fall linear infinite;
-        }
-      `}</style>
     </div>
   );
 }
@@ -322,12 +444,18 @@ function OrderConfirmationContent() {
 export default function OrderConfirmationPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-orange-600 flex items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto mb-4 animate-bounce">
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '1rem' }}>
             <FuglyLogo size={100} />
           </div>
-          <p className="text-2xl font-black text-orange-500">Loading...</p>
+          <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f97316' }}>Loading...</p>
         </div>
       </div>
     }>
