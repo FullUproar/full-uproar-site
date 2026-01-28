@@ -64,7 +64,13 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
   const [isNavigatingAway, setIsNavigatingAway] = useState(false);
-  
+  const [taxInfo, setTaxInfo] = useState<{
+    taxCents: number;
+    isEstimate: boolean;
+    breakdown?: { subtotalTaxCents: number; shippingTaxCents: number };
+  }>({ taxCents: 0, isEstimate: true });
+  const [isCalculatingTax, setIsCalculatingTax] = useState(false);
+
   useAnalytics();
   
   const [form, setForm] = useState<OrderForm>({
@@ -143,8 +149,49 @@ export default function CheckoutPage() {
 
   const subtotal = getTotalPrice();
   const shipping = subtotal > 5000 ? 0 : 999; // Free shipping over $50
-  const tax = Math.round(subtotal * 0.08); // 8% tax
+  const tax = taxInfo.taxCents;
   const total = subtotal + shipping + tax;
+
+  // Calculate tax when shipping address is provided
+  const calculateTax = async (shippingAddress: OrderForm['shippingAddress']) => {
+    setIsCalculatingTax(true);
+    try {
+      const response = await fetch('/api/tax/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subtotalCents: subtotal,
+          shippingCents: shipping,
+          shippingAddress: {
+            state: shippingAddress.state,
+            zipCode: shippingAddress.zipCode,
+            city: shippingAddress.city,
+            country: shippingAddress.country
+          }
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setTaxInfo({
+          taxCents: data.taxCents,
+          isEstimate: data.isEstimate,
+          breakdown: data.breakdown
+        });
+      } else {
+        // Fallback to simple 8% on taxable amount
+        const fallbackTax = Math.round(subtotal * 0.08);
+        setTaxInfo({ taxCents: fallbackTax, isEstimate: true });
+      }
+    } catch (error) {
+      console.error('Tax calculation error:', error);
+      // Fallback calculation
+      const fallbackTax = Math.round(subtotal * 0.08);
+      setTaxInfo({ taxCents: fallbackTax, isEstimate: true });
+    } finally {
+      setIsCalculatingTax(false);
+    }
+  };
 
   const validateStep = (step: number): boolean => {
     const newErrors: Record<string, string> = {};
@@ -176,8 +223,12 @@ export default function CheckoutPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateStep(currentStep)) {
+      // Calculate tax when moving from shipping to payment step
+      if (currentStep === 2) {
+        await calculateTax(form.shippingAddress);
+      }
       setCurrentStep(currentStep + 1);
     }
   };
@@ -219,6 +270,13 @@ export default function CheckoutPage() {
         customerPhone: form.phone,
         shippingAddress,
         billingAddress,
+        // Include structured address for accurate tax calculation
+        shippingAddressData: {
+          state: form.shippingAddress.state,
+          zipCode: form.shippingAddress.zipCode,
+          city: form.shippingAddress.city,
+          country: form.shippingAddress.country
+        },
         items: items.map(item => ({
           itemType: item.type,
           ...(item.type === 'game' ? { gameId: item.id } : { merchId: item.id }),
@@ -813,9 +871,17 @@ export default function CheckoutPage() {
                           {shipping === 0 ? 'FREE' : `$${(shipping / 100).toFixed(2)}`}
                         </span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: '#9ca3af' }}>Tax</span>
-                        <span style={{ color: '#d1d5db' }}>${(tax / 100).toFixed(2)}</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ color: '#9ca3af' }}>
+                          Tax{taxInfo.isEstimate ? ' (est.)' : ''}
+                        </span>
+                        <span style={{ color: '#d1d5db' }}>
+                          {isCalculatingTax ? (
+                            <span style={{ fontSize: '0.75rem' }}>Calculating...</span>
+                          ) : (
+                            `$${(tax / 100).toFixed(2)}`
+                          )}
+                        </span>
                       </div>
                       <div style={{ borderTop: '1px solid #374151', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316' }}>Total</span>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 import { Prisma } from '@prisma/client';
+import { calculateTaxSync } from '@/lib/tax';
 
 // Store open status - controlled by env var NEXT_PUBLIC_STORE_OPEN
 const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
@@ -250,8 +251,14 @@ export async function POST(request: NextRequest) {
       // Calculate shipping (simple flat rate for now)
       const shippingCents = subtotalCents >= 5000 ? 0 : 999; // Free shipping over $50
 
-      // Calculate tax (simple 8% for now)
-      const taxCents = Math.round((subtotalCents + shippingCents) * 0.08);
+      // Calculate tax using shared tax calculation logic
+      // Uses state-aware tax rates (e.g., no tax in DE, MT, NH, OR)
+      const taxResult = calculateTaxSync({
+        subtotalCents,
+        shippingCents,
+        shippingAddress: body.shippingAddressData || undefined
+      });
+      const taxCents = taxResult.taxCents;
 
       const totalCents = subtotalCents + shippingCents + taxCents;
 

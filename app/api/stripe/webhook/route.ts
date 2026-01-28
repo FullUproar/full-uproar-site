@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { paymentLogger } from '@/lib/services/logger';
 import { withErrorHandler } from '@/lib/utils/error-handler';
 import { sendOrderConfirmation } from '@/lib/email';
+import { syncOrderToShipStation, isShipStationConfigured } from '@/lib/shipping/shipstation';
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const startTime = Date.now();
@@ -148,6 +149,21 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         if (!order) {
           console.error(`Failed to update order ${orderId}`);
           break;
+        }
+
+        // Sync order to ShipStation for fulfillment (non-critical)
+        if (isShipStationConfigured()) {
+          try {
+            await syncOrderToShipStation(order);
+            paymentLogger.info('Order synced to ShipStation', { orderId: order.id });
+          } catch (shipStationError) {
+            // Log but don't fail the webhook if ShipStation sync fails
+            console.error('Failed to sync order to ShipStation:', shipStationError);
+            paymentLogger.error(
+              `ShipStation sync failed for order ${order.id}`,
+              shipStationError instanceof Error ? shipStationError : new Error('Unknown error')
+            );
+          }
         }
 
         // Send order confirmation email (outside transaction - non-critical)

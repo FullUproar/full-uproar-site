@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Package, ShoppingBag, ShoppingCart, DollarSign, TrendingUp,
   Plus, Gamepad2, BookOpen, Palette, Database, Settings, MessageSquare,
-  RotateCcw, Box, HelpCircle, BarChart3, Layers
+  RotateCcw, Box, HelpCircle, BarChart3, Layers, Truck
 } from 'lucide-react';
 import Link from 'next/link';
 import { adminStyles } from '../styles/adminStyles';
@@ -108,6 +108,14 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       count: null,
       color: '#f97316',
       description: 'Pick, pack & ship orders'
+    },
+    {
+      title: 'ShipStation',
+      icon: <Truck size={24} />,
+      href: '/admin/shipstation',
+      count: null,
+      color: '#06b6d4',
+      description: 'Shipping integration setup'
     },
     {
       title: 'Returns',
@@ -292,47 +300,45 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
           {/* Menu Grid */}
           <div style={adminStyles.section}>
             <h2 style={adminStyles.sectionTitle}>Management</h2>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-              gap: '20px' 
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gap: '20px'
             }}>
-              {menuItems.map((item) => (
-                <button
-                  key={item.title}
-                  onClick={() => onNavigate(item.view, item.title)}
-                  style={{
-                    ...adminStyles.card,
-                    textDecoration: 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '32px 24px',
-                    textAlign: 'center',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    border: '2px solid rgba(249, 115, 22, 0.3)',
-                    background: 'rgba(30, 41, 59, 0.8)',
-                    cursor: 'pointer',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = `${item.color}66`;
-                    e.currentTarget.style.boxShadow = `0 4px 20px ${item.color}33`;
-                    const icon = e.currentTarget.querySelector('.menu-icon');
-                    if (icon) {
-                      (icon as HTMLElement).style.transform = 'scale(1.1)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
-                    e.currentTarget.style.boxShadow = 'none';
-                    const icon = e.currentTarget.querySelector('.menu-icon');
-                    if (icon) {
-                      (icon as HTMLElement).style.transform = 'scale(1)';
-                    }
-                  }}
-                >
+              {menuItems.map((item) => {
+                const cardStyle = {
+                  ...adminStyles.card,
+                  textDecoration: 'none',
+                  display: 'flex',
+                  flexDirection: 'column' as const,
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '32px 24px',
+                  textAlign: 'center' as const,
+                  position: 'relative' as const,
+                  overflow: 'hidden' as const,
+                  border: '2px solid rgba(249, 115, 22, 0.3)',
+                  background: 'rgba(30, 41, 59, 0.8)',
+                  cursor: 'pointer',
+                };
+                const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+                  e.currentTarget.style.borderColor = `${item.color}66`;
+                  e.currentTarget.style.boxShadow = `0 4px 20px ${item.color}33`;
+                  const icon = e.currentTarget.querySelector('.menu-icon');
+                  if (icon) {
+                    (icon as HTMLElement).style.transform = 'scale(1.1)';
+                  }
+                };
+                const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
+                  e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+                  e.currentTarget.style.boxShadow = 'none';
+                  const icon = e.currentTarget.querySelector('.menu-icon');
+                  if (icon) {
+                    (icon as HTMLElement).style.transform = 'scale(1)';
+                  }
+                };
+                const cardContent = (
+                  <>
                   <div 
                     className="menu-icon"
                     style={{
@@ -376,8 +382,36 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                     background: `radial-gradient(circle, ${item.color}11 0%, transparent 70%)`,
                     pointerEvents: 'none',
                   }} />
-                </button>
-              ))}
+                  </>
+                );
+
+                // Render as Link for items with href, button for items with view
+                if ('href' in item && item.href) {
+                  return (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      style={cardStyle}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {cardContent}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <button
+                    key={item.title}
+                    onClick={() => 'view' in item && item.view && onNavigate(item.view, item.title)}
+                    style={cardStyle}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    {cardContent}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </>

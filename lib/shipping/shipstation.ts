@@ -376,41 +376,126 @@ class ShipStationAPI {
   }
 }
 
+/**
+ * Parse a formatted address string into components
+ * Expected format: "123 Main St, Apt 4, Chicago, IL 60601, US"
+ * or: "123 Main St, Chicago, IL 60601, US"
+ */
+export function parseAddressString(addressString: string): {
+  street1: string;
+  street2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+} {
+  const parts = addressString.split(',').map(s => s.trim());
+
+  // Handle different formats
+  if (parts.length >= 5) {
+    // Has apartment/suite: "123 Main St, Apt 4, Chicago, IL 60601, US"
+    const stateZip = parts[3].split(' ').filter(Boolean);
+    return {
+      street1: parts[0],
+      street2: parts[1],
+      city: parts[2],
+      state: stateZip[0] || '',
+      postalCode: stateZip.slice(1).join(' ') || '',
+      country: parts[4] || 'US',
+    };
+  } else if (parts.length >= 4) {
+    // No apartment: "123 Main St, Chicago, IL 60601, US"
+    const stateZip = parts[2].split(' ').filter(Boolean);
+    return {
+      street1: parts[0],
+      city: parts[1],
+      state: stateZip[0] || '',
+      postalCode: stateZip.slice(1).join(' ') || '',
+      country: parts[3] || 'US',
+    };
+  } else if (parts.length >= 3) {
+    // Minimal: "123 Main St, City, ST 12345"
+    const stateZip = parts[2].split(' ').filter(Boolean);
+    return {
+      street1: parts[0],
+      city: parts[1],
+      state: stateZip[0] || '',
+      postalCode: stateZip.slice(1).join(' ') || '',
+      country: 'US',
+    };
+  }
+
+  // Fallback - couldn't parse
+  return {
+    street1: addressString,
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'US',
+  };
+}
+
 // Helper function to convert our order format to ShipStation format
 export function convertOrderToShipStation(order: any): CreateOrderRequest {
+  const shippingAddr = parseAddressString(order.shippingAddress || '');
+  const billingAddr = order.billingAddress
+    ? parseAddressString(order.billingAddress)
+    : shippingAddr;
+
+  // Get item names from the order items
+  const items = order.items?.map((item: any) => {
+    const name = item.game?.title || item.merch?.name || 'Product';
+    const sku = item.game?.slug || item.merch?.slug || `item-${item.id}`;
+    const sizeOption = item.merchSize
+      ? [{ name: 'Size', value: item.merchSize }]
+      : [];
+
+    return {
+      lineItemKey: String(item.id),
+      sku,
+      name,
+      quantity: item.quantity,
+      unitPrice: item.priceCents / 100,
+      options: sizeOption,
+    };
+  }) || [];
+
   return {
     orderNumber: order.id,
     orderDate: new Date(order.createdAt).toISOString(),
     orderStatus: order.status === 'paid' ? 'awaiting_shipment' : 'awaiting_payment',
     customerEmail: order.customerEmail,
+    customerUsername: order.customerName,
     billTo: {
       name: order.customerName,
-      street1: order.billingAddress || order.shippingAddress,
-      city: 'TBD', // Parse from address
-      state: 'TBD',
-      postalCode: 'TBD',
-      country: 'US',
-      phone: order.customerPhone,
+      street1: billingAddr.street1,
+      street2: billingAddr.street2,
+      city: billingAddr.city,
+      state: billingAddr.state,
+      postalCode: billingAddr.postalCode,
+      country: billingAddr.country,
+      phone: order.customerPhone || '',
     },
     shipTo: {
       name: order.customerName,
-      street1: order.shippingAddress,
-      city: 'TBD', // Parse from address
-      state: 'TBD',
-      postalCode: 'TBD',
-      country: 'US',
-      phone: order.customerPhone,
+      street1: shippingAddr.street1,
+      street2: shippingAddr.street2,
+      city: shippingAddr.city,
+      state: shippingAddr.state,
+      postalCode: shippingAddr.postalCode,
+      country: shippingAddr.country,
+      phone: order.customerPhone || '',
       residential: true,
     },
-    items: order.items.map((item: any) => ({
-      sku: item.productId,
-      name: item.name,
-      quantity: item.quantity,
-      unitPrice: item.priceCents / 100,
-    })),
+    items,
     amountPaid: order.totalCents / 100,
-    taxAmount: order.taxCents / 100,
-    shippingAmount: order.shippingCents / 100,
+    taxAmount: (order.taxCents || 0) / 100,
+    shippingAmount: (order.shippingCents || 0) / 100,
+    paymentMethod: 'Stripe',
+    advancedOptions: {
+      source: 'Full Uproar',
+      customField1: order.id,
+    },
   };
 }
 
@@ -433,6 +518,31 @@ export function getShipStation(): ShipStationAPI {
   }
 
   return shipStationInstance;
+}
+
+/**
+ * Sync an order to ShipStation
+ * This is a safe wrapper that won't throw - logs errors instead
+ */
+export async function syncOrderToShipStation(order: any): Promise<boolean> {
+  try {
+    const shipStation = getShipStation();
+    const shipStationOrder = convertOrderToShipStation(order);
+    await shipStation.createOrder(shipStationOrder);
+    console.log(`Order ${order.id} synced to ShipStation`);
+    return true;
+  } catch (error) {
+    // Don't fail the main operation if ShipStation sync fails
+    console.error(`Failed to sync order ${order.id} to ShipStation:`, error);
+    return false;
+  }
+}
+
+/**
+ * Check if ShipStation is configured
+ */
+export function isShipStationConfigured(): boolean {
+  return !!(process.env.SHIPSTATION_API_KEY && process.env.SHIPSTATION_API_SECRET);
 }
 
 export default ShipStationAPI;
