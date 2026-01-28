@@ -41,6 +41,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
     launchDate: null as Date | null,
     stock: 0,
     isHidden: false,
+    weightOz: null as number | null,
   });
 
   const [saving, setSaving] = useState(false);
@@ -231,6 +232,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
       launchDate: null,
       stock: 100,
       isHidden: false,
+      weightOz: 32,
     });
   };
 
@@ -380,7 +382,18 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
               />
             </div>
             <div style={adminStyles.formGroup}>
-              {/* Empty column for spacing */}
+              <label style={adminStyles.label}>Weight (oz)</label>
+              <input
+                type="number"
+                value={formData.weightOz || ''}
+                onChange={(e) => setFormData({ ...formData, weightOz: e.target.value ? parseInt(e.target.value) : null })}
+                style={adminStyles.input}
+                min="1"
+                placeholder="e.g., 32"
+              />
+              <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
+                For shipping calculations (16 oz = 1 lb)
+              </p>
             </div>
           </div>
         </div>
