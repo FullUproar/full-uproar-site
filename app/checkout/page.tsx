@@ -71,6 +71,20 @@ export default function CheckoutPage() {
   }>({ taxCents: 0, isEstimate: true });
   const [isCalculatingTax, setIsCalculatingTax] = useState(false);
 
+  // Shipping options state
+  interface ShippingRate {
+    carrier: string;
+    carrierCode: string;
+    service: string;
+    serviceCode: string;
+    priceCents: number;
+    estimatedDays: number | null;
+    packageType: string;
+  }
+  const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
+  const [selectedShipping, setSelectedShipping] = useState<ShippingRate | null>(null);
+  const [isLoadingShipping, setIsLoadingShipping] = useState(false);
+
   useAnalytics();
   
   const [form, setForm] = useState<OrderForm>({
@@ -148,9 +162,49 @@ export default function CheckoutPage() {
   }, [form, mounted]);
 
   const subtotal = getTotalPrice();
-  const shipping = subtotal > 5000 ? 0 : 999; // Free shipping over $50
+  const shipping = selectedShipping?.priceCents || 0;
   const tax = taxInfo.taxCents;
   const total = subtotal + shipping + tax;
+
+  // Fetch shipping rates when address is entered
+  const fetchShippingRates = async (shippingAddress: OrderForm['shippingAddress']) => {
+    if (!shippingAddress.zipCode || !shippingAddress.state) return;
+
+    setIsLoadingShipping(true);
+    try {
+      const response = await fetch('/api/shipping/rates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          toAddress: {
+            city: shippingAddress.city,
+            state: shippingAddress.state,
+            postalCode: shippingAddress.zipCode,
+            country: shippingAddress.country || 'US'
+          }
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const rates = data.rates || [];
+        setShippingRates(rates);
+        // Auto-select cheapest option
+        if (rates.length > 0 && !selectedShipping) {
+          setSelectedShipping(rates[0]);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch shipping rates:', error);
+      // Set default rates on error
+      setShippingRates([
+        { carrier: 'USPS', carrierCode: 'usps', service: 'Priority Mail', serviceCode: 'usps_priority_mail', priceCents: 899, estimatedDays: 3, packageType: 'package' },
+        { carrier: 'FedEx', carrierCode: 'fedex', service: 'Ground', serviceCode: 'fedex_ground', priceCents: 999, estimatedDays: 5, packageType: 'package' },
+      ]);
+    } finally {
+      setIsLoadingShipping(false);
+    }
+  };
 
   // Calculate tax when shipping address is provided
   const calculateTax = async (shippingAddress: OrderForm['shippingAddress']) => {
@@ -208,6 +262,7 @@ export default function CheckoutPage() {
       if (!form.shippingAddress.city) newErrors['shipping.city'] = 'City is required';
       if (!form.shippingAddress.state) newErrors['shipping.state'] = 'State is required';
       if (!form.shippingAddress.zipCode) newErrors['shipping.zipCode'] = 'ZIP code is required';
+      if (!selectedShipping) newErrors['shipping.method'] = 'Please select a shipping method';
     }
 
     if (step === 3) {
@@ -232,6 +287,23 @@ export default function CheckoutPage() {
       setCurrentStep(currentStep + 1);
     }
   };
+
+  // Fetch shipping rates when address fields change (debounced effect)
+  useEffect(() => {
+    if (currentStep === 2 && form.shippingAddress.zipCode && form.shippingAddress.state) {
+      const timer = setTimeout(() => {
+        fetchShippingRates(form.shippingAddress);
+      }, 500); // Debounce
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, form.shippingAddress.zipCode, form.shippingAddress.state, form.shippingAddress.city]);
+
+  // Recalculate tax when shipping selection changes
+  useEffect(() => {
+    if (selectedShipping && form.shippingAddress.state) {
+      calculateTax(form.shippingAddress);
+    }
+  }, [selectedShipping]);
 
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
@@ -277,6 +349,15 @@ export default function CheckoutPage() {
           city: form.shippingAddress.city,
           country: form.shippingAddress.country
         },
+        // Selected shipping method
+        shippingMethod: selectedShipping ? {
+          carrier: selectedShipping.carrier,
+          carrierCode: selectedShipping.carrierCode,
+          service: selectedShipping.service,
+          serviceCode: selectedShipping.serviceCode,
+          priceCents: selectedShipping.priceCents,
+          estimatedDays: selectedShipping.estimatedDays
+        } : null,
         items: items.map(item => ({
           itemType: item.type,
           ...(item.type === 'game' ? { gameId: item.id } : { merchId: item.id }),
@@ -763,8 +844,8 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       value={form.shippingAddress.zipCode}
-                      onChange={(e) => setForm({ 
-                        ...form, 
+                      onChange={(e) => setForm({
+                        ...form,
                         shippingAddress: { ...form.shippingAddress, zipCode: e.target.value }
                       })}
                       style={inputStyle}
@@ -780,6 +861,91 @@ export default function CheckoutPage() {
                     />
                     {errors['shipping.zipCode'] && (
                       <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['shipping.zipCode']}</p>
+                    )}
+                  </div>
+
+                  {/* Shipping Method Selection */}
+                  <div style={{ marginTop: '1.5rem' }}>
+                    <label style={labelStyle}>Shipping Method</label>
+                    {isLoadingShipping ? (
+                      <div style={{
+                        padding: '1rem',
+                        background: '#111827',
+                        borderRadius: '0.5rem',
+                        border: '2px solid #374151',
+                        textAlign: 'center',
+                        color: '#fdba74'
+                      }}>
+                        Loading shipping options...
+                      </div>
+                    ) : shippingRates.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {shippingRates.map((rate) => (
+                          <label
+                            key={`${rate.carrierCode}-${rate.serviceCode}`}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '1rem',
+                              background: '#111827',
+                              borderRadius: '0.75rem',
+                              cursor: 'pointer',
+                              border: '2px solid',
+                              borderColor: selectedShipping?.serviceCode === rate.serviceCode ? '#f97316' : '#374151',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                              <input
+                                type="radio"
+                                name="shippingMethod"
+                                checked={selectedShipping?.serviceCode === rate.serviceCode}
+                                onChange={() => setSelectedShipping(rate)}
+                                style={{ width: '1.25rem', height: '1.25rem', accentColor: '#f97316' }}
+                              />
+                              <div>
+                                <p style={{ fontWeight: 'bold', color: '#fde68a', margin: 0 }}>
+                                  {rate.carrier} {rate.service}
+                                </p>
+                                {rate.estimatedDays && (
+                                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>
+                                    {rate.estimatedDays === 1 ? 'Next day' : `${rate.estimatedDays} business days`}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <span style={{ fontWeight: 'bold', color: '#f97316', fontSize: '1.125rem' }}>
+                              ${(rate.priceCents / 100).toFixed(2)}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    ) : form.shippingAddress.zipCode && form.shippingAddress.state ? (
+                      <div style={{
+                        padding: '1rem',
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        borderRadius: '0.5rem',
+                        border: '2px solid rgba(239, 68, 68, 0.3)',
+                        color: '#fca5a5',
+                        textAlign: 'center'
+                      }}>
+                        Unable to load shipping rates. Please verify your address.
+                      </div>
+                    ) : (
+                      <div style={{
+                        padding: '1rem',
+                        background: '#111827',
+                        borderRadius: '0.5rem',
+                        border: '2px solid #374151',
+                        color: '#9ca3af',
+                        textAlign: 'center'
+                      }}>
+                        Enter your ZIP code and state to see shipping options
+                      </div>
+                    )}
+                    {errors['shipping.method'] && (
+                      <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors['shipping.method']}</p>
                     )}
                   </div>
 
@@ -866,9 +1032,16 @@ export default function CheckoutPage() {
                         <span style={{ color: '#d1d5db' }}>${(subtotal / 100).toFixed(2)}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: '#9ca3af' }}>Shipping</span>
+                        <span style={{ color: '#9ca3af' }}>
+                          Shipping
+                          {selectedShipping && (
+                            <span style={{ fontSize: '0.75rem', display: 'block', color: '#6b7280' }}>
+                              {selectedShipping.carrier} {selectedShipping.service}
+                            </span>
+                          )}
+                        </span>
                         <span style={{ color: '#d1d5db' }}>
-                          {shipping === 0 ? 'FREE' : `$${(shipping / 100).toFixed(2)}`}
+                          ${(shipping / 100).toFixed(2)}
                         </span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

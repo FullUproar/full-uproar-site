@@ -248,8 +248,9 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Calculate shipping (simple flat rate for now)
-      const shippingCents = subtotalCents >= 5000 ? 0 : 999; // Free shipping over $50
+      // Get shipping cost from selected method, or use default
+      const shippingMethod = body.shippingMethod;
+      const shippingCents = shippingMethod?.priceCents || 999; // Default to $9.99 if not specified
 
       // Calculate tax using shared tax calculation logic
       // Uses state-aware tax rates (e.g., no tax in DE, MT, NH, OR)
@@ -273,6 +274,9 @@ export async function POST(request: NextRequest) {
           totalCents,
           shippingCents,
           taxCents,
+          // Store selected shipping method details
+          shippingCarrier: shippingMethod?.carrierCode || null,
+          shippingMethod: shippingMethod ? `${shippingMethod.carrier} ${shippingMethod.service}` : null,
           status: 'pending',
           items: {
             create: orderItems.map(item => ({
