@@ -181,7 +181,13 @@ export default function CheckoutPage() {
             state: shippingAddress.state,
             postalCode: shippingAddress.zipCode,
             country: shippingAddress.country || 'US'
-          }
+          },
+          // Pass cart items for weight-based shipping calculation
+          cartItems: items.map(item => ({
+            id: item.id,
+            type: item.type,
+            quantity: item.quantity
+          }))
         })
       });
 
@@ -296,7 +302,7 @@ export default function CheckoutPage() {
       }, 500); // Debounce
       return () => clearTimeout(timer);
     }
-  }, [currentStep, form.shippingAddress.zipCode, form.shippingAddress.state, form.shippingAddress.city]);
+  }, [currentStep, form.shippingAddress.zipCode, form.shippingAddress.state, form.shippingAddress.city, items]);
 
   // Recalculate tax when shipping selection changes
   useEffect(() => {
