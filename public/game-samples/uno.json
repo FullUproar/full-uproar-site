@@ -1,0 +1,256 @@
+{
+  "id": "uno",
+  "name": "Uno",
+  "version": "1.0.0",
+  "minPlayers": 2,
+  "maxPlayers": 10,
+  "cardTypes": [
+    {
+      "type": "number_card",
+      "name": "Number Card",
+      "display": { "color": "#3b82f6", "textColor": "#ffffff" },
+      "properties": [
+        { "name": "color", "type": "string", "label": "Color" },
+        { "name": "number", "type": "number", "label": "Number" }
+      ]
+    },
+    {
+      "type": "action_card",
+      "name": "Action Card",
+      "display": { "color": "#f59e0b", "textColor": "#000000" },
+      "properties": [
+        { "name": "color", "type": "string", "label": "Color" },
+        { "name": "action", "type": "string", "label": "Action" }
+      ]
+    },
+    {
+      "type": "wild_card",
+      "name": "Wild Card",
+      "display": { "color": "#1a1a1a", "textColor": "#ffffff" },
+      "properties": [
+        { "name": "action", "type": "string", "label": "Action" }
+      ]
+    }
+  ],
+  "zones": [
+    { "name": "deck", "scope": "shared", "visibility": "private" },
+    { "name": "discard", "scope": "shared", "visibility": "public" },
+    { "name": "hand", "scope": "perPlayer", "visibility": "owner" }
+  ],
+  "resources": [
+    { "name": "cardsRemaining", "initialValue": 7, "min": 0 }
+  ],
+  "decks": [],
+  "main": {
+    "id": "main",
+    "name": "Uno",
+    "kind": "game",
+    "children": [
+      {
+        "id": "setup",
+        "kind": "phase",
+        "type": "phase",
+        "name": "Setup",
+        "children": [
+          {
+            "id": "shuffle",
+            "kind": "action",
+            "type": "shuffle",
+            "name": "Shuffle",
+            "properties": { "zone": "deck" }
+          },
+          {
+            "id": "deal",
+            "kind": "action",
+            "type": "draw",
+            "name": "Draw Cards",
+            "description": "Deal 7 cards to each player",
+            "properties": { "count": 7, "from": "deck", "to": "hand" }
+          },
+          {
+            "id": "flip-starter",
+            "kind": "action",
+            "type": "flip",
+            "name": "Flip Cards",
+            "description": "Flip top card to start discard pile",
+            "properties": { "from": "deck", "to": "discard" }
+          }
+        ]
+      },
+      {
+        "id": "game-round",
+        "kind": "round",
+        "type": "round",
+        "name": "Game Round",
+        "description": "Continue until someone has no cards",
+        "properties": { "iterate": "until", "condition": "playerHasNoCards" },
+        "children": [
+          {
+            "id": "player-turn",
+            "kind": "turn",
+            "type": "turn",
+            "name": "Player Turn",
+            "properties": { "iterate": "forEachPlayer", "order": "turnOrder" },
+            "children": [
+              {
+                "id": "play-phase",
+                "kind": "phase",
+                "type": "phase",
+                "name": "Play a Card",
+                "children": [
+                  {
+                    "id": "match-play",
+                    "kind": "action",
+                    "type": "matchPlay",
+                    "name": "Match & Play",
+                    "description": "Play a card matching color OR number",
+                    "properties": { "match": "colorOrNumber", "from": "hand", "to": "discard" }
+                  }
+                ]
+              },
+              {
+                "id": "or-draw",
+                "kind": "condition",
+                "type": "if",
+                "name": "If Condition",
+                "description": "If no matching card, draw one",
+                "properties": { "condition": "noMatchingCard" },
+                "children": [
+                  {
+                    "id": "draw-one",
+                    "kind": "action",
+                    "type": "draw",
+                    "name": "Draw Cards",
+                    "properties": { "count": 1, "from": "deck", "to": "hand" }
+                  }
+                ]
+              },
+              {
+                "id": "wild-check",
+                "kind": "condition",
+                "type": "if",
+                "name": "If Condition",
+                "description": "If playing a wild card, declare color",
+                "properties": { "condition": "playedWild" },
+                "children": [
+                  {
+                    "id": "declare-color",
+                    "kind": "action",
+                    "type": "playWild",
+                    "name": "Play Wild",
+                    "description": "Choose the new color",
+                    "properties": { "declareProperty": "color" }
+                  }
+                ]
+              },
+              {
+                "id": "action-effects",
+                "kind": "phase",
+                "type": "phase",
+                "name": "Apply Effects",
+                "description": "Handle Skip, Reverse, Draw 2, etc.",
+                "children": [
+                  {
+                    "id": "skip-effect",
+                    "kind": "condition",
+                    "type": "if",
+                    "name": "If Condition",
+                    "description": "Skip card skips next player",
+                    "properties": { "condition": "playedSkip" },
+                    "children": [
+                      {
+                        "id": "skip-player",
+                        "kind": "action",
+                        "type": "skipPlayer",
+                        "name": "Skip Player",
+                        "properties": { "count": 1 }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "reverse-effect",
+                    "kind": "condition",
+                    "type": "if",
+                    "name": "If Condition",
+                    "description": "Reverse card changes direction",
+                    "properties": { "condition": "playedReverse" },
+                    "children": [
+                      {
+                        "id": "reverse",
+                        "kind": "action",
+                        "type": "reverseTurnOrder",
+                        "name": "Reverse Order"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "draw2-effect",
+                    "kind": "condition",
+                    "type": "if",
+                    "name": "If Condition",
+                    "description": "Draw 2 makes next player draw",
+                    "properties": { "condition": "playedDraw2" },
+                    "children": [
+                      {
+                        "id": "draw-penalty",
+                        "kind": "action",
+                        "type": "draw",
+                        "name": "Draw Cards",
+                        "description": "Next player draws 2 cards",
+                        "properties": { "count": 2, "from": "deck", "to": "hand", "target": "nextPlayer" }
+                      },
+                      {
+                        "id": "skip-after-draw",
+                        "kind": "action",
+                        "type": "skipPlayer",
+                        "name": "Skip Player",
+                        "properties": { "count": 1 }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "uno-call",
+                "kind": "condition",
+                "type": "if",
+                "name": "If Condition",
+                "description": "Must call UNO when down to 1 card",
+                "properties": { "condition": "hasOneCard" },
+                "children": [
+                  {
+                    "id": "declare-uno",
+                    "kind": "action",
+                    "type": "declare",
+                    "name": "Declare",
+                    "description": "Call UNO!",
+                    "properties": { "declaration": "UNO!" }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "end-game",
+        "kind": "phase",
+        "type": "phase",
+        "name": "End Game",
+        "children": [
+          {
+            "id": "announce",
+            "kind": "action",
+            "type": "announce",
+            "name": "Announce",
+            "description": "First player to empty their hand wins!",
+            "properties": { "message": "UNO! You win!", "to": "all" }
+          }
+        ]
+      }
+    ]
+  },
+  "winConditions": [
+    { "condition": "handEmpty", "description": "First player to play all cards wins" }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "id": "go-fish",
+  "name": "Go Fish",
+  "version": "1.0.0",
+  "minPlayers": 2,
+  "maxPlayers": 6,
+  "cardTypes": [
+    {
+      "type": "playing_card",
+      "name": "Playing Card",
+      "display": { "color": "#1e3a5f", "textColor": "#ffffff" },
+      "properties": [
+        { "name": "rank", "type": "string", "label": "Rank" },
+        { "name": "suit", "type": "string", "label": "Suit" },
+        { "name": "value", "type": "number", "label": "Value" }
+      ]
+    }
+  ],
+  "zones": [
+    { "name": "deck", "scope": "shared", "visibility": "private" },
+    { "name": "hand", "scope": "perPlayer", "visibility": "owner" },
+    { "name": "books", "scope": "perPlayer", "visibility": "public" }
+  ],
+  "resources": [
+    { "name": "books", "initialValue": 0, "min": 0, "max": 13 }
+  ],
+  "decks": [],
+  "main": {
+    "id": "main",
+    "name": "Go Fish",
+    "kind": "game",
+    "children": [
+      {
+        "id": "setup-phase",
+        "kind": "phase",
+        "type": "phase",
+        "name": "Setup",
+        "children": [
+          {
+            "id": "shuffle-deck",
+            "kind": "action",
+            "type": "shuffle",
+            "name": "Shuffle",
+            "properties": { "zone": "deck" }
+          },
+          {
+            "id": "deal-cards",
+            "kind": "action",
+            "type": "draw",
+            "name": "Draw Cards",
+            "description": "Deal 7 cards to each player (5 if 4+ players)",
+            "properties": { "count": 7, "from": "deck", "to": "hand" }
+          }
+        ]
+      },
+      {
+        "id": "game-round",
+        "kind": "round",
+        "type": "round",
+        "name": "Game Round",
+        "description": "Play until all 13 books are collected",
+        "properties": { "iterate": "until", "condition": "totalBooks >= 13" },
+        "children": [
+          {
+            "id": "player-turn",
+            "kind": "turn",
+            "type": "turn",
+            "name": "Player Turn",
+            "properties": { "iterate": "forEachPlayer", "order": "turnOrder" },
+            "children": [
+              {
+                "id": "request-phase",
+                "kind": "phase",
+                "type": "phase",
+                "name": "Ask for Cards",
+                "children": [
+                  {
+                    "id": "request-cards",
+                    "kind": "action",
+                    "type": "requestCards",
+                    "name": "Request Cards",
+                    "description": "Ask another player: 'Do you have any [rank]?'",
+                    "properties": { "filter": "rank", "onFail": "draw" }
+                  }
+                ]
+              },
+              {
+                "id": "check-books",
+                "kind": "phase",
+                "type": "phase",
+                "name": "Check for Books",
+                "children": [
+                  {
+                    "id": "check-book",
+                    "kind": "action",
+                    "type": "checkBook",
+                    "name": "Check for Book",
+                    "description": "If you have 4 of a kind, lay them down as a book",
+                    "properties": { "size": 4, "groupBy": "rank" }
+                  },
+                  {
+                    "id": "score-book",
+                    "kind": "action",
+                    "type": "increment",
+                    "name": "Add Points",
+                    "description": "Score 1 point for each book",
+                    "properties": { "variable": "books", "by": 1 }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "end-game",
+        "kind": "phase",
+        "type": "phase",
+        "name": "End Game",
+        "children": [
+          {
+            "id": "announce-winner",
+            "kind": "action",
+            "type": "announce",
+            "name": "Announce",
+            "description": "Player with most books wins!",
+            "properties": { "message": "Game Over! Player with most books wins!", "to": "all" }
+          }
+        ]
+      }
+    ]
+  },
+  "winConditions": [
+    { "condition": "books >= 7", "description": "Player with most books wins" }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "id": "war",
+  "name": "War",
+  "version": "1.0.0",
+  "minPlayers": 2,
+  "maxPlayers": 2,
+  "cardTypes": [
+    {
+      "type": "playing_card",
+      "name": "Playing Card",
+      "display": { "color": "#7c3aed", "textColor": "#ffffff" },
+      "properties": [
+        { "name": "rank", "type": "string", "label": "Rank" },
+        { "name": "suit", "type": "string", "label": "Suit" },
+        { "name": "value", "type": "number", "label": "Value" }
+      ]
+    }
+  ],
+  "zones": [
+    { "name": "deck", "scope": "perPlayer", "visibility": "private" },
+    { "name": "battlefield", "scope": "shared", "visibility": "public" },
+    { "name": "warPile", "scope": "shared", "visibility": "private" },
+    { "name": "winnings", "scope": "perPlayer", "visibility": "owner" }
+  ],
+  "resources": [
+    { "name": "cardsWon", "initialValue": 0, "min": 0 }
+  ],
+  "decks": [],
+  "main": {
+    "id": "main",
+    "name": "War",
+    "kind": "game",
+    "children": [
+      {
+        "id": "setup",
+        "kind": "phase",
+        "type": "phase",
+        "name": "Setup",
+        "children": [
+          {
+            "id": "shuffle",
+            "kind": "action",
+            "type": "shuffle",
+            "name": "Shuffle",
+            "properties": { "zone": "deck" }
+          },
+          {
+            "id": "deal",
+            "kind": "action",
+            "type": "draw",
+            "name": "Draw Cards",
+            "description": "Deal 26 cards to each player",
+            "properties": { "count": 26, "from": "deck", "to": "hand" }
+          }
+        ]
+      },
+      {
+        "id": "battle-round",
+        "kind": "round",
+        "type": "round",
+        "name": "Battle Round",
+        "description": "Continue until one player has all cards",
+        "properties": { "iterate": "until", "condition": "playerOutOfCards" },
+        "children": [
+          {
+            "id": "flip-phase",
+            "kind": "phase",
+            "type": "simultaneously",
+            "name": "Flip Cards",
+            "description": "Both players flip their top card",
+            "properties": { "players": "all" },
+            "children": [
+              {
+                "id": "reveal",
+                "kind": "action",
+                "type": "simultaneousReveal",
+                "name": "Simultaneous Reveal",
+                "description": "Both players reveal top card",
+                "properties": { "from": "deck", "count": 1 }
+              }
+            ]
+          },
+          {
+            "id": "compare-phase",
+            "kind": "phase",
+            "type": "phase",
+            "name": "Compare Cards",
+            "children": [
+              {
+                "id": "compare",
+                "kind": "action",
+                "type": "compareCards",
+                "name": "Compare Cards",
+                "description": "Compare by value - higher card wins",
+                "properties": { "by": "value" }
+              },
+              {
+                "id": "winner-claims",
+                "kind": "action",
+                "type": "claimPile",
+                "name": "Claim Pile",
+                "description": "Winner takes both cards"
+              }
+            ]
+          },
+          {
+            "id": "war-condition",
+            "kind": "condition",
+            "type": "if",
+            "name": "If Condition",
+            "description": "If cards are equal, WAR!",
+            "properties": { "condition": "cardsEqual" },
+            "children": [
+              {
+                "id": "war-battle",
+                "kind": "action",
+                "type": "warBattle",
+                "name": "War Battle",
+                "description": "Each player places 3 face-down, 1 face-up",
+                "properties": { "faceDown": 3, "faceUp": 1 }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "end-game",
+        "kind": "phase",
+        "type": "phase",
+        "name": "End Game",
+        "children": [
+          {
+            "id": "announce",
+            "kind": "action",
+            "type": "announce",
+            "name": "Announce",
+            "description": "Player with all cards wins!",
+            "properties": { "message": "Victory! You've won all the cards!", "to": "all" }
+          }
+        ]
+      }
+    ]
+  },
+  "winConditions": [
+    { "condition": "hasAllCards", "description": "Player with all 52 cards wins" }
+  ]
+}

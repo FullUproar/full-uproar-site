@@ -8,7 +8,7 @@ import {
   Copy, Settings, Zap, RotateCcw, Users, Layers, Target, Clock,
   Shuffle, Eye, EyeOff, ArrowRightLeft, MessageSquare, Award,
   GitBranch, Repeat, Filter, Box, Sparkles, GripVertical,
-  HelpCircle, Code, Palette, Loader2, Check, Menu
+  HelpCircle, Code, Palette, Loader2, Check, Menu, Upload, X
 } from 'lucide-react';
 import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 import { useToastStore } from '@/lib/toastStore';
@@ -2166,6 +2166,8 @@ export default function GameBuilder() {
   });
   const [activeTab, setActiveTab] = useState<BuilderTab>('flow');
   const [viewMode, setViewMode] = useState<'visual' | 'code'>('visual');
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importText, setImportText] = useState('');
   const [recentlyUsed, setRecentlyUsed] = useState<string[]>(() => {
     // Load from localStorage
     if (typeof window !== 'undefined') {
@@ -2343,6 +2345,72 @@ export default function GameBuilder() {
       };
       setBlocks(prev => [...prev, newBlock]);
       trackBlockUsage(template.type);
+    }
+  };
+
+  // Import game from JSON
+  const handleImport = () => {
+    try {
+      const data = JSON.parse(importText);
+
+      // Set game name
+      if (data.name) {
+        setGameName(data.name);
+      }
+
+      // Load blocks from main.children
+      if (data.main?.children) {
+        setBlocks(data.main.children);
+      }
+
+      // Load card types
+      if (data.cardTypes?.length) {
+        setCardTypes(data.cardTypes.map((ct: any, idx: number) => ({
+          id: ct.type || `card-${idx}`,
+          type: ct.type,
+          name: ct.name,
+          color: ct.display?.color || '#3b82f6',
+          textColor: ct.display?.textColor || '#ffffff',
+          properties: ct.properties || [],
+        })));
+      }
+
+      // Load zones
+      if (data.zones?.length) {
+        setZones(data.zones.map((z: any, idx: number) => ({
+          id: z.name || `zone-${idx}`,
+          name: z.name,
+          scope: z.scope || 'shared',
+          visibility: z.visibility || 'public',
+        })));
+      }
+
+      // Load resources
+      if (data.resources?.length) {
+        setResources(data.resources.map((r: any, idx: number) => ({
+          id: r.name || `resource-${idx}`,
+          name: r.name,
+          initialValue: r.initialValue || 0,
+          min: r.min,
+          max: r.max,
+        })));
+      }
+
+      // Load decks
+      if (data.decks?.length) {
+        setDecks(data.decks.map((d: any, idx: number) => ({
+          id: d.name || `deck-${idx}`,
+          name: d.name,
+          cardType: d.cardType,
+          cards: d.cards || [],
+        })));
+      }
+
+      setShowImportModal(false);
+      setImportText('');
+      addToast({ message: 'Game imported successfully!', type: 'success' });
+    } catch (err) {
+      addToast({ message: 'Invalid JSON format. Please check and try again.', type: 'error' });
     }
   };
 
@@ -2589,6 +2657,13 @@ export default function GameBuilder() {
         <div style={styles.headerRight} className="gk-builder-header-right">
           <button
             style={{ ...styles.button, ...styles.secondaryButton }}
+            onClick={() => setShowImportModal(true)}
+          >
+            <Upload size={16} />
+            Import
+          </button>
+          <button
+            style={{ ...styles.button, ...styles.secondaryButton }}
             onClick={async () => {
               const dsl = blocksToDSL();
               const json = JSON.stringify(dsl, null, 2);
@@ -2604,7 +2679,7 @@ export default function GameBuilder() {
             }}
           >
             <Code size={16} />
-            Copy Code
+            Export
           </button>
           <button
             style={{
@@ -3574,6 +3649,72 @@ export default function GameBuilder() {
         )}
 
       </div>
+
+      {/* Import Modal */}
+      {showImportModal && (
+        <div
+          style={styles.modalOverlay}
+          onClick={() => setShowImportModal(false)}
+        >
+          <div
+            style={{ ...styles.modalContent, maxWidth: '600px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={styles.modalHeader}>
+              <div style={styles.modalTitle}>
+                <Upload size={18} />
+                Import Game
+              </div>
+              <button
+                style={styles.modalClose}
+                onClick={() => setShowImportModal(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div style={styles.modalBody}>
+              <p style={{ color: '#94a3b8', marginBottom: '16px', fontSize: '14px' }}>
+                Paste a game definition JSON below. You can get this by clicking &quot;Export&quot; on any game.
+              </p>
+              <textarea
+                value={importText}
+                onChange={(e) => setImportText(e.target.value)}
+                placeholder='{"name": "My Game", "main": { "children": [...] }, ...}'
+                style={{
+                  width: '100%',
+                  height: '300px',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(249, 115, 22, 0.3)',
+                  background: 'rgba(15, 23, 42, 0.8)',
+                  color: '#e2e8f0',
+                  fontFamily: "'Fira Code', 'Consolas', monospace",
+                  fontSize: '12px',
+                  resize: 'vertical',
+                }}
+              />
+              <div style={{ display: 'flex', gap: '12px', marginTop: '16px', justifyContent: 'flex-end' }}>
+                <button
+                  style={{ ...styles.button, ...styles.secondaryButton }}
+                  onClick={() => {
+                    setShowImportModal(false);
+                    setImportText('');
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  style={{ ...styles.button, ...styles.primaryButton }}
+                  onClick={handleImport}
+                  disabled={!importText.trim()}
+                >
+                  Import Game
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Properties Modal */}
       {editingBlockId && editingBlockData && (

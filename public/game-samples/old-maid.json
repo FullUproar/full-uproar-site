@@ -1,0 +1,166 @@
+{
+  "id": "old-maid",
+  "name": "Old Maid",
+  "version": "1.0.0",
+  "minPlayers": 2,
+  "maxPlayers": 8,
+  "cardTypes": [
+    {
+      "type": "playing_card",
+      "name": "Playing Card",
+      "display": { "color": "#ec4899", "textColor": "#ffffff" },
+      "properties": [
+        { "name": "rank", "type": "string", "label": "Rank" },
+        { "name": "suit", "type": "string", "label": "Suit" }
+      ]
+    },
+    {
+      "type": "old_maid",
+      "name": "Old Maid",
+      "display": { "color": "#1a1a1a", "textColor": "#f97316" },
+      "properties": []
+    }
+  ],
+  "zones": [
+    { "name": "deck", "scope": "shared", "visibility": "private" },
+    { "name": "hand", "scope": "perPlayer", "visibility": "owner" },
+    { "name": "matched", "scope": "perPlayer", "visibility": "public" }
+  ],
+  "resources": [
+    { "name": "pairsMatched", "initialValue": 0, "min": 0 }
+  ],
+  "decks": [],
+  "main": {
+    "id": "main",
+    "name": "Old Maid",
+    "kind": "game",
+    "children": [
+      {
+        "id": "setup",
+        "kind": "phase",
+        "type": "phase",
+        "name": "Setup",
+        "description": "Remove one Queen, deal all cards, discard initial pairs",
+        "children": [
+          {
+            "id": "shuffle",
+            "kind": "action",
+            "type": "shuffle",
+            "name": "Shuffle",
+            "properties": { "zone": "deck" }
+          },
+          {
+            "id": "deal-all",
+            "kind": "action",
+            "type": "draw",
+            "name": "Draw Cards",
+            "description": "Deal all 51 cards (52 minus one Queen)",
+            "properties": { "count": "all", "from": "deck", "to": "hand" }
+          },
+          {
+            "id": "discard-pairs",
+            "kind": "action",
+            "type": "discardPairs",
+            "name": "Discard Pairs",
+            "description": "Everyone discards matching pairs from their hand",
+            "properties": { "matchBy": "rank" }
+          }
+        ]
+      },
+      {
+        "id": "game-round",
+        "kind": "round",
+        "type": "round",
+        "name": "Game Round",
+        "description": "Continue until one player holds the Old Maid",
+        "properties": { "iterate": "until", "condition": "onePlayerRemaining" },
+        "children": [
+          {
+            "id": "player-turn",
+            "kind": "turn",
+            "type": "turn",
+            "name": "Player Turn",
+            "properties": { "iterate": "forEachPlayer", "order": "turnOrder" },
+            "children": [
+              {
+                "id": "draw-phase",
+                "kind": "phase",
+                "type": "phase",
+                "name": "Draw from Opponent",
+                "children": [
+                  {
+                    "id": "offer-hand",
+                    "kind": "action",
+                    "type": "offerHand",
+                    "name": "Offer Hand",
+                    "description": "Previous player spreads their hand face-down"
+                  },
+                  {
+                    "id": "blind-draw",
+                    "kind": "action",
+                    "type": "blindDraw",
+                    "name": "Blind Draw",
+                    "description": "Draw one random card from opponent's hand",
+                    "properties": { "from": "previousPlayer", "count": 1 }
+                  }
+                ]
+              },
+              {
+                "id": "check-pairs",
+                "kind": "phase",
+                "type": "phase",
+                "name": "Check for Pairs",
+                "children": [
+                  {
+                    "id": "check-new-pair",
+                    "kind": "action",
+                    "type": "discardPairs",
+                    "name": "Discard Pairs",
+                    "description": "If drawn card makes a pair, discard it",
+                    "properties": { "matchBy": "rank" }
+                  }
+                ]
+              },
+              {
+                "id": "check-empty",
+                "kind": "condition",
+                "type": "if",
+                "name": "If Condition",
+                "description": "If hand is empty, player is safe!",
+                "properties": { "condition": "handEmpty" },
+                "children": [
+                  {
+                    "id": "eliminate-safe",
+                    "kind": "action",
+                    "type": "eliminateOnEmpty",
+                    "name": "Eliminate If Empty",
+                    "description": "Player with no cards is out (safe)"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "end-game",
+        "kind": "phase",
+        "type": "phase",
+        "name": "End Game",
+        "children": [
+          {
+            "id": "announce-loser",
+            "kind": "action",
+            "type": "announce",
+            "name": "Announce",
+            "description": "Last player holding the Old Maid loses!",
+            "properties": { "message": "You're the Old Maid!", "to": "loser" }
+          }
+        ]
+      }
+    ]
+  },
+  "winConditions": [
+    { "condition": "notHoldingOldMaid", "description": "Don't be the last one holding the unmatchable card" }
+  ]
+}
