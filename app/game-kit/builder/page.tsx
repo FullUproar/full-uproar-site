@@ -13,6 +13,8 @@ import {
 import { gameKitResponsiveCSS } from '@/lib/game-kit/responsive-styles';
 import { useToastStore } from '@/lib/toastStore';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, LOADING_MESSAGES } from '@/lib/game-kit/constants';
+import { gameConfigToFuScript, GameConfig } from '@/lib/game-kit/dsl-serializer';
+import CodeViewPanel from './components/CodeViewPanel';
 
 // =============================================================================
 // TYPES
@@ -1042,6 +1044,234 @@ const blockTemplates: BlockTemplate[] = [
     description: 'Check if card matches condition',
     category: 'Compare',
   },
+
+  // ==========================================================================
+  // GO FISH & REQUEST - Ask for cards from other players
+  // ==========================================================================
+  {
+    type: 'requestCards',
+    kind: 'action',
+    name: 'Request Cards',
+    icon: <MessageSquare size={16} />,
+    color: '#22c55e',
+    description: 'Ask another player for cards (Go Fish style)',
+    category: 'Request',
+    defaultProperties: { filter: 'rank', onFail: 'draw' },
+  },
+  {
+    type: 'blindDraw',
+    kind: 'action',
+    name: 'Blind Draw',
+    icon: <EyeOff size={16} />,
+    color: '#22c55e',
+    description: 'Draw random card from another player (Old Maid style)',
+    category: 'Request',
+    defaultProperties: { from: 'target', count: 1 },
+  },
+  {
+    type: 'offerHand',
+    kind: 'action',
+    name: 'Offer Hand',
+    icon: <Users size={16} />,
+    color: '#22c55e',
+    description: 'Spread hand face-down for target to draw from',
+    category: 'Request',
+  },
+
+  // ==========================================================================
+  // MATCHING - For Uno, Crazy Eights, Memory
+  // ==========================================================================
+  {
+    type: 'matchPlay',
+    kind: 'action',
+    name: 'Match & Play',
+    icon: <Target size={16} />,
+    color: '#06b6d4',
+    description: 'Play card matching by color OR number',
+    category: 'Match',
+    defaultProperties: { match: 'colorOrRank', from: 'hand', to: 'pile' },
+  },
+  {
+    type: 'playWild',
+    kind: 'action',
+    name: 'Play Wild',
+    icon: <Sparkles size={16} />,
+    color: '#06b6d4',
+    description: 'Play wild card and declare new color/suit',
+    category: 'Match',
+    defaultProperties: { declareProperty: 'color' },
+  },
+  {
+    type: 'discardPairs',
+    kind: 'action',
+    name: 'Discard Pairs',
+    icon: <Copy size={16} />,
+    color: '#06b6d4',
+    description: 'Discard all matching pairs from hand',
+    category: 'Match',
+    defaultProperties: { matchBy: 'rank' },
+  },
+
+  // ==========================================================================
+  // MELDS - For Rummy style games
+  // ==========================================================================
+  {
+    type: 'formMeld',
+    kind: 'action',
+    name: 'Form Meld',
+    icon: <Layers size={16} />,
+    color: '#8b5cf6',
+    description: 'Create a meld (run or set)',
+    category: 'Meld',
+    defaultProperties: { type: 'setOrRun', minCards: 3 },
+  },
+  {
+    type: 'layOff',
+    kind: 'action',
+    name: 'Lay Off',
+    icon: <Plus size={16} />,
+    color: '#8b5cf6',
+    description: 'Add card to existing meld',
+    category: 'Meld',
+  },
+  {
+    type: 'checkBook',
+    kind: 'action',
+    name: 'Check for Book',
+    icon: <Filter size={16} />,
+    color: '#8b5cf6',
+    description: 'Check for 4-of-a-kind (Go Fish book)',
+    category: 'Meld',
+    defaultProperties: { size: 4, groupBy: 'rank' },
+  },
+
+  // ==========================================================================
+  // SIMULTANEOUS - For War, Snap, Spoons
+  // ==========================================================================
+  {
+    type: 'simultaneousReveal',
+    kind: 'action',
+    name: 'Simultaneous Reveal',
+    icon: <Eye size={16} />,
+    color: '#f43f5e',
+    description: 'All players flip a card at once',
+    category: 'Simultaneous',
+    defaultProperties: { from: 'deck', count: 1 },
+  },
+  {
+    type: 'warBattle',
+    kind: 'action',
+    name: 'War Battle',
+    icon: <Zap size={16} />,
+    color: '#f43f5e',
+    description: 'Resolve a tie with face-down cards',
+    category: 'Simultaneous',
+    defaultProperties: { faceDown: 3, faceUp: 1 },
+  },
+  {
+    type: 'claimPile',
+    kind: 'action',
+    name: 'Claim Pile',
+    icon: <Award size={16} />,
+    color: '#f43f5e',
+    description: 'Winner takes all cards on table',
+    category: 'Simultaneous',
+  },
+
+  // ==========================================================================
+  // HAND MANAGEMENT - Swap, shuffle hands
+  // ==========================================================================
+  {
+    type: 'swapHands',
+    kind: 'action',
+    name: 'Swap Hands',
+    icon: <ArrowRightLeft size={16} />,
+    color: '#a855f7',
+    description: 'Exchange entire hand with another player',
+    category: 'Transfer',
+  },
+  {
+    type: 'shuffleHands',
+    kind: 'action',
+    name: 'Shuffle All Hands',
+    icon: <Shuffle size={16} />,
+    color: '#a855f7',
+    description: 'Collect and redistribute all hands',
+    category: 'Transfer',
+  },
+
+  // ==========================================================================
+  // GRID/MEMORY - For Concentration/Memory game
+  // ==========================================================================
+  {
+    type: 'flipAtPosition',
+    kind: 'action',
+    name: 'Flip at Position',
+    icon: <RotateCcw size={16} />,
+    color: '#f59e0b',
+    description: 'Flip card at grid position',
+    category: 'Grid',
+    defaultProperties: { position: 0 },
+  },
+  {
+    type: 'flipBack',
+    kind: 'action',
+    name: 'Flip Back',
+    icon: <EyeOff size={16} />,
+    color: '#f59e0b',
+    description: 'Return cards to face-down',
+    category: 'Grid',
+  },
+  {
+    type: 'checkPairMatch',
+    kind: 'action',
+    name: 'Check Pair Match',
+    icon: <Target size={16} />,
+    color: '#f59e0b',
+    description: 'Check if two flipped cards match',
+    category: 'Grid',
+    defaultProperties: { matchBy: 'rank' },
+  },
+  {
+    type: 'claimPair',
+    kind: 'action',
+    name: 'Claim Pair',
+    icon: <Award size={16} />,
+    color: '#f59e0b',
+    description: 'Claim matched pair from grid',
+    category: 'Grid',
+  },
+
+  // ==========================================================================
+  // ELIMINATION - Player removal mechanics
+  // ==========================================================================
+  {
+    type: 'eliminatePlayer',
+    kind: 'action',
+    name: 'Eliminate Player',
+    icon: <Trash2 size={16} />,
+    color: '#ef4444',
+    description: 'Remove player from game',
+    category: 'Elimination',
+  },
+  {
+    type: 'eliminateOnEmpty',
+    kind: 'action',
+    name: 'Eliminate If Empty',
+    icon: <Trash2 size={16} />,
+    color: '#ef4444',
+    description: 'Eliminate player when hand is empty',
+    category: 'Elimination',
+  },
+  {
+    type: 'lastPlayerWins',
+    kind: 'action',
+    name: 'Last Player Wins',
+    icon: <Award size={16} />,
+    color: '#ef4444',
+    description: 'Last remaining player wins',
+    category: 'Elimination',
+  },
 ];
 
 // Group templates by category
@@ -1935,6 +2165,7 @@ export default function GameBuilder() {
     return allCategories;
   });
   const [activeTab, setActiveTab] = useState<BuilderTab>('flow');
+  const [viewMode, setViewMode] = useState<'visual' | 'code'>('visual');
   const [recentlyUsed, setRecentlyUsed] = useState<string[]>(() => {
     // Load from localStorage
     if (typeof window !== 'undefined') {
@@ -2432,6 +2663,61 @@ export default function GameBuilder() {
           <Box size={16} />
           Components
         </button>
+
+        {/* View Mode Toggle - only show on Flow tab */}
+        {activeTab === 'flow' && (
+          <div style={{
+            marginLeft: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            padding: '4px',
+            background: 'rgba(30, 41, 59, 0.6)',
+            borderRadius: '8px',
+            border: '1px solid rgba(249, 115, 22, 0.2)',
+          }}>
+            <button
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: 'none',
+                background: viewMode === 'visual' ? 'rgba(249, 115, 22, 0.3)' : 'transparent',
+                color: viewMode === 'visual' ? '#fdba74' : '#64748b',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+              onClick={() => setViewMode('visual')}
+            >
+              <Layers size={14} />
+              Visual
+            </button>
+            <button
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: 'none',
+                background: viewMode === 'code' ? 'rgba(249, 115, 22, 0.3)' : 'transparent',
+                color: viewMode === 'code' ? '#fdba74' : '#64748b',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+              onClick={() => setViewMode('code')}
+            >
+              <Code size={14} />
+              Code
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
@@ -3087,8 +3373,8 @@ export default function GameBuilder() {
           </div>
         )}
 
-        {/* Left Sidebar - Block Palette (only in Flow tab) */}
-        {activeTab === 'flow' && <div style={styles.sidebar} className="gk-builder-sidebar">
+        {/* Left Sidebar - Block Palette (only in Flow tab, visual mode) */}
+        {activeTab === 'flow' && viewMode === 'visual' && <div style={styles.sidebar} className="gk-builder-sidebar">
           <div style={styles.sidebarHeader}>
             <Palette size={14} style={{ marginRight: '8px' }} />
             Block Palette
@@ -3223,8 +3509,8 @@ export default function GameBuilder() {
           </div>
         </div>}
 
-        {/* Center - Canvas (only in Flow tab) */}
-        {activeTab === 'flow' && (
+        {/* Center - Canvas (only in Flow tab, visual mode) */}
+        {activeTab === 'flow' && viewMode === 'visual' && (
           <div
             style={styles.canvas}
             className="gk-builder-canvas"
@@ -3268,6 +3554,23 @@ export default function GameBuilder() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Code View Panel (only in Flow tab, code mode) */}
+        {activeTab === 'flow' && viewMode === 'code' && (
+          <CodeViewPanel
+            code={gameConfigToFuScript({
+              id: gameId || 'new-game',
+              name: gameName,
+              version: '1.0.0',
+              cardTypes,
+              zones,
+              resources,
+              decks,
+              blocks,
+            })}
+            gameName={gameName}
+          />
         )}
 
       </div>
