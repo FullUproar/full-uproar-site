@@ -2,5 +2,8 @@
   "$schema": "https://www.partykit.io/schema.json",
   "name": "full-uproar-games",
   "main": "party/game-room.ts",
+  "parties": {
+    "chaos": "party/chaos-room.ts"
+  },
   "compatibilityDate": "2024-01-01"
 }

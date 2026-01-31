@@ -1,0 +1,22 @@
+{
+  "name": "Chaos Agent by Full Uproar",
+  "short_name": "Chaos Agent",
+  "description": "Add secret objectives, random events, and betting to your game night!",
+  "start_url": "/chaos",
+  "scope": "/chaos",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "/FuglyLogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "en-US",
+  "dir": "ltr"
+}

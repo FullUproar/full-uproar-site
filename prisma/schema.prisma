@@ -56,47 +56,47 @@ model Merch {
 }
 
 model Game {
-  id                  Int            @id @default(autoincrement())
+  id                  Int               @id @default(autoincrement())
   title               String
   tagline             String?
   description         String
-  story               String?        @db.Text
+  story               String?           @db.Text
   priceCents          Int
   players             String
   timeToPlay          String
-  ageRating           String         @db.VarChar(20)
+  ageRating           String            @db.VarChar(20)
   imageUrl            String?
-  isBundle            Boolean        @default(false)
-  isPreorder          Boolean        @default(true)
-  featured            Boolean        @default(false)
+  isBundle            Boolean           @default(false)
+  isPreorder          Boolean           @default(true)
+  featured            Boolean           @default(false)
   bundleInfo          String?
-  createdAt           DateTime       @default(now())
-  stock               Int            @default(0)
-  reservedStock       Int            @default(0)
-  slug                String         @unique
+  createdAt           DateTime          @default(now())
+  stock               Int               @default(0)
+  reservedStock       Int               @default(0)
+  slug                String            @unique
   tags                String?
-  category            String?        @default("GAME") @db.VarChar(10)
+  category            String?           @default("GAME") @db.VarChar(10)
   howToPlay           String?
   components          String?
-  videoUrl            String?        @db.VarChar(255)
-  updatedAt           DateTime       @default(now()) @updatedAt
+  videoUrl            String?           @db.VarChar(255)
+  updatedAt           DateTime          @default(now()) @updatedAt
   launchDate          DateTime?
-  isNew               Boolean?       @default(false)
-  isBestseller        Boolean?       @default(false)
-  playerCountCustom   String?        @db.VarChar(255)
-  playTimeCustom      String?        @db.VarChar(255)
-  setupTime           String?        @db.VarChar(255)
-  difficulty          String?        @db.VarChar(255)
-  designer            String?        @db.VarChar(255)
-  artist              String?        @db.VarChar(255)
-  publisher           String?        @default("Full Uproar Games") @db.VarChar(255)
+  isNew               Boolean?          @default(false)
+  isBestseller        Boolean?          @default(false)
+  playerCountCustom   String?           @db.VarChar(255)
+  playTimeCustom      String?           @db.VarChar(255)
+  setupTime           String?           @db.VarChar(255)
+  difficulty          String?           @db.VarChar(255)
+  designer            String?           @db.VarChar(255)
+  artist              String?           @db.VarChar(255)
+  publisher           String?           @default("Full Uproar Games") @db.VarChar(255)
   releaseYear         Int?
-  bggUrl              String?        @db.VarChar(255)
-  playerCount         String?        @default("TWO_TO_FOUR") @db.VarChar(20)
-  playTime            String?        @default("MEDIUM") @db.VarChar(20)
+  bggUrl              String?           @db.VarChar(255)
+  playerCount         String?           @default("TWO_TO_FOUR") @db.VarChar(20)
+  playTime            String?           @default("MEDIUM") @db.VarChar(20)
   whatsInTheBox       String?
-  leadDesigner        String?        @db.VarChar(255)
-  leadArtist          String?        @db.VarChar(255)
+  leadDesigner        String?           @db.VarChar(255)
+  leadArtist          String?           @db.VarChar(255)
   additionalDesigners String?
   additionalArtists   String?
   launchYear          Int?
@@ -104,16 +104,16 @@ model Game {
   launchDay           Int?
   launchHour          Int?
   launchMinute        Int?
-  viewCount           Int            @default(0)
-  archived            Boolean        @default(false)
-  isHidden            Boolean        @default(false)  // Hidden from public shop, visible to admins for testing
-  weightOz            Int?           // Weight in ounces for shipping calculations
+  viewCount           Int               @default(0)
+  archived            Boolean           @default(false)
+  isHidden            Boolean           @default(false) // Hidden from public shop, visible to admins for testing
+  weightOz            Int? // Weight in ounces for shipping calculations
   images              GameImage[]
   inventory           GameInventory?
   orderItems          OrderItem[]
   reviews             Review[]
   designComponents    DesignComponent[]
-  gameNightGames      GameNightGame[]    // Games added to game night lineups
+  gameNightGames      GameNightGame[] // Games added to game night lineups
 }
 
 model Comic {
@@ -324,109 +324,110 @@ model UserActivity {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  clerkId       String        @unique
-  email         String        @unique
-  username      String?       @unique
+  id            String               @id @default(cuid())
+  clerkId       String               @unique
+  email         String               @unique
+  username      String?              @unique
   displayName   String?
   avatarUrl     String?
   bio           String?
   favoriteQuote String?
-  role          UserRole      @default(USER) // Primary role for backwards compatibility
+  role          UserRole             @default(USER) // Primary role for backwards compatibility
   roles         UserRoleAssignment[] // Multiple roles support
-  isActive      Boolean       @default(true)
+  isActive      Boolean              @default(true)
   lastLogin     DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @default(now()) @updatedAt
-  
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @default(now()) @updatedAt
+
   // Customer Membership
-  membershipTier     MembershipTier  @default(FREE)
-  membershipExpiry   DateTime?       // NULL = no expiry, for subscriptions
-  membershipStarted  DateTime?       // When they first got a paid tier
-  employeeDiscount   Int            @default(0) // Percentage discount for employees
-  lifetimeValue      Int            @default(0) // Total spent in cents
-  
+  membershipTier    MembershipTier @default(FREE)
+  membershipExpiry  DateTime? // NULL = no expiry, for subscriptions
+  membershipStarted DateTime? // When they first got a paid tier
+  employeeDiscount  Int            @default(0) // Percentage discount for employees
+  lifetimeValue     Int            @default(0) // Total spent in cents
+
   // Payment
-  stripeCustomerId String?   @unique
-  
+  stripeCustomerId String? @unique
+
   // SMS Consent & Marketing
-  phoneNumber        String?      @unique
-  smsConsent         Boolean      @default(false)
-  smsConsentDate     DateTime?    // When they opted in
-  smsConsentIP       String?      // IP address when consented
-  smsConsentMethod   String?      // "checkout", "account", "campaign"
-  smsOptOutDate      DateTime?    // When they opted out (if applicable)
-  smsVerified        Boolean      @default(false)
-  smsVerificationCode String?     // Temporary code for verification
-  marketingConsent   Boolean      @default(false) // General marketing consent
-  
+  phoneNumber         String?   @unique
+  smsConsent          Boolean   @default(false)
+  smsConsentDate      DateTime? // When they opted in
+  smsConsentIP        String? // IP address when consented
+  smsConsentMethod    String? // "checkout", "account", "campaign"
+  smsOptOutDate       DateTime? // When they opted out (if applicable)
+  smsVerified         Boolean   @default(false)
+  smsVerificationCode String? // Temporary code for verification
+  marketingConsent    Boolean   @default(false) // General marketing consent
+
   // Security fields
-  emailVerified    Boolean      @default(false)
-  emailVerifiedAt  DateTime?
-  isBanned         Boolean      @default(false)
-  bannedAt         DateTime?
-  bannedReason     String?
-  isMuted          Boolean      @default(false)
-  mutedUntil       DateTime?
-  trustLevel       Int          @default(0) // 0=new, 1=basic, 2=member, 3=regular, 4=leader
-  flagCount        Int          @default(0)
-  lastFlaggedAt    DateTime?
+  emailVerified   Boolean   @default(false)
+  emailVerifiedAt DateTime?
+  isBanned        Boolean   @default(false)
+  bannedAt        DateTime?
+  bannedReason    String?
+  isMuted         Boolean   @default(false)
+  mutedUntil      DateTime?
+  trustLevel      Int       @default(0) // 0=new, 1=basic, 2=member, 3=regular, 4=leader
+  flagCount       Int       @default(0)
+  lastFlaggedAt   DateTime?
 
   // Forum-specific ban (separate from site ban)
-  forumBanned       Boolean      @default(false)
+  forumBanned       Boolean   @default(false)
   forumBannedAt     DateTime?
   forumBannedReason String?
-  forumBannedUntil  DateTime?    // null = permanent
+  forumBannedUntil  DateTime? // null = permanent
 
   // Admin 2FA (TOTP) fields
-  totpSecret          String?      // Encrypted TOTP secret for authenticator apps
-  totpEnabled         Boolean      @default(false)
-  totpVerifiedAt      DateTime?    // When 2FA setup was completed
-  adminElevatedUntil  DateTime?    // Session elevation expiry (null = not elevated)
-  
+  totpSecret         String? // Encrypted TOTP secret for authenticator apps
+  totpEnabled        Boolean   @default(false)
+  totpVerifiedAt     DateTime? // When 2FA setup was completed
+  adminElevatedUntil DateTime? // Session elevation expiry (null = not elevated)
+
   // Cult devotion fields
-  cultDevotion  Int           @default(0)
-  cultLevel     Int           @default(0)
+  cultDevotion  Int       @default(0)
+  cultLevel     Int       @default(0)
   cultLastVisit DateTime?
-  
+
   // Future fields for gamification
-  achievementPoints Int        @default(0)
-  easterEggsFound   String?    // JSON array of found easter egg IDs
-  
-  posts             MessagePost[]
-  threads           MessageThread[]
-  boardInvites      BoardInvite[]
-  permissions       Permission[]
-  profile           UserProfile?
-  sessions          UserSession[]
-  addresses         UserAddress[]
-  paymentMethods    UserPaymentMethod[]
-  orders            Order[]
-  returns           Return[]
-  supportTickets    SupportTicket[]
-  assignedTickets   SupportTicket[]     @relation("AssignedTickets")
-  supportMessages   SupportMessage[]
-  orderNotes        OrderNote[]
-  inventoryAlerts   InventoryAlert[]
+  achievementPoints Int     @default(0)
+  easterEggsFound   String? // JSON array of found easter egg IDs
+
+  posts           MessagePost[]
+  threads         MessageThread[]
+  boardInvites    BoardInvite[]
+  permissions     Permission[]
+  profile         UserProfile?
+  sessions        UserSession[]
+  addresses       UserAddress[]
+  paymentMethods  UserPaymentMethod[]
+  orders          Order[]
+  returns         Return[]
+  supportTickets  SupportTicket[]
+  assignedTickets SupportTicket[]     @relation("AssignedTickets")
+  supportMessages SupportMessage[]
+  orderNotes      OrderNote[]
+  inventoryAlerts InventoryAlert[]
 
   // Game Night relations
   hostedGameNights     GameNight[]        @relation("HostedGameNights")
   gameNightAttendances GameNightGuest[]   @relation("GameNightAttendances")
+  chaosParticipations  ChaosParticipant[] @relation("ChaosParticipations")
 
   // Moderation relations
-  reportsCreated           Report[]          @relation("ReportsCreated")
-  reportsReceived          Report[]          @relation("ReportsReceived")
-  reportsReviewed          Report[]          @relation("ReportsReviewed")
+  reportsCreated             Report[]           @relation("ReportsCreated")
+  reportsReceived            Report[]           @relation("ReportsReceived")
+  reportsReviewed            Report[]           @relation("ReportsReviewed")
   moderationActionsPerformed ModerationAction[] @relation("ModerationActionsPerformed")
   moderationActionsReceived  ModerationAction[] @relation("ModerationActionsReceived")
-  autoModRulesCreated      AutoModRule[]
+  autoModRulesCreated        AutoModRule[]
 
   // Rituals relations (Afterroar)
-  ritualsCreated      Ritual[]        @relation("RitualsCreated")
-  ritualMemberships   RitualRegular[] @relation("RitualRegulars")
+  ritualsCreated    Ritual[]        @relation("RitualsCreated")
+  ritualMemberships RitualRegular[] @relation("RitualRegulars")
 
   // Game Kit relations
-  createdCustomGames  CustomGameDefinition[] @relation("CreatedCustomGames")
+  createdCustomGames CustomGameDefinition[] @relation("CreatedCustomGames")
 
   @@index([clerkId])
   @@index([email])
@@ -503,74 +504,74 @@ model UserRoleAssignment {
   expiresAt  DateTime?
   notes      String?
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@unique([userId, role])
   @@index([userId])
   @@index([role])
 }
 
 model UserAddress {
-  id            String   @id @default(cuid())
-  userId        String
-  nickname      String?  // e.g., "Home", "Work", "Mom's House"
-  isDefault     Boolean  @default(false)
-  
+  id        String  @id @default(cuid())
+  userId    String
+  nickname  String? // e.g., "Home", "Work", "Mom's House"
+  isDefault Boolean @default(false)
+
   // Address fields
-  fullName      String
-  phone         String?
-  street        String
-  apartment     String?
-  city          String
-  state         String
-  zipCode       String
-  country       String   @default("US")
-  
+  fullName  String
+  phone     String?
+  street    String
+  apartment String?
+  city      String
+  state     String
+  zipCode   String
+  country   String  @default("US")
+
   // Metadata
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now()) @updatedAt
-  lastUsedAt    DateTime?
-  
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
+  lastUsedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([isDefault])
 }
 
 model UserPaymentMethod {
-  id                String   @id @default(cuid())
-  userId            String
-  stripePaymentId   String   @unique // Stripe payment method ID
-  type              String   // "card", "bank", etc.
-  isDefault         Boolean  @default(false)
-  
+  id              String  @id @default(cuid())
+  userId          String
+  stripePaymentId String  @unique // Stripe payment method ID
+  type            String // "card", "bank", etc.
+  isDefault       Boolean @default(false)
+
   // Display info (from Stripe, never store actual card numbers)
-  brand             String?  // "visa", "mastercard", etc.
-  last4             String?  // Last 4 digits only
-  expMonth          Int?
-  expYear           Int?
-  
+  brand    String? // "visa", "mastercard", etc.
+  last4    String? // Last 4 digits only
+  expMonth Int?
+  expYear  Int?
+
   // Metadata
-  nickname          String?  // User-defined name like "Personal Card"
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now()) @updatedAt
-  lastUsedAt        DateTime?
-  
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  nickname   String? // User-defined name like "Personal Card"
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
+  lastUsedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([isDefault])
 }
 
 model BoardCategory {
-  id          Int             @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
-  slug        String          @unique
+  slug        String         @unique
   description String?
   icon        String?
-  sortOrder   Int             @default(0)
-  isActive    Boolean         @default(true)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @default(now()) @updatedAt
+  sortOrder   Int            @default(0)
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
   boards      MessageBoard[]
 }
 
@@ -595,13 +596,13 @@ model MessageBoard {
 }
 
 model BoardInvite {
-  id        Int           @id @default(autoincrement())
-  boardId   Int
-  board     MessageBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  invitedBy String
-  invitedAt DateTime      @default(now())
+  id         Int          @id @default(autoincrement())
+  boardId    Int
+  board      MessageBoard @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invitedBy  String
+  invitedAt  DateTime     @default(now())
   acceptedAt DateTime?
 
   @@unique([boardId, userId])
@@ -623,7 +624,7 @@ model MessageThread {
   updatedAt  DateTime      @default(now()) @updatedAt
   posts      MessagePost[]
   board      MessageBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  gameNights GameNight[]   // Game nights that use this thread as chat
+  gameNights GameNight[] // Game nights that use this thread as chat
 
   @@unique([boardId, slug])
   @@index([boardId])
@@ -648,10 +649,10 @@ model MessagePost {
 }
 
 enum BoardAccessLevel {
-  PUBLIC           // Anyone can view
-  MEMBERS_ONLY     // Must be logged in
+  PUBLIC // Anyone can view
+  MEMBERS_ONLY // Must be logged in
   SUBSCRIBERS_ONLY // Must have premium membership
-  PRIVATE          // Invite only
+  PRIVATE // Invite only
 }
 
 enum MerchCategory {
@@ -731,10 +732,10 @@ enum PlayTime {
 }
 
 enum UserRole {
-  GOD           // Absolute power - for info@fulluproar.com
-  SUPER_ADMIN   // Full system access
-  ADMIN         // Standard admin
-  HR            // Human Resources
+  GOD // Absolute power - for info@fulluproar.com
+  SUPER_ADMIN // Full system access
+  ADMIN // Standard admin
+  HR // Human Resources
   PRODUCT_MANAGER
   MARKETING
   CUSTOMER_SERVICE
@@ -748,73 +749,73 @@ enum UserRole {
 }
 
 enum MembershipTier {
-  FREE          // Basic registered user
+  FREE // Basic registered user
   AFTERROAR_PLUS // Premium subscription
-  VIP           // High-value customers
-  CREATOR       // Community content creators
-  BETA_TESTER   // Early access group
+  VIP // High-value customers
+  CREATOR // Community content creators
+  BETA_TESTER // Early access group
 }
 
 model SMSConsentLog {
-  id              String    @id @default(cuid())
-  userId          String
-  phoneNumber     String
-  action          String    // "opt_in", "opt_out", "verify", "update"
-  consentGiven    Boolean
-  ipAddress       String?
-  userAgent       String?
-  method          String?   // "checkout", "account", "api", "sms_reply"
-  message         String?   // The opt-in message shown to user
-  timestamp       DateTime  @default(now())
-  
+  id           String   @id @default(cuid())
+  userId       String
+  phoneNumber  String
+  action       String // "opt_in", "opt_out", "verify", "update"
+  consentGiven Boolean
+  ipAddress    String?
+  userAgent    String?
+  method       String? // "checkout", "account", "api", "sms_reply"
+  message      String? // The opt-in message shown to user
+  timestamp    DateTime @default(now())
+
   @@index([userId])
   @@index([phoneNumber])
   @@index([timestamp])
 }
 
 model SMSMessage {
-  id              String    @id @default(cuid())
-  userId          String?
-  phoneNumber     String
-  message         String    @db.Text
-  direction       String    // "outbound" or "inbound"
-  status          String    // "pending", "sent", "delivered", "failed"
-  twilioSid       String?   @unique
-  twilioStatus    String?
-  errorMessage    String?
-  campaignId      String?   // Link to marketing campaign
-  sentAt          DateTime  @default(now())
-  deliveredAt     DateTime?
-  
+  id           String    @id @default(cuid())
+  userId       String?
+  phoneNumber  String
+  message      String    @db.Text
+  direction    String // "outbound" or "inbound"
+  status       String // "pending", "sent", "delivered", "failed"
+  twilioSid    String?   @unique
+  twilioStatus String?
+  errorMessage String?
+  campaignId   String? // Link to marketing campaign
+  sentAt       DateTime  @default(now())
+  deliveredAt  DateTime?
+
   @@index([userId])
   @@index([phoneNumber])
   @@index([twilioSid])
 }
 
 model DesignComponent {
-  id              String    @id @default(cuid())
-  gameId          Int
-  game            Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  
-  type            String    // ComponentType enum: CARD_FACE, BOX, INSTRUCTIONS
-  name            String    // e.g., "Hack Your Deck card face 001"
-  description     String?   @db.Text
-  
-  status          String    @default("IN_DRAFT") // ComponentStatus enum
-  
+  id     String @id @default(cuid())
+  gameId Int
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  type        String // ComponentType enum: CARD_FACE, BOX, INSTRUCTIONS
+  name        String // e.g., "Hack Your Deck card face 001"
+  description String? @db.Text
+
+  status String @default("IN_DRAFT") // ComponentStatus enum
+
   // Preview image (lightweight PNG for admin panel)
-  previewUrl      String?
-  
+  previewUrl String?
+
   // Tracking
-  notes           String?   @db.Text
-  sortOrder       Int       @default(0)
-  
+  notes     String? @db.Text
+  sortOrder Int     @default(0)
+
   // Metadata
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  lastReviewedAt  DateTime?
-  approvedBy      String?   // User ID who approved
-  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  lastReviewedAt DateTime?
+  approvedBy     String? // User ID who approved
+
   @@index([gameId])
   @@index([type])
   @@index([status])
@@ -822,25 +823,25 @@ model DesignComponent {
 }
 
 model ImpossibleMerch {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   title           String
-  slug            String    @unique
-  tagline         String?   // "The breakfast of champions who hate mornings"
-  description     String    @db.Text
-  impossiblePrice String    // "$999.99" or "Your Soul" or "3 Easy Payments of Your Dignity"
+  slug            String   @unique
+  tagline         String? // "The breakfast of champions who hate mornings"
+  description     String   @db.Text
+  impossiblePrice String // "$999.99" or "Your Soul" or "3 Easy Payments of Your Dignity"
   imageUrl        String?
-  category        String?   // "Food", "Vehicles", "Weapons", "Services"
-  warning         String?   // "Not FDA Approved" or "May Cause Interdimensional Travel"
-  ingredients     String?   @db.Text // For food items
-  features        String?   @db.Text // Bullet points of ridiculous features
-  legalDisclaimer String?   @db.Text // "Full Uproar is not responsible for..."
-  stockStatus     String    @default("IMPOSSIBLE") // "IMPOSSIBLE", "SOLD_OUT_FOREVER", "DISCONTINUED_BY_PHYSICS"
-  rejectionReason String?   // What happens when they try to buy
-  isActive        Boolean   @default(true)
-  sortOrder       Int       @default(0)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  
+  category        String? // "Food", "Vehicles", "Weapons", "Services"
+  warning         String? // "Not FDA Approved" or "May Cause Interdimensional Travel"
+  ingredients     String?  @db.Text // For food items
+  features        String?  @db.Text // Bullet points of ridiculous features
+  legalDisclaimer String?  @db.Text // "Full Uproar is not responsible for..."
+  stockStatus     String   @default("IMPOSSIBLE") // "IMPOSSIBLE", "SOLD_OUT_FOREVER", "DISCONTINUED_BY_PHYSICS"
+  rejectionReason String? // What happens when they try to buy
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
   @@index([slug])
   @@index([isActive])
 }
@@ -869,28 +870,28 @@ model ShippingLabel {
 }
 
 model Return {
-  id                    Int          @id @default(autoincrement())
-  rmaNumber             String       @unique
-  orderId               String
-  userId                String?
-  customerEmail         String
-  status                String       @default("requested")
-  reason                String
-  condition             String?
-  customerNotes         String?
-  internalNotes         String?
-  returnShippingMethod  String?
-  returnTrackingNumber  String?
-  receivedAt            DateTime?    @db.Timestamp(6)
-  processedAt           DateTime?    @db.Timestamp(6)
-  refundAmountCents     Int?
-  restockingFeeCents    Int          @default(0)
-  replacementOrderId    String?
-  createdAt             DateTime     @default(now()) @db.Timestamp(6)
-  updatedAt             DateTime     @default(now()) @updatedAt @db.Timestamp(6)
-  order                 Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  user                  User?        @relation(fields: [userId], references: [id])
-  items                 ReturnItem[]
+  id                   Int          @id @default(autoincrement())
+  rmaNumber            String       @unique
+  orderId              String
+  userId               String?
+  customerEmail        String
+  status               String       @default("requested")
+  reason               String
+  condition            String?
+  customerNotes        String?
+  internalNotes        String?
+  returnShippingMethod String?
+  returnTrackingNumber String?
+  receivedAt           DateTime?    @db.Timestamp(6)
+  processedAt          DateTime?    @db.Timestamp(6)
+  refundAmountCents    Int?
+  restockingFeeCents   Int          @default(0)
+  replacementOrderId   String?
+  createdAt            DateTime     @default(now()) @db.Timestamp(6)
+  updatedAt            DateTime     @default(now()) @updatedAt @db.Timestamp(6)
+  order                Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user                 User?        @relation(fields: [userId], references: [id])
+  items                ReturnItem[]
 
   @@index([orderId])
   @@index([status])
@@ -942,7 +943,7 @@ model SupportMessage {
   ticketId    Int
   senderId    String?
   senderName  String?
-  senderType  String        // 'customer', 'staff', 'system'
+  senderType  String // 'customer', 'staff', 'system'
   message     String
   attachments Json?
   isInternal  Boolean       @default(false)
@@ -966,12 +967,12 @@ model OrderNote {
 
 model InventoryAlert {
   id           Int       @id @default(autoincrement())
-  itemType     String    // 'game' or 'merch'
+  itemType     String // 'game' or 'merch'
   itemId       Int
   itemName     String
   currentStock Int
   threshold    Int
-  alertType    String    // 'low_stock', 'out_of_stock', 'restock_needed'
+  alertType    String // 'low_stock', 'out_of_stock', 'restock_needed'
   isResolved   Boolean   @default(false)
   resolvedAt   DateTime? @db.Timestamp(6)
   resolvedBy   String?
@@ -987,8 +988,8 @@ model EmailNotification {
   recipientName  String?
   subject        String
   templateType   String
-  relatedId      String?   // Could be orderId, ticketId, etc
-  relatedType    String?   // 'order', 'ticket', 'return', etc
+  relatedId      String? // Could be orderId, ticketId, etc
+  relatedType    String? // 'order', 'ticket', 'return', etc
   status         String    @default("pending")
   sentAt         DateTime? @db.Timestamp(6)
   errorMessage   String?
@@ -1019,52 +1020,52 @@ model AnalyticsEvent {
 // ============================================
 
 model Redirect {
-  id          Int       @id @default(autoincrement())
-  slug        String    @unique  // e.g., "fugly", "pax2025"
-  destination String              // Full URL to redirect to
-  name        String?             // Friendly name for admin display
-  description String?             // Notes about where this is used
+  id          Int     @id @default(autoincrement())
+  slug        String  @unique // e.g., "fugly", "pax2025"
+  destination String // Full URL to redirect to
+  name        String? // Friendly name for admin display
+  description String? // Notes about where this is used
 
   // Status
-  isActive    Boolean   @default(true)
+  isActive Boolean @default(true)
 
   // Analytics
-  scanCount   Int       @default(0)
+  scanCount     Int       @default(0)
   lastScannedAt DateTime?
 
   // Metadata
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  createdBy   String?   // User ID who created it
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  createdBy String? // User ID who created it
 
   // Relations
-  scans       RedirectScan[]
+  scans RedirectScan[]
 
   @@index([slug])
   @@index([isActive])
 }
 
 model RedirectScan {
-  id          Int       @id @default(autoincrement())
-  redirectId  Int
-  redirect    Redirect  @relation(fields: [redirectId], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  redirectId Int
+  redirect   Redirect @relation(fields: [redirectId], references: [id], onDelete: Cascade)
 
   // Tracking data
-  ipAddress   String?
-  userAgent   String?
-  referer     String?
-  country     String?
-  city        String?
-  device      String?   // "mobile", "desktop", "tablet"
-  browser     String?
-  os          String?
+  ipAddress String?
+  userAgent String?
+  referer   String?
+  country   String?
+  city      String?
+  device    String? // "mobile", "desktop", "tablet"
+  browser   String?
+  os        String?
 
   // UTM parameters (if present in destination or passed through)
   utmSource   String?
   utmMedium   String?
   utmCampaign String?
 
-  scannedAt   DateTime  @default(now())
+  scannedAt DateTime @default(now())
 
   @@index([redirectId])
   @@index([scannedAt])
@@ -1075,51 +1076,52 @@ model RedirectScan {
 // ============================================
 
 model GameNight {
-  id              String              @id @default(cuid())
-  hostId          String
-  host            User                @relation("HostedGameNights", fields: [hostId], references: [id])
+  id     String @id @default(cuid())
+  hostId String
+  host   User   @relation("HostedGameNights", fields: [hostId], references: [id])
 
   // Ritual relation (for recurring game nights)
-  ritualId        String?
-  ritual          Ritual?             @relation("RitualGameNights", fields: [ritualId], references: [id])
-  ritualInstance  Int?                // Which occurrence of the ritual (1st, 2nd, 3rd...)
+  ritualId       String?
+  ritual         Ritual? @relation("RitualGameNights", fields: [ritualId], references: [id])
+  ritualInstance Int? // Which occurrence of the ritual (1st, 2nd, 3rd...)
 
   // Event details
-  title           String              @default("Game Night")
-  description     String?
-  date            DateTime
-  startTime       String?             // "7:00 PM" - flexible format for display
-  duration        Int?                // Expected duration in minutes
-  location        String?             // Physical address or "Online" or custom
-  maxGuests       Int?                // null = unlimited
+  title       String   @default("Game Night")
+  description String?
+  date        DateTime
+  startTime   String? // "7:00 PM" - flexible format for display
+  duration    Int? // Expected duration in minutes
+  location    String? // Physical address or "Online" or custom
+  maxGuests   Int? // null = unlimited
 
   // Vibe & theming
-  vibe            GameNightVibe       @default(CHILL)
-  theme           String?             // Custom theme like "80s Arcade Night"
-  aiSuggestions   Json?               // Stored AI suggestions (games, snacks, etc.)
-  houseRules      String?             // Custom house rules for the game night
+  vibe          GameNightVibe @default(CHILL)
+  theme         String? // Custom theme like "80s Arcade Night"
+  aiSuggestions Json? // Stored AI suggestions (games, snacks, etc.)
+  houseRules    String? // Custom house rules for the game night
 
   // Team chat - linked to forum infrastructure
-  chatThreadId    Int?                // Links to MessageThread for group chat
-  chatThread      MessageThread?      @relation(fields: [chatThreadId], references: [id])
+  chatThreadId Int? // Links to MessageThread for group chat
+  chatThread   MessageThread? @relation(fields: [chatThreadId], references: [id])
 
   // Status
-  status          GameNightStatus     @default(PLANNING)
+  status GameNightStatus @default(PLANNING)
 
   // Reminder settings
-  reminderSent    Boolean             @default(false)
-  dayOfReminderSent Boolean           @default(false)
+  reminderSent      Boolean @default(false)
+  dayOfReminderSent Boolean @default(false)
 
   // Metadata
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @default(now()) @updatedAt
-  completedAt     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  completedAt DateTime?
 
   // Relations
-  guests          GameNightGuest[]
-  games           GameNightGame[]
-  moments         GameNightMoment[]
-  recap           GameNightRecap?
+  guests       GameNightGuest[]
+  games        GameNightGame[]
+  moments      GameNightMoment[]
+  recap        GameNightRecap?
+  chaosSession ChaosSession?
 
   @@index([hostId])
   @@index([date])
@@ -1128,36 +1130,36 @@ model GameNight {
 }
 
 model GameNightGuest {
-  id              String              @id @default(cuid())
-  gameNightId     String
-  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  gameNightId String
+  gameNight   GameNight @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
 
   // Guest identity (one of these should be set)
-  userId          String?             // If they're a registered user
-  user            User?               @relation("GameNightAttendances", fields: [userId], references: [id])
-  guestName       String?             // For non-registered guests
-  guestEmail      String?             // For sending invites/reminders
-  guestPhone      String?             // Optional phone for SMS reminders
+  userId     String? // If they're a registered user
+  user       User?   @relation("GameNightAttendances", fields: [userId], references: [id])
+  guestName  String? // For non-registered guests
+  guestEmail String? // For sending invites/reminders
+  guestPhone String? // Optional phone for SMS reminders
 
   // Invite tracking
-  inviteToken     String              @unique @default(cuid()) // Magic link token
-  inviteSentAt    DateTime?
-  inviteMethod    String?             // "link", "email", "sms"
+  inviteToken  String    @unique @default(cuid()) // Magic link token
+  inviteSentAt DateTime?
+  inviteMethod String? // "link", "email", "sms"
 
   // Response
-  status          GuestStatus         @default(PENDING)
-  respondedAt     DateTime?
+  status      GuestStatus @default(PENDING)
+  respondedAt DateTime?
 
   // Role at the event
-  isCoHost        Boolean             @default(false)
-  bringing        String?             // What they're bringing: "snacks", "drinks", etc.
+  isCoHost Boolean @default(false)
+  bringing String? // What they're bringing: "snacks", "drinks", etc.
 
   // Metadata
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // Game night stats for this guest
-  gamesWon        Int                 @default(0)
+  gamesWon Int @default(0)
 
   @@unique([gameNightId, userId])
   @@unique([gameNightId, guestEmail])
@@ -1167,37 +1169,37 @@ model GameNightGuest {
 }
 
 model GameNightGame {
-  id              String              @id @default(cuid())
-  gameNightId     String
-  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  gameNightId String
+  gameNight   GameNight @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
 
   // Game reference (either our game or custom)
-  gameId          Int?                // Links to our Game model if applicable
-  game            Game?               @relation(fields: [gameId], references: [id])
-  customGameName  String?             // For games not in our catalog
+  gameId         Int? // Links to our Game model if applicable
+  game           Game?   @relation(fields: [gameId], references: [id])
+  customGameName String? // For games not in our catalog
 
   // Planning
-  playOrder       Int                 @default(0)
+  playOrder        Int  @default(0)
   estimatedMinutes Int?
 
   // Status during the night
-  status          GameStatus          @default(PLANNED)
-  startedAt       DateTime?
-  completedAt     DateTime?
+  status      GameStatus @default(PLANNED)
+  startedAt   DateTime?
+  completedAt DateTime?
 
   // Winner(s)
-  winnerId        String?             // GameNightGuest ID
-  winnerName      String?             // Denormalized for easy display
-  isTie           Boolean             @default(false)
+  winnerId   String? // GameNightGuest ID
+  winnerName String? // Denormalized for easy display
+  isTie      Boolean @default(false)
 
   // Fun stats
-  chaosLevel      Int?                // 1-10 rating
-  notes           String?             // "Dave rage quit after losing Catan"
+  chaosLevel Int? // 1-10 rating
+  notes      String? // "Dave rage quit after losing Catan"
 
-  createdAt       DateTime            @default(now())
+  createdAt DateTime @default(now())
 
   // Voting
-  votes           GameNightGameVote[]
+  votes GameNightGameVote[]
 
   @@index([gameNightId])
   @@index([gameId])
@@ -1206,19 +1208,19 @@ model GameNightGame {
 
 // Voting for which games to play
 model GameNightGameVote {
-  id              String              @id @default(cuid())
+  id              String        @id @default(cuid())
   gameNightGameId String
-  gameNightGame   GameNightGame       @relation(fields: [gameNightGameId], references: [id], onDelete: Cascade)
+  gameNightGame   GameNightGame @relation(fields: [gameNightGameId], references: [id], onDelete: Cascade)
 
   // Who voted (either guest or userId for host)
-  guestId         String?             // GameNightGuest ID
-  userId          String?             // For host voting
+  guestId String? // GameNightGuest ID
+  userId  String? // For host voting
 
   // Vote type
-  vote            Int                 @default(1) // 1 = upvote, -1 = downvote, 0 = meh
+  vote Int @default(1) // 1 = upvote, -1 = downvote, 0 = meh
 
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([gameNightGameId, guestId])
   @@unique([gameNightGameId, userId])
@@ -1226,48 +1228,48 @@ model GameNightGameVote {
 }
 
 model GameNightMoment {
-  id              String              @id @default(cuid())
-  gameNightId     String
-  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  gameNightId String
+  gameNight   GameNight @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
 
   // Who captured it
-  capturedById    String?             // GameNightGuest ID or host
-  capturedByName  String?
+  capturedById   String? // GameNightGuest ID or host
+  capturedByName String?
 
   // Content
-  type            MomentType          @default(NOTE)
-  content         String?             // Text content or caption
-  imageUrl        String?             // Photo URL if uploaded
+  type     MomentType @default(NOTE)
+  content  String? // Text content or caption
+  imageUrl String? // Photo URL if uploaded
 
   // Context
-  gameId          String?             // Which game this moment was during
+  gameId String? // Which game this moment was during
 
-  createdAt       DateTime            @default(now())
+  createdAt DateTime @default(now())
 
   @@index([gameNightId])
   @@index([type])
 }
 
 model GameNightRecap {
-  id              String              @id @default(cuid())
-  gameNightId     String              @unique
-  gameNight       GameNight           @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  gameNightId String    @unique
+  gameNight   GameNight @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
 
   // AI-generated content
-  aiSummary       String?             @db.Text // Fun recap narrative
-  highlights      Json?               // Key moments, winners, stats
+  aiSummary  String? @db.Text // Fun recap narrative
+  highlights Json? // Key moments, winners, stats
 
   // Stats
-  totalGamesPlayed Int               @default(0)
+  totalGamesPlayed     Int     @default(0)
   totalDurationMinutes Int?
-  mvpGuestId      String?             // Most wins
-  chaosChampionId String?             // Highest chaos moments
+  mvpGuestId           String? // Most wins
+  chaosChampionId      String? // Highest chaos moments
 
   // Sharing
-  isPublic        Boolean             @default(false)
-  shareToken      String?             @unique
+  isPublic   Boolean @default(false)
+  shareToken String? @unique
 
-  generatedAt     DateTime            @default(now())
+  generatedAt DateTime @default(now())
 
   @@index([shareToken])
 }
@@ -1275,41 +1277,309 @@ model GameNightRecap {
 // Enums for Game Night
 
 enum GameNightVibe {
-  CHILL         // Relaxed, casual games
-  COMPETITIVE   // Bring your A-game
-  CHAOS         // Full Uproar mode
-  PARTY         // High energy, lots of people
-  COZY          // Intimate, story-driven
+  CHILL // Relaxed, casual games
+  COMPETITIVE // Bring your A-game
+  CHAOS // Full Uproar mode
+  PARTY // High energy, lots of people
+  COZY // Intimate, story-driven
 }
 
 enum GameNightStatus {
-  PLANNING      // Still being set up
-  LOCKED_IN     // Date confirmed, invites out
-  IN_PROGRESS   // It's happening!
-  COMPLETED     // Done, ready for recap
-  CANCELLED     // Didn't happen
+  PLANNING // Still being set up
+  LOCKED_IN // Date confirmed, invites out
+  IN_PROGRESS // It's happening!
+  COMPLETED // Done, ready for recap
+  CANCELLED // Didn't happen
 }
 
 enum GuestStatus {
-  PENDING       // Haven't responded
-  IN            // They're coming!
-  MAYBE         // On the fence
-  OUT           // Can't make it
+  PENDING // Haven't responded
+  IN // They're coming!
+  MAYBE // On the fence
+  OUT // Can't make it
 }
 
 enum GameStatus {
-  PLANNED       // On the lineup
-  PLAYING       // Currently playing
-  COMPLETED     // Finished
-  SKIPPED       // Didn't get to it
+  PLANNED // On the lineup
+  PLAYING // Currently playing
+  COMPLETED // Finished
+  SKIPPED // Didn't get to it
 }
 
 enum MomentType {
-  NOTE          // Text note
-  PHOTO         // Image
-  WINNER        // Game winner announcement
-  CHAOS         // Epic chaos moment
-  QUOTE         // Funny quote from the night
+  NOTE // Text note
+  PHOTO // Image
+  WINNER // Game winner announcement
+  CHAOS // Epic chaos moment
+  QUOTE // Funny quote from the night
+}
+
+// ============================================
+// CHAOS AGENT - Meta-layer for game nights
+// ============================================
+
+model ChaosSession {
+  id          String    @id @default(cuid())
+  gameNightId String    @unique
+  gameNight   GameNight @relation(fields: [gameNightId], references: [id], onDelete: Cascade)
+
+  // Room connection
+  roomCode String @unique // 6-char PartyKit room code
+
+  // Session state
+  status    ChaosSessionStatus @default(SETUP)
+  intensity ChaosIntensity     @default(MEDIUM)
+
+  // Tuning answers from setup phase
+  setupAnswers Json? // Aggregated player preferences
+
+  // Event scheduling
+  eventFrequencyMinutes Int       @default(15)
+  lastEventAt           DateTime?
+
+  // Timestamps
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+
+  // Relations
+  participants ChaosParticipant[]
+  objectives   ChaosObjective[]
+  events       ChaosEvent[]
+  bets         ChaosBet[]
+  miniGames    ChaosMiniGame[]
+
+  @@index([roomCode])
+  @@index([status])
+}
+
+model ChaosParticipant {
+  id        String       @id @default(cuid())
+  sessionId String
+  session   ChaosSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  // Identity (one of these)
+  guestId     String? // Links to GameNightGuest
+  userId      String? // Registered user
+  user        User?   @relation("ChaosParticipations", fields: [userId], references: [id])
+  displayName String // Name shown in app
+
+  // Connection
+  connectionId String? // PartyKit connection ID
+  isConnected  Boolean  @default(false)
+  lastSeenAt   DateTime @default(now())
+
+  // Role
+  isHost Boolean @default(false)
+
+  // Chaos stats for this session
+  chaosPoints         Int @default(100) // Starting pool
+  objectivesCompleted Int @default(0)
+  betsWon             Int @default(0)
+
+  // Setup answers
+  answers Json? // Personal tuning answers
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  objectives   ChaosObjective[]
+  betsPlaced   ChaosBet[]       @relation("BetsPlaced")
+  betsTargeted ChaosBet[]       @relation("BetsTargeted")
+
+  @@unique([sessionId, guestId])
+  @@unique([sessionId, userId])
+  @@index([sessionId])
+}
+
+model ChaosObjective {
+  id            String           @id @default(cuid())
+  sessionId     String
+  session       ChaosSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participantId String
+  participant   ChaosParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  // Objective content
+  templateId  String // Reference to objective template
+  title       String // "The Saboteur"
+  description String // "Make someone else lose by..."
+  difficulty  Int    @default(2) // 1-5 stars
+  chaosPoints Int    @default(10)
+
+  // Status
+  status      ObjectiveStatus @default(ACTIVE)
+  completedAt DateTime?
+  claimedAt   DateTime? // When player claimed completion
+
+  // Verification
+  requiresVote Boolean @default(false)
+  votes        Json? // { participantId: boolean }
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([participantId])
+}
+
+model ChaosEvent {
+  id        String       @id @default(cuid())
+  sessionId String
+  session   ChaosSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  // Event content
+  templateId      String
+  title           String // "Role Reversal!"
+  description     String // "For the next round, play as if..."
+  eventType       ChaosEventType
+  durationMinutes Int? // null = one-time
+
+  // Targeting
+  targetType EventTargetType @default(ALL)
+  targetIds  String[] // Participant IDs if targeted
+
+  // Status
+  status      EventStatus @default(PENDING)
+  triggeredAt DateTime?
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([status])
+}
+
+model ChaosBet {
+  id        String           @id @default(cuid())
+  sessionId String
+  session   ChaosSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  bettorId  String
+  bettor    ChaosParticipant @relation("BetsPlaced", fields: [bettorId], references: [id], onDelete: Cascade)
+
+  // Bet content
+  betType     ChaosBetType
+  description String // "Sarah will win the next game"
+  targetId    String? // Participant being bet on
+  target      ChaosParticipant? @relation("BetsTargeted", fields: [targetId], references: [id])
+
+  // Stakes
+  pointsWagered Int
+  multiplier    Float @default(2.0) // Payout multiplier
+
+  // Result
+  status     BetStatus @default(OPEN)
+  won        Boolean?
+  pointsWon  Int?
+  resolvedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([status])
+}
+
+model ChaosMiniGame {
+  id        String       @id @default(cuid())
+  sessionId String
+  session   ChaosSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  templateId  String
+  title       String // "Quick Draw"
+  description String
+  gameType    MiniGameType
+
+  // Configuration
+  config          Json? // Game-specific config
+  durationSeconds Int // Game duration
+
+  // State
+  status  MiniGameStatus @default(PENDING)
+  state   Json? // Live game state
+  results Json? // Final results
+
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([sessionId])
+}
+
+// Chaos Agent Enums
+
+enum ChaosSessionStatus {
+  SETUP // Players answering setup questions
+  ACTIVE // Chaos is happening
+  PAUSED // Temporarily paused
+  ENDED // Session complete
+}
+
+enum ChaosIntensity {
+  LOW // Gentle chaos
+  MEDIUM // Standard chaos
+  HIGH // Maximum chaos
+  CUSTOM // Host-defined
+}
+
+enum ObjectiveStatus {
+  ACTIVE // In progress
+  CLAIMED // Player claims completion
+  COMPLETED // Verified complete
+  FAILED // Failed to complete
+  EXPIRED // Time ran out
+}
+
+enum ChaosEventType {
+  RULE_MODIFIER // Changes game rules temporarily
+  CHALLENGE // Everyone must do something
+  ROLEPLAY // Act differently
+  SWAP // Exchange something
+  WILD_CARD // Unpredictable
+}
+
+enum EventTargetType {
+  ALL // Everyone
+  RANDOM_ONE // One random player
+  RANDOM_HALF // Half the players
+  SPECIFIC // Specific player(s)
+  LEADER // Current points leader
+  LAST_PLACE // Last place player
+}
+
+enum EventStatus {
+  PENDING // Not yet triggered
+  ACTIVE // Currently happening
+  COMPLETED // Finished
+  SKIPPED // Host skipped
+}
+
+enum ChaosBetType {
+  WINNER // Who will win
+  PERFORMANCE // How someone will do
+  EVENT_PRED // Something will happen
+  CUSTOM // Free-form bet
+}
+
+enum BetStatus {
+  OPEN // Accepting bets
+  LOCKED // No more bets
+  RESOLVED // Outcome determined
+  CANCELLED // Bet cancelled
+}
+
+enum MiniGameType {
+  QUICK_DRAW // First to tap
+  VOTE // Vote on something
+  TRIVIA // Quick question
+  CHALLENGE // Physical/verbal challenge
+  ROULETTE // Random selection
+}
+
+enum MiniGameStatus {
+  PENDING
+  STARTING
+  ACTIVE
+  VOTING
+  ENDED
 }
 
 // ============================================
@@ -1317,34 +1587,34 @@ enum MomentType {
 // ============================================
 
 model Report {
-  id             String         @id @default(cuid())
-  reporterId     String         // Who reported it
-  reporter       User           @relation("ReportsCreated", fields: [reporterId], references: [id])
+  id         String @id @default(cuid())
+  reporterId String // Who reported it
+  reporter   User   @relation("ReportsCreated", fields: [reporterId], references: [id])
 
   // What was reported
-  contentType    ReportContentType  // POST, THREAD, USER, GAME_NIGHT, etc
-  contentId      String         // ID of the content (e.g., post ID, user ID)
-  targetUserId   String?        // User who created the content (if applicable)
-  targetUser     User?          @relation("ReportsReceived", fields: [targetUserId], references: [id])
+  contentType  ReportContentType // POST, THREAD, USER, GAME_NIGHT, etc
+  contentId    String // ID of the content (e.g., post ID, user ID)
+  targetUserId String? // User who created the content (if applicable)
+  targetUser   User?             @relation("ReportsReceived", fields: [targetUserId], references: [id])
 
   // Report details
-  reason         ReportReason
-  description    String?        @db.Text // Additional context from reporter
-  url            String?        // URL where content appears (for easy navigation)
+  reason      ReportReason
+  description String?      @db.Text // Additional context from reporter
+  url         String? // URL where content appears (for easy navigation)
 
   // Status
-  status         ReportStatus   @default(PENDING)
-  priority       ReportPriority @default(NORMAL)
+  status   ReportStatus   @default(PENDING)
+  priority ReportPriority @default(NORMAL)
 
   // Resolution
-  reviewedBy     String?        // Moderator who reviewed
-  reviewer       User?          @relation("ReportsReviewed", fields: [reviewedBy], references: [id])
+  reviewedBy     String? // Moderator who reviewed
+  reviewer       User?                 @relation("ReportsReviewed", fields: [reviewedBy], references: [id])
   reviewedAt     DateTime?
-  resolution     String?        @db.Text // What action was taken
+  resolution     String?               @db.Text // What action was taken
   resolutionType ReportResolutionType?
 
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@index([reporterId])
   @@index([targetUserId])
@@ -1354,34 +1624,34 @@ model Report {
 }
 
 model ModerationAction {
-  id             String              @id @default(cuid())
-  moderatorId    String
-  moderator      User                @relation("ModerationActionsPerformed", fields: [moderatorId], references: [id])
+  id          String @id @default(cuid())
+  moderatorId String
+  moderator   User   @relation("ModerationActionsPerformed", fields: [moderatorId], references: [id])
 
   // What action was taken
-  actionType     ModerationActionType
-  targetUserId   String?             // User being moderated (if applicable)
-  targetUser     User?               @relation("ModerationActionsReceived", fields: [targetUserId], references: [id])
+  actionType   ModerationActionType
+  targetUserId String? // User being moderated (if applicable)
+  targetUser   User?                @relation("ModerationActionsReceived", fields: [targetUserId], references: [id])
 
   // Context
-  contentType    String?             // POST, THREAD, USER, etc
-  contentId      String?             // ID of content affected
-  relatedReportId String?            // Report that triggered this action (if any)
+  contentType     String? // POST, THREAD, USER, etc
+  contentId       String? // ID of content affected
+  relatedReportId String? // Report that triggered this action (if any)
 
   // Details
-  reason         String              @db.Text
-  duration       Int?                // Duration in hours (for temp bans/mutes)
-  expiresAt      DateTime?           // When the action expires (for temp actions)
+  reason    String    @db.Text
+  duration  Int? // Duration in hours (for temp bans/mutes)
+  expiresAt DateTime? // When the action expires (for temp actions)
 
   // Notes
-  internalNotes  String?             @db.Text // Private notes for mod team
-  publicReason   String?             // Reason shown to affected user
+  internalNotes String? @db.Text // Private notes for mod team
+  publicReason  String? // Reason shown to affected user
 
   // Metadata
-  ipAddress      String?
-  userAgent      String?
+  ipAddress String?
+  userAgent String?
 
-  createdAt      DateTime            @default(now())
+  createdAt DateTime @default(now())
 
   @@index([moderatorId])
   @@index([targetUserId])
@@ -1391,27 +1661,27 @@ model ModerationAction {
 
 // Auto-moderation triggers (keyword flags, rate limits)
 model AutoModRule {
-  id             String              @id @default(cuid())
-  name           String
-  description    String?             @db.Text
+  id          String  @id @default(cuid())
+  name        String
+  description String? @db.Text
 
   // Rule configuration
-  ruleType       AutoModRuleType
-  pattern        String?             // Regex or keyword pattern
-  threshold      Int?                // For rate limiting
-  timeWindowMinutes Int?             // Time window for rate limits
+  ruleType          AutoModRuleType
+  pattern           String? // Regex or keyword pattern
+  threshold         Int? // For rate limiting
+  timeWindowMinutes Int? // Time window for rate limits
 
   // Action to take
-  action         AutoModActionType
-  severity       ReportPriority      @default(NORMAL)
+  action   AutoModActionType
+  severity ReportPriority    @default(NORMAL)
 
   // Status
-  isActive       Boolean             @default(true)
-  createdBy      String?
-  creator        User?               @relation(fields: [createdBy], references: [id])
+  isActive  Boolean @default(true)
+  createdBy String?
+  creator   User?   @relation(fields: [createdBy], references: [id])
 
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@index([ruleType])
   @@index([isActive])
@@ -1502,12 +1772,12 @@ enum AutoModActionType {
 
 // Afterroar Waitlist
 model AfterroarWaitlist {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  tier        String?  // 'AFTERROAR' or 'AFTERROAR_PLUS'
-  source      String?  // Where they signed up from
-  referredBy  String?  // Referral code if any
-  createdAt   DateTime @default(now())
+  id          String    @id @default(cuid())
+  email       String    @unique
+  tier        String? // 'AFTERROAR' or 'AFTERROAR_PLUS'
+  source      String? // Where they signed up from
+  referredBy  String? // Referral code if any
+  createdAt   DateTime  @default(now())
   notifiedAt  DateTime? // When we sent launch notification
   convertedAt DateTime? // When they became a paying member
 
@@ -1517,45 +1787,45 @@ model AfterroarWaitlist {
 
 // Rituals - Recurring game nights (Afterroar feature)
 model Ritual {
-  id              String   @id @default(cuid())
-  creatorId       String
-  creator         User     @relation("RitualsCreated", fields: [creatorId], references: [id], onDelete: Cascade)
+  id        String @id @default(cuid())
+  creatorId String
+  creator   User   @relation("RitualsCreated", fields: [creatorId], references: [id], onDelete: Cascade)
 
-  name            String
-  description     String?  @db.Text
-  imageUrl        String?
+  name        String
+  description String? @db.Text
+  imageUrl    String?
 
   // Recurrence settings
-  recurrenceType  RecurrenceType
-  dayOfWeek       Int?     // 0-6 for weekly/biweekly
-  dayOfMonth      Int?     // 1-31 for monthly
-  weekOfMonth     Int?     // 1-4 for "first Monday", etc.
-  frequency       Int      @default(1) // Every X weeks/months
-  startDate       DateTime
-  endDate         DateTime? // Optional end date
+  recurrenceType RecurrenceType
+  dayOfWeek      Int? // 0-6 for weekly/biweekly
+  dayOfMonth     Int? // 1-31 for monthly
+  weekOfMonth    Int? // 1-4 for "first Monday", etc.
+  frequency      Int            @default(1) // Every X weeks/months
+  startDate      DateTime
+  endDate        DateTime? // Optional end date
 
   // Time settings
-  startTime       String   // "19:00" format
-  duration        Int?     // Minutes
-  timezone        String   @default("America/Los_Angeles")
+  startTime String // "19:00" format
+  duration  Int? // Minutes
+  timezone  String @default("America/Los_Angeles")
 
   // Campaign tracking (for RPGs)
-  isCampaign      Boolean  @default(false)
-  campaignName    String?
-  sessionCount    Int      @default(0)
+  isCampaign   Boolean @default(false)
+  campaignName String?
+  sessionCount Int     @default(0)
 
   // Settings
-  isActive        Boolean  @default(true)
-  maxPlayers      Int?
-  autoCreateDays  Int      @default(14) // Auto-create game nights X days in advance
+  isActive       Boolean @default(true)
+  maxPlayers     Int?
+  autoCreateDays Int     @default(14) // Auto-create game nights X days in advance
 
   // Metadata
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // Relations
-  gameNights      GameNight[] @relation("RitualGameNights")
-  regulars        RitualRegular[]
+  gameNights GameNight[]     @relation("RitualGameNights")
+  regulars   RitualRegular[]
 
   @@index([creatorId])
   @@index([isActive])
@@ -1564,14 +1834,14 @@ model Ritual {
 
 // Track regular attendees of a ritual
 model RitualRegular {
-  id         String   @id @default(cuid())
-  ritualId   String
-  ritual     Ritual   @relation(fields: [ritualId], references: [id], onDelete: Cascade)
-  userId     String
-  user       User     @relation("RitualRegulars", fields: [userId], references: [id], onDelete: Cascade)
+  id       String @id @default(cuid())
+  ritualId String
+  ritual   Ritual @relation(fields: [ritualId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation("RitualRegulars", fields: [userId], references: [id], onDelete: Cascade)
 
-  role       String   @default("player") // host, co-host, player, spectator
-  joinedAt   DateTime @default(now())
+  role     String   @default("player") // host, co-host, player, spectator
+  joinedAt DateTime @default(now())
 
   @@unique([ritualId, userId])
   @@index([ritualId])
@@ -1598,62 +1868,62 @@ enum CustomGameStatus {
 
 // Templates for game types (CAH-style, Trivia, etc.)
 model GameTemplate {
-  id              String    @id @default(cuid())
-  name            String
-  slug            String    @unique
-  description     String    @db.Text
-  category        String    // "party", "trivia", "voting"
-  iconEmoji       String?   // "📝", "❓", "🎭"
-  baseConfig      Json      // GameDefinition without cards
-  cardTypes       String[]  // ["black", "white"]
-  editorHints     Json?     // UI configuration for editor
-  isOfficial      Boolean   @default(true)
-  sortOrder       Int       @default(0)
-  createdAt       DateTime  @default(now())
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String   @db.Text
+  category    String // "party", "trivia", "voting"
+  iconEmoji   String? // "📝", "❓", "🎭"
+  baseConfig  Json // GameDefinition without cards
+  cardTypes   String[] // ["black", "white"]
+  editorHints Json? // UI configuration for editor
+  isOfficial  Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
 
-  games           CustomGameDefinition[]
+  games CustomGameDefinition[]
 
   @@index([category])
 }
 
 // User-created game definitions
 model CustomGameDefinition {
-  id              String    @id @default(cuid())
-  creatorId       String
-  creator         User      @relation("CreatedCustomGames", fields: [creatorId], references: [id], onDelete: Cascade)
+  id        String @id @default(cuid())
+  creatorId String
+  creator   User   @relation("CreatedCustomGames", fields: [creatorId], references: [id], onDelete: Cascade)
 
-  name            String
-  slug            String
-  description     String?   @db.Text
-  coverImageUrl   String?
+  name          String
+  slug          String
+  description   String? @db.Text
+  coverImageUrl String?
 
-  minPlayers      Int       @default(3)
-  maxPlayers      Int       @default(10)
+  minPlayers Int @default(3)
+  maxPlayers Int @default(10)
 
-  templateId      String
-  template        GameTemplate @relation(fields: [templateId], references: [id])
-  gameConfig      Json      // Full GameDefinition (phases, slots, etc.)
+  templateId String
+  template   GameTemplate @relation(fields: [templateId], references: [id])
+  gameConfig Json // Full GameDefinition (phases, slots, etc.)
 
-  status          CustomGameStatus @default(DRAFT)
-  shareToken      String    @unique @default(cuid())
+  status     CustomGameStatus @default(DRAFT)
+  shareToken String           @unique @default(cuid())
 
-  playCount       Int       @default(0)
-  remixCount      Int       @default(0)
+  playCount  Int @default(0)
+  remixCount Int @default(0)
 
   // Remix tracking
-  isRemixOf       String?
-  parent          CustomGameDefinition?  @relation("Remixes", fields: [isRemixOf], references: [id], onDelete: SetNull)
-  remixes         CustomGameDefinition[] @relation("Remixes")
+  isRemixOf String?
+  parent    CustomGameDefinition?  @relation("Remixes", fields: [isRemixOf], references: [id], onDelete: SetNull)
+  remixes   CustomGameDefinition[] @relation("Remixes")
 
   // Featured/discovery
-  featuredAt      DateTime?
+  featuredAt DateTime?
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  publishedAt     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
 
-  cardPacks       CustomCardPack[]
-  sessions        GameSession[]
+  cardPacks CustomCardPack[]
+  sessions  GameSession[]
 
   @@unique([creatorId, slug])
   @@index([creatorId])
@@ -1664,32 +1934,32 @@ model CustomGameDefinition {
 
 // Card packs within a custom game (like expansion packs)
 model CustomCardPack {
-  id              String    @id @default(cuid())
-  gameId          String
-  game            CustomGameDefinition @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  id     String               @id @default(cuid())
+  gameId String
+  game   CustomGameDefinition @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
-  name            String
-  isCore          Boolean   @default(true)  // Is this the default/required pack?
+  name   String
+  isCore Boolean @default(true) // Is this the default/required pack?
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  cards           CustomCard[]
+  cards CustomCard[]
 
   @@index([gameId])
 }
 
 // Individual cards in a pack
 model CustomCard {
-  id              String    @id @default(cuid())
-  packId          String
-  pack            CustomCardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  id     String         @id @default(cuid())
+  packId String
+  pack   CustomCardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
 
-  cardType        String    // "black", "white", etc.
-  properties      Json      // { text: "...", pick: 1, ... }
-  sortOrder       Int       @default(0)
+  cardType   String // "black", "white", etc.
+  properties Json // { text: "...", pick: 1, ... }
+  sortOrder  Int    @default(0)
 
-  createdAt       DateTime  @default(now())
+  createdAt DateTime @default(now())
 
   @@index([packId])
   @@index([cardType])
@@ -1700,58 +1970,58 @@ model CustomCard {
 // =============================================================================
 
 enum SessionStatus {
-  WAITING     // Lobby, waiting for players
-  STARTING    // Game about to start
+  WAITING // Lobby, waiting for players
+  STARTING // Game about to start
   IN_PROGRESS // Game is active
-  PAUSED      // Game paused
-  COMPLETED   // Game finished normally
-  ABANDONED   // Game ended early (host left, etc.)
+  PAUSED // Game paused
+  COMPLETED // Game finished normally
+  ABANDONED // Game ended early (host left, etc.)
 }
 
 // A live game session (room)
 model GameSession {
-  id              String        @id @default(cuid())
-  roomCode        String        @unique // 6-character code like "ABCD12"
+  id       String @id @default(cuid())
+  roomCode String @unique // 6-character code like "ABCD12"
 
   // Link to game definition (can be from builder or template)
   gameDefinitionId String?
   gameDefinition   CustomGameDefinition? @relation(fields: [gameDefinitionId], references: [id])
 
   // Or use a built-in template
-  templateSlug    String?       // "cah", "trivia", "uno", etc.
+  templateSlug String? // "cah", "trivia", "uno", etc.
 
   // Game configuration snapshot (copied at session start)
-  gameConfig      Json?         // Full game config for this session
+  gameConfig Json? // Full game config for this session
 
   // Host info
-  hostId          String?       // Clerk user ID (null for anonymous host)
-  hostNickname    String        // Display name for host
+  hostId       String? // Clerk user ID (null for anonymous host)
+  hostNickname String // Display name for host
 
   // Session state
-  status          SessionStatus @default(WAITING)
-  currentRound    Int           @default(0)
-  currentPhase    String?       // Current phase identifier
-  gameState       Json?         // Live game state (scores, cards, etc.)
+  status       SessionStatus @default(WAITING)
+  currentRound Int           @default(0)
+  currentPhase String? // Current phase identifier
+  gameState    Json? // Live game state (scores, cards, etc.)
 
   // Counts
-  playerCount     Int           @default(0)
-  spectatorCount  Int           @default(0)
-  maxPlayers      Int           @default(16)
+  playerCount    Int @default(0)
+  spectatorCount Int @default(0)
+  maxPlayers     Int @default(16)
 
   // Settings
-  isPrivate       Boolean       @default(false)
-  password        String?       // Optional password for private games
-  allowSpectators Boolean       @default(true)
-  turnTimeLimit   Int?          // Seconds per turn (null = no limit)
+  isPrivate       Boolean @default(false)
+  password        String? // Optional password for private games
+  allowSpectators Boolean @default(true)
+  turnTimeLimit   Int? // Seconds per turn (null = no limit)
 
   // Timestamps
-  createdAt       DateTime      @default(now())
-  startedAt       DateTime?
-  endedAt         DateTime?
-  lastActivityAt  DateTime      @default(now())
+  createdAt      DateTime  @default(now())
+  startedAt      DateTime?
+  endedAt        DateTime?
+  lastActivityAt DateTime  @default(now())
 
   // Relations
-  players         SessionPlayer[]
+  players SessionPlayer[]
 
   @@index([roomCode])
   @@index([status])
@@ -1761,37 +2031,37 @@ model GameSession {
 
 // A player in a game session
 model SessionPlayer {
-  id              String        @id @default(cuid())
-  sessionId       String
-  session         GameSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id        String      @id @default(cuid())
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   // Player identity
-  clerkId         String?       // Null for anonymous players
-  nickname        String        // Display name
-  avatarUrl       String?       // Optional avatar
-  avatarEmoji     String?       // Fallback emoji avatar
+  clerkId     String? // Null for anonymous players
+  nickname    String // Display name
+  avatarUrl   String? // Optional avatar
+  avatarEmoji String? // Fallback emoji avatar
 
   // Role in session
-  isHost          Boolean       @default(false)
-  isSpectator     Boolean       @default(false)
+  isHost      Boolean @default(false)
+  isSpectator Boolean @default(false)
 
   // Proxy player support (IRL players managed by host)
-  isProxy         Boolean       @default(false)  // True if this is an IRL player
-  proxyManagedBy  String?       // SessionPlayer ID of who manages this proxy (usually host)
+  isProxy        Boolean @default(false) // True if this is an IRL player
+  proxyManagedBy String? // SessionPlayer ID of who manages this proxy (usually host)
 
   // Player state
-  isConnected     Boolean       @default(true)
-  isReady         Boolean       @default(false)
-  score           Int           @default(0)
-  playerState     Json?         // Hand, role, etc.
+  isConnected Boolean @default(true)
+  isReady     Boolean @default(false)
+  score       Int     @default(0)
+  playerState Json? // Hand, role, etc.
 
   // Turn order
-  turnOrder       Int?          // Position in turn order
+  turnOrder Int? // Position in turn order
 
   // Connection tracking
-  joinedAt        DateTime      @default(now())
-  lastSeenAt      DateTime      @default(now())
-  disconnectedAt  DateTime?
+  joinedAt       DateTime  @default(now())
+  lastSeenAt     DateTime  @default(now())
+  disconnectedAt DateTime?
 
   @@unique([sessionId, nickname]) // No duplicate nicknames in same session
   @@index([sessionId])

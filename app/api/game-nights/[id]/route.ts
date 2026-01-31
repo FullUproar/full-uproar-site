@@ -38,6 +38,9 @@ export async function GET(
           take: 50
         },
         recap: true,
+        chaosSession: {
+          select: { id: true, roomCode: true, status: true }
+        },
       }
     });
 

@@ -72,6 +72,11 @@ interface GameNight {
   recap: Recap | null;
   isHost: boolean;
   userGuestStatus: string | null;
+  chaosSession?: {
+    id: string;
+    roomCode: string;
+    status: string;
+  } | null;
   _count: {
     guests: number;
     games: number;
@@ -185,6 +190,8 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<any>(null);
+  const [chaosSession, setChaosSession] = useState<{ id: string; roomCode: string; status: string } | null>(null);
+  const [activatingChaos, setActivatingChaos] = useState(false);
 
   useEffect(() => {
     fetchGameNight();
@@ -196,6 +203,15 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
       if (response.ok) {
         const data = await response.json();
         setGameNight(data);
+
+        // Check for existing chaos session
+        if (data.chaosSession) {
+          setChaosSession({
+            id: data.chaosSession.id,
+            roomCode: data.chaosSession.roomCode,
+            status: data.chaosSession.status,
+          });
+        }
       } else if (response.status === 404) {
         setError('Game night not found');
       } else {
@@ -205,6 +221,32 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
       setError('Failed to load game night');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const activateChaosAgent = async () => {
+    if (!gameNight || activatingChaos) return;
+
+    setActivatingChaos(true);
+    try {
+      const response = await fetch('/api/chaos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameNightId: gameNight.id }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setChaosSession({
+          id: data.session.id,
+          roomCode: data.session.roomCode,
+          status: data.session.status,
+        });
+      }
+    } catch (err) {
+      console.error('Failed to activate Chaos Agent:', err);
+    } finally {
+      setActivatingChaos(false);
     }
   };
 
@@ -1059,6 +1101,119 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                     )}
                   </div>
                 ) : null}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Chaos Agent Section */}
+        {gameNight.status === 'IN_PROGRESS' && gameNight.isHost && (
+          <div style={{
+            marginTop: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(139, 92, 246, 0.15))',
+            borderRadius: '1rem',
+            border: '2px solid #f97316',
+            padding: '1.5rem',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <h2 style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  color: '#fff',
+                  fontSize: '1.25rem',
+                  fontWeight: 'bold',
+                  margin: 0,
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>🎭</span>
+                  Chaos Agent
+                </h2>
+                <p style={{ color: '#9ca3af', margin: '0.5rem 0 0', fontSize: '0.875rem' }}>
+                  {chaosSession
+                    ? 'Add secret objectives, random events, and betting to your game night!'
+                    : 'Activate Fugly\'s Chaos Agent to spice up your game night!'
+                  }
+                </p>
+              </div>
+              {chaosSession ? (
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <div style={{
+                    background: 'rgba(0,0,0,0.3)',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.5rem',
+                    textAlign: 'center',
+                  }}>
+                    <div style={{ color: '#9ca3af', fontSize: '0.7rem', textTransform: 'uppercase' }}>Room Code</div>
+                    <div style={{ color: '#fde68a', fontWeight: 'bold', fontSize: '1.25rem', fontFamily: 'monospace', letterSpacing: '2px' }}>
+                      {chaosSession.roomCode}
+                    </div>
+                  </div>
+                  <Link
+                    href={`/chaos/${chaosSession.id}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.75rem 1.5rem',
+                      background: '#f97316',
+                      border: 'none',
+                      borderRadius: '0.5rem',
+                      color: '#000',
+                      fontWeight: 'bold',
+                      textDecoration: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Zap size={18} />
+                    Open Chaos
+                  </Link>
+                </div>
+              ) : (
+                <button
+                  onClick={activateChaosAgent}
+                  disabled={activatingChaos}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem 1.5rem',
+                    background: activatingChaos ? '#6b7280' : '#f97316',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    color: '#000',
+                    fontWeight: 'bold',
+                    cursor: activatingChaos ? 'wait' : 'pointer',
+                  }}
+                >
+                  {activatingChaos ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      Activating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles size={18} />
+                      Activate Chaos!
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+            {chaosSession && (
+              <div style={{
+                marginTop: '1rem',
+                padding: '1rem',
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: '0.5rem',
+                fontSize: '0.875rem',
+                color: '#9ca3af',
+              }}>
+                <strong style={{ color: '#fde68a' }}>How it works:</strong> Share the room code with your guests. They can join at{' '}
+                <code style={{ background: 'rgba(255,255,255,0.1)', padding: '0.125rem 0.375rem', borderRadius: '0.25rem' }}>
+                  fulluproar.com/chaos
+                </code>
+                {' '}and enter the code to get secret objectives, participate in betting, and more!
               </div>
             )}
           </div>
