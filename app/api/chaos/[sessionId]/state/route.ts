@@ -20,18 +20,44 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const body = await request.json();
 
+    // Get current session to check if status is changing to ENDED
+    const currentSession = await prisma.chaosSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        participants: {
+          where: { isHost: true },
+          include: { user: true },
+        },
+      },
+    });
+
+    const wasNotEnded = currentSession && currentSession.status !== 'ENDED';
+    const isNowEnded = body.status === 'ENDED';
+
     // Update session status and settings
     await prisma.chaosSession.update({
       where: { id: sessionId },
       data: {
         status: body.status,
         intensity: body.intensity,
+        scoringMode: body.scoringMode,
         eventFrequencyMinutes: body.eventFrequencyMinutes,
         lastEventAt: body.lastEventAt ? new Date(body.lastEventAt) : null,
         startedAt: body.startedAt ? new Date(body.startedAt) : null,
         updatedAt: new Date(),
       },
     });
+
+    // If session just ended, increment host's chaosSessionsHosted count
+    if (wasNotEnded && isNowEnded && currentSession?.participants[0]?.userId) {
+      const hostUserId = currentSession.participants[0].userId;
+      await prisma.user.update({
+        where: { id: hostUserId },
+        data: {
+          chaosSessionsHosted: { increment: 1 },
+        },
+      });
+    }
 
     // Update participant points
     if (body.participants) {

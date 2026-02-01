@@ -6,6 +6,9 @@ import usePartySocket from 'partysocket/react';
 import Image from 'next/image';
 import QRCodeShare from '../components/QRCodeShare';
 import HostControls from '../components/HostControls';
+import WaitingRoom from '../components/WaitingRoom';
+import EndOfNightHighlights from '../components/EndOfNightHighlights';
+import chaosHaptics from '@/lib/chaos/haptics';
 
 type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
 
@@ -207,9 +210,13 @@ export default function ChaosSessionPage({ params }: PageProps) {
         });
         break;
       case 'event_started':
+        chaosHaptics.eventStarted(); // Haptic feedback for new event
         setState(prev => prev ? { ...prev, currentEvent: message.event } : prev);
         break;
       case 'event_completed':
+        chaosHaptics.eventCompleted(); // Haptic feedback for completed event
+        setState(prev => prev ? { ...prev, currentEvent: undefined } : prev);
+        break;
       case 'event_skipped':
         setState(prev => prev ? { ...prev, currentEvent: undefined } : prev);
         break;
@@ -217,6 +224,14 @@ export default function ChaosSessionPage({ params }: PageProps) {
         setMyObjectives(message.objectives);
         break;
       case 'points_updated':
+        // Haptic feedback for points changes (only for my points)
+        if (participantInfo && message.participantId === participantInfo.participantId) {
+          if (message.delta > 0) {
+            chaosHaptics.pointsGained();
+          } else if (message.delta < 0) {
+            chaosHaptics.pointsLost();
+          }
+        }
         setState(prev => {
           if (!prev) return prev;
           const participant = prev.participants[message.participantId];
@@ -232,11 +247,49 @@ export default function ChaosSessionPage({ params }: PageProps) {
           return prev;
         });
         break;
+      case 'objective_verified':
+        if (message.verified) {
+          chaosHaptics.objectiveVerified();
+        } else {
+          chaosHaptics.objectiveFailed();
+        }
+        break;
       case 'bet_created':
         setState(prev => prev ? {
           ...prev,
           bets: { ...prev.bets, [message.bet.id]: message.bet }
         } : prev);
+        break;
+      case 'bet_resolved':
+        // Check if I won
+        if (participantInfo) {
+          const isWinner = message.winners?.some(
+            (w: { participantId: string }) => w.participantId === participantInfo.participantId
+          );
+          if (isWinner) {
+            chaosHaptics.betWon();
+          } else {
+            chaosHaptics.betLost();
+          }
+        }
+        break;
+      case 'mini_game_started':
+        chaosHaptics.miniGameStart();
+        break;
+      case 'mini_game_ended':
+        if (participantInfo && message.winnerId === participantInfo.participantId) {
+          chaosHaptics.miniGameWin();
+        }
+        break;
+      case 'session_started':
+        chaosHaptics.eventStarted(); // Big vibration for session start
+        setState(prev => prev ? { ...prev, status: 'ACTIVE' } : prev);
+        break;
+      case 'session_paused':
+        setState(prev => prev ? { ...prev, status: 'PAUSED' } : prev);
+        break;
+      case 'session_resumed':
+        setState(prev => prev ? { ...prev, status: 'ACTIVE' } : prev);
         break;
       case 'session_ended':
         setState(prev => prev ? { ...prev, status: 'ENDED' } : prev);
@@ -245,7 +298,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
         setState(prev => prev ? { ...prev, scoringMode: message.scoringMode } : prev);
         break;
     }
-  }, []);
+  }, [participantInfo]);
 
   // Event timer countdown
   useEffect(() => {
@@ -323,13 +376,37 @@ export default function ChaosSessionPage({ params }: PageProps) {
     );
   }
 
+  // Show waiting room for SETUP status
+  if (state.status === 'SETUP') {
+    const handleStartSession = () => {
+      socket.send(JSON.stringify({ type: 'host_start' }));
+    };
+
+    return (
+      <>
+        <WaitingRoom
+          roomCode={state.roomCode}
+          gameNightTitle={state.gameNightTitle}
+          participants={state.participants}
+          isHost={isHost || false}
+          onStartSession={handleStartSession}
+          onShowShare={() => setShowShareModal(true)}
+        />
+        {state?.roomCode && (
+          <QRCodeShare
+            roomCode={state.roomCode}
+            isOpen={showShareModal}
+            onClose={() => setShowShareModal(false)}
+          />
+        )}
+      </>
+    );
+  }
+
   if (state.status === 'ENDED') {
     const sortedParticipants = Object.values(state.participants)
       .sort((a, b) => b.chaosPoints - a.chaosPoints);
     const winner = sortedParticipants[0];
-    const totalEvents = state.eventHistory.length;
-    const totalBets = Object.keys(state.bets).length;
-    const totalPoints = sortedParticipants.reduce((sum, p) => sum + p.chaosPoints, 0);
 
     return (
       <div className="animate-fade-in" style={{
@@ -344,150 +421,34 @@ export default function ChaosSessionPage({ params }: PageProps) {
         overflowY: 'auto',
       }}>
         {/* Winner Celebration */}
-        <div className="animate-slide-down" style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div className="animate-bounce" style={{ fontSize: '80px', marginBottom: '16px' }}>🏆</div>
+        <div className="animate-slide-down" style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <div className="animate-bounce" style={{ fontSize: '64px', marginBottom: '12px' }}>🏆</div>
           <h1 className="animate-glow" style={{
             color: '#fde68a',
-            fontSize: '32px',
+            fontSize: '28px',
             marginBottom: '8px',
             textShadow: '0 0 20px rgba(253, 230, 138, 0.5)',
           }}>
             Chaos Complete!
           </h1>
           {winner && (
-            <p style={{ color: '#f97316', fontSize: '20px', fontWeight: 'bold' }}>
+            <p style={{ color: '#f97316', fontSize: '18px', fontWeight: 'bold' }}>
               👑 {winner.displayName} wins with {winner.chaosPoints} points!
             </p>
           )}
         </div>
 
-        {/* Session Stats */}
-        <div className="animate-slide-up" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '12px',
-          width: '100%',
-          maxWidth: '400px',
-          marginBottom: '24px',
-        }}>
-          <div style={{
-            backgroundColor: '#1a1a1a',
-            padding: '16px',
-            borderRadius: '12px',
-            textAlign: 'center',
-          }}>
-            <div style={{ color: '#8b5cf6', fontSize: '24px', fontWeight: 'bold' }}>
-              {totalEvents}
-            </div>
-            <div style={{ color: '#9ca3af', fontSize: '11px', textTransform: 'uppercase' }}>
-              Events
-            </div>
-          </div>
-          <div style={{
-            backgroundColor: '#1a1a1a',
-            padding: '16px',
-            borderRadius: '12px',
-            textAlign: 'center',
-          }}>
-            <div style={{ color: '#10b981', fontSize: '24px', fontWeight: 'bold' }}>
-              {totalBets}
-            </div>
-            <div style={{ color: '#9ca3af', fontSize: '11px', textTransform: 'uppercase' }}>
-              Bets
-            </div>
-          </div>
-          <div style={{
-            backgroundColor: '#1a1a1a',
-            padding: '16px',
-            borderRadius: '12px',
-            textAlign: 'center',
-          }}>
-            <div style={{ color: '#f97316', fontSize: '24px', fontWeight: 'bold' }}>
-              {totalPoints}
-            </div>
-            <div style={{ color: '#9ca3af', fontSize: '11px', textTransform: 'uppercase' }}>
-              Total Pts
-            </div>
-          </div>
-        </div>
-
-        {/* Final Leaderboard */}
-        <div className="animate-slide-up" style={{
-          backgroundColor: '#1a1a1a',
-          borderRadius: '16px',
-          padding: '24px',
-          width: '100%',
-          maxWidth: '400px',
-          marginBottom: '24px',
-        }}>
-          <h2 style={{
-            color: '#f97316',
-            fontSize: '18px',
-            marginBottom: '16px',
-            textAlign: 'center',
-          }}>
-            Final Standings
-          </h2>
-          {sortedParticipants.map((p, i) => (
-            <div
-              key={p.id}
-              className="leaderboard-item"
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px',
-                marginBottom: '8px',
-                backgroundColor: i === 0 ? 'rgba(253, 230, 138, 0.1)' : '#0a0a0a',
-                borderRadius: '8px',
-                border: i === 0 ? '2px solid #fde68a' : '1px solid #2a2a2a',
-                ['--index' as string]: i,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  backgroundColor: i === 0 ? '#fde68a' : i === 1 ? '#9ca3af' : i === 2 ? '#cd7f32' : '#3a3a3a',
-                  color: i < 3 ? '#000' : '#e2e8f0',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  fontSize: '14px',
-                }}>
-                  {i === 0 ? '👑' : i + 1}
-                </span>
-                <span style={{
-                  color: i === 0 ? '#fde68a' : '#e2e8f0',
-                  fontWeight: i === 0 ? 'bold' : 'normal',
-                }}>
-                  {p.displayName}
-                </span>
-              </div>
-              <span style={{
-                color: '#fde68a',
-                fontWeight: 'bold',
-                fontSize: '18px',
-              }}>
-                {p.chaosPoints}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Game Night Title */}
-        <p style={{
-          color: '#6b7280',
-          fontSize: '12px',
-          marginBottom: '24px',
-        }}>
-          {state.gameNightTitle}
-        </p>
+        {/* Full Highlights */}
+        <EndOfNightHighlights
+          participants={state.participants}
+          eventHistory={state.eventHistory}
+          bets={state.bets}
+          gameNightTitle={state.gameNightTitle}
+          scoringMode={state.scoringMode}
+        />
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
           <button
             onClick={() => router.push('/chaos')}
             className="btn-chaos"
@@ -719,7 +680,10 @@ export default function ChaosSessionPage({ params }: PageProps) {
         {(['events', 'bets', 'games', 'you'] as TabType[]).map(tab => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => {
+              if (tab !== activeTab) chaosHaptics.tabSwitch();
+              setActiveTab(tab);
+            }}
             className={activeTab === tab ? 'btn-chaos' : ''}
             style={{
               flex: 1,

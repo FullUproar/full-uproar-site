@@ -194,27 +194,46 @@ export default function ChaosLandingPage() {
         paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))',
         background: 'linear-gradient(transparent, #0a0a0a 50%)',
         display: 'flex',
-        justifyContent: 'center',
+        flexDirection: 'column',
         alignItems: 'center',
         gap: '8px',
       }}>
-        <Image
-          src="/logo.png"
-          alt="Full Uproar"
-          width={24}
-          height={24}
-          style={{ borderRadius: '4px' }}
-        />
+        {/* Dev Test Mode Link */}
         <Link
-          href="/"
+          href="/chaos/test"
           style={{
-            color: '#6b7280',
-            fontSize: '12px',
+            color: '#8b5cf6',
+            fontSize: '11px',
             textDecoration: 'none',
+            padding: '4px 12px',
+            backgroundColor: '#8b5cf620',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
           }}
         >
-          Full Uproar Games
+          🧪 Solo Test Mode
         </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Image
+            src="/logo.png"
+            alt="Full Uproar"
+            width={24}
+            height={24}
+            style={{ borderRadius: '4px' }}
+          />
+          <Link
+            href="/"
+            style={{
+              color: '#6b7280',
+              fontSize: '12px',
+              textDecoration: 'none',
+            }}
+          >
+            Full Uproar Games
+          </Link>
+        </div>
       </div>
     </div>
   );

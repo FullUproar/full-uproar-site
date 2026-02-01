@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
-import { MembershipTier, UserRole, GameNightStatus } from '@prisma/client';
+import { MembershipTier, UserRole, GameNightStatus, ChaosScoringMode } from '@prisma/client';
+import { isModeUnlocked, getUnlockedModes, getModeInfo } from '@/lib/chaos/mode-unlocking';
 
 // Generate a 6-character room code
 function generateRoomCode(): string {
@@ -47,10 +48,25 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { gameNightId, intensity = 'MEDIUM', eventFrequencyMinutes = 15 } = body;
+    const { gameNightId, intensity = 'MEDIUM', eventFrequencyMinutes = 15, scoringMode = 'PARTY' } = body;
 
     if (!gameNightId) {
       return NextResponse.json({ error: 'gameNightId is required' }, { status: 400 });
+    }
+
+    // Get user's session count for mode unlocking
+    const sessionsHosted = user.chaosSessionsHosted || 0;
+    const unlockedModes = getUnlockedModes(sessionsHosted);
+
+    // Validate the requested scoring mode is unlocked
+    const requestedMode = scoringMode as 'PARTY' | 'PRIVATE_BINGO' | 'COMPETITIVE';
+    if (!isModeUnlocked(requestedMode, sessionsHosted)) {
+      const modeInfo = getModeInfo(sessionsHosted).find(m => m.id === requestedMode);
+      return NextResponse.json({
+        error: `${modeInfo?.label || requestedMode} mode is locked. Host ${modeInfo?.sessionsRequired || 'more'} session(s) to unlock.`,
+        unlockedModes,
+        sessionsHosted,
+      }, { status: 403 });
     }
 
     // Verify the game night exists and user is the host
@@ -101,13 +117,14 @@ export async function POST(request: NextRequest) {
       attempts++;
     }
 
-    // Create the chaos session
+    // Create the chaos session with selected scoring mode
     const chaosSession = await prisma.chaosSession.create({
       data: {
         gameNightId,
         roomCode,
         intensity: intensity as any,
         eventFrequencyMinutes,
+        scoringMode: requestedMode as ChaosScoringMode,
         status: 'SETUP',
       },
     });
