@@ -199,7 +199,7 @@ export default function ShopGamesPage() {
         {/* Games Grid */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: '#fdba74' }}>
-            <div style={{ fontSize: '1.5rem' }}>Loading games...</div>
+            <div style={{ fontSize: '1.5rem' }}>Loading chaos...</div>
           </div>
         ) : filteredGames.length === 0 ? (
           <div style={{
@@ -210,9 +210,13 @@ export default function ShopGamesPage() {
             border: '2px dashed #374151'
           }}>
             <p style={{ fontSize: '1.25rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
-              No {activeCategory?.name.toLowerCase()} available yet
+              {selectedCategory === 'MOD' && "Fugly is still brewing new mayhem modifiers..."}
+              {selectedCategory === 'TTRPG' && "Fugly is writing epic adventures..."}
+              {selectedCategory === 'BOARD_GAME' && "Fugly is designing chaotic boards..."}
+              {selectedCategory === 'CARD_GAME' && "Fugly is shuffling up new decks..."}
+              {selectedCategory === 'PARTY_GAME' && "Fugly is planning the ultimate party chaos..."}
             </p>
-            <p style={{ color: '#6b7280' }}>Check back soon for more chaos!</p>
+            <p style={{ color: '#6b7280' }}>Check back soon for {activeCategory?.name.toLowerCase()}!</p>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>

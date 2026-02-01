@@ -136,10 +136,12 @@ export default function ShopMerchPage() {
           }}>
             <Shirt style={{ width: '3rem', height: '3rem', color: '#a855f7', margin: '0 auto 1rem' }} />
             <p style={{ fontSize: '1.5rem', color: '#a855f7', fontWeight: 'bold' }}>
-              No swag found!
+              {filter === 'all' ? 'No swag yet!' : `No ${filter} swag yet!`}
             </p>
             <p style={{ fontSize: '1rem', color: '#c4b5fd', marginTop: '0.5rem' }}>
-              Fugly is still designing chaos-inducing apparel...
+              {filter === 'all'
+                ? "Fugly is still designing chaos-inducing apparel..."
+                : `Fugly is working on some ${filter.toLowerCase()} chaos...`}
             </p>
           </div>
         ) : (

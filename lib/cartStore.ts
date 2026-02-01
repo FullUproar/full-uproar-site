@@ -50,10 +50,22 @@ export const useCartStore = create<CartState>()(
           return { items: [...state.items, { ...item, quantity: 1 }] };
         });
         
-        // Show success toast
+        // Show success toast with personality
         const { addToast } = useToastStore.getState();
+        const messages = item.type === 'game'
+          ? [
+              `Added ${item.name} to cart! The chaos is real now.`,
+              `${item.name} secured! Time to unleash mayhem.`,
+              `${item.name} is yours! Fugly approves.`
+            ]
+          : [
+              `Added ${item.name} to cart! Wear your chaos with pride.`,
+              `${item.name} secured! Looking fugly never felt so good.`,
+              `${item.name} is yours! Time to rep the chaos.`
+            ];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
         addToast({
-          message: `${item.name} added to cart!`,
+          message: randomMessage,
           type: 'success',
           duration: 2000,
         });

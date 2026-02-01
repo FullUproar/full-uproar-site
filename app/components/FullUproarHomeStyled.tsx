@@ -497,7 +497,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       <section style={{
         height: isMobile ? '100dvh' : '100vh',
         maxHeight: isMobile ? '100dvh' : '100vh',
-        minHeight: isMobile ? '600px' : '700px',
+        minHeight: isMobile ? '700px' : '700px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -505,6 +505,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         position: 'relative',
         overflow: 'hidden',
         zIndex: 1,
+        paddingBottom: isMobile ? '6rem' : '4rem',
       }}>
 
         <div style={{
@@ -541,11 +542,11 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            marginTop: isMobile ? '1rem' : '1.5rem',
-            marginBottom: isMobile ? '0.5rem' : '1rem',
-            height: isMobile ? '25vh' : '35vh',
-            maxHeight: isMobile ? '180px' : '320px',
-            minHeight: isMobile ? '120px' : '200px',
+            marginTop: isMobile ? '1.5rem' : '1.5rem',
+            marginBottom: isMobile ? '1.5rem' : '1rem',
+            height: isMobile ? '18vh' : '35vh',
+            maxHeight: isMobile ? '140px' : '320px',
+            minHeight: isMobile ? '100px' : '200px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -590,13 +591,14 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
           {/* Subtitle */}
           <p style={{
-            fontSize: isMobile ? '1rem' : '1.25rem',
+            fontSize: isMobile ? '0.9rem' : '1.25rem',
             color: '#9ca3af',
-            lineHeight: 1.5,
+            lineHeight: 1.4,
             maxWidth: '500px',
             margin: '0 auto',
             marginTop: isMobile ? '1rem' : '1.5rem',
-            marginBottom: isMobile ? '6rem' : '8rem', // Prevent overlap with CTA button
+            marginBottom: isMobile ? '2rem' : '8rem', // Prevent overlap with CTA button
+            padding: isMobile ? '0 1rem' : '0',
           }}>
             Arm yourself with chaos to transform boring game nights into legendary stories.
           </p>
@@ -617,15 +619,21 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             cursor: 'pointer',
             opacity: scrollY > 100 ? 0 : 1,
             transition: 'opacity 0.3s',
+            width: isMobile ? '100%' : 'auto',
+            padding: isMobile ? '0 1rem' : '0',
+            boxSizing: 'border-box',
           }}
         >
           <span style={{
-            fontSize: isMobile ? '1rem' : '1.25rem',
+            fontSize: isMobile ? '0.8rem' : '1.25rem',
             fontWeight: 900,
             color: '#FF8200',
             textTransform: 'uppercase',
-            letterSpacing: '0.1em',
+            letterSpacing: isMobile ? '0.05em' : '0.1em',
             textShadow: '0 0 30px rgba(255, 117, 0, 0.5)',
+            textAlign: 'center',
+            whiteSpace: isMobile ? 'normal' : 'nowrap',
+            lineHeight: 1.3,
           }}>
             Weaponize My Game Night
           </span>

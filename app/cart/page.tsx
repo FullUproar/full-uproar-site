@@ -49,7 +49,7 @@ export default function CartPage() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
           <div style={{ textAlign: 'center' }}>
             <ShoppingCart style={{ width: '4rem', height: '4rem', color: '#f97316', margin: '0 auto' }} />
-            <p style={{ color: '#fdba74', fontSize: '1.5rem', marginTop: '1rem' }}>Loading cart...</p>
+            <p style={{ color: '#fdba74', fontSize: '1.5rem', marginTop: '1rem' }}>Preparing mayhem machine...</p>
           </div>
         </div>
       </div>
@@ -407,7 +407,7 @@ export default function CartPage() {
                   e.currentTarget.style.background = '#f97316';
                 }}
               >
-                CHECKOUT
+                Checkout Now →
                 <ArrowRight size={20} />
               </button>
               

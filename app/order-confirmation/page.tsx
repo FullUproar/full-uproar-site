@@ -148,7 +148,7 @@ function OrderConfirmationContent() {
               fontWeight: 'bold',
               marginBottom: '0.5rem'
             }}>
-              Your order has been placed successfully
+              Your chaos order is on the way!
             </p>
 
             <div style={{
@@ -205,7 +205,7 @@ function OrderConfirmationContent() {
                 gap: '0.5rem'
               }}>
                 <Truck style={{ width: '1.5rem', height: '1.5rem' }} />
-                Delivery Details
+                Where's the Chaos Headed?
               </h2>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -349,7 +349,7 @@ function OrderConfirmationContent() {
                   <Mail style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
                 </div>
                 <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 1</p>
-                <p style={{ color: '#9ca3af', margin: 0 }}>You'll receive a confirmation email</p>
+                <p style={{ color: '#9ca3af', margin: 0 }}>Fugly will send you a confirmation email</p>
               </div>
 
               <div style={{ textAlign: 'center' }}>
@@ -366,7 +366,7 @@ function OrderConfirmationContent() {
                   <Package style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
                 </div>
                 <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 2</p>
-                <p style={{ color: '#9ca3af', margin: 0 }}>We'll pack your order with extra care</p>
+                <p style={{ color: '#9ca3af', margin: 0 }}>Fugly will pack your chaos with extra care</p>
               </div>
 
               <div style={{ textAlign: 'center' }}>
@@ -383,7 +383,7 @@ function OrderConfirmationContent() {
                   <Truck style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
                 </div>
                 <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 3</p>
-                <p style={{ color: '#9ca3af', margin: 0 }}>Track your shipment as it heads your way</p>
+                <p style={{ color: '#9ca3af', margin: 0 }}>Follow your Fugly delivery</p>
               </div>
             </div>
 
@@ -410,7 +410,7 @@ function OrderConfirmationContent() {
                   transition: 'all 0.2s'
                 }}
               >
-                Continue Shopping
+                Browse More Chaos
                 <ArrowRight style={{ width: '1.25rem', height: '1.25rem' }} />
               </Link>
 
@@ -430,7 +430,7 @@ function OrderConfirmationContent() {
                   transition: 'all 0.2s'
                 }}
               >
-                Track Your Order
+                Track Your Chaos
                 <Truck style={{ width: '1.25rem', height: '1.25rem' }} />
               </Link>
             </div>

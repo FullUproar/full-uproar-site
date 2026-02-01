@@ -432,7 +432,7 @@ export default function CheckoutPage() {
         <Navigation />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ color: '#fdba74', fontSize: '1.5rem' }}>Loading checkout...</p>
+            <p style={{ color: '#fdba74', fontSize: '1.5rem' }}>Preparing mayhem machine...</p>
           </div>
         </div>
       </div>
@@ -733,7 +733,7 @@ export default function CheckoutPage() {
                       e.currentTarget.style.transform = 'scale(1)';
                     }}
                   >
-                    Continue to Shipping
+                    Ship the Chaos →
                   </button>
                 </div>
               )}
@@ -1016,7 +1016,7 @@ export default function CheckoutPage() {
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      Continue to Payment
+                      Prepare for Mayhem →
                     </button>
                   </div>
                 </div>
@@ -1398,7 +1398,7 @@ export default function CheckoutPage() {
                         }
                       }}
                     >
-                      {isProcessing ? 'Processing...' : 'Complete Order'}
+                      {isProcessing ? 'Preparing mayhem...' : 'Unleash the Mayhem!'}
                     </button>
                   </div>
                 </div>
