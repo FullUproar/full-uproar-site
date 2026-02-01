@@ -15,8 +15,13 @@ export default function JoinChaosPage({ params }: PageProps) {
   const { user, isLoaded } = useUser();
 
   const [displayName, setDisplayName] = useState('');
+  const [pronouns, setPronouns] = useState('');
+  const [avatarColor, setAvatarColor] = useState('#f97316');
   const [isJoining, setIsJoining] = useState(false);
   const [error, setError] = useState('');
+
+  const AVATAR_COLORS = ['#f97316', '#8b5cf6', '#10b981', '#ec4899', '#06b6d4', '#f59e0b'];
+  const PRONOUN_OPTIONS = ['', 'he/him', 'she/her', 'they/them'];
   const [sessionInfo, setSessionInfo] = useState<{
     gameNightTitle: string;
     hostName: string;
@@ -91,6 +96,8 @@ export default function JoinChaosPage({ params }: PageProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           displayName: displayName.trim(),
+          pronouns: pronouns || undefined,
+          avatarColor,
           guestId,
         }),
       });
@@ -283,6 +290,70 @@ export default function JoinChaosPage({ params }: PageProps) {
               boxSizing: 'border-box',
             }}
           />
+
+          {/* Pronouns (optional) */}
+          <label style={{
+            display: 'block',
+            color: '#e2e8f0',
+            marginTop: '16px',
+            marginBottom: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+          }}>
+            Pronouns <span style={{ color: '#6b7280', fontWeight: 'normal' }}>(optional)</span>
+          </label>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {PRONOUN_OPTIONS.map((p) => (
+              <button
+                key={p || 'none'}
+                type="button"
+                onClick={() => setPronouns(p)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: pronouns === p ? '#f97316' : '#0a0a0a',
+                  color: pronouns === p ? '#000' : '#e2e8f0',
+                  border: '1px solid #3a3a3a',
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {p || 'None'}
+              </button>
+            ))}
+          </div>
+
+          {/* Avatar Color */}
+          <label style={{
+            display: 'block',
+            color: '#e2e8f0',
+            marginTop: '16px',
+            marginBottom: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+          }}>
+            Your Color
+          </label>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {AVATAR_COLORS.map((color) => (
+              <button
+                key={color}
+                type="button"
+                onClick={() => setAvatarColor(color)}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: color,
+                  border: avatarColor === color ? '3px solid #fff' : '2px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  transform: avatarColor === color ? 'scale(1.1)' : 'scale(1)',
+                }}
+              />
+            ))}
+          </div>
 
           {error && (
             <p style={{

@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 
+type ScoringMode = 'PRIVATE_BINGO' | 'PARTY' | 'COMPETITIVE';
+
 interface HostControlsProps {
   sessionStatus: 'SETUP' | 'ACTIVE' | 'PAUSED' | 'ENDED';
   hasCurrentEvent: boolean;
+  scoringMode: ScoringMode;
   socket: any;
   onShowShare: () => void;
 }
@@ -12,6 +15,7 @@ interface HostControlsProps {
 export default function HostControls({
   sessionStatus,
   hasCurrentEvent,
+  scoringMode,
   socket,
   onShowShare,
 }: HostControlsProps) {
@@ -28,6 +32,19 @@ export default function HostControls({
       type: sessionStatus === 'PAUSED' ? 'host_resume_session' : 'host_pause_session'
     }));
   };
+
+  const handleRelaxMode = () => {
+    socket.send(JSON.stringify({ type: 'host_relax_mode' }));
+  };
+
+  // Get next relaxed mode label
+  const getNextModeLabel = (): string | null => {
+    if (scoringMode === 'COMPETITIVE') return 'Party Mode';
+    if (scoringMode === 'PARTY') return 'Private Mode';
+    return null; // Already at most relaxed
+  };
+
+  const nextModeLabel = getNextModeLabel();
 
   return (
     <>
@@ -198,6 +215,26 @@ export default function HostControls({
               >
                 📤 Share Code
               </button>
+
+              {/* Mode Relaxation - only show if can relax further */}
+              {nextModeLabel && (
+                <button
+                  onClick={handleRelaxMode}
+                  className="btn-chaos"
+                  style={{
+                    padding: '10px 16px',
+                    backgroundColor: '#8b5cf6',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontWeight: 'bold',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  😌 Switch to {nextModeLabel}
+                </button>
+              )}
 
               {/* Divider */}
               <div style={{

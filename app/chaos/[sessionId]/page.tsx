@@ -17,6 +17,8 @@ interface Participant {
   id: string;
   participantId: string;
   displayName: string;
+  pronouns?: string;
+  avatarColor?: string;
   isHost: boolean;
   isConnected: boolean;
   chaosPoints: number;
@@ -57,12 +59,15 @@ interface Objective {
   status: string;
 }
 
+type ScoringMode = 'PRIVATE_BINGO' | 'PARTY' | 'COMPETITIVE';
+
 interface SessionState {
   roomCode: string;
   sessionId: string;
   gameNightTitle: string;
   status: 'SETUP' | 'ACTIVE' | 'PAUSED' | 'ENDED';
   intensity: 'LOW' | 'MEDIUM' | 'HIGH';
+  scoringMode: ScoringMode;
   participants: Record<string, Participant>;
   currentEvent?: ChaosEvent;
   eventHistory: ChaosEvent[];
@@ -127,6 +132,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
           gameNightTitle: data.gameNight?.title || 'Game Night',
           status: data.status,
           intensity: data.intensity,
+          scoringMode: data.scoringMode || 'PARTY',
           participants: data.participants?.reduce((acc: Record<string, Participant>, p: Participant) => {
             acc[p.id] = p;
             return acc;
@@ -234,6 +240,9 @@ export default function ChaosSessionPage({ params }: PageProps) {
         break;
       case 'session_ended':
         setState(prev => prev ? { ...prev, status: 'ENDED' } : prev);
+        break;
+      case 'mode_changed':
+        setState(prev => prev ? { ...prev, scoringMode: message.scoringMode } : prev);
         break;
     }
   }, []);
@@ -683,6 +692,8 @@ export default function ChaosSessionPage({ params }: PageProps) {
             objectives={myObjectives}
             participants={state.participants}
             socket={socket}
+            scoringMode={state.scoringMode || 'PARTY'}
+            myPoints={myPoints}
           />
         )}
       </div>
@@ -692,6 +703,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
         <HostControls
           sessionStatus={state?.status || 'ACTIVE'}
           hasCurrentEvent={!!state?.currentEvent}
+          scoringMode={state?.scoringMode || 'PARTY'}
           socket={socket}
           onShowShare={() => setShowShareModal(true)}
         />
@@ -1117,16 +1129,59 @@ function GamesTab({ isHost, socket }: { isHost: boolean; socket: any }) {
   );
 }
 
-function YouTab({ objectives, participants, socket }: {
+function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
   objectives: Objective[];
   participants: Record<string, Participant>;
   socket: any;
+  scoringMode: ScoringMode;
+  myPoints: number;
 }) {
   const sortedParticipants = Object.values(participants)
     .sort((a, b) => b.chaosPoints - a.chaosPoints);
 
+  // Get scoring mode display info
+  const modeInfo = {
+    PRIVATE_BINGO: { label: 'Private Mode', description: 'Only you see your score', icon: '🎯' },
+    PARTY: { label: 'Party Mode', description: 'Scores visible, ties OK', icon: '🎉' },
+    COMPETITIVE: { label: 'Competitive', description: 'Leaderboard & winner', icon: '🏆' },
+  }[scoringMode];
+
   return (
     <div>
+      {/* Scoring Mode Indicator */}
+      <div style={{
+        backgroundColor: '#1a1a1a',
+        padding: '12px 16px',
+        borderRadius: '12px',
+        marginBottom: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+      }}>
+        <span style={{ fontSize: '24px' }}>{modeInfo.icon}</span>
+        <div>
+          <div style={{ color: '#f97316', fontWeight: 'bold', fontSize: '14px' }}>
+            {modeInfo.label}
+          </div>
+          <div style={{ color: '#6b7280', fontSize: '12px' }}>
+            {modeInfo.description}
+          </div>
+        </div>
+        {scoringMode === 'PRIVATE_BINGO' && (
+          <div style={{
+            marginLeft: 'auto',
+            backgroundColor: '#0a0a0a',
+            padding: '8px 16px',
+            borderRadius: '8px',
+          }}>
+            <span style={{ color: '#fde68a', fontWeight: 'bold', fontSize: '18px' }}>
+              {myPoints}
+            </span>
+            <span style={{ color: '#6b7280', fontSize: '12px', marginLeft: '4px' }}>pts</span>
+          </div>
+        )}
+      </div>
+
       <h3 style={{ color: '#e2e8f0', fontSize: '16px', marginBottom: '16px' }}>
         Your Secret Objectives
       </h3>
@@ -1225,37 +1280,106 @@ function YouTab({ objectives, participants, socket }: {
         ))
       )}
 
-      <h3 style={{ color: '#e2e8f0', fontSize: '16px', marginTop: '24px', marginBottom: '16px' }}>
-        Leaderboard
-      </h3>
-      {sortedParticipants.map((p, i) => (
-        <div key={p.id} style={{
-          backgroundColor: '#1a1a1a',
-          padding: '12px 16px',
-          borderRadius: '8px',
-          marginBottom: '8px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{
-              color: i === 0 ? '#fde68a' : '#6b7280',
-              fontWeight: 'bold',
-              width: '24px',
+      {/* Leaderboard - only show in Party and Competitive modes */}
+      {scoringMode !== 'PRIVATE_BINGO' && (
+        <>
+          <h3 style={{ color: '#e2e8f0', fontSize: '16px', marginTop: '24px', marginBottom: '16px' }}>
+            {scoringMode === 'COMPETITIVE' ? '🏆 Leaderboard' : '🎉 Party Standings'}
+          </h3>
+          {sortedParticipants.map((p, i) => (
+            <div key={p.id} style={{
+              backgroundColor: '#1a1a1a',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              marginBottom: '8px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-              {i === 0 ? '👑' : `#${i + 1}`}
-            </span>
-            <span style={{ color: '#e2e8f0' }}>
-              {p.displayName}
-              {p.isHost && <span style={{ color: '#9ca3af', fontSize: '12px' }}> (Host)</span>}
-            </span>
-          </div>
-          <span style={{ color: '#fde68a', fontWeight: 'bold' }}>
-            {p.chaosPoints} pts
-          </span>
-        </div>
-      ))}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Avatar with color */}
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  backgroundColor: p.avatarColor || (i === 0 ? '#fde68a' : '#3a3a3a'),
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#000',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                }}>
+                  {scoringMode === 'COMPETITIVE' && i === 0 ? '👑' : p.displayName.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <span style={{ color: '#e2e8f0' }}>
+                    {p.displayName}
+                    {p.isHost && <span style={{ color: '#9ca3af', fontSize: '12px' }}> (Host)</span>}
+                  </span>
+                  {p.pronouns && (
+                    <div style={{ color: '#6b7280', fontSize: '11px' }}>{p.pronouns}</div>
+                  )}
+                </div>
+              </div>
+              <span style={{ color: '#fde68a', fontWeight: 'bold' }}>
+                {p.chaosPoints} pts
+              </span>
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* Private Bingo - just show players, no scores */}
+      {scoringMode === 'PRIVATE_BINGO' && (
+        <>
+          <h3 style={{ color: '#e2e8f0', fontSize: '16px', marginTop: '24px', marginBottom: '16px' }}>
+            Players
+          </h3>
+          {sortedParticipants.map((p) => (
+            <div key={p.id} style={{
+              backgroundColor: '#1a1a1a',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              marginBottom: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                backgroundColor: p.avatarColor || '#3a3a3a',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: '12px',
+              }}>
+                {p.displayName.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <span style={{ color: '#e2e8f0' }}>
+                  {p.displayName}
+                  {p.isHost && <span style={{ color: '#9ca3af', fontSize: '12px' }}> (Host)</span>}
+                </span>
+                {p.pronouns && (
+                  <div style={{ color: '#6b7280', fontSize: '11px' }}>{p.pronouns}</div>
+                )}
+              </div>
+              <span style={{
+                marginLeft: 'auto',
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: p.isConnected ? '#10b981' : '#6b7280',
+              }} />
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }

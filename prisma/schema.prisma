@@ -414,6 +414,9 @@ model User {
   gameNightAttendances GameNightGuest[]   @relation("GameNightAttendances")
   chaosParticipations  ChaosParticipant[] @relation("ChaosParticipations")
 
+  // Chaos Agent progression (for mode unlocking)
+  chaosSessionsHosted Int @default(0) // Count of completed sessions as host
+
   // Moderation relations
   reportsCreated             Report[]           @relation("ReportsCreated")
   reportsReceived            Report[]           @relation("ReportsReceived")
@@ -1327,8 +1330,9 @@ model ChaosSession {
   roomCode String @unique // 6-char PartyKit room code
 
   // Session state
-  status    ChaosSessionStatus @default(SETUP)
-  intensity ChaosIntensity     @default(MEDIUM)
+  status      ChaosSessionStatus @default(SETUP)
+  intensity   ChaosIntensity     @default(MEDIUM)
+  scoringMode ChaosScoringMode   @default(PARTY)
 
   // Tuning answers from setup phase
   setupAnswers Json? // Aggregated player preferences
@@ -1363,7 +1367,9 @@ model ChaosParticipant {
   guestId     String? // Links to GameNightGuest
   userId      String? // Registered user
   user        User?   @relation("ChaosParticipations", fields: [userId], references: [id])
-  displayName String // Name shown in app
+  displayName String  // Name shown in app
+  pronouns    String? // Optional pronouns (e.g., "he/him", "she/her", "they/them")
+  avatarColor String? // Hex color for avatar circle
 
   // Connection
   connectionId String? // PartyKit connection ID
@@ -1518,6 +1524,12 @@ enum ChaosIntensity {
   MEDIUM // Standard chaos
   HIGH // Maximum chaos
   CUSTOM // Host-defined
+}
+
+enum ChaosScoringMode {
+  PRIVATE_BINGO // Scores visible only to self - no social pressure
+  PARTY         // Scores visible to group, ties OK (default)
+  COMPETITIVE   // Clear leaderboard, winner declared, tie-breakers
 }
 
 enum ObjectiveStatus {

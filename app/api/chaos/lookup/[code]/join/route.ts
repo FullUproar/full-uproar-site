@@ -12,7 +12,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const { code } = await params;
     const user = await getCurrentUser();
     const body = await request.json();
-    const { displayName, guestId } = body;
+    const { displayName, guestId, pronouns, avatarColor } = body;
 
     // Get the session by room code
     const session = await prisma.chaosSession.findUnique({
@@ -73,6 +73,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         userId: user?.id || null,
         guestId: guestId || null,
         displayName: name,
+        pronouns: pronouns || null,
+        avatarColor: avatarColor || null,
         isHost: false,
         chaosPoints: 100, // Starting pool
       },

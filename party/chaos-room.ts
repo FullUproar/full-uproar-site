@@ -8,6 +8,8 @@ interface ChaosParticipant {
   id: string;
   participantId: string; // Database ID
   displayName: string;
+  pronouns?: string; // Optional pronouns (e.g., "they/them")
+  avatarColor?: string; // Hex color for avatar
   isHost: boolean;
   isConnected: boolean;
   chaosPoints: number;
@@ -15,6 +17,8 @@ interface ChaosParticipant {
   userId?: string;
   guestId?: string;
 }
+
+type ScoringMode = 'PRIVATE_BINGO' | 'PARTY' | 'COMPETITIVE';
 
 interface ChaosObjective {
   id: string;
@@ -76,6 +80,7 @@ interface ChaosSessionState {
   gameNightTitle: string;
   status: 'SETUP' | 'ACTIVE' | 'PAUSED' | 'ENDED';
   intensity: 'LOW' | 'MEDIUM' | 'HIGH';
+  scoringMode: ScoringMode;
   eventFrequencyMinutes: number;
   participants: Record<string, ChaosParticipant>;
   objectives: Record<string, ChaosObjective>;
@@ -90,7 +95,7 @@ interface ChaosSessionState {
 
 // Client -> Server messages
 type ClientMessage =
-  | { type: 'join'; participantId: string; displayName: string; isHost: boolean; userId?: string; guestId?: string }
+  | { type: 'join'; participantId: string; displayName: string; isHost: boolean; userId?: string; guestId?: string; pronouns?: string; avatarColor?: string }
   | { type: 'setup_complete'; answers: Record<string, any> }
   | { type: 'claim_objective'; objectiveId: string }
   | { type: 'vote_objective'; objectiveId: string; approve: boolean }
@@ -112,7 +117,8 @@ type ClientMessage =
   | { type: 'host_transfer'; newHostId: string }
   | { type: 'host_assign_objective'; participantId: string; objectiveId: string }
   | { type: 'host_verify_objective'; objectiveId: string; verified: boolean }
-  | { type: 'host_update_settings'; intensity?: string; eventFrequencyMinutes?: number };
+  | { type: 'host_update_settings'; intensity?: string; eventFrequencyMinutes?: number }
+  | { type: 'host_relax_mode' }; // One-way mode relaxation (Competitive→Party→Private)
 
 // Server -> Client messages
 type ServerMessage =
@@ -141,6 +147,7 @@ type ServerMessage =
   | { type: 'chat'; participantId: string; displayName: string; message: string }
   | { type: 'reaction'; participantId: string; emoji: string }
   | { type: 'error'; message: string }
+  | { type: 'mode_changed'; scoringMode: ScoringMode }
   // Private messages (sent only to specific player)
   | { type: 'your_objectives'; objectives: ChaosObjective[] };
 
@@ -186,6 +193,7 @@ export default class ChaosRoom implements Party.Server {
       gameNightTitle: '',
       status: 'SETUP',
       intensity: 'MEDIUM',
+      scoringMode: 'PARTY', // Default to Party mode
       eventFrequencyMinutes: 15,
       participants: {},
       objectives: {},
@@ -259,6 +267,7 @@ export default class ChaosRoom implements Party.Server {
         body: JSON.stringify({
           status: this.state.status,
           intensity: this.state.intensity,
+          scoringMode: this.state.scoringMode,
           eventFrequencyMinutes: this.state.eventFrequencyMinutes,
           lastEventAt: this.state.lastEventAt,
           startedAt: this.state.startedAt,
@@ -385,6 +394,9 @@ export default class ChaosRoom implements Party.Server {
         case 'host_update_settings':
           this.handleHostUpdateSettings(sender, data);
           break;
+        case 'host_relax_mode':
+          this.handleHostRelaxMode(sender);
+          break;
       }
     } catch (error) {
       sender.send(JSON.stringify({
@@ -398,8 +410,8 @@ export default class ChaosRoom implements Party.Server {
   // MESSAGE HANDLERS
   // ==========================================================================
 
-  private handleJoin(conn: Party.Connection, data: { participantId: string; displayName: string; isHost: boolean; userId?: string; guestId?: string }) {
-    const { participantId, displayName, isHost, userId, guestId } = data;
+  private handleJoin(conn: Party.Connection, data: { participantId: string; displayName: string; isHost: boolean; userId?: string; guestId?: string; pronouns?: string; avatarColor?: string }) {
+    const { participantId, displayName, isHost, userId, guestId, pronouns, avatarColor } = data;
 
     // Check if already joined
     if (this.state.participants[conn.id]) {
@@ -407,7 +419,7 @@ export default class ChaosRoom implements Party.Server {
       this.state.participants[conn.id].isConnected = true;
       conn.send(JSON.stringify({
         type: 'session_state',
-        state: this.getPublicState(),
+        state: this.getPublicState(conn.id),
       } as ServerMessage));
 
       // Send private objectives
@@ -419,6 +431,8 @@ export default class ChaosRoom implements Party.Server {
       id: conn.id,
       participantId,
       displayName,
+      pronouns,
+      avatarColor,
       isHost,
       isConnected: true,
       chaosPoints: 100, // Starting pool
@@ -929,6 +943,50 @@ export default class ChaosRoom implements Party.Server {
     });
   }
 
+  private handleHostRelaxMode(conn: Party.Connection) {
+    if (!this.isHost(conn)) {
+      conn.send(JSON.stringify({ type: 'error', message: 'Only the host can change mode' } as ServerMessage));
+      return;
+    }
+
+    // One-way relaxation: COMPETITIVE → PARTY → PRIVATE_BINGO
+    // Cannot escalate competition mid-session
+    const currentMode = this.state.scoringMode;
+    let newMode: ScoringMode;
+
+    if (currentMode === 'COMPETITIVE') {
+      newMode = 'PARTY';
+    } else if (currentMode === 'PARTY') {
+      newMode = 'PRIVATE_BINGO';
+    } else {
+      // Already at most relaxed mode
+      conn.send(JSON.stringify({ type: 'error', message: 'Already at most relaxed mode' } as ServerMessage));
+      return;
+    }
+
+    this.state.scoringMode = newMode;
+
+    this.broadcast({
+      type: 'mode_changed',
+      scoringMode: newMode,
+    });
+
+    // Send updated state to all participants (each gets their own view for Private Bingo)
+    for (const [id, participant] of Object.entries(this.state.participants)) {
+      if (participant.isConnected) {
+        const conn = this.room.getConnection(id);
+        if (conn) {
+          conn.send(JSON.stringify({
+            type: 'session_state',
+            state: this.getPublicState(id),
+          } as ServerMessage));
+        }
+      }
+    }
+
+    this.scheduleSave();
+  }
+
   // ==========================================================================
   // EVENT SYSTEM
   // ==========================================================================
@@ -1019,15 +1077,31 @@ export default class ChaosRoom implements Party.Server {
     } as ServerMessage));
   }
 
-  private getPublicState(): Partial<ChaosSessionState> {
+  private getPublicState(forParticipantId?: string): Partial<ChaosSessionState> {
+    // Handle scoring mode visibility
+    let participants = this.state.participants;
+
+    if (this.state.scoringMode === 'PRIVATE_BINGO') {
+      // In Private Bingo mode, only show the requesting player's points
+      participants = Object.entries(this.state.participants).reduce((acc, [id, p]) => {
+        acc[id] = {
+          ...p,
+          // Hide other players' points (show as 0 or undefined)
+          chaosPoints: id === forParticipantId ? p.chaosPoints : 0,
+        };
+        return acc;
+      }, {} as Record<string, ChaosParticipant>);
+    }
+
     return {
       roomCode: this.state.roomCode,
       sessionId: this.state.sessionId,
       gameNightTitle: this.state.gameNightTitle,
       status: this.state.status,
       intensity: this.state.intensity,
+      scoringMode: this.state.scoringMode,
       eventFrequencyMinutes: this.state.eventFrequencyMinutes,
-      participants: this.state.participants,
+      participants,
       currentEvent: this.state.currentEvent,
       eventHistory: this.state.eventHistory.slice(-10), // Last 10 events
       bets: this.state.bets,
@@ -1074,6 +1148,9 @@ export default class ChaosRoom implements Party.Server {
       }
       if (body.intensity) {
         this.state.intensity = body.intensity;
+      }
+      if (body.scoringMode) {
+        this.state.scoringMode = body.scoringMode as ScoringMode;
       }
       if (body.eventFrequencyMinutes) {
         this.state.eventFrequencyMinutes = body.eventFrequencyMinutes;
