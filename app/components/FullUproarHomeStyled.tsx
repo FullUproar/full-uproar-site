@@ -597,7 +597,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             maxWidth: '500px',
             margin: '0 auto',
             marginTop: isMobile ? '1rem' : '1.5rem',
-            marginBottom: isMobile ? '2rem' : '8rem', // Prevent overlap with CTA button
+            marginBottom: isMobile ? '4rem' : '8rem', // Prevent overlap with CTA button
             padding: isMobile ? '0 1rem' : '0',
           }}>
             Arm yourself with chaos to transform boring game nights into legendary stories.
