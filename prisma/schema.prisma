@@ -208,6 +208,7 @@ model Order {
   returns               Return[]
   tickets               SupportTicket[]
   orderNotes            OrderNote[]
+  reviews               Review[]
 
   @@index([userId])
   @@index([status])
@@ -276,19 +277,62 @@ model Review {
   merchId   Int?
   userId    String
   userName  String
-  rating    Int
+  userEmail String?  // For matching with orders
+  rating    Int      // 1-5 stars
   title     String
-  comment   String
-  verified  Boolean  @default(false)
+  comment   String   @db.Text
+
+  // Purchase verification
+  verified       Boolean  @default(false)
+  orderId        String?  // Links to the order for verification
+  orderItemId    Int?     // Specific item in the order
+  purchaseDate   DateTime? // When they bought it
+  verifiedAt     DateTime? // When we verified the purchase
+
+  // Moderation
+  status         String   @default("pending") // pending, approved, rejected, flagged
+  moderatedBy    String?  // Admin who approved/rejected
+  moderatedAt    DateTime?
+  rejectionReason String?
+
+  // Engagement
   helpful   Int      @default(0)
   unhelpful Int      @default(0)
+
+  // Response from Full Uproar
+  responseText   String?  @db.Text
+  responseBy     String?  // Admin who responded
+  responseAt     DateTime?
+
+  // Test data flag
+  isTest    Boolean  @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   game      Game?    @relation(fields: [gameId], references: [id])
   merch     Merch?   @relation(fields: [merchId], references: [id])
+  order     Order?   @relation(fields: [orderId], references: [id])
+  votes     ReviewVote[]
 
   @@index([gameId])
   @@index([merchId])
+  @@index([userId])
+  @@index([orderId])
+  @@index([status])
+  @@index([verified])
+  @@index([isTest])
+}
+
+model ReviewVote {
+  id        Int      @id @default(autoincrement())
+  reviewId  Int
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId    String
+  vote      String   // "helpful" or "unhelpful"
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId])
+  @@index([reviewId])
   @@index([userId])
 }
 
@@ -377,6 +421,13 @@ model User {
   forumBannedAt     DateTime?
   forumBannedReason String?
   forumBannedUntil  DateTime? // null = permanent
+
+  // Review-specific ban (can't post reviews)
+  reviewBanned       Boolean   @default(false)
+  reviewBannedAt     DateTime?
+  reviewBannedReason String?
+  reviewBannedUntil  DateTime? // null = permanent
+  reviewBannedBy     String?   // Admin who issued the ban
 
   // Admin 2FA (TOTP) fields
   totpSecret         String? // Encrypted TOTP secret for authenticator apps

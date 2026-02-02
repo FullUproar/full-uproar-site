@@ -10,6 +10,7 @@ import {
   ChevronRight, Play, Award, Zap, Target,
   Shield, Sparkles, Heart, TrendingUp
 } from 'lucide-react';
+import { ProductReviews, ReviewStars } from '@/app/components/reviews';
 
 interface GameImage {
   id: number;
@@ -42,19 +43,18 @@ interface Game {
   videoUrl: string | null;
 }
 
-interface Testimonial {
-  author: string;
-  rating: number;
-  quote: string;
+interface ReviewSummary {
+  averageRating: number;
+  totalReviews: number;
 }
 
 interface GameShopPageProps {
   game: Game;
-  testimonials: Testimonial[];
   similarGames: any[];
+  reviewSummary: ReviewSummary;
 }
 
-export default function GameShopPage({ game, testimonials, similarGames }: GameShopPageProps) {
+export default function GameShopPage({ game, similarGames, reviewSummary }: GameShopPageProps) {
   const [scrollY, setScrollY] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const addToCartStore = useCartStore((state) => state.addToCart);
@@ -174,11 +174,25 @@ export default function GameShopPage({ game, testimonials, similarGames }: GameS
             <p style={{
               fontSize: 'clamp(1.2rem, 3vw, 2rem)',
               color: '#fdba74',
-              marginBottom: '2rem',
+              marginBottom: '1.5rem',
               fontStyle: 'italic'
             }}>
               {game.tagline}
             </p>
+          )}
+          {reviewSummary.totalReviews > 0 && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              marginBottom: '2rem'
+            }}>
+              <ReviewStars rating={reviewSummary.averageRating} size="medium" />
+              <span style={{ color: '#e2e8f0', fontSize: '1rem' }}>
+                {reviewSummary.averageRating.toFixed(1)} ({reviewSummary.totalReviews} review{reviewSummary.totalReviews !== 1 ? 's' : ''})
+              </span>
+            </div>
           )}
           <button
             onClick={handleAddToCart}
@@ -360,55 +374,13 @@ export default function GameShopPage({ game, testimonials, similarGames }: GameS
         </section>
       )}
 
-      {/* Testimonials Section */}
+      {/* Customer Reviews Section */}
       <section style={{
         padding: '6rem 2rem',
         background: 'linear-gradient(135deg, #1a1a1a, #0a0a0a)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontSize: '3rem', color: '#fde68a', fontWeight: 'bold' }}>
-              What Players Are Saying
-            </h2>
-          </div>
-          {testimonials.map((testimonial, index) => (
-            <div key={index} style={{
-              background: 'rgba(30, 41, 59, 0.5)',
-              padding: '2rem',
-              borderRadius: '15px',
-              border: '1px solid rgba(251, 191, 36, 0.2)',
-              marginBottom: '2rem'
-            }}>
-              <p style={{
-                fontSize: '1.5rem',
-                color: '#fde68a',
-                fontStyle: 'italic',
-                marginBottom: '1rem',
-                lineHeight: '1.6'
-              }}>
-                "{testimonial.quote}"
-              </p>
-              <div style={{
-                color: '#fdba74',
-                fontWeight: 'bold',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem'
-              }}>
-                <div style={{ display: 'flex', gap: '4px' }}>
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={20}
-                      fill={i < testimonial.rating ? '#fbbf24' : 'transparent'}
-                      color="#fbbf24"
-                    />
-                  ))}
-                </div>
-                <span>— {testimonial.author}</span>
-              </div>
-            </div>
-          ))}
+          <ProductReviews gameId={game.id} productName={game.title} />
         </div>
       </section>
 

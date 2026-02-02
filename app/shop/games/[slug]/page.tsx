@@ -46,24 +46,15 @@ export default async function ShopGamePage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
-  // Get reviews/testimonials (mock for now)
-  const testimonials = [
-    {
-      author: "BoardGameGeek User",
-      rating: 5,
-      quote: "Absolutely mind-blowing gameplay. Can't put it down!"
+  // Get review summary for hero section
+  const reviewSummary = await prisma.review.aggregate({
+    where: {
+      gameId: game.id,
+      status: 'approved'
     },
-    {
-      author: "Tabletop Weekly",
-      rating: 5,
-      quote: "A masterpiece of game design. Instant classic."
-    },
-    {
-      author: "Dice Tower Review",
-      rating: 4,
-      quote: "Innovative mechanics that push the boundaries."
-    }
-  ];
+    _avg: { rating: true },
+    _count: { id: true }
+  });
 
   // Get similar games for cross-selling
   const similarGames = await prisma.game.findMany({
@@ -83,8 +74,11 @@ export default async function ShopGamePage({ params }: { params: Promise<{ slug:
   return (
     <GameShopPage
       game={game}
-      testimonials={testimonials}
       similarGames={similarGames}
+      reviewSummary={{
+        averageRating: reviewSummary._avg.rating || 0,
+        totalReviews: reviewSummary._count.id
+      }}
     />
   );
 }
