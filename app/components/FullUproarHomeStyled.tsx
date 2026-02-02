@@ -548,9 +548,9 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            marginTop: isMobile ? 'clamp(0.6rem, 1.5vh, 1rem)' : 'clamp(0.85rem, 2vh, 1.25rem)',
-            marginBottom: isMobile ? 'clamp(0.4rem, 1vh, 0.65rem)' : 'clamp(0.6rem, 1.5vh, 0.9rem)',
-            height: isMobile ? 'clamp(70px, 13vh, 110px)' : 'clamp(140px, 20vh, 220px)',
+            marginTop: isMobile ? '1.5vh' : '2vh',
+            marginBottom: isMobile ? '1vh' : '1.5vh',
+            height: isMobile ? '13vh' : '18vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
