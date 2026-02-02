@@ -601,7 +601,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           onClick={scrollToWeapons}
           style={{
             position: 'absolute',
-            bottom: isMobile ? 'max(220px, 24vh)' : 'max(240px, 26vh)',
+            bottom: isMobile ? '24vh' : '26vh',
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
@@ -643,7 +643,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         {/* Subtitle - positioned to scroll into view */}
         <p style={{
           position: 'absolute',
-          bottom: isMobile ? 'max(-40px, -5vh)' : 'max(-20px, -3vh)',
+          bottom: isMobile ? '-5vh' : '-3vh',
           left: '50%',
           transform: 'translateX(-50%)',
           fontSize: isMobile ? 'clamp(0.8rem, 3.2vw, 0.95rem)' : '1.125rem',
