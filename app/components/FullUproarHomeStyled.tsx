@@ -403,6 +403,8 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       minHeight: '100vh',
       background: '#0a0a0a',
       position: 'relative' as const,
+      display: 'flex' as const,
+      flexDirection: 'column' as const,
     },
     gamePrice: {
       fontSize: '1.875rem',
@@ -1550,6 +1552,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         padding: isMobile ? '3rem 1rem 2rem' : '4rem 2rem 2rem',
         position: 'relative',
         zIndex: 1,
+        marginTop: 'auto', // Push footer to bottom in flex container
       }}>
         <div style={{
           maxWidth: '80rem',
