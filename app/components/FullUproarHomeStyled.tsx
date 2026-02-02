@@ -511,6 +511,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         <div style={{
           maxWidth: '900px',
           margin: 'auto',
+          marginTop: isMobile ? '-8vh' : '-10vh',
           padding: isMobile ? '0 0.75rem' : '0 1rem',
           width: '100%',
           boxSizing: 'border-box',
@@ -547,7 +548,8 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            margin: isMobile ? 'clamp(0.75rem, 2vh, 1.25rem) 0' : 'clamp(1rem, 2.5vh, 1.75rem) 0',
+            marginTop: isMobile ? 'clamp(0.5rem, 1vh, 0.75rem)' : 'clamp(0.75rem, 1.5vh, 1rem)',
+            marginBottom: isMobile ? 'clamp(0.3rem, 0.75vh, 0.5rem)' : 'clamp(0.5rem, 1vh, 0.75rem)',
             height: isMobile ? 'clamp(80px, 15vh, 120px)' : 'clamp(150px, 22vh, 240px)',
             display: 'flex',
             alignItems: 'center',
