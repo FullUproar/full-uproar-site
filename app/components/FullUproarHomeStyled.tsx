@@ -529,7 +529,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(1.8rem, 7.2vw, 2.6rem)' : 'clamp(3rem, 4.8vw, 4rem)',
+              fontSize: isMobile ? 'clamp(1.6rem, 6vw, 2.3rem)' : 'clamp(2.5rem, 4vw, 3.5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -548,9 +548,9 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            marginTop: isMobile ? 'clamp(0.5rem, 1vh, 0.75rem)' : 'clamp(0.75rem, 1.5vh, 1rem)',
-            marginBottom: isMobile ? 'clamp(0.3rem, 0.75vh, 0.5rem)' : 'clamp(0.5rem, 1vh, 0.75rem)',
-            height: isMobile ? 'clamp(80px, 15vh, 120px)' : 'clamp(150px, 22vh, 240px)',
+            marginTop: isMobile ? 'clamp(0.6rem, 1.5vh, 1rem)' : 'clamp(0.85rem, 2vh, 1.25rem)',
+            marginBottom: isMobile ? 'clamp(0.4rem, 1vh, 0.65rem)' : 'clamp(0.6rem, 1.5vh, 0.9rem)',
+            height: isMobile ? 'clamp(70px, 13vh, 110px)' : 'clamp(140px, 20vh, 220px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -577,7 +577,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(1.8rem, 7.2vw, 2.6rem)' : 'clamp(3rem, 4.8vw, 4rem)',
+              fontSize: isMobile ? 'clamp(1.6rem, 6vw, 2.3rem)' : 'clamp(2.5rem, 4vw, 3.5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
