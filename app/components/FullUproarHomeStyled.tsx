@@ -514,7 +514,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           padding: isMobile ? '0 0.75rem' : '0 1rem',
           width: '100%',
           boxSizing: 'border-box',
-          overflow: 'hidden',
+          overflow: 'visible',
           textAlign: 'center',
           zIndex: 1,
           display: 'flex',
@@ -528,7 +528,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.75rem, 6vw, 5rem)',
+              fontSize: isMobile ? 'clamp(1.8rem, 7.2vw, 2.6rem)' : 'clamp(3rem, 4.8vw, 4rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -575,7 +575,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.75rem, 6vw, 5rem)',
+              fontSize: isMobile ? 'clamp(1.8rem, 7.2vw, 2.6rem)' : 'clamp(3rem, 4.8vw, 4rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
