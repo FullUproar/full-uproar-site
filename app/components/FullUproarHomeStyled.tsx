@@ -403,6 +403,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       minHeight: '100vh',
       background: '#0a0a0a',
       position: 'relative' as const,
+      overscrollBehavior: 'none' as const, // Prevent over-scroll past footer
     },
     gamePrice: {
       fontSize: '1.875rem',
@@ -504,6 +505,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         position: 'relative',
         overflow: 'hidden',
         zIndex: 1,
+        scrollSnapAlign: 'start' as const,
       }}>
         {/* Hero content container - fills space below nav, centers content */}
         <div style={{
@@ -639,29 +641,32 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             />
           </div>
         </div>
+      </section>
 
-        {/* Subtitle - just below viewport, scrolls into view */}
+      {/* Subtitle - outside hero section to avoid overflow:hidden clipping descenders */}
+      <div style={{
+        position: 'relative',
+        zIndex: 1,
+        textAlign: 'center',
+        padding: isMobile ? '3vh 4vw 0' : '4vh 2vw 0',
+      }}>
         <p style={{
-          position: 'absolute',
-          bottom: '-4vh',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontSize: isMobile ? '3vw' : '1.1vw',
+          fontSize: isMobile ? '3.5vw' : '1.15vw',
           color: '#9ca3af',
-          lineHeight: 1.4,
+          lineHeight: 1.5,
           maxWidth: isMobile ? '90vw' : '35vw',
-          margin: 0,
-          textAlign: 'center',
+          margin: '0 auto',
         }}>
           Arm yourself with chaos to transform boring game nights into legendary stories.
         </p>
-      </section>
+      </div>
 
       {/* CHOOSE YOUR WEAPON SECTION */}
       <section id="choose-your-weapon" style={{
-        padding: isMobile ? '4rem 1rem' : '6rem 2rem',
+        padding: isMobile ? '3rem 1rem 4rem' : '4rem 2rem 6rem',
         position: 'relative',
         zIndex: 1,
+        scrollSnapAlign: 'start' as const,
       }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h2 style={{
@@ -1223,6 +1228,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           padding: isMobile ? '4rem 1rem' : '6rem 2rem',
           position: 'relative',
           zIndex: 1,
+          scrollSnapAlign: 'start' as const,
         }}>
           <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
             <h2 style={{
@@ -1631,6 +1637,17 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
+        }
+
+        /* Scroll snap behavior for magnetic sections */
+        html {
+          scroll-snap-type: y proximity;
+          scroll-behavior: smooth;
+        }
+
+        /* Prevent over-scroll past footer */
+        html, body {
+          overscroll-behavior: none;
         }
       `}</style>
     </div>
