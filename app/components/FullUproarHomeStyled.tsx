@@ -495,28 +495,31 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
       {/* HERO SECTION - Life hits hard. Game night hits back. */}
       <section style={{
-        height: isMobile ? '100dvh' : '100vh',
-        maxHeight: isMobile ? '100dvh' : '100vh',
-        minHeight: isMobile ? '700px' : '700px',
+        height: '100vh',
+        minHeight: isMobile ? 'max(650px, 100vh)' : 'max(700px, 100vh)',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         position: 'relative',
         overflow: 'hidden',
         zIndex: 1,
-        paddingBottom: isMobile ? '6rem' : '4rem',
+        padding: isMobile ? '10vh 0 8vh' : '8vh 0 6vh',
       }}>
 
         <div style={{
           maxWidth: '900px',
-          margin: '0 auto',
+          margin: 'auto',
           padding: isMobile ? '0 0.75rem' : '0 1rem',
           width: '100%',
           boxSizing: 'border-box',
           overflow: 'hidden',
           textAlign: 'center',
           zIndex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          flex: 1,
         }}>
           {/* First headline - DRAGGABLE EASTER EGG! */}
           <h1
@@ -542,11 +545,8 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            marginTop: isMobile ? '1.5rem' : '1.5rem',
-            marginBottom: isMobile ? '1.5rem' : '1rem',
-            height: isMobile ? '18vh' : '35vh',
-            maxHeight: isMobile ? '140px' : '320px',
-            minHeight: isMobile ? '100px' : '200px',
+            margin: isMobile ? 'clamp(1rem, 3vh, 2rem) 0' : 'clamp(1.5rem, 3vh, 2.5rem) 0',
+            height: isMobile ? 'clamp(100px, 20vh, 160px)' : 'clamp(200px, 30vh, 320px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -591,13 +591,13 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
           {/* Subtitle */}
           <p style={{
-            fontSize: isMobile ? '0.9rem' : '1.25rem',
+            fontSize: isMobile ? 'clamp(0.85rem, 3.5vw, 1rem)' : '1.25rem',
             color: '#9ca3af',
             lineHeight: 1.4,
             maxWidth: '500px',
             margin: '0 auto',
-            marginTop: isMobile ? '1rem' : '1.5rem',
-            marginBottom: isMobile ? '4rem' : '8rem', // Prevent overlap with CTA button
+            marginTop: isMobile ? 'clamp(0.75rem, 2vh, 1.5rem)' : '1.5rem',
+            marginBottom: 0,
             padding: isMobile ? '0 1rem' : '0',
           }}>
             Arm yourself with chaos to transform boring game nights into legendary stories.
@@ -608,10 +608,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         <div
           onClick={scrollToWeapons}
           style={{
-            position: 'absolute',
-            bottom: isMobile ? '2rem' : '3rem',
-            left: '50%',
-            transform: 'translateX(-50%)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -622,6 +618,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             width: isMobile ? '100%' : 'auto',
             padding: isMobile ? '0 1rem' : '0',
             boxSizing: 'border-box',
+            marginTop: isMobile ? 'clamp(2rem, 5vh, 4rem)' : '3rem',
           }}
         >
           <span style={{
