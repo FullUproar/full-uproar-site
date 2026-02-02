@@ -538,6 +538,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
               transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
               cursor: isDraggingHeadline ? 'grabbing' : 'grab',
               userSelect: 'none',
+              whiteSpace: 'nowrap',
             }}
           >
             Life hits hard
@@ -585,6 +586,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
               transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
               cursor: isDraggingHeadline ? 'grabbing' : 'grab',
               userSelect: 'none',
+              whiteSpace: 'nowrap',
             }}
           >
             Game night hits back
