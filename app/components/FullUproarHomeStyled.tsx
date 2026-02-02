@@ -499,12 +499,13 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         minHeight: isMobile ? '100vh' : '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-        overflow: 'hidden',
+        overflow: 'visible',
         zIndex: 1,
-        padding: isMobile ? 'max(80px, 12vh) 0 max(60px, 8vh)' : 'max(100px, 12vh) 0 max(80px, 10vh)',
+        paddingTop: isMobile ? '2vh' : '3vh',
+        paddingBottom: '20vh',
       }}>
 
         <div style={{
@@ -527,7 +528,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(1.75rem, 8vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
+              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.5rem, 6vw, 5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -545,8 +546,8 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            margin: isMobile ? 'clamp(0.75rem, 2vh, 1.25rem) 0' : 'clamp(1rem, 2.5vh, 1.75rem) 0',
-            height: isMobile ? 'clamp(80px, 15vh, 120px)' : 'clamp(150px, 22vh, 240px)',
+            margin: isMobile ? 'clamp(1rem, 2.5vh, 1.75rem) 0' : 'clamp(1.5rem, 3vh, 2.25rem) 0',
+            height: isMobile ? 'clamp(100px, 18vh, 140px)' : 'clamp(180px, 25vh, 280px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -573,7 +574,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(1.75rem, 8vw, 2.5rem)' : 'clamp(3rem, 5vw, 4.5rem)',
+              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.5rem, 6vw, 5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -608,21 +609,24 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         <div
           onClick={scrollToWeapons}
           style={{
+            position: 'absolute',
+            bottom: isMobile ? 'max(40px, 6vh)' : 'max(60px, 8vh)',
+            left: '50%',
+            transform: 'translateX(-50%)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '0.35rem',
+            gap: '0.5rem',
             cursor: 'pointer',
             opacity: scrollY > 300 ? 0 : 1,
             transition: 'opacity 0.3s',
             width: isMobile ? '100%' : 'auto',
             padding: isMobile ? '0 1rem' : '0',
             boxSizing: 'border-box',
-            marginTop: isMobile ? 'clamp(1rem, 3vh, 2rem)' : 'clamp(1.5rem, 3vh, 2.5rem)',
           }}
         >
           <span style={{
-            fontSize: isMobile ? '0.7rem' : '1.125rem',
+            fontSize: isMobile ? '0.8rem' : '1.25rem',
             fontWeight: 900,
             color: '#FF8200',
             textTransform: 'uppercase',
@@ -630,12 +634,12 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             textShadow: '0 0 30px rgba(255, 117, 0, 0.5)',
             textAlign: 'center',
             whiteSpace: isMobile ? 'normal' : 'nowrap',
-            lineHeight: 1.2,
+            lineHeight: 1.3,
           }}>
             Weaponize My Game Night
           </span>
           <ChevronDown
-            size={isMobile ? 28 : 40}
+            size={isMobile ? 32 : 44}
             color="#FF8200"
             strokeWidth={2.5}
             style={{
