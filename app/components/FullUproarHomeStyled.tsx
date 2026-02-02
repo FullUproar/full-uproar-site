@@ -505,7 +505,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         position: 'relative',
         overflow: 'hidden',
         zIndex: 1,
-        scrollSnapAlign: 'start' as const,
       }}>
         {/* Hero content container - fills space below nav, centers content */}
         <div style={{
@@ -666,7 +665,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         padding: isMobile ? '3rem 1rem 4rem' : '4rem 2rem 6rem',
         position: 'relative',
         zIndex: 1,
-        scrollSnapAlign: 'start' as const,
       }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h2 style={{
@@ -1228,7 +1226,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           padding: isMobile ? '4rem 1rem' : '6rem 2rem',
           position: 'relative',
           zIndex: 1,
-          scrollSnapAlign: 'start' as const,
         }}>
           <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
             <h2 style={{
@@ -1637,12 +1634,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
-        }
-
-        /* Scroll snap behavior for magnetic sections */
-        html {
-          scroll-snap-type: y proximity;
-          scroll-behavior: smooth;
         }
 
         /* Prevent over-scroll past footer */
