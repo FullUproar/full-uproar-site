@@ -597,7 +597,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           onClick={scrollToWeapons}
           style={{
             position: 'absolute',
-            bottom: isMobile ? 'max(80px, 10vh)' : 'max(100px, 12vh)',
+            bottom: isMobile ? 'max(140px, 16vh)' : 'max(160px, 18vh)',
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
