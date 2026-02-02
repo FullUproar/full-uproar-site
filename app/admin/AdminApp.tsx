@@ -10,7 +10,7 @@ import {
   X, Check, AlertCircle, Search, ChevronDown, ChevronRight,
   Clock, Filter, Calendar, Tag, Save, TestTube, UserCog, Heart,
   BarChart3, Shield, Target, Calculator, Crown, GraduationCap, Briefcase,
-  Landmark, FileText, Building, Zap, QrCode, MessageSquare
+  Landmark, FileText, Building, Zap, QrCode, MessageSquare, Star
 } from 'lucide-react';
 import { adminStyles } from './styles/adminStyles';
 
@@ -102,7 +102,9 @@ type ViewType =
   | 'analytics'
   | 'compliance'
   | 'site-issues'
-  | 'redirects';
+  | 'redirects'
+  | 'reviews'
+  | 'promo-codes';
 
 interface ViewState {
   type: ViewType;
@@ -294,7 +296,7 @@ export default function AdminApp() {
         'migrations', 'integrations', 'settings', 'test-modes',
         'users-list', 'users-edit', 'users-new', 'users-moderation',
         'roles', 'memberships', 'diagnostics', 'analytics', 'compliance',
-        'site-issues', 'redirects'
+        'site-issues', 'redirects', 'reviews', 'promo-codes'
       ];
 
       if (!validViews.includes(viewParam as ViewType)) {
@@ -486,6 +488,22 @@ export default function AdminApp() {
           view: { type: 'product-intelligence' as ViewType },
           color: '#14b8a6',
           badge: 'COGS',
+        },
+        {
+          id: 'reviews',
+          label: 'Reviews',
+          icon: <Star size={20} />,
+          view: { type: 'reviews' as ViewType },
+          color: '#fbbf24',
+          badge: 'MOD',
+        },
+        {
+          id: 'promo-codes',
+          label: 'Promo Codes',
+          icon: <Tag size={20} />,
+          view: { type: 'promo-codes' as ViewType },
+          color: '#ec4899',
+          badge: 'NEW',
         },
       ]
     },
@@ -790,7 +808,37 @@ export default function AdminApp() {
             />
           </div>
         );
-      
+
+      case 'reviews':
+        return (
+          <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+            <iframe
+              src="/admin/reviews"
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                background: '#111827'
+              }}
+            />
+          </div>
+        );
+
+      case 'promo-codes':
+        return (
+          <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+            <iframe
+              src="/admin/promo-codes"
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                background: '#111827'
+              }}
+            />
+          </div>
+        );
+
       case 'games-list':
         return (
           <GamesListView 

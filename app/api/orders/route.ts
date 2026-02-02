@@ -52,14 +52,21 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Get user ID if authenticated (needed for promo code tracking)
+    const { userId: clerkUserId } = await auth();
+
+    // Get client IP for promo code abuse tracking
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+                     request.headers.get('x-real-ip') ||
+                     'unknown';
+
     // Check if store is open (allow admins to bypass for testing)
     if (!STORE_OPEN) {
-      const { userId } = await auth();
       let isAdmin = false;
 
-      if (userId) {
+      if (clerkUserId) {
         const user = await prisma.user.findUnique({
-          where: { clerkId: userId },
+          where: { clerkId: clerkUserId },
           select: { role: true }
         });
         isAdmin = user?.role === 'ADMIN';
@@ -252,16 +259,173 @@ export async function POST(request: NextRequest) {
       const shippingMethod = body.shippingMethod;
       const shippingCents = shippingMethod?.priceCents || 999; // Default to $9.99 if not specified
 
+      // Handle promo code discount with FULL server-side validation
+      let discountCents = 0;
+      let promoCodeId: number | null = null;
+      let promoCodeToRecord: { id: number; code: string } | null = null;
+
+      if (body.promoCodeId) {
+        const promoCode = await tx.promoCode.findUnique({
+          where: { id: body.promoCodeId }
+        });
+
+        // Full server-side validation (don't trust client)
+        if (promoCode) {
+          const now = new Date();
+          let isValid = true;
+          let invalidReason = '';
+
+          // Check if active
+          if (!promoCode.isActive) {
+            isValid = false;
+            invalidReason = 'Promo code is no longer active';
+          }
+
+          // Check start date
+          if (isValid && promoCode.startsAt && now < promoCode.startsAt) {
+            isValid = false;
+            invalidReason = 'Promo code is not yet active';
+          }
+
+          // Check expiry
+          if (isValid && promoCode.expiresAt && now > promoCode.expiresAt) {
+            isValid = false;
+            invalidReason = 'Promo code has expired';
+          }
+
+          // Check max total uses
+          if (isValid && promoCode.maxUses && promoCode.currentUses >= promoCode.maxUses) {
+            isValid = false;
+            invalidReason = 'Promo code has reached its usage limit';
+          }
+
+          // Check per-user limit (by userId, email, AND IP for guest abuse prevention)
+          if (isValid) {
+            const userUsageCount = await tx.promoCodeUsage.count({
+              where: {
+                promoCodeId: promoCode.id,
+                OR: [
+                  ...(clerkUserId ? [{ userId: clerkUserId }] : []),
+                  { userEmail: body.customerEmail },
+                  // Also check IP for guest users to prevent abuse with multiple emails
+                  ...(!clerkUserId && clientIp !== 'unknown' ? [{ ipAddress: clientIp }] : [])
+                ]
+              }
+            });
+
+            if (userUsageCount >= promoCode.maxUsesPerUser) {
+              isValid = false;
+              invalidReason = 'You have already used this promo code the maximum number of times';
+            }
+          }
+
+          // Check new customers only
+          if (isValid && promoCode.newCustomersOnly) {
+            const previousOrders = await tx.order.count({
+              where: {
+                OR: [
+                  ...(clerkUserId ? [{ userId: clerkUserId }] : []),
+                  { customerEmail: body.customerEmail }
+                ],
+                status: { notIn: ['cancelled', 'pending'] }
+              }
+            });
+
+            if (previousOrders > 0) {
+              isValid = false;
+              invalidReason = 'Promo code is for new customers only';
+            }
+          }
+
+          // Check specific user restrictions
+          if (isValid && promoCode.specificUserIds) {
+            const allowedUsers = JSON.parse(promoCode.specificUserIds) as string[];
+            if (!clerkUserId || !allowedUsers.includes(clerkUserId)) {
+              isValid = false;
+              invalidReason = 'Promo code is not valid for your account';
+            }
+          }
+
+          if (isValid) {
+            // Server-side discount calculation (don't trust client value)
+            const specificGameIds = promoCode.specificGameIds ? JSON.parse(promoCode.specificGameIds) as number[] : null;
+            const specificMerchIds = promoCode.specificMerchIds ? JSON.parse(promoCode.specificMerchIds) as number[] : null;
+            const excludedGameIds = promoCode.excludedGameIds ? JSON.parse(promoCode.excludedGameIds) as number[] : null;
+            const excludedMerchIds = promoCode.excludedMerchIds ? JSON.parse(promoCode.excludedMerchIds) as number[] : null;
+
+            let eligibleTotal = 0;
+
+            for (const item of orderItems) {
+              if (item.itemType === 'game' && item.gameId) {
+                if (!promoCode.applicableToGames) continue;
+                if (specificGameIds && !specificGameIds.includes(item.gameId)) continue;
+                if (excludedGameIds && excludedGameIds.includes(item.gameId)) continue;
+                eligibleTotal += item.priceCents * item.quantity;
+              } else if (item.itemType === 'merch' && item.merchId) {
+                if (!promoCode.applicableToMerch) continue;
+                if (specificMerchIds && !specificMerchIds.includes(item.merchId)) continue;
+                if (excludedMerchIds && excludedMerchIds.includes(item.merchId)) continue;
+                eligibleTotal += item.priceCents * item.quantity;
+              }
+            }
+
+            // Check minimum order value
+            if (promoCode.minOrderCents && subtotalCents < promoCode.minOrderCents) {
+              isValid = false;
+              invalidReason = `Minimum order of $${(promoCode.minOrderCents / 100).toFixed(2)} required`;
+            }
+
+            if (isValid && eligibleTotal > 0) {
+              // Calculate discount server-side
+              if (promoCode.discountType === 'percentage') {
+                discountCents = Math.floor(eligibleTotal * (promoCode.discountValue / 100));
+              } else {
+                discountCents = promoCode.discountValue;
+              }
+
+              // Apply max discount cap
+              if (promoCode.maxDiscountCents && discountCents > promoCode.maxDiscountCents) {
+                discountCents = promoCode.maxDiscountCents;
+              }
+
+              // Don't let discount exceed eligible total
+              if (discountCents > eligibleTotal) {
+                discountCents = eligibleTotal;
+              }
+
+              promoCodeId = promoCode.id;
+              promoCodeToRecord = { id: promoCode.id, code: promoCode.code };
+
+              // Increment usage counter atomically
+              await tx.promoCode.update({
+                where: { id: promoCode.id },
+                data: { currentUses: { increment: 1 } }
+              });
+            }
+          }
+
+          // If promo was provided but invalid, reject the order
+          if (!isValid && body.promoCodeId) {
+            throw new Error(`Promo code invalid: ${invalidReason}`);
+          }
+        } else if (body.promoCodeId) {
+          // Promo code ID provided but not found
+          throw new Error('Promo code not found');
+        }
+      }
+
       // Calculate tax using shared tax calculation logic
       // Uses state-aware tax rates (e.g., no tax in DE, MT, NH, OR)
+      // Tax is calculated on the discounted amount
+      const taxableAmount = subtotalCents - discountCents;
       const taxResult = calculateTaxSync({
-        subtotalCents,
+        subtotalCents: taxableAmount,
         shippingCents,
         shippingAddress: body.shippingAddressData || undefined
       });
       const taxCents = taxResult.taxCents;
 
-      const totalCents = subtotalCents + shippingCents + taxCents;
+      const totalCents = subtotalCents - discountCents + shippingCents + taxCents;
 
       // Create the order (still inside transaction)
       const order = await tx.order.create({
@@ -272,8 +436,11 @@ export async function POST(request: NextRequest) {
           shippingAddress: body.shippingAddress,
           billingAddress: body.billingAddress || body.shippingAddress,
           totalCents,
+          subtotalCents,
+          discountCents,
           shippingCents,
           taxCents,
+          promoCodeId,
           // Store selected shipping method details
           shippingCarrier: shippingMethod?.carrierCode || null,
           shippingMethod: shippingMethod ? `${shippingMethod.carrier} ${shippingMethod.service}` : null,
@@ -291,7 +458,9 @@ export async function POST(request: NextRequest) {
           statusHistory: {
             create: {
               status: 'pending',
-              notes: 'Order created - inventory reserved'
+              notes: promoCodeId
+                ? `Order created with promo code - inventory reserved`
+                : 'Order created - inventory reserved'
             }
           }
         },
@@ -304,6 +473,20 @@ export async function POST(request: NextRequest) {
           }
         }
       });
+
+      // Record promo code usage for tracking per-user limits and IP abuse
+      if (promoCodeToRecord) {
+        await tx.promoCodeUsage.create({
+          data: {
+            promoCodeId: promoCodeToRecord.id,
+            orderId: order.id,
+            userId: clerkUserId || null,
+            userEmail: body.customerEmail,
+            ipAddress: clientIp !== 'unknown' ? clientIp : null,
+            discountApplied: discountCents
+          }
+        });
+      }
 
       return order;
     }, {

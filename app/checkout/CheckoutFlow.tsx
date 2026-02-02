@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
-import { 
-  CreditCard, Truck, Package, User, MapPin, Plus, Check, 
+import {
+  CreditCard, Truck, Package, User, MapPin, Plus, Check,
   ChevronRight, ShoppingCart, Lock, ArrowLeft, Edit2,
-  Home, Building, Globe
+  Home, Building, Globe, Tag, X, Loader2
 } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -62,7 +62,20 @@ export default function CheckoutFlow() {
   const [showNewPayment, setShowNewPayment] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  
+
+  // Promo code state
+  const [promoCode, setPromoCode] = useState('');
+  const [promoCodeValidating, setPromoCodeValidating] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState<{
+    id: number;
+    code: string;
+    discountCents: number;
+    discountType: string;
+    discountValue: number;
+    message: string;
+  } | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+
   // New address form
   const [newAddress, setNewAddress] = useState<Partial<Address>>({
     fullName: user?.fullName || '',
@@ -167,7 +180,11 @@ export default function CheckoutFlow() {
           ...(item.type === 'merch' && item.size ? { merchSize: item.size } : {}),
           quantity: item.quantity,
           priceCents: item.priceCents
-        }))
+        })),
+        // Promo code data
+        promoCodeId: appliedPromo?.id || null,
+        discountCents: appliedPromo?.discountCents || 0,
+        promoCodeUsed: appliedPromo?.code || null
       };
 
       const res = await fetch('/api/orders', {
@@ -216,11 +233,66 @@ export default function CheckoutFlow() {
     }
   };
 
+  // Promo code validation
+  const validatePromoCode = async () => {
+    if (!promoCode.trim()) return;
+
+    setPromoCodeValidating(true);
+    setPromoError(null);
+
+    try {
+      const cartItems = items.map(item => ({
+        id: item.id,
+        type: item.type as 'game' | 'merch',
+        priceCents: item.priceCents,
+        quantity: item.quantity
+      }));
+
+      const response = await fetch('/api/promo-codes/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: promoCode.trim(),
+          cartItems,
+          userEmail: user?.primaryEmailAddress?.emailAddress
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.valid) {
+        setAppliedPromo({
+          id: data.promoCode.id,
+          code: data.promoCode.code,
+          discountCents: data.discount.cents,
+          discountType: data.promoCode.discountType,
+          discountValue: data.promoCode.discountValue,
+          message: data.message
+        });
+        setPromoCode('');
+      } else {
+        setPromoError(data.error || 'Invalid promo code');
+      }
+    } catch (error) {
+      console.error('Error validating promo code:', error);
+      setPromoError('Failed to validate promo code');
+    } finally {
+      setPromoCodeValidating(false);
+    }
+  };
+
+  const removePromoCode = () => {
+    setAppliedPromo(null);
+    setPromoError(null);
+  };
+
   // Calculate totals
   const subtotal = getTotalPrice();
+  const discount = appliedPromo?.discountCents || 0;
   const shipping = subtotal > 5000 ? 0 : 999;
-  const tax = Math.round(subtotal * 0.08);
-  const total = subtotal + shipping + tax;
+  const taxableAmount = subtotal - discount;
+  const tax = Math.round(Math.max(0, taxableAmount) * 0.08);
+  const total = Math.max(0, subtotal - discount) + shipping + tax;
 
   // Styles
   const containerStyle = {
@@ -730,8 +802,8 @@ export default function CheckoutFlow() {
             
             <div style={{ borderBottom: '1px solid #374151', paddingBottom: '1rem', marginBottom: '1rem' }}>
               {items.map((item, index) => (
-                <div key={index} style={{ 
-                  display: 'flex', 
+                <div key={index} style={{
+                  display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '0.5rem',
                   color: '#e2e8f0',
@@ -743,11 +815,116 @@ export default function CheckoutFlow() {
               ))}
             </div>
 
+            {/* Promo Code Section */}
+            <div style={{ borderBottom: '1px solid #374151', paddingBottom: '1rem', marginBottom: '1rem' }}>
+              {appliedPromo ? (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.75rem',
+                  background: 'rgba(34, 197, 94, 0.1)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(34, 197, 94, 0.3)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Tag size={16} style={{ color: '#22c55e' }} />
+                    <span style={{ color: '#22c55e', fontWeight: '500' }}>{appliedPromo.code}</span>
+                    <span style={{ color: '#86efac', fontSize: '0.75rem' }}>
+                      {appliedPromo.message}
+                    </span>
+                  </div>
+                  <button
+                    onClick={removePromoCode}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0.25rem',
+                      color: '#ef4444',
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
+                    title="Remove promo code"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => {
+                        setPromoCode(e.target.value.toUpperCase());
+                        setPromoError(null);
+                      }}
+                      placeholder="Promo code"
+                      style={{
+                        flex: 1,
+                        padding: '0.625rem 0.75rem',
+                        background: '#1f2937',
+                        border: promoError ? '1px solid #ef4444' : '1px solid #374151',
+                        borderRadius: '6px',
+                        color: '#e2e8f0',
+                        fontSize: '0.875rem',
+                        outline: 'none'
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          validatePromoCode();
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={validatePromoCode}
+                      disabled={promoCodeValidating || !promoCode.trim()}
+                      style={{
+                        padding: '0.625rem 1rem',
+                        background: promoCodeValidating || !promoCode.trim() ? '#374151' : '#f97316',
+                        border: 'none',
+                        borderRadius: '6px',
+                        color: promoCodeValidating || !promoCode.trim() ? '#6b7280' : 'white',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: promoCodeValidating || !promoCode.trim() ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      {promoCodeValidating ? (
+                        <>
+                          <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                          <span>...</span>
+                        </>
+                      ) : (
+                        'Apply'
+                      )}
+                    </button>
+                  </div>
+                  {promoError && (
+                    <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.5rem' }}>
+                      {promoError}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div style={{ marginBottom: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                 <span style={{ color: '#94a3b8' }}>Subtotal</span>
                 <span style={{ color: '#e2e8f0' }}>${(subtotal / 100).toFixed(2)}</span>
               </div>
+              {appliedPromo && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ color: '#22c55e' }}>Discount ({appliedPromo.code})</span>
+                  <span style={{ color: '#22c55e' }}>-${(discount / 100).toFixed(2)}</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                 <span style={{ color: '#94a3b8' }}>Shipping</span>
                 <span style={{ color: '#e2e8f0' }}>

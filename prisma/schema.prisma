@@ -182,9 +182,13 @@ model Order {
   billingAddress        String?
   status                String               @default("pending")
   totalCents            Int
+  subtotalCents         Int?                 // Before discounts
+  discountCents         Int                  @default(0)
   shippingCents         Int                  @default(0)
   taxCents              Int                  @default(0)
   refundAmountCents     Int                  @default(0)
+  promoCodeId           Int?
+  promoCode             PromoCode?           @relation(fields: [promoCodeId], references: [id])
   paymentIntentId       String?
   paymentMethod         String?
   paidAt                DateTime?            @db.Timestamp(6)
@@ -213,6 +217,79 @@ model Order {
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+  @@index([promoCodeId])
+}
+
+model PromoCode {
+  id              Int       @id @default(autoincrement())
+  code            String    @unique // The actual promo code (e.g., "CHAOS20")
+  description     String?   // Internal description
+
+  // Discount settings
+  discountType    String    // "percentage" or "fixed"
+  discountValue   Int       // Percentage (0-100) or cents for fixed
+
+  // Constraints
+  minOrderCents   Int?      // Minimum order value to apply
+  maxDiscountCents Int?     // Cap for percentage discounts
+
+  // Usage limits
+  maxUses         Int?      // Total uses allowed (null = unlimited)
+  maxUsesPerUser  Int       @default(1) // Uses per customer
+  currentUses     Int       @default(0) // Current usage count
+
+  // Product restrictions
+  applicableToGames   Boolean @default(true)
+  applicableToMerch   Boolean @default(true)
+  specificGameIds     String? // JSON array of game IDs
+  specificMerchIds    String? // JSON array of merch IDs
+  excludedGameIds     String? // JSON array of excluded game IDs
+  excludedMerchIds    String? // JSON array of excluded merch IDs
+
+  // Customer restrictions
+  newCustomersOnly    Boolean @default(false)
+  specificUserIds     String? // JSON array of user IDs (for targeted promos)
+  excludedUserIds     String? // JSON array of excluded user IDs
+
+  // Time restrictions
+  startsAt        DateTime  @default(now())
+  expiresAt       DateTime?
+
+  // Status
+  isActive        Boolean   @default(true)
+  isTest          Boolean   @default(false) // For testing without affecting real orders
+
+  // Tracking
+  createdBy       String?   // Admin who created it
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+
+  // Relations
+  orders          Order[]
+  usageHistory    PromoCodeUsage[]
+
+  @@index([code])
+  @@index([isActive])
+  @@index([startsAt])
+  @@index([expiresAt])
+}
+
+model PromoCodeUsage {
+  id          Int       @id @default(autoincrement())
+  promoCodeId Int
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id])
+  orderId     String?   // The order that used this code
+  userId      String?   // Clerk user ID
+  userEmail   String?   // For guest checkouts
+  ipAddress   String?   // Track IP for abuse prevention
+  discountApplied Int   // Actual discount in cents
+  createdAt   DateTime  @default(now())
+
+  @@index([promoCodeId])
+  @@index([userId])
+  @@index([userEmail])
+  @@index([orderId])
+  @@index([ipAddress])
 }
 
 model OrderItem {

@@ -54,6 +54,16 @@ export const rateLimiters = {
         prefix: 'upload',
       })
     : null,
+
+  // Promo code validation: 10 requests per minute (prevent brute force)
+  promo: redis
+    ? new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(10, '1 m'),
+        analytics: true,
+        prefix: 'promo',
+      })
+    : null,
 };
 
 // In-memory rate limiting for development
@@ -126,6 +136,7 @@ export async function rateLimit(
         auth: { limit: 5, window: 60000 },
         checkout: { limit: 10, window: 60000 },
         upload: { limit: 5, window: 300000 }, // 5 minutes
+        promo: { limit: 10, window: 60000 }, // Promo code validation
       };
       
       const { limit, window } = limits[type];
