@@ -528,7 +528,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(2.5rem, 10vw, 3.5rem)' : 'clamp(4rem, 6.5vw, 5.5rem)',
+              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.75rem, 6vw, 5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -546,8 +546,8 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           {/* Fugly integrated between text */}
           <div style={{
             position: 'relative',
-            margin: isMobile ? 'clamp(1rem, 2.5vh, 1.75rem) 0' : 'clamp(1.5rem, 3vh, 2.25rem) 0',
-            height: isMobile ? 'clamp(100px, 18vh, 140px)' : 'clamp(180px, 25vh, 280px)',
+            margin: isMobile ? 'clamp(0.75rem, 2vh, 1.25rem) 0' : 'clamp(1rem, 2.5vh, 1.75rem) 0',
+            height: isMobile ? 'clamp(80px, 15vh, 120px)' : 'clamp(150px, 22vh, 240px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -574,7 +574,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(2.5rem, 10vw, 3.5rem)' : 'clamp(4rem, 6.5vw, 5.5rem)',
+              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.75rem, 6vw, 5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -597,7 +597,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           onClick={scrollToWeapons}
           style={{
             position: 'absolute',
-            bottom: isMobile ? 'max(140px, 16vh)' : 'max(160px, 18vh)',
+            bottom: isMobile ? 'max(180px, 20vh)' : 'max(200px, 22vh)',
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
