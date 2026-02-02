@@ -403,7 +403,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       minHeight: '100vh',
       background: '#0a0a0a',
       position: 'relative' as const,
-      overflowX: 'hidden' as const,
     },
     gamePrice: {
       fontSize: '1.875rem',
@@ -1634,11 +1633,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
-        }
-
-        /* Prevent elastic/rubber-band scrolling past content */
-        body {
-          overscroll-behavior-y: contain;
         }
       `}</style>
     </div>
