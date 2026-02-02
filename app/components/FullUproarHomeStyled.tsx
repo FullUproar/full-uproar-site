@@ -494,167 +494,164 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       <Navigation />
 
       {/* HERO SECTION - Life hits hard. Game night hits back. */}
+      {/*
+        ZOOM-INVARIANT LAYOUT: All units in vh/vw only.
+        Structure: Nav (8vh) + Hero content centered in remaining 92vh
+        CTA pinned to bottom with arrow tip almost touching edge.
+      */}
       <section style={{
         height: '100vh',
-        minHeight: isMobile ? '100vh' : '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
         position: 'relative',
-        overflow: 'visible',
+        overflow: 'hidden',
         zIndex: 1,
-        paddingTop: isMobile ? '2vh' : '3vh',
-        paddingBottom: '20vh',
       }}>
-
+        {/* Hero content container - fills space below nav, centers content */}
         <div style={{
-          maxWidth: '900px',
-          margin: 'auto',
-          marginTop: isMobile ? '-8vh' : '-10vh',
-          padding: isMobile ? '0 0.75rem' : '0 1rem',
-          width: '100%',
-          boxSizing: 'border-box',
-          overflow: 'visible',
-          textAlign: 'center',
-          zIndex: 1,
+          position: 'absolute',
+          top: isMobile ? '7vh' : '8vh', // Below nav
+          left: 0,
+          right: 0,
+          bottom: 0,
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'center',
           justifyContent: 'center',
-          flex: 1,
+          padding: `0 ${isMobile ? '3vw' : '2vw'}`,
+          boxSizing: 'border-box',
         }}>
-          {/* First headline - DRAGGABLE EASTER EGG! */}
-          <h1
-            ref={topHeadlineRef}
-            onMouseDown={handleHeadlineMouseDown}
-            onTouchStart={handleHeadlineMouseDown}
-            style={{
-              fontSize: isMobile ? 'clamp(1.6rem, 6vw, 2.3rem)' : 'clamp(2.5rem, 4vw, 3.5rem)',
-              fontWeight: 900,
-              lineHeight: 1,
-              marginBottom: 0,
-              color: '#FBDB65',
-              textTransform: 'uppercase',
-              transform: `rotate(${actualTopTilt}deg)`,
-              transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
-              cursor: isDraggingHeadline ? 'grabbing' : 'grab',
-              userSelect: 'none',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Life hits hard
-          </h1>
-
-          {/* Fugly integrated between text */}
+          {/* Main content group - vertically centered, accounts for CTA at bottom */}
           <div style={{
-            position: 'relative',
-            marginTop: isMobile ? '1.5vh' : '2vh',
-            marginBottom: isMobile ? '1vh' : '1.5vh',
-            height: isMobile ? '13vh' : '18vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <Image
-              src="/FuglyLaying.png"
-              alt="Fugly - the chaos mascot"
-              width={500}
-              height={380}
-              priority
-              quality={95}
-              style={{
-                height: '100%',
-                maxHeight: isMobile ? '200px' : '380px',
-                width: 'auto',
-                transform: 'rotate(-2deg)',
-                filter: 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.5))',
-              }}
-            />
-          </div>
-
-          {/* Second headline - mirrors the top rotation, ALSO DRAGGABLE! */}
-          <h1
-            onMouseDown={handleHeadlineMouseDown}
-            onTouchStart={handleHeadlineMouseDown}
-            style={{
-              fontSize: isMobile ? 'clamp(1.6rem, 6vw, 2.3rem)' : 'clamp(2.5rem, 4vw, 3.5rem)',
-              fontWeight: 900,
-              lineHeight: 1,
-              marginBottom: 0,
-              color: '#FF8200',
-              textTransform: 'uppercase',
-              textShadow: '0 0 60px rgba(255, 117, 0, 0.5)',
-              transform: `rotate(${actualBottomTilt}deg)`,
-              transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
-              cursor: isDraggingHeadline ? 'grabbing' : 'grab',
-              userSelect: 'none',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Game night hits back
-          </h1>
-
-        </div>
-
-        {/* Scroll CTA - Weaponize My Game Night */}
-        <div
-          onClick={scrollToWeapons}
-          style={{
-            position: 'absolute',
-            bottom: isMobile ? '28vh' : '30vh',
-            left: '50%',
-            transform: 'translateX(-50%)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '0.5rem',
-            cursor: 'pointer',
-            opacity: scrollY > 300 ? 0 : 1,
-            transition: 'opacity 0.3s',
-            width: isMobile ? '100%' : 'auto',
-            padding: isMobile ? '0 1rem' : '0',
-            boxSizing: 'border-box',
-          }}
-        >
-          <span style={{
-            fontSize: isMobile ? '0.8rem' : '1.25rem',
-            fontWeight: 900,
-            color: '#FF8200',
-            textTransform: 'uppercase',
-            letterSpacing: isMobile ? '0.05em' : '0.1em',
-            textShadow: '0 0 30px rgba(255, 117, 0, 0.5)',
-            textAlign: 'center',
-            whiteSpace: isMobile ? 'normal' : 'nowrap',
-            lineHeight: 1.3,
+            justifyContent: 'center',
+            width: '100%',
+            maxWidth: '90vw',
+            marginBottom: isMobile ? '12vh' : '10vh', // Space for CTA
           }}>
-            Weaponize My Game Night
-          </span>
-          <ChevronDown
-            size={isMobile ? 32 : 44}
-            color="#FF8200"
-            strokeWidth={2.5}
+            {/* First headline - DRAGGABLE EASTER EGG! */}
+            <h1
+              ref={topHeadlineRef}
+              onMouseDown={handleHeadlineMouseDown}
+              onTouchStart={handleHeadlineMouseDown}
+              style={{
+                fontSize: isMobile ? '7vw' : '4.5vw',
+                fontWeight: 900,
+                lineHeight: 1,
+                margin: 0,
+                marginBottom: isMobile ? '2vh' : '2.5vh', // Rotation clearance
+                color: '#FBDB65',
+                textTransform: 'uppercase',
+                transform: `rotate(${actualTopTilt}deg)`,
+                transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
+                cursor: isDraggingHeadline ? 'grabbing' : 'grab',
+                userSelect: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Life hits hard
+            </h1>
+
+            {/* Fugly - centered mascot */}
+            <div style={{
+              height: isMobile ? '22vh' : '28vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <Image
+                src="/FuglyLaying.png"
+                alt="Fugly - the chaos mascot"
+                width={500}
+                height={380}
+                priority
+                quality={95}
+                style={{
+                  height: '100%',
+                  width: 'auto',
+                  transform: 'rotate(-2deg)',
+                  filter: 'drop-shadow(0 1.5vh 4vh rgba(0, 0, 0, 0.5))',
+                }}
+              />
+            </div>
+
+            {/* Second headline - mirrors the top rotation, ALSO DRAGGABLE! */}
+            <h1
+              onMouseDown={handleHeadlineMouseDown}
+              onTouchStart={handleHeadlineMouseDown}
+              style={{
+                fontSize: isMobile ? '7vw' : '4.5vw',
+                fontWeight: 900,
+                lineHeight: 1,
+                margin: 0,
+                marginTop: isMobile ? '2vh' : '2.5vh', // Rotation clearance
+                color: '#FF8200',
+                textTransform: 'uppercase',
+                textShadow: '0 0 6vh rgba(255, 117, 0, 0.5)',
+                transform: `rotate(${actualBottomTilt}deg)`,
+                transition: isDraggingHeadline ? 'none' : 'transform 0.3s',
+                cursor: isDraggingHeadline ? 'grabbing' : 'grab',
+                userSelect: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Game night hits back
+            </h1>
+          </div>
+
+          {/* CTA - pinned to bottom */}
+          <div
+            onClick={scrollToWeapons}
             style={{
-              animation: 'bounce 1.5s infinite',
-              filter: 'drop-shadow(0 0 10px rgba(255, 117, 0, 0.5))',
+              position: 'absolute',
+              bottom: isMobile ? '1.5vh' : '2vh',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: isMobile ? '0.5vh' : '0.8vh',
+              cursor: 'pointer',
+              opacity: scrollY > 300 ? 0 : 1,
+              transition: 'opacity 0.3s',
             }}
-          />
+          >
+            <span style={{
+              fontSize: isMobile ? '2.8vw' : '1.3vw',
+              fontWeight: 900,
+              color: '#FF8200',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              textShadow: '0 0 3vh rgba(255, 117, 0, 0.5)',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+            }}>
+              Weaponize My Game Night
+            </span>
+            <ChevronDown
+              size={isMobile ? 28 : 40}
+              color="#FF8200"
+              strokeWidth={2.5}
+              style={{
+                animation: 'bounce 1.5s infinite',
+                filter: 'drop-shadow(0 0 1vh rgba(255, 117, 0, 0.5))',
+              }}
+            />
+          </div>
         </div>
 
-        {/* Subtitle - positioned to scroll into view */}
+        {/* Subtitle - just below viewport, scrolls into view */}
         <p style={{
           position: 'absolute',
-          bottom: isMobile ? '-5vh' : '-3vh',
+          bottom: '-4vh',
           left: '50%',
           transform: 'translateX(-50%)',
-          fontSize: isMobile ? 'clamp(0.8rem, 3.2vw, 0.95rem)' : '1.125rem',
+          fontSize: isMobile ? '3vw' : '1.1vw',
           color: '#9ca3af',
-          lineHeight: 1.35,
-          maxWidth: '480px',
+          lineHeight: 1.4,
+          maxWidth: isMobile ? '90vw' : '35vw',
           margin: 0,
-          padding: isMobile ? '0 1rem' : '0',
           textAlign: 'center',
-          width: isMobile ? '100%' : 'auto',
-          boxSizing: 'border-box',
         }}>
           Arm yourself with chaos to transform boring game nights into legendary stories.
         </p>
