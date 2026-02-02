@@ -528,7 +528,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.5rem, 6vw, 5rem)',
+              fontSize: isMobile ? 'clamp(2.5rem, 10vw, 3.5rem)' : 'clamp(4rem, 6.5vw, 5.5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -574,7 +574,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             onMouseDown={handleHeadlineMouseDown}
             onTouchStart={handleHeadlineMouseDown}
             style={{
-              fontSize: isMobile ? 'clamp(2.25rem, 9vw, 3.25rem)' : 'clamp(3.5rem, 6vw, 5rem)',
+              fontSize: isMobile ? 'clamp(2.5rem, 10vw, 3.5rem)' : 'clamp(4rem, 6.5vw, 5.5rem)',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: 0,
@@ -590,19 +590,6 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             Game night hits back
           </h1>
 
-          {/* Subtitle */}
-          <p style={{
-            fontSize: isMobile ? 'clamp(0.8rem, 3.2vw, 0.95rem)' : '1.125rem',
-            color: '#9ca3af',
-            lineHeight: 1.35,
-            maxWidth: '480px',
-            margin: '0 auto',
-            marginTop: isMobile ? 'clamp(0.5rem, 1.5vh, 1rem)' : 'clamp(0.75rem, 2vh, 1.25rem)',
-            marginBottom: 0,
-            padding: isMobile ? '0 1rem' : '0',
-          }}>
-            Arm yourself with chaos to transform boring game nights into legendary stories.
-          </p>
         </div>
 
         {/* Scroll CTA - Weaponize My Game Night */}
@@ -610,7 +597,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
           onClick={scrollToWeapons}
           style={{
             position: 'absolute',
-            bottom: isMobile ? 'max(40px, 6vh)' : 'max(60px, 8vh)',
+            bottom: isMobile ? 'max(80px, 10vh)' : 'max(100px, 12vh)',
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
@@ -648,6 +635,25 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             }}
           />
         </div>
+
+        {/* Subtitle - positioned to scroll into view */}
+        <p style={{
+          position: 'absolute',
+          bottom: isMobile ? 'max(-40px, -5vh)' : 'max(-20px, -3vh)',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontSize: isMobile ? 'clamp(0.8rem, 3.2vw, 0.95rem)' : '1.125rem',
+          color: '#9ca3af',
+          lineHeight: 1.35,
+          maxWidth: '480px',
+          margin: 0,
+          padding: isMobile ? '0 1rem' : '0',
+          textAlign: 'center',
+          width: isMobile ? '100%' : 'auto',
+          boxSizing: 'border-box',
+        }}>
+          Arm yourself with chaos to transform boring game nights into legendary stories.
+        </p>
       </section>
 
       {/* CHOOSE YOUR WEAPON SECTION */}
