@@ -2,13 +2,21 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-const FooterLogo = dynamic(() => import('./FooterLogo'), { 
+const FooterLogo = dynamic(() => import('./FooterLogo'), {
   ssr: false,
-  loading: () => null 
+  loading: () => null
 });
 
 export default function GlobalFooter() {
+  const pathname = usePathname();
+
+  // Homepage has its own custom footer
+  if (pathname === '/') {
+    return null;
+  }
+
   return (
     <footer style={{ 
       backgroundColor: '#000', 
