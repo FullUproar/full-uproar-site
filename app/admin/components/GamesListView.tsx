@@ -6,6 +6,13 @@ import { Plus, Edit2, Trash2, Eye, Search, Filter, Package, CheckSquare, Square,
 import { adminStyles } from '../styles/adminStyles';
 import ConfirmationModal from './ConfirmationModal';
 
+interface GameImage {
+  id: number;
+  imageUrl: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
 interface Game {
   id: number;
   title: string;
@@ -16,6 +23,7 @@ interface Game {
   timeToPlay: string;
   ageRating: string;
   imageUrl?: string;
+  images?: GameImage[];
   isBundle: boolean;
   isPreorder: boolean;
   featured: boolean;
@@ -27,6 +35,22 @@ interface Game {
   isNew?: boolean;
   isBestseller?: boolean;
   archived?: boolean;
+}
+
+// Helper to get the display image URL (legacy imageUrl or primary from gallery)
+function getDisplayImage(game: Game): string | null {
+  // First try legacy imageUrl
+  if (game.imageUrl) return game.imageUrl;
+
+  // Then try primary image from gallery
+  if (game.images && game.images.length > 0) {
+    const primaryImage = game.images.find(img => img.isPrimary);
+    if (primaryImage) return primaryImage.imageUrl;
+    // Fallback to first image if no primary set
+    return game.images[0].imageUrl;
+  }
+
+  return null;
 }
 
 interface GamesListViewProps {
@@ -382,33 +406,36 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                     </button>
                   </td>
                   <td style={adminStyles.tableCell}>
-                    {game.imageUrl ? (
-                      <Image
-                        src={game.imageUrl}
-                        alt={game.title}
-                        width={60}
-                        height={60}
-                        unoptimized
-                        style={{
-                          objectFit: 'cover',
+                    {(() => {
+                      const displayImage = getDisplayImage(game);
+                      return displayImage ? (
+                        <Image
+                          src={displayImage}
+                          alt={game.title}
+                          width={60}
+                          height={60}
+                          unoptimized
+                          style={{
+                            objectFit: 'cover',
+                            borderRadius: '8px',
+                            border: '2px solid rgba(249, 115, 22, 0.3)',
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: '60px',
+                          height: '60px',
+                          background: 'rgba(249, 115, 22, 0.1)',
                           borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                           border: '2px solid rgba(249, 115, 22, 0.3)',
-                        }}
-                      />
-                    ) : (
-                      <div style={{
-                        width: '60px',
-                        height: '60px',
-                        background: 'rgba(249, 115, 22, 0.1)',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        border: '2px solid rgba(249, 115, 22, 0.3)',
-                      }}>
-                        <Package size={24} style={{ color: '#94a3b8' }} />
-                      </div>
-                    )}
+                        }}>
+                          <Package size={24} style={{ color: '#94a3b8' }} />
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td style={adminStyles.tableCell}>
                     <div>

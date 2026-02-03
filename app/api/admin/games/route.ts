@@ -25,6 +25,14 @@ export async function GET(request: NextRequest) {
       where: whereClause,
       orderBy: {
         createdAt: 'desc'
+      },
+      include: {
+        images: {
+          orderBy: [
+            { isPrimary: 'desc' },
+            { sortOrder: 'asc' }
+          ]
+        }
       }
     });
 

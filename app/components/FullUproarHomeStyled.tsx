@@ -10,6 +10,13 @@ import Navigation from './Navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
+interface GameImage {
+  id: number;
+  imageUrl: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
 interface Game {
   id: number;
   title: string;
@@ -21,11 +28,28 @@ interface Game {
   timeToPlay: string;
   ageRating: string;
   imageUrl: string | null;
+  images?: GameImage[];
   isBundle: boolean;
   isPreorder: boolean;
   featured: boolean;
   bundleInfo: string | null;
   createdAt: string;
+}
+
+// Helper to get the display image URL (legacy imageUrl or primary from gallery)
+function getDisplayImage(game: Game): string | null {
+  // First try legacy imageUrl
+  if (game.imageUrl && game.imageUrl.trim() !== '') return game.imageUrl;
+
+  // Then try primary image from gallery
+  if (game.images && game.images.length > 0) {
+    const primaryImage = game.images.find(img => img.isPrimary);
+    if (primaryImage) return primaryImage.imageUrl;
+    // Fallback to first image if no primary set
+    return game.images[0].imageUrl;
+  }
+
+  return null;
 }
 
 interface Comic {
@@ -1365,15 +1389,18 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                     fontWeight: 'bold',
                     overflow: 'hidden'
                   }}>
-                    {featuredGame.imageUrl && featuredGame.imageUrl.trim() !== '' ? (
-                      <img
-                        src={featuredGame.imageUrl}
-                        alt={featuredGame.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                      />
-                    ) : (
-                      'FUGLY'
-                    )}
+                    {(() => {
+                      const displayImage = getDisplayImage(featuredGame);
+                      return displayImage ? (
+                        <img
+                          src={displayImage}
+                          alt={featuredGame.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                        />
+                      ) : (
+                        'FUGLY'
+                      );
+                    })()}
                   </div>
                   <div style={{
                     position: 'absolute',
