@@ -10,6 +10,7 @@ interface Game {
   title: string;
   slug: string;
   tagline: string | null;
+  teaser: string | null;
   description: string;
   priceCents: number;
   ageRating: string;
@@ -344,6 +345,19 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
               onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
               placeholder="Optional catchy tagline"
             />
+          </div>
+
+          <div style={{ ...styles.inputGroup, gridColumn: 'span 2' }}>
+            <label style={styles.label}>Teaser (Hero Hook)</label>
+            <textarea
+              value={formData.teaser || ''}
+              onChange={(e) => setFormData({ ...formData, teaser: e.target.value })}
+              style={{ ...styles.textarea, minHeight: '80px' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              placeholder="Short, enticing marketing hook for the product hero section (1-2 sentences)"
+            />
+            <span style={styles.helpText}>This appears in the hero section. Make it intriguing, not complete - tease the experience!</span>
           </div>
 
           <div style={{ ...styles.inputGroup, gridColumn: 'span 2' }}>

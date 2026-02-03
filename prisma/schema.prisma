@@ -59,6 +59,7 @@ model Game {
   id                  Int               @id @default(autoincrement())
   title               String
   tagline             String?
+  teaser              String?           @db.Text // Short marketing hook for hero section
   description         String
   story               String?           @db.Text
   priceCents          Int
