@@ -728,16 +728,12 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
             <span style={styles.helpText}>Use Inventory management instead</span>
           </div>
 
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Image URL</label>
-            <input
-              type="text"
-              value={formData.imageUrl || ''}
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              style={styles.input}
-              placeholder="https://..."
-            />
-          </div>
+          {/* Legacy imageUrl field - hidden but preserved for data migration */}
+          <input
+            type="hidden"
+            value={formData.imageUrl || ''}
+            name="imageUrl"
+          />
 
           <div style={styles.inputGroup}>
             <label style={styles.label}>Weight (oz)</label>
@@ -846,8 +842,8 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
           </div>
         </div>
 
-        {/* Legacy Image URL Notice */}
-        {formData.imageUrl && images.length === 0 && !imagesLoading && (
+        {/* Legacy Image URL Notice - Always show if there's a legacy URL */}
+        {formData.imageUrl && !imagesLoading && (
           <div style={{
             background: 'rgba(234, 179, 8, 0.1)',
             border: '1px solid rgba(234, 179, 8, 0.3)',
@@ -865,46 +861,83 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
             />
             <div style={{ flex: 1 }}>
               <p style={{ color: '#fde68a', fontWeight: 'bold', marginBottom: '4px' }}>
-                Legacy Image URL Found
+                Legacy Image URL
               </p>
               <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '8px' }}>
-                This image is in the old format. Add it to the gallery for better management.
+                {images.length > 0
+                  ? 'You have gallery images. Clear this legacy URL to use only the gallery.'
+                  : 'This image is in the old format. Migrate it to the gallery or clear it.'}
               </p>
-              <button
-                type="button"
-                onClick={async () => {
-                  try {
-                    const response = await fetch(`/api/games/${game.id}/images`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        imageUrl: formData.imageUrl,
-                        alt: `${game.title} - Primary`,
-                        isPrimary: true,
-                        sortOrder: 0
-                      })
-                    });
-                    if (response.ok) {
-                      setImageMessage('Image migrated to gallery!');
-                      fetchImages();
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {images.length === 0 && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const response = await fetch(`/api/games/${game.id}/images`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            imageUrl: formData.imageUrl,
+                            alt: `${game.title} - Cover`,
+                            imageType: 'COVER',
+                            isPrimary: true,
+                            sortOrder: 0
+                          })
+                        });
+                        if (response.ok) {
+                          setImageMessage('Image migrated to gallery as Cover!');
+                          setFormData({ ...formData, imageUrl: null });
+                          fetchImages();
+                          setTimeout(() => setImageMessage(''), 3000);
+                        }
+                      } catch (err) {
+                        setImageMessage('Error migrating image');
+                      }
+                    }}
+                    style={{
+                      background: 'rgba(34, 197, 94, 0.2)',
+                      border: '1px solid rgba(34, 197, 94, 0.4)',
+                      borderRadius: '6px',
+                      padding: '6px 12px',
+                      color: '#86efac',
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <Plus size={14} />
+                    Migrate to Gallery
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm('Clear this legacy image URL? This won\'t delete any gallery images.')) {
+                      setFormData({ ...formData, imageUrl: null });
+                      setImageMessage('Legacy image URL cleared. Save to confirm.');
                       setTimeout(() => setImageMessage(''), 3000);
                     }
-                  } catch (err) {
-                    setImageMessage('Error migrating image');
-                  }
-                }}
-                style={{
-                  background: 'rgba(234, 179, 8, 0.2)',
-                  border: '1px solid rgba(234, 179, 8, 0.4)',
-                  borderRadius: '6px',
-                  padding: '6px 12px',
-                  color: '#fde68a',
-                  cursor: 'pointer',
-                  fontSize: '13px'
-                }}
-              >
-                Migrate to Gallery
-              </button>
+                  }}
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.2)',
+                    border: '1px solid rgba(239, 68, 68, 0.4)',
+                    borderRadius: '6px',
+                    padding: '6px 12px',
+                    color: '#fca5a5',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <X size={14} />
+                  Clear Legacy URL
+                </button>
+              </div>
             </div>
           </div>
         )}

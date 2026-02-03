@@ -6,6 +6,7 @@ import { paymentLogger } from '@/lib/services/logger';
 import { withErrorHandler } from '@/lib/utils/error-handler';
 import { sendOrderConfirmation } from '@/lib/email';
 import { syncOrderToShipStation, isShipStationConfigured } from '@/lib/shipping/shipstation';
+import { fulfillPrintifyOrder, isPrintifyConfigured } from '@/lib/printify/auto-fulfill';
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const startTime = Date.now();
@@ -162,6 +163,32 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             paymentLogger.error(
               `ShipStation sync failed for order ${order.id}`,
               shipStationError instanceof Error ? shipStationError : new Error('Unknown error')
+            );
+          }
+        }
+
+        // Auto-fulfill Printify (POD) items (non-critical)
+        if (await isPrintifyConfigured()) {
+          try {
+            const printifyResult = await fulfillPrintifyOrder(order);
+            if (printifyResult.success && printifyResult.printifyOrderId) {
+              paymentLogger.info('Printify order auto-fulfilled', {
+                orderId: order.id,
+                printifyOrderId: printifyResult.printifyOrderId
+              });
+              console.log(`Order ${order.id} - Printify fulfilled: ${printifyResult.printifyOrderId}`);
+            } else if (!printifyResult.success) {
+              paymentLogger.warn('Printify auto-fulfillment failed', {
+                orderId: order.id,
+                message: printifyResult.message
+              });
+            }
+          } catch (printifyError) {
+            // Log but don't fail - POD can be retried manually from admin
+            console.error('Failed to auto-fulfill Printify order:', printifyError);
+            paymentLogger.error(
+              `Printify auto-fulfillment failed for order ${order.id}`,
+              printifyError instanceof Error ? printifyError : new Error('Unknown error')
             );
           }
         }

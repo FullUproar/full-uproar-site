@@ -6,12 +6,79 @@ interface ImageUploadProps {
   onImageUploaded: (imageUrl: string) => void;
   currentImageUrl?: string;
   className?: string;
+  maxWidth?: number;
+  maxHeight?: number;
+  quality?: number;
 }
 
-export default function ImageUpload({ onImageUploaded, currentImageUrl, className }: ImageUploadProps) {
+// Resize image using canvas - returns a promise with the data URL
+function resizeImage(
+  file: File,
+  maxWidth: number,
+  maxHeight: number,
+  quality: number
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // Calculate new dimensions while maintaining aspect ratio
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        if (height > maxHeight) {
+          width = (width * maxHeight) / height;
+          height = maxHeight;
+        }
+
+        // Create canvas and draw resized image
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Could not get canvas context'));
+          return;
+        }
+
+        // Use better quality rendering
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert to JPEG for better compression (unless it's a PNG with transparency)
+        const isPng = file.type === 'image/png';
+        const outputType = isPng ? 'image/png' : 'image/jpeg';
+        const dataUrl = canvas.toDataURL(outputType, quality);
+
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+export default function ImageUpload({
+  onImageUploaded,
+  currentImageUrl,
+  className,
+  maxWidth = 1200,
+  maxHeight = 1200,
+  quality = 0.85
+}: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentImageUrl || null);
   const [error, setError] = useState<string | null>(null);
+  const [resizeInfo, setResizeInfo] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,40 +92,34 @@ export default function ImageUpload({ onImageUploaded, currentImageUrl, classNam
       return;
     }
 
-    // Validate file size (1MB for better performance with base64)
-    if (file.size > 1 * 1024 * 1024) {
-      setError('File size must be less than 1MB for best performance');
+    // Increased limit since we'll resize - 10MB original is fine
+    if (file.size > 10 * 1024 * 1024) {
+      setError('File size must be less than 10MB');
       return;
     }
 
     setError(null);
-    
-    // Show preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setPreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    // Convert to base64 data URL (works on Vercel without file storage)
+    setResizeInfo(null);
     setIsUploading(true);
+
     try {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target?.result as string;
-        onImageUploaded(dataUrl);
-        setError(null);
-        setIsUploading(false);
-      };
-      reader.onerror = () => {
-        setError('Failed to process image. Please try again.');
-        setPreview(currentImageUrl || null);
-        setIsUploading(false);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Upload error:', error);
-      setError('Upload failed. Please try again.');
+      // Resize the image
+      const resizedDataUrl = await resizeImage(file, maxWidth, maxHeight, quality);
+
+      // Calculate compression info
+      const originalSizeKB = Math.round(file.size / 1024);
+      const newSizeKB = Math.round((resizedDataUrl.length * 3) / 4 / 1024); // Estimate base64 decoded size
+
+      if (originalSizeKB > newSizeKB * 1.1) {
+        setResizeInfo(`Optimized: ${originalSizeKB}KB → ${newSizeKB}KB`);
+      }
+
+      setPreview(resizedDataUrl);
+      onImageUploaded(resizedDataUrl);
+      setIsUploading(false);
+    } catch (err) {
+      console.error('Image processing error:', err);
+      setError('Failed to process image. Please try again.');
       setPreview(currentImageUrl || null);
       setIsUploading(false);
     }
@@ -144,6 +205,9 @@ export default function ImageUpload({ onImageUploaded, currentImageUrl, classNam
               style={styles.preview}
             />
             <p style={styles.uploadText}>Click to change image</p>
+            {resizeInfo && (
+              <p style={{ ...styles.success, marginTop: '0.5rem' }}>{resizeInfo}</p>
+            )}
           </div>
         ) : (
           <div>
@@ -151,13 +215,15 @@ export default function ImageUpload({ onImageUploaded, currentImageUrl, classNam
             <p style={styles.uploadText}>
               Click to upload an image
               <br />
-              <span style={{ fontSize: '0.75rem' }}>JPEG, PNG, GIF, WebP • Max 1MB for best performance</span>
+              <span style={{ fontSize: '0.75rem' }}>
+                JPEG, PNG, GIF, WebP • Auto-resized to {maxWidth}px max
+              </span>
             </p>
           </div>
         )}
-        
+
         {isUploading && (
-          <p style={styles.success}>Uploading...</p>
+          <p style={styles.success}>Processing image...</p>
         )}
       </div>
 

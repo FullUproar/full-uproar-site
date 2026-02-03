@@ -11,14 +11,15 @@ export type CartItem = {
   quantity: number;
   type: 'game' | 'merch';
   size?: string; // For merch items with sizes
+  color?: string; // For merch items with colors
   category?: string; // For merch items
 };
 
 type CartState = {
   items: CartItem[];
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  updateQuantity: (id: number, quantity: number, size?: string) => void;
-  removeFromCart: (id: number, size?: string) => void;
+  updateQuantity: (id: number, quantity: number, size?: string, color?: string) => void;
+  removeFromCart: (id: number, size?: string, color?: string) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -31,19 +32,18 @@ export const useCartStore = create<CartState>()(
       
       addToCart: (item) => {
         set((state) => {
-          // For merch with sizes, we need to check both id and size
-          const existing = state.items.find((i) => 
-            i.id === item.id && i.type === item.type && 
-            (item.type === 'merch' ? i.size === item.size : true)
-          );
-          
+          // For merch with sizes/colors, we need to check id, size, and color
+          const isSameVariant = (i: CartItem) =>
+            i.id === item.id &&
+            i.type === item.type &&
+            (item.type === 'merch' ? i.size === item.size && i.color === item.color : true);
+
+          const existing = state.items.find(isSameVariant);
+
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.id === item.id && i.type === item.type && 
-                (item.type === 'merch' ? i.size === item.size : true)
-                  ? { ...i, quantity: i.quantity + 1 }
-                  : i
+                isSameVariant(i) ? { ...i, quantity: i.quantity + 1 } : i
               ),
             };
           }
@@ -71,19 +71,23 @@ export const useCartStore = create<CartState>()(
         });
       },
         
-      updateQuantity: (id, quantity, size) =>
+      updateQuantity: (id, quantity, size, color) =>
         set((state) => ({
           items: state.items.map((i) =>
-            i.id === id && (size ? i.size === size : true)
+            i.id === id &&
+            (size !== undefined ? i.size === size : true) &&
+            (color !== undefined ? i.color === color : true)
               ? { ...i, quantity: Math.max(0, quantity) }
               : i
           ).filter(i => i.quantity > 0),
         })),
-        
-      removeFromCart: (id, size) =>
+
+      removeFromCart: (id, size, color) =>
         set((state) => ({
-          items: state.items.filter((i) => 
-            !(i.id === id && (size ? i.size === size : true))
+          items: state.items.filter((i) =>
+            !(i.id === id &&
+              (size !== undefined ? i.size === size : true) &&
+              (color !== undefined ? i.color === color : true))
           ),
         })),
         

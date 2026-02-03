@@ -37,12 +37,51 @@ interface Merch {
   priceCents: number;
   imageUrl: string | null;
   sizes: string | null;
+  colors: string | null;
   featured: boolean;
   tags: string | null;
   images: MerchImage[];
   inventory: Inventory[];
   isPrintify?: boolean | null;
   totalStock?: number;
+  material?: string | null;
+  fitDescription?: string | null;
+}
+
+// Common color name to hex mapping
+const COLOR_MAP: Record<string, string> = {
+  'Black': '#1a1a1a',
+  'White': '#ffffff',
+  'Navy': '#1e3a5f',
+  'Red': '#dc2626',
+  'Blue': '#2563eb',
+  'Green': '#16a34a',
+  'Yellow': '#eab308',
+  'Orange': '#f97316',
+  'Purple': '#9333ea',
+  'Pink': '#ec4899',
+  'Gray': '#6b7280',
+  'Grey': '#6b7280',
+  'Brown': '#92400e',
+  'Heather Gray': '#9ca3af',
+  'Heather Grey': '#9ca3af',
+  'Charcoal': '#374151',
+  'Maroon': '#7f1d1d',
+  'Forest Green': '#166534',
+  'Royal Blue': '#1d4ed8',
+  'Light Blue': '#93c5fd',
+  'Natural': '#f5f5dc',
+  'Cream': '#fffdd0',
+  'Olive': '#808000',
+  'Teal': '#0d9488',
+  'Coral': '#f97066',
+  'Burgundy': '#800020',
+  'Mint': '#98fb98',
+  'Lavender': '#e6e6fa'
+};
+
+function getColorHex(colorName: string): string {
+  return COLOR_MAP[colorName] || COLOR_MAP[colorName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')] || '#6b7280';
 }
 
 interface MerchProductStyledProps {
@@ -56,12 +95,14 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>('');
   const [isInCart, setIsInCart] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Parse sizes
+  // Parse sizes and colors
   const availableSizes = merch.sizes ? JSON.parse(merch.sizes) : [];
+  const availableColors = merch.colors ? JSON.parse(merch.colors) : [];
 
   // Get all images
   const allImages = [
@@ -95,23 +136,37 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
 
   const handleAddToCart = () => {
     if (availableSizes.length > 0 && !selectedSize) {
-      alert("Pick a size, or Fugly will pick for you (and you won't like it)!");
+      alert("Pick a size first!");
       return;
+    }
+    if (availableColors.length > 0 && !selectedColor) {
+      alert("Pick a color first!");
+      return;
+    }
+
+    // Build display name with variants
+    let displayName = merch.name;
+    const variantParts = [];
+    if (selectedColor) variantParts.push(selectedColor);
+    if (selectedSize) variantParts.push(selectedSize);
+    if (variantParts.length > 0) {
+      displayName = `${merch.name} (${variantParts.join(' / ')})`;
     }
 
     for (let i = 0; i < quantity; i++) {
       addToCart({
         id: merch.id,
-        name: merch.name,
+        name: displayName,
         slug: merch.slug,
         priceCents: merch.priceCents,
         imageUrl: allImages[0]?.imageUrl || '/placeholder-merch.jpg',
         type: 'merch',
         size: selectedSize || undefined,
+        color: selectedColor || undefined,
         category: merch.category
       });
     }
-    
+
     setIsInCart(true);
     setTimeout(() => setIsInCart(false), 2000);
   };
@@ -557,12 +612,79 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                 )}
               </div>
 
+              {/* Color Selection */}
+              {availableColors.length > 0 && (
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={styles.sizeLabel}>
+                    <span>
+                      Select Color
+                      {selectedColor && (
+                        <span style={{ fontWeight: 'normal', color: '#94a3b8', marginLeft: '8px' }}>
+                          — {selectedColor}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    {availableColors.map((color: string) => {
+                      const colorHex = getColorHex(color);
+                      const isSelected = selectedColor === color;
+                      const isLight = ['White', 'Natural', 'Cream', 'Yellow', 'Mint', 'Light Blue'].includes(color);
+
+                      return (
+                        <button
+                          key={color}
+                          onClick={() => setSelectedColor(color)}
+                          title={color}
+                          style={{
+                            width: '44px',
+                            height: '44px',
+                            borderRadius: '50%',
+                            background: colorHex,
+                            border: isSelected
+                              ? '3px solid #f97316'
+                              : isLight
+                                ? '2px solid rgba(0, 0, 0, 0.2)'
+                                : '2px solid transparent',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            boxShadow: isSelected
+                              ? '0 0 0 3px rgba(249, 115, 22, 0.3)'
+                              : 'none',
+                            transform: isSelected ? 'scale(1.1)' : 'scale(1)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          {isSelected && (
+                            <Check
+                              size={20}
+                              color={isLight ? '#1a1a1a' : '#ffffff'}
+                              strokeWidth={3}
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Size Selection */}
               {availableSizes.length > 0 && (
                 <div style={styles.sizeSection}>
                   <div style={styles.sizeLabel}>
-                    <span>Select Size</span>
-                    <button 
+                    <span>
+                      Select Size
+                      {selectedSize && (
+                        <span style={{ fontWeight: 'normal', color: '#94a3b8', marginLeft: '8px' }}>
+                          — {selectedSize}
+                        </span>
+                      )}
+                    </span>
+                    <button
                       onClick={() => setShowSizeGuide(!showSizeGuide)}
                       style={styles.sizeGuideButton}
                     >
@@ -570,24 +692,62 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                       Size Guide
                     </button>
                   </div>
-                  
-                  <div style={styles.sizeGrid}>
+
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {availableSizes.map((size: string) => {
                       const stock = getStockForSize(size);
                       const isAvailable = stock > 0;
-                      
+                      const isLowStock = isAvailable && stock < 5 && !merch.isPrintify;
+                      const isSelected = selectedSize === size;
+
                       return (
                         <button
                           key={size}
                           onClick={() => isAvailable && setSelectedSize(size)}
                           disabled={!isAvailable}
                           style={{
-                            ...styles.sizeButton,
-                            ...(selectedSize === size ? styles.sizeButtonSelected : {}),
-                            ...(!isAvailable ? styles.sizeButtonDisabled : {})
+                            position: 'relative',
+                            minWidth: '56px',
+                            padding: '12px 16px',
+                            background: isSelected
+                              ? 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)'
+                              : 'rgba(30, 41, 59, 0.5)',
+                            border: isSelected
+                              ? '2px solid #f97316'
+                              : isAvailable
+                                ? '2px solid rgba(249, 115, 22, 0.3)'
+                                : '2px solid rgba(100, 116, 139, 0.2)',
+                            borderRadius: '10px',
+                            color: isSelected
+                              ? '#000'
+                              : isAvailable
+                                ? '#e2e8f0'
+                                : '#64748b',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            cursor: isAvailable ? 'pointer' : 'not-allowed',
+                            transition: 'all 0.2s',
+                            opacity: isAvailable ? 1 : 0.4,
+                            transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+                            textDecoration: !isAvailable ? 'line-through' : 'none'
                           }}
                         >
                           {size}
+                          {isLowStock && (
+                            <span style={{
+                              position: 'absolute',
+                              top: '-8px',
+                              right: '-8px',
+                              background: '#ef4444',
+                              color: 'white',
+                              fontSize: '10px',
+                              padding: '2px 6px',
+                              borderRadius: '10px',
+                              fontWeight: 'bold'
+                            }}>
+                              {stock} left
+                            </span>
+                          )}
                         </button>
                       );
                     })}
@@ -597,14 +757,36 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                     <div style={{
                       marginTop: '16px',
                       padding: '16px',
-                      background: 'rgba(0, 0, 0, 0.3)',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      color: '#94a3b8'
+                      background: 'rgba(0, 0, 0, 0.4)',
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      color: '#94a3b8',
+                      border: '1px solid rgba(249, 115, 22, 0.2)'
                     }}>
-                      <strong style={{ color: '#fdba74' }}>Size Guide (US)</strong>
-                      <div style={{ marginTop: '8px' }}>
-                        S: Chest 34-36" | M: Chest 38-40" | L: Chest 42-44" | XL: Chest 46-48" | 2XL: Chest 50-52"
+                      <strong style={{ color: '#fdba74', fontSize: '14px' }}>Size Guide (US)</strong>
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
+                        gap: '12px',
+                        marginTop: '12px'
+                      }}>
+                        {[
+                          { size: 'S', chest: '34-36"' },
+                          { size: 'M', chest: '38-40"' },
+                          { size: 'L', chest: '42-44"' },
+                          { size: 'XL', chest: '46-48"' },
+                          { size: '2XL', chest: '50-52"' }
+                        ].map(({ size, chest }) => (
+                          <div key={size} style={{
+                            padding: '8px 12px',
+                            background: 'rgba(249, 115, 22, 0.1)',
+                            borderRadius: '8px',
+                            textAlign: 'center'
+                          }}>
+                            <div style={{ fontWeight: 'bold', color: '#fdba74' }}>{size}</div>
+                            <div style={{ fontSize: '12px' }}>Chest {chest}</div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -631,23 +813,41 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
 
               {/* Action Buttons */}
               <div style={styles.actionButtons}>
-                <button
-                  onClick={handleAddToCart}
-                  disabled={!isInStock || (availableSizes.length > 0 && !selectedSize)}
-                  style={styles.addToCartButton}
-                >
-                  {isInCart ? (
-                    <>
-                      <Check size={20} />
-                      Added to Cart!
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart size={20} />
-                      {isInStock ? 'Add to Cart' : 'Out of Stock'}
-                    </>
-                  )}
-                </button>
+                {(() => {
+                  const needsSize = availableSizes.length > 0 && !selectedSize;
+                  const needsColor = availableColors.length > 0 && !selectedColor;
+                  const isDisabled = !isInStock || needsSize || needsColor;
+
+                  let buttonText = 'Add to Cart';
+                  if (!isInStock) buttonText = 'Out of Stock';
+                  else if (needsColor && needsSize) buttonText = 'Select Color & Size';
+                  else if (needsColor) buttonText = 'Select Color';
+                  else if (needsSize) buttonText = 'Select Size';
+
+                  return (
+                    <button
+                      onClick={handleAddToCart}
+                      disabled={isDisabled}
+                      style={{
+                        ...styles.addToCartButton,
+                        opacity: isDisabled && !isInCart ? 0.6 : 1,
+                        cursor: isDisabled ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      {isInCart ? (
+                        <>
+                          <Check size={20} />
+                          Added to Cart!
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart size={20} />
+                          {buttonText}
+                        </>
+                      )}
+                    </button>
+                  );
+                })()}
                 <button onClick={handleShare} style={styles.secondaryButton}>
                   <Share2 size={20} />
                 </button>
