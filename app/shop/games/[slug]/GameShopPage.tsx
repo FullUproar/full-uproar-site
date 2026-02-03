@@ -220,6 +220,58 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                   : game.description}
             </p>
           )}
+
+          {/* Hero Add to Cart - Fades out when sticky footer appears */}
+          <div style={{
+            marginTop: '2rem',
+            opacity: showStickyFooter ? 0 : 1,
+            transform: showStickyFooter ? 'translateY(20px)' : 'translateY(0)',
+            transition: 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            pointerEvents: showStickyFooter ? 'none' : 'auto'
+          }}>
+            <div style={{
+              fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
+              color: '#fde68a',
+              fontWeight: 'bold',
+              marginBottom: '1rem',
+              textShadow: '0 2px 10px rgba(0,0,0,0.8)'
+            }}>
+              ${(game.priceCents / 100).toFixed(2)}
+            </div>
+            <button
+              onClick={handleAddToCart}
+              className="hero-cta"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: 'clamp(0.875rem, 2vw, 1.25rem) clamp(1.5rem, 3vw, 2.5rem)',
+                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                color: 'white',
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+                fontWeight: 'bold',
+                border: 'none',
+                borderRadius: '50px',
+                cursor: 'pointer',
+                transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 8px 30px rgba(249, 115, 22, 0.5)'
+              }}
+            >
+              <ShoppingCart size={isMobile ? 22 : 26} />
+              Add to Cart
+            </button>
+            {game.stock > 0 && game.stock < 10 && (
+              <p style={{
+                color: '#ef4444',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                marginTop: '0.75rem',
+                textShadow: '0 2px 8px rgba(0,0,0,0.8)'
+              }}>
+                Only {game.stock} left in stock!
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Learn More Arrow - Fades out on scroll */}
@@ -717,6 +769,11 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
         .sticky-cta:hover {
           transform: scale(1.02);
           box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5) !important;
+        }
+
+        .hero-cta:hover {
+          transform: translateY(-3px) scale(1.02);
+          box-shadow: 0 12px 40px rgba(249, 115, 22, 0.6) !important;
         }
 
         /* Smooth scroll indicator pulse */

@@ -32,12 +32,18 @@
       "Bash(git reset:*)",
       "Bash(rm:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(powershell -Command \"cd C:\\\\fu-temp-deploy; npx partykit deploy\":*)"
+      "Bash(powershell -Command \"cd C:\\\\fu-temp-deploy; npx partykit deploy\":*)",
+      "Bash(timeout /t 8 /nobreak)",
+      "Bash(taskkill:*)",
+      "Bash(npm run test:ux:*)",
+      "Bash(npx prisma db pull:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
-      "c:\\Full Uproar\\full-uproar-site\\app\\api\\admin\\redirects\\[id]"
+      "c:\\Full Uproar\\full-uproar-site\\app\\api\\admin\\redirects\\[id]",
+      "c:\\Full Uproar\\full-uproar-site\\app\\game-kit\\edit\\[id]"
     ]
   }
 }
