@@ -848,20 +848,23 @@ export default function AdminApp() {
         );
       
       case 'games-edit':
+        // Redirect to page-based edit form for full image management features
+        if (currentView.data?.id) {
+          router.push(`/admin/games/${currentView.data.id}/edit`);
+        }
         return (
-          <GameEditForm 
-            game={currentView.data}
-            onSave={() => navigateTo({ type: 'games-list' }, 'Games')}
-            onCancel={() => navigateTo({ type: 'games-list' }, 'Games')}
-          />
+          <div style={{ padding: '40px', textAlign: 'center', color: '#94a3b8' }}>
+            Redirecting to game editor...
+          </div>
         );
-      
+
       case 'games-new':
+        // Redirect to page-based new game form
+        router.push('/admin/games/new');
         return (
-          <GameEditForm 
-            onSave={() => navigateTo({ type: 'games-list' }, 'Games')}
-            onCancel={() => navigateTo({ type: 'games-list' }, 'Games')}
-          />
+          <div style={{ padding: '40px', textAlign: 'center', color: '#94a3b8' }}>
+            Redirecting to game editor...
+          </div>
         );
       
       case 'design-components':

@@ -71,6 +71,7 @@ interface Game {
 
 interface GameEditFormEnhancedProps {
   game: Game;
+  isNew?: boolean;
 }
 
 // Enum mappings
@@ -110,7 +111,7 @@ const PLAY_TIMES = [
   { value: 'VARIABLE', label: 'Varies' }
 ];
 
-export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps) {
+export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFormEnhancedProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     ...game,
@@ -129,10 +130,14 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
   const [newImageType, setNewImageType] = useState<GameImageType>('COVER');
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
 
-  // Fetch images on mount
+  // Fetch images on mount (only for existing games)
   useEffect(() => {
-    fetchImages();
-  }, [game.id]);
+    if (!isNew && game.id) {
+      fetchImages();
+    } else {
+      setImagesLoading(false);
+    }
+  }, [game.id, isNew]);
 
   const fetchImages = async () => {
     try {
@@ -244,24 +249,30 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
     setError('');
 
     try {
-      const response = await fetch(`/api/admin/games/${game.id}`, {
-        method: 'PATCH',
+      const gameData = {
+        ...formData,
+        tags: JSON.stringify(tags),
+        priceCents: parseInt(formData.priceCents.toString()),
+        stock: parseInt(formData.stock.toString()),
+        releaseYear: formData.releaseYear ? parseInt(formData.releaseYear.toString()) : null,
+        weightOz: formData.weightOz ? parseInt(formData.weightOz.toString()) : null
+      };
+
+      const url = isNew ? '/api/admin/games' : `/api/admin/games/${game.id}`;
+      const method = isNew ? 'POST' : 'PATCH';
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          tags: JSON.stringify(tags),
-          priceCents: parseInt(formData.priceCents.toString()),
-          stock: parseInt(formData.stock.toString()),
-          releaseYear: formData.releaseYear ? parseInt(formData.releaseYear.toString()) : null,
-          weightOz: formData.weightOz ? parseInt(formData.weightOz.toString()) : null
-        })
+        body: JSON.stringify(gameData)
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update game');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to ${isNew ? 'create' : 'update'} game`);
       }
 
-      router.push('/admin/dashboard');
+      router.push('/admin/games');
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -758,25 +769,43 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
           <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <ImageIcon size={24} />
             Product Images
-            <Link
-              href={`/admin/manage-images/game/${game.id}`}
-              style={{
-                fontSize: '14px',
-                color: '#f97316',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                marginLeft: 'auto',
-                fontWeight: 'normal'
-              }}
-            >
-              Full Image Manager <ExternalLink size={14} />
-            </Link>
+            {!isNew && (
+              <Link
+                href={`/admin/manage-images/game/${game.id}`}
+                style={{
+                  fontSize: '14px',
+                  color: '#f97316',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  marginLeft: 'auto',
+                  fontWeight: 'normal'
+                }}
+              >
+                Full Image Manager <ExternalLink size={14} />
+              </Link>
+            )}
           </span>
         </h2>
 
-        {imageMessage && (
+        {isNew && (
+          <div style={{
+            background: 'rgba(234, 179, 8, 0.1)',
+            border: '1px solid rgba(234, 179, 8, 0.3)',
+            borderRadius: '8px',
+            padding: '16px',
+            color: '#fde68a',
+            textAlign: 'center'
+          }}>
+            <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Save the game first to add images</p>
+            <p style={{ fontSize: '14px', color: '#94a3b8' }}>
+              After creating the game, you can add product images using the image gallery.
+            </p>
+          </div>
+        )}
+
+        {!isNew && imageMessage && (
           <div style={{
             background: imageMessage.includes('Error') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
             border: `1px solid ${imageMessage.includes('Error') ? 'rgba(239, 68, 68, 0.3)' : 'rgba(34, 197, 94, 0.3)'}`,
@@ -789,6 +818,8 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
           </div>
         )}
 
+        {!isNew && (
+          <>
         {/* Add New Image */}
         <div style={{ marginBottom: '24px' }}>
           <label style={styles.label}>Add New Image</label>
@@ -1102,6 +1133,8 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
             Drag images to reorder. The primary image appears as the main product photo.
           </p>
         </div>
+          </>
+        )}
       </div>
 
       {/* Game Content */}
@@ -1318,7 +1351,7 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
           }}
         >
           <Save style={{ width: '20px', height: '20px' }} />
-          {isLoading ? 'Saving...' : 'Save Changes'}
+          {isLoading ? 'Saving...' : isNew ? 'Create Game' : 'Save Changes'}
         </button>
         
         <Link
