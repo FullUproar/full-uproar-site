@@ -1375,33 +1375,46 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                 </div>
 
                 <div style={{ position: 'relative' }}>
-                  <div style={{
-                    width: isMobile ? '200px' : '280px',
-                    height: isMobile ? '200px' : '280px',
-                    margin: '0 auto',
-                    background: '#374151',
-                    borderRadius: '1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FF8200',
-                    fontSize: '4rem',
-                    fontWeight: 'bold',
-                    overflow: 'hidden'
-                  }}>
-                    {(() => {
-                      const displayImage = getDisplayImage(featuredGame);
-                      return displayImage ? (
+                  {(() => {
+                    const displayImage = getDisplayImage(featuredGame);
+                    return displayImage ? (
+                      <div style={{
+                        maxWidth: isMobile ? '200px' : '280px',
+                        maxHeight: isMobile ? '200px' : '280px',
+                        margin: '0 auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
                         <img
                           src={displayImage}
                           alt={featuredGame.title}
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: isMobile ? '200px' : '280px',
+                            objectFit: 'contain',
+                            borderRadius: '1rem',
+                          }}
                         />
-                      ) : (
-                        'FUGLY'
-                      );
-                    })()}
-                  </div>
+                      </div>
+                    ) : (
+                      <div style={{
+                        width: isMobile ? '200px' : '280px',
+                        height: isMobile ? '200px' : '280px',
+                        margin: '0 auto',
+                        background: '#374151',
+                        borderRadius: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#FF8200',
+                        fontSize: '4rem',
+                        fontWeight: 'bold',
+                      }}>
+                        FUGLY
+                      </div>
+                    );
+                  })()}
                   <div style={{
                     position: 'absolute',
                     bottom: '-0.75rem',
