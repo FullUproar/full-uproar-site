@@ -327,15 +327,29 @@ model Settings {
   @@index([key])
 }
 
+// Image types for games - some are single (only one allowed), some are gallery (multiple allowed)
+enum GameImageType {
+  COVER       // Single: Main box front/product shot (used in hero, thumbnails, cart)
+  BACK        // Single: Box back showing details
+  BOX_3D      // Single: Rendered 3D box view
+  LOGO        // Single: Game logo/badge for cards and promotions
+  LIFESTYLE   // Gallery: Action shots of people playing
+  COMPONENTS  // Gallery: Contents laid out, what's in the box
+  INSTRUCTIONS // Gallery: Rules/how-to-play visuals
+}
+
 model GameImage {
-  id        Int      @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   gameId    Int
   imageUrl  String
   alt       String?
-  isPrimary Boolean  @default(false)
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  imageType GameImageType @default(COVER)
+  isPrimary Boolean       @default(false)
+  sortOrder Int           @default(0)
+  createdAt DateTime      @default(now()) @db.Timestamp(6)
+  game      Game          @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([gameId, imageType])
 }
 
 model MerchImage {

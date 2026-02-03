@@ -6,13 +6,27 @@ import { Save, ArrowLeft, Plus, X, Star, Trash2, GripVertical, Image as ImageIco
 import Link from 'next/link';
 import ImageUpload from '@/app/components/ImageUpload';
 
+type GameImageType = 'COVER' | 'BACK' | 'BOX_3D' | 'LOGO' | 'LIFESTYLE' | 'COMPONENTS' | 'INSTRUCTIONS';
+
 interface GameImage {
   id: number;
   imageUrl: string;
   alt: string | null;
+  imageType: GameImageType;
   isPrimary: boolean;
   sortOrder: number;
 }
+
+// Image type configuration
+const IMAGE_TYPES: { value: GameImageType; label: string; description: string; isSingle: boolean }[] = [
+  { value: 'COVER', label: 'Cover', description: 'Main box front/product shot', isSingle: true },
+  { value: 'BACK', label: 'Back', description: 'Box back showing details', isSingle: true },
+  { value: 'BOX_3D', label: '3D Box', description: 'Rendered 3D view', isSingle: true },
+  { value: 'LOGO', label: 'Logo', description: 'Game logo/badge', isSingle: true },
+  { value: 'LIFESTYLE', label: 'Lifestyle', description: 'Action shots of people playing', isSingle: false },
+  { value: 'COMPONENTS', label: 'Components', description: 'Contents laid out', isSingle: false },
+  { value: 'INSTRUCTIONS', label: 'Instructions', description: 'Rules/how-to-play visuals', isSingle: false },
+];
 
 interface Game {
   id: number;
@@ -112,6 +126,7 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
   const [imagesLoading, setImagesLoading] = useState(true);
   const [imageMessage, setImageMessage] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [newImageType, setNewImageType] = useState<GameImageType>('COVER');
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
 
   // Fetch images on mount
@@ -134,19 +149,21 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
 
   const handleAddImage = async () => {
     if (!newImageUrl) return;
+    const typeConfig = IMAGE_TYPES.find(t => t.value === newImageType);
     try {
       const response = await fetch(`/api/games/${game.id}/images`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           imageUrl: newImageUrl,
-          alt: `${game.title} image`,
-          isPrimary: images.length === 0,
-          sortOrder: images.length
+          alt: `${game.title} - ${typeConfig?.label || 'Image'}`,
+          imageType: newImageType,
+          isPrimary: newImageType === 'COVER' && !images.some(i => i.imageType === 'COVER')
         })
       });
       if (response.ok) {
-        setImageMessage('Image added!');
+        const replacedMsg = typeConfig?.isSingle ? ' (replaced existing)' : '';
+        setImageMessage(`${typeConfig?.label} image added!${replacedMsg}`);
         setNewImageUrl('');
         fetchImages();
         setTimeout(() => setImageMessage(''), 3000);
@@ -184,6 +201,21 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
   };
 
   const handleImageDragStart = (index: number) => setDraggedImageIndex(index);
+
+  const handleChangeImageType = async (imageId: number, newType: GameImageType) => {
+    try {
+      await fetch(`/api/games/${game.id}/images`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageId, imageType: newType })
+      });
+      setImageMessage(`Changed to ${IMAGE_TYPES.find(t => t.value === newType)?.label}`);
+      fetchImages();
+      setTimeout(() => setImageMessage(''), 3000);
+    } catch (err) {
+      setImageMessage('Error changing type');
+    }
+  };
 
   const handleImageDrop = async (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
@@ -764,8 +796,8 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
         {/* Add New Image */}
         <div style={{ marginBottom: '24px' }}>
           <label style={styles.label}>Add New Image</label>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-            <div style={{ flex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '12px', alignItems: 'start' }}>
+            <div>
               <ImageUpload
                 onImageUploaded={(url) => setNewImageUrl(url)}
                 currentImageUrl={newImageUrl}
@@ -778,19 +810,39 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
                 placeholder="Or paste image URL..."
               />
             </div>
-            <button
-              type="button"
-              onClick={handleAddImage}
-              disabled={!newImageUrl}
-              style={{
-                ...styles.addButton,
-                opacity: !newImageUrl ? 0.5 : 1,
-                marginTop: '8px'
-              }}
-            >
-              <Plus size={16} />
-              Add
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <select
+                value={newImageType}
+                onChange={(e) => setNewImageType(e.target.value as GameImageType)}
+                style={{
+                  ...styles.select,
+                  minWidth: '140px',
+                  fontSize: '14px',
+                  padding: '10px'
+                }}
+              >
+                {IMAGE_TYPES.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label} {type.isSingle ? '(1)' : '(+)'}
+                  </option>
+                ))}
+              </select>
+              <span style={{ fontSize: '11px', color: '#94a3b8', maxWidth: '140px' }}>
+                {IMAGE_TYPES.find(t => t.value === newImageType)?.description}
+              </span>
+              <button
+                type="button"
+                onClick={handleAddImage}
+                disabled={!newImageUrl}
+                style={{
+                  ...styles.addButton,
+                  opacity: !newImageUrl ? 0.5 : 1
+                }}
+              >
+                <Plus size={16} />
+                Add {IMAGE_TYPES.find(t => t.value === newImageType)?.label}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -899,25 +951,43 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
                         objectFit: 'cover'
                       }}
                     />
-                    {image.isPrimary && (
+                    {/* Type badge */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '8px',
+                      left: '8px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px'
+                    }}>
                       <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        left: '8px',
-                        background: '#f97316',
-                        color: 'white',
-                        padding: '4px 8px',
+                        background: 'rgba(0, 0, 0, 0.7)',
+                        color: '#fdba74',
+                        padding: '3px 8px',
                         borderRadius: '4px',
-                        fontSize: '11px',
+                        fontSize: '10px',
                         fontWeight: 'bold',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
+                        textTransform: 'uppercase'
                       }}>
-                        <Star size={12} fill="white" />
-                        PRIMARY
+                        {IMAGE_TYPES.find(t => t.value === image.imageType)?.label || image.imageType}
                       </div>
-                    )}
+                      {image.isPrimary && (
+                        <div style={{
+                          background: '#f97316',
+                          color: 'white',
+                          padding: '3px 8px',
+                          borderRadius: '4px',
+                          fontSize: '10px',
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}>
+                          <Star size={10} fill="white" />
+                          PRIMARY
+                        </div>
+                      )}
+                    </div>
                     <div style={{
                       position: 'absolute',
                       top: '8px',
@@ -928,49 +998,68 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
                       <GripVertical size={16} color="white" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }} />
                     </div>
                   </div>
-                  <div style={{
-                    padding: '10px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
-                    {!image.isPrimary ? (
-                      <button
-                        type="button"
-                        onClick={() => handleSetPrimary(image.id)}
-                        style={{
-                          background: 'rgba(249, 115, 22, 0.2)',
-                          border: '1px solid rgba(249, 115, 22, 0.4)',
-                          borderRadius: '6px',
-                          padding: '6px 10px',
-                          color: '#fdba74',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}
-                      >
-                        <Star size={12} />
-                        Set Primary
-                      </button>
-                    ) : (
-                      <span style={{ fontSize: '12px', color: '#f97316' }}>Main Image</span>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteImage(image.id)}
+                  <div style={{ padding: '10px' }}>
+                    {/* Type changer */}
+                    <select
+                      value={image.imageType}
+                      onChange={(e) => handleChangeImageType(image.id, e.target.value as GameImageType)}
                       style={{
-                        background: 'rgba(239, 68, 68, 0.2)',
-                        border: '1px solid rgba(239, 68, 68, 0.4)',
-                        borderRadius: '6px',
-                        padding: '6px',
-                        color: '#fca5a5',
+                        width: '100%',
+                        background: 'rgba(17, 24, 39, 0.8)',
+                        border: '1px solid rgba(249, 115, 22, 0.3)',
+                        borderRadius: '4px',
+                        padding: '4px 6px',
+                        color: '#e2e8f0',
+                        fontSize: '11px',
+                        marginBottom: '8px',
                         cursor: 'pointer'
                       }}
                     >
-                      <Trash2 size={14} />
-                    </button>
+                      {IMAGE_TYPES.map(type => (
+                        <option key={type.value} value={type.value}>
+                          {type.label} {type.isSingle ? '(single)' : '(gallery)'}
+                        </option>
+                      ))}
+                    </select>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      {!image.isPrimary ? (
+                        <button
+                          type="button"
+                          onClick={() => handleSetPrimary(image.id)}
+                          style={{
+                            background: 'rgba(249, 115, 22, 0.2)',
+                            border: '1px solid rgba(249, 115, 22, 0.4)',
+                            borderRadius: '6px',
+                            padding: '4px 8px',
+                            color: '#fdba74',
+                            cursor: 'pointer',
+                            fontSize: '11px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          <Star size={10} />
+                          Primary
+                        </button>
+                      ) : (
+                        <span style={{ fontSize: '11px', color: '#f97316', fontWeight: 'bold' }}>Main</span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteImage(image.id)}
+                        style={{
+                          background: 'rgba(239, 68, 68, 0.2)',
+                          border: '1px solid rgba(239, 68, 68, 0.4)',
+                          borderRadius: '6px',
+                          padding: '4px 6px',
+                          color: '#fca5a5',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
