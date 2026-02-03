@@ -1,9 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, ArrowLeft, Plus, X } from 'lucide-react';
+import { Save, ArrowLeft, Plus, X, Star, Trash2, GripVertical, Image as ImageIcon, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import ImageUpload from '@/app/components/ImageUpload';
+
+interface GameImage {
+  id: number;
+  imageUrl: string;
+  alt: string | null;
+  isPrimary: boolean;
+  sortOrder: number;
+}
 
 interface Game {
   id: number;
@@ -11,6 +20,7 @@ interface Game {
   slug: string;
   tagline: string | null;
   teaser: string | null;
+  story: string | null;
   description: string;
   priceCents: number;
   ageRating: string;
@@ -28,7 +38,7 @@ interface Game {
   bundleInfo: string | null;
   stock: number;
   tags: string | null;
-  
+
   // Game details
   components: string | null;
   howToPlay: string | null;
@@ -96,6 +106,105 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
   const [error, setError] = useState('');
   const [tags, setTags] = useState<string[]>(game.tags ? JSON.parse(game.tags) : []);
   const [newTag, setNewTag] = useState('');
+
+  // Image management state
+  const [images, setImages] = useState<GameImage[]>([]);
+  const [imagesLoading, setImagesLoading] = useState(true);
+  const [imageMessage, setImageMessage] = useState('');
+  const [newImageUrl, setNewImageUrl] = useState('');
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
+
+  // Fetch images on mount
+  useEffect(() => {
+    fetchImages();
+  }, [game.id]);
+
+  const fetchImages = async () => {
+    try {
+      setImagesLoading(true);
+      const response = await fetch(`/api/games/${game.id}/images`);
+      const data = await response.json();
+      setImages(data);
+    } catch (err) {
+      console.error('Error fetching images:', err);
+    } finally {
+      setImagesLoading(false);
+    }
+  };
+
+  const handleAddImage = async () => {
+    if (!newImageUrl) return;
+    try {
+      const response = await fetch(`/api/games/${game.id}/images`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl: newImageUrl,
+          alt: `${game.title} image`,
+          isPrimary: images.length === 0,
+          sortOrder: images.length
+        })
+      });
+      if (response.ok) {
+        setImageMessage('Image added!');
+        setNewImageUrl('');
+        fetchImages();
+        setTimeout(() => setImageMessage(''), 3000);
+      }
+    } catch (err) {
+      setImageMessage('Error adding image');
+    }
+  };
+
+  const handleDeleteImage = async (imageId: number) => {
+    if (!confirm('Delete this image?')) return;
+    try {
+      await fetch(`/api/games/${game.id}/images?imageId=${imageId}`, { method: 'DELETE' });
+      setImageMessage('Image deleted');
+      fetchImages();
+      setTimeout(() => setImageMessage(''), 3000);
+    } catch (err) {
+      setImageMessage('Error deleting image');
+    }
+  };
+
+  const handleSetPrimary = async (imageId: number) => {
+    try {
+      await fetch(`/api/games/${game.id}/images`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageId, isPrimary: true })
+      });
+      setImageMessage('Primary image updated');
+      fetchImages();
+      setTimeout(() => setImageMessage(''), 3000);
+    } catch (err) {
+      setImageMessage('Error setting primary');
+    }
+  };
+
+  const handleImageDragStart = (index: number) => setDraggedImageIndex(index);
+
+  const handleImageDrop = async (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedImageIndex === null || draggedImageIndex === dropIndex) return;
+
+    const reordered = [...images];
+    const [dragged] = reordered.splice(draggedImageIndex, 1);
+    reordered.splice(dropIndex, 0, dragged);
+    const updated = reordered.map((img, i) => ({ ...img, sortOrder: i }));
+    setImages(updated);
+
+    // Save new order
+    for (const img of updated) {
+      await fetch(`/api/games/${game.id}/images`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageId: img.id, sortOrder: img.sortOrder })
+      });
+    }
+    setDraggedImageIndex(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -371,6 +480,19 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
               required
             />
           </div>
+
+          <div style={{ ...styles.inputGroup, gridColumn: 'span 2' }}>
+            <label style={styles.label}>Story / Narrative</label>
+            <textarea
+              value={formData.story || ''}
+              onChange={(e) => setFormData({ ...formData, story: e.target.value })}
+              style={{ ...styles.textarea, minHeight: '150px' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              placeholder="The game's backstory or narrative setup that draws players in..."
+            />
+            <span style={styles.helpText}>Displayed on the product page "The Story" section. Make it immersive!</span>
+          </div>
         </div>
       </div>
 
@@ -599,6 +721,199 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
             />
             <span style={styles.helpText}>Product weight in ounces for shipping (16 oz = 1 lb)</span>
           </div>
+        </div>
+      </div>
+
+      {/* Product Images */}
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <ImageIcon size={24} />
+            Product Images
+            <Link
+              href={`/admin/manage-images/game/${game.id}`}
+              style={{
+                fontSize: '14px',
+                color: '#f97316',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                marginLeft: 'auto',
+                fontWeight: 'normal'
+              }}
+            >
+              Full Image Manager <ExternalLink size={14} />
+            </Link>
+          </span>
+        </h2>
+
+        {imageMessage && (
+          <div style={{
+            background: imageMessage.includes('Error') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
+            border: `1px solid ${imageMessage.includes('Error') ? 'rgba(239, 68, 68, 0.3)' : 'rgba(34, 197, 94, 0.3)'}`,
+            borderRadius: '8px',
+            padding: '12px',
+            marginBottom: '16px',
+            color: imageMessage.includes('Error') ? '#fca5a5' : '#86efac'
+          }}>
+            {imageMessage}
+          </div>
+        )}
+
+        {/* Add New Image */}
+        <div style={{ marginBottom: '24px' }}>
+          <label style={styles.label}>Add New Image</label>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+            <div style={{ flex: 1 }}>
+              <ImageUpload
+                onImageUploaded={(url) => setNewImageUrl(url)}
+                currentImageUrl={newImageUrl}
+              />
+              <input
+                type="text"
+                value={newImageUrl}
+                onChange={(e) => setNewImageUrl(e.target.value)}
+                style={{ ...styles.input, marginTop: '8px' }}
+                placeholder="Or paste image URL..."
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleAddImage}
+              disabled={!newImageUrl}
+              style={{
+                ...styles.addButton,
+                opacity: !newImageUrl ? 0.5 : 1,
+                marginTop: '8px'
+              }}
+            >
+              <Plus size={16} />
+              Add
+            </button>
+          </div>
+        </div>
+
+        {/* Current Images Grid */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={styles.label}>Current Images ({images.length})</label>
+          {imagesLoading ? (
+            <p style={{ color: '#94a3b8' }}>Loading images...</p>
+          ) : images.length === 0 ? (
+            <p style={{ color: '#94a3b8' }}>No images yet. Add your first image above.</p>
+          ) : (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+              gap: '16px',
+              marginTop: '12px'
+            }}>
+              {images.map((image, index) => (
+                <div
+                  key={image.id}
+                  draggable
+                  onDragStart={() => handleImageDragStart(index)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleImageDrop(e, index)}
+                  style={{
+                    background: 'rgba(17, 24, 39, 0.5)',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    border: image.isPrimary ? '3px solid #f97316' : '2px solid rgba(249, 115, 22, 0.3)',
+                    cursor: 'move',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <div style={{ position: 'relative' }}>
+                    <img
+                      src={image.imageUrl}
+                      alt={image.alt || game.title}
+                      style={{
+                        width: '100%',
+                        height: '140px',
+                        objectFit: 'cover'
+                      }}
+                    />
+                    {image.isPrimary && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        left: '8px',
+                        background: '#f97316',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <Star size={12} fill="white" />
+                        PRIMARY
+                      </div>
+                    )}
+                    <div style={{
+                      position: 'absolute',
+                      top: '8px',
+                      right: '8px',
+                      display: 'flex',
+                      gap: '4px'
+                    }}>
+                      <GripVertical size={16} color="white" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }} />
+                    </div>
+                  </div>
+                  <div style={{
+                    padding: '10px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    {!image.isPrimary ? (
+                      <button
+                        type="button"
+                        onClick={() => handleSetPrimary(image.id)}
+                        style={{
+                          background: 'rgba(249, 115, 22, 0.2)',
+                          border: '1px solid rgba(249, 115, 22, 0.4)',
+                          borderRadius: '6px',
+                          padding: '6px 10px',
+                          color: '#fdba74',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                      >
+                        <Star size={12} />
+                        Set Primary
+                      </button>
+                    ) : (
+                      <span style={{ fontSize: '12px', color: '#f97316' }}>Main Image</span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage(image.id)}
+                      style={{
+                        background: 'rgba(239, 68, 68, 0.2)',
+                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                        borderRadius: '6px',
+                        padding: '6px',
+                        color: '#fca5a5',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          <p style={{ ...styles.helpText, marginTop: '12px' }}>
+            Drag images to reorder. The primary image appears as the main product photo.
+          </p>
         </div>
       </div>
 
