@@ -400,7 +400,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
 
         {/* Game Details */}
         <div style={adminStyles.section}>
-          <h2 style={adminStyles.sectionTitle}>Game Details</h2>
+          <h2 style={adminStyles.sectionTitle}>Product Details</h2>
           
           <div style={adminStyles.formRow}>
             <div style={adminStyles.formGroup}>
