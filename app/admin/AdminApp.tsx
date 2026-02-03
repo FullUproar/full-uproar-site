@@ -306,6 +306,18 @@ export default function AdminApp() {
 
       const viewType = viewParam as ViewType;
 
+      // For games-edit and games-new, redirect directly to page-based editors
+      if (viewType === 'games-edit' && idParam) {
+        router.push(`/admin/games/${idParam}/edit`);
+        setUrlInitialized(true);
+        return;
+      }
+      if (viewType === 'games-new') {
+        router.push('/admin/games/new');
+        setUrlInitialized(true);
+        return;
+      }
+
       // Check if this view needs data
       const needsData = viewType.endsWith('-edit') || viewType === 'orders-detail';
 
