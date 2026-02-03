@@ -530,7 +530,7 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
 
       {/* Game Details */}
       <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>Game Details</h2>
+        <h2 style={styles.sectionTitle}>Product Details</h2>
         <div style={styles.grid3}>
           <div style={styles.inputGroup}>
             <label style={styles.label}>Category</label>
