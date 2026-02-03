@@ -11,6 +11,7 @@ import {
   Shield, Sparkles, Heart, TrendingUp, ChevronDown
 } from 'lucide-react';
 import { ProductReviews, ReviewStars } from '@/app/components/reviews';
+import { formatPlayerCount, formatPlayTime, formatAgeRating } from '@/lib/utils/formatting';
 
 interface GameImage {
   id: number;
@@ -109,17 +110,17 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
   const features = [
     {
       icon: <Users size={30} color="white" />,
-      title: game.playerCount || "2-4 Players",
+      title: formatPlayerCount(game.playerCount) || "2-4 Players",
       description: "Perfect for game night with friends and family"
     },
     {
       icon: <Clock size={30} color="white" />,
-      title: game.playTime || "30-60 min",
+      title: formatPlayTime(game.playTime) || "30-60 min",
       description: "Quick to learn, endless replayability"
     },
     {
       icon: <Target size={30} color="white" />,
-      title: game.ageRating || "Ages 14+",
+      title: formatAgeRating(game.ageRating) || "Ages 14+",
       description: "Challenging gameplay for serious gamers"
     },
     {

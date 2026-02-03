@@ -151,7 +151,7 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
           isBundle: true,
           // Use defaults for game-specific fields
           playerCount: 'VARIES',
-          playTime: 'VARIABLE',
+          playTime: 'VARIES',
           ageRating: 'FOURTEEN_PLUS',
           category: 'GAME',
         }),

@@ -141,6 +141,91 @@ export function formatPercentage(value: number, decimals: number = 0): string {
   return `${(value * 100).toFixed(decimals)}%`;
 }
 
+// ============================================================
+// GAME ENUM FORMATTERS
+// Centralized formatters for consistent display across the site
+// ============================================================
+
+/**
+ * Format PlayerCount enum to human-readable text
+ * Schema values: SINGLE, TWO, TWO_PLUS, TWO_TO_FOUR, TWO_TO_SIX, THREE_TO_FIVE, THREE_TO_SIX, FOUR_TO_EIGHT, PARTY, CUSTOM, VARIES
+ */
+export function formatPlayerCount(playerCount: string | null | undefined): string {
+  if (!playerCount) return '';
+
+  const playerMap: Record<string, string> = {
+    'SINGLE': '1 Player',
+    'TWO': '2 Players',
+    'TWO_PLUS': '2+ Players',
+    'TWO_TO_FOUR': '2-4 Players',
+    'TWO_TO_SIX': '2-6 Players',
+    'THREE_TO_FIVE': '3-5 Players',
+    'THREE_TO_SIX': '3-6 Players',
+    'FOUR_TO_EIGHT': '4-8 Players',
+    'PARTY': '6+ Players',
+    'CUSTOM': 'Custom',
+    'VARIES': 'Varies',
+  };
+
+  return playerMap[playerCount] || playerCount;
+}
+
+/**
+ * Format PlayTime enum to human-readable text
+ * Schema values: QUICK, SHORT, MEDIUM, LONG, EXTENDED, VARIES
+ */
+export function formatPlayTime(playTime: string | null | undefined): string {
+  if (!playTime) return '';
+
+  const playTimeMap: Record<string, string> = {
+    'QUICK': '< 30 min',
+    'SHORT': '30-60 min',
+    'MEDIUM': '60-90 min',
+    'LONG': '90-120 min',
+    'EXTENDED': '2+ hours',
+    'VARIES': 'Varies',
+    'VARIABLE': 'Varies', // Backwards compatibility for invalid value
+  };
+
+  return playTimeMap[playTime] || playTime;
+}
+
+/**
+ * Format AgeRating enum to human-readable text
+ * Schema values: ALL_AGES, ELEVEN_PLUS, FOURTEEN_PLUS, SIXTEEN_PLUS, EIGHTEEN_PLUS, TWENTYONE_PLUS
+ */
+export function formatAgeRating(ageRating: string | null | undefined): string {
+  if (!ageRating) return '';
+
+  const ageMap: Record<string, string> = {
+    'ALL_AGES': 'All Ages',
+    'ELEVEN_PLUS': '11+',
+    'FOURTEEN_PLUS': '14+',
+    'SIXTEEN_PLUS': '16+',
+    'EIGHTEEN_PLUS': '18+',
+    'TWENTYONE_PLUS': '21+',
+  };
+
+  return ageMap[ageRating] || ageRating;
+}
+
+/**
+ * Format Category enum to human-readable text
+ */
+export function formatCategory(category: string | null | undefined): string {
+  if (!category) return '';
+
+  const categoryMap: Record<string, string> = {
+    'GAME': 'Game',
+    'EXPANSION': 'Expansion',
+    'ACCESSORY': 'Accessory',
+    'MOD': 'Game Mod',
+    'BUNDLE': 'Bundle',
+  };
+
+  return categoryMap[category] || category;
+}
+
 /**
  * Strip HTML tags from text
  */

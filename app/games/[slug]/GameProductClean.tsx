@@ -12,6 +12,7 @@ import { useCartStore } from '@/lib/cartStore';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Tooltip from '@/app/components/Tooltip';
+import { formatAgeRating, formatCategory } from '@/lib/utils/formatting';
 
 interface GameImage {
   id: number;
@@ -680,12 +681,12 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
                 <div style={styles.featureItem}>
                   <Info style={{ width: '16px', height: '16px', ...styles.featureIcon }} />
                   <span style={styles.featureLabel}>Age Rating:</span>
-                  <span style={styles.featureValue}>{game.ageRating}</span>
+                  <span style={styles.featureValue}>{formatAgeRating(game.ageRating)}</span>
                 </div>
                 <div style={styles.featureItem}>
                   <Gamepad2 style={{ width: '16px', height: '16px', ...styles.featureIcon }} />
                   <span style={styles.featureLabel}>Category:</span>
-                  <span style={styles.featureValue}>{game.category?.toUpperCase() || 'GAME'}</span>
+                  <span style={styles.featureValue}>{formatCategory(game.category) || 'Game'}</span>
                 </div>
               </div>
 

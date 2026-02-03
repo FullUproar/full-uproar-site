@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Package, ArrowRight, Menu, X, Heart, Share2, Play, Zap, Skull, Pause } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
+import { formatAgeRating } from '@/lib/utils/formatting';
 
 interface Game {
   id: number;
@@ -225,7 +226,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
                       </div>
                       <div className="text-center">
                         <Skull className="h-6 w-6 mx-auto mb-1 text-orange-500" />
-                        <span className="font-bold text-orange-200">{featuredGame.ageRating}</span>
+                        <span className="font-bold text-orange-200">{formatAgeRating(featuredGame.ageRating)}</span>
                       </div>
                     </div>
                     
@@ -311,7 +312,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
                 <div className="flex gap-4 text-sm mb-4 font-semibold">
                   <span className="bg-orange-500/20 text-orange-300 px-2 py-1 rounded">{game.players}</span>
                   <span className="bg-orange-500/20 text-orange-300 px-2 py-1 rounded">{game.timeToPlay}</span>
-                  <span className="bg-orange-500/20 text-orange-300 px-2 py-1 rounded">{game.ageRating}</span>
+                  <span className="bg-orange-500/20 text-orange-300 px-2 py-1 rounded">{formatAgeRating(game.ageRating)}</span>
                 </div>
                 
                 <div className="flex justify-between items-center">

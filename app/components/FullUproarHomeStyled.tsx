@@ -9,6 +9,7 @@ import FuglyLogo from './FuglyLogo';
 import Navigation from './Navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { formatAgeRating, formatPlayTime } from '@/lib/utils/formatting';
 
 interface GameImage {
   id: number;
@@ -52,21 +53,6 @@ function getDisplayImage(game: Game): string | null {
   return null;
 }
 
-// Helper to format age rating enum to human-readable text
-function formatAgeRating(ageRating: string): string {
-  const ageMap: Record<string, string> = {
-    'ALL_AGES': 'All Ages',
-    'SIX_PLUS': '6+',
-    'EIGHT_PLUS': '8+',
-    'TEN_PLUS': '10+',
-    'TWELVE_PLUS': '12+',
-    'FOURTEEN_PLUS': '14+',
-    'SIXTEEN_PLUS': '16+',
-    'EIGHTEEN_PLUS': '18+',
-    'ADULTS_ONLY': '21+',
-  };
-  return ageMap[ageRating] || ageRating;
-}
 
 interface Comic {
   id: number;

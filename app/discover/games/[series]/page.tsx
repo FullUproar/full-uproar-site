@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import { FMM_SERIES, FMM_GAMES } from '@/lib/games/fmm-data';
+import { formatPlayerCount, formatAgeRating } from '@/lib/utils/formatting';
 
 interface PageProps {
   params: Promise<{ series: string }>;
@@ -178,14 +179,14 @@ export default async function SeriesPage({ params }: PageProps) {
                     padding: '0.25rem 0.75rem',
                     borderRadius: '9999px',
                   }}>
-                    {game.playerCount}
+                    {formatPlayerCount(game.playerCount)}
                   </span>
                   <span style={{
                     background: 'rgba(255, 255, 255, 0.1)',
                     padding: '0.25rem 0.75rem',
                     borderRadius: '9999px',
                   }}>
-                    {game.ageRating}
+                    {formatAgeRating(game.ageRating)}
                   </span>
                 </div>
                 <div style={{

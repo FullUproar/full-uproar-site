@@ -108,7 +108,7 @@ const PLAY_TIMES = [
   { value: 'MEDIUM', label: '60-90 min' },
   { value: 'LONG', label: '90-120 min' },
   { value: 'EXTENDED', label: '2+ hours' },
-  { value: 'VARIABLE', label: 'Varies' }
+  { value: 'VARIES', label: 'Varies' }
 ];
 
 export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFormEnhancedProps) {
@@ -608,7 +608,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
             </select>
           </div>
 
-          {formData.playTime === 'VARIABLE' && (
+          {formData.playTime === 'VARIES' && (
             <div style={styles.inputGroup}>
               <label style={styles.label}>Custom Play Time</label>
               <input

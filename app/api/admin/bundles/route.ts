@@ -116,9 +116,9 @@ export async function POST(request: NextRequest) {
         isBundle: true,
         // Set default values for required game fields
         players: 'Varies', // Required field - bundles vary based on included games
-        playerCount: data.playerCount || 'CUSTOM',
+        playerCount: data.playerCount || 'VARIES',
         timeToPlay: 'Varies', // Required field - bundles vary based on included games
-        playTime: data.playTime || 'VARIABLE',
+        playTime: data.playTime || 'VARIES',
         ageRating: data.ageRating || 'FOURTEEN_PLUS',
         category: data.category || 'GAME',
       }
