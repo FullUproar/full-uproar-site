@@ -52,6 +52,22 @@ function getDisplayImage(game: Game): string | null {
   return null;
 }
 
+// Helper to format age rating enum to human-readable text
+function formatAgeRating(ageRating: string): string {
+  const ageMap: Record<string, string> = {
+    'ALL_AGES': 'All Ages',
+    'SIX_PLUS': '6+',
+    'EIGHT_PLUS': '8+',
+    'TEN_PLUS': '10+',
+    'TWELVE_PLUS': '12+',
+    'FOURTEEN_PLUS': '14+',
+    'SIXTEEN_PLUS': '16+',
+    'EIGHTEEN_PLUS': '18+',
+    'ADULTS_ONLY': '21+',
+  };
+  return ageMap[ageRating] || ageRating;
+}
+
 interface Comic {
   id: number;
   title: string;
@@ -1336,16 +1352,16 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
 
                   <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <Users style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF8200' }} />
+                      <Users style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.5rem auto', color: '#FF8200' }} />
                       <span style={{ fontWeight: 'bold', color: '#FBDB65', fontSize: '0.875rem' }}>{featuredGame.players}</span>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <Calendar style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF8200' }} />
+                      <Clock style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.5rem auto', color: '#FF8200' }} />
                       <span style={{ fontWeight: 'bold', color: '#FBDB65', fontSize: '0.875rem' }}>{featuredGame.timeToPlay}</span>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <Skull style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.25rem auto', color: '#FF8200' }} />
-                      <span style={{ fontWeight: 'bold', color: '#FBDB65', fontSize: '0.875rem' }}>{featuredGame.ageRating}</span>
+                      <ShieldCheck style={{ height: '1.25rem', width: '1.25rem', margin: '0 auto 0.5rem auto', color: '#FF8200' }} />
+                      <span style={{ fontWeight: 'bold', color: '#FBDB65', fontSize: '0.875rem' }}>{formatAgeRating(featuredGame.ageRating)}</span>
                     </div>
                   </div>
 
