@@ -55,6 +55,7 @@ interface GameShopPageProps {
   reviewSummary: ReviewSummary;
 }
 
+// Premium game shop page with buttery smooth animations and responsive design
 export default function GameShopPage({ game, similarGames, reviewSummary }: GameShopPageProps) {
   const [scrollY, setScrollY] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
