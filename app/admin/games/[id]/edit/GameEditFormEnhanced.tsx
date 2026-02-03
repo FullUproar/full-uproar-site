@@ -794,13 +794,78 @@ export default function GameEditFormEnhanced({ game }: GameEditFormEnhancedProps
           </div>
         </div>
 
+        {/* Legacy Image URL Notice */}
+        {formData.imageUrl && images.length === 0 && !imagesLoading && (
+          <div style={{
+            background: 'rgba(234, 179, 8, 0.1)',
+            border: '1px solid rgba(234, 179, 8, 0.3)',
+            borderRadius: '8px',
+            padding: '16px',
+            marginBottom: '16px',
+            display: 'flex',
+            gap: '16px',
+            alignItems: 'center'
+          }}>
+            <img
+              src={formData.imageUrl}
+              alt={game.title}
+              style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
+            />
+            <div style={{ flex: 1 }}>
+              <p style={{ color: '#fde68a', fontWeight: 'bold', marginBottom: '4px' }}>
+                Legacy Image URL Found
+              </p>
+              <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '8px' }}>
+                This image is in the old format. Add it to the gallery for better management.
+              </p>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const response = await fetch(`/api/games/${game.id}/images`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        imageUrl: formData.imageUrl,
+                        alt: `${game.title} - Primary`,
+                        isPrimary: true,
+                        sortOrder: 0
+                      })
+                    });
+                    if (response.ok) {
+                      setImageMessage('Image migrated to gallery!');
+                      fetchImages();
+                      setTimeout(() => setImageMessage(''), 3000);
+                    }
+                  } catch (err) {
+                    setImageMessage('Error migrating image');
+                  }
+                }}
+                style={{
+                  background: 'rgba(234, 179, 8, 0.2)',
+                  border: '1px solid rgba(234, 179, 8, 0.4)',
+                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  color: '#fde68a',
+                  cursor: 'pointer',
+                  fontSize: '13px'
+                }}
+              >
+                Migrate to Gallery
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Current Images Grid */}
         <div style={{ marginBottom: '16px' }}>
           <label style={styles.label}>Current Images ({images.length})</label>
           {imagesLoading ? (
             <p style={{ color: '#94a3b8' }}>Loading images...</p>
-          ) : images.length === 0 ? (
+          ) : images.length === 0 && !formData.imageUrl ? (
             <p style={{ color: '#94a3b8' }}>No images yet. Add your first image above.</p>
+          ) : images.length === 0 ? (
+            <p style={{ color: '#94a3b8' }}>Use the button above to migrate your legacy image, or add new images.</p>
           ) : (
             <div style={{
               display: 'grid',
