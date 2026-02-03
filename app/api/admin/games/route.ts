@@ -9,11 +9,20 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const showArchived = searchParams.get('showArchived') === 'true';
+    const excludeBundles = searchParams.get('excludeBundles') === 'true';
+
+    const whereClause: Record<string, unknown> = {};
+
+    if (!showArchived) {
+      whereClause.archived = { not: true };
+    }
+
+    if (excludeBundles) {
+      whereClause.isBundle = false;
+    }
 
     const games = await prisma.game.findMany({
-      where: showArchived ? {} : { 
-        archived: { not: true }
-      },
+      where: whereClause,
       orderBy: {
         createdAt: 'desc'
       }
