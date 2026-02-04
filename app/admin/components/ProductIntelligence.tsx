@@ -474,7 +474,7 @@ export default function ProductIntelligence({ onNavigate }: { onNavigate: (view:
                       textAlign: 'right', 
                       fontWeight: 'bold',
                       fontSize: '1.25rem',
-                      color: '#f97316'
+                      color: '#FF8200'
                     }}>
                       ${selectedProduct.components.reduce((sum, c) => sum + (c.unitCost * c.quantity), 0).toFixed(2)}
                     </td>
@@ -626,21 +626,21 @@ export default function ProductIntelligence({ onNavigate }: { onNavigate: (view:
 
         <div style={{
           ...adminStyles.card,
-          borderLeft: '3px solid #8b5cf6'
+          borderLeft: '3px solid #7D55C7'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
             <div>
               <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.5rem' }}>
                 Active Suppliers
               </p>
-              <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>
+              <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#7D55C7' }}>
                 {suppliers.length}
               </p>
               <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
                 Verified partners
               </p>
             </div>
-            <Truck size={24} style={{ color: '#8b5cf6' }} />
+            <Truck size={24} style={{ color: '#7D55C7' }} />
           </div>
         </div>
       </div>
@@ -1076,7 +1076,7 @@ export default function ProductIntelligence({ onNavigate }: { onNavigate: (view:
           </button>
           <button style={{
             ...adminStyles.button,
-            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+            background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
@@ -1108,13 +1108,13 @@ export default function ProductIntelligence({ onNavigate }: { onNavigate: (view:
               padding: '1rem',
               background: 'transparent',
               border: 'none',
-              color: activeTab === tab.id ? '#f97316' : '#94a3b8',
+              color: activeTab === tab.id ? '#FF8200' : '#94a3b8',
               fontWeight: activeTab === tab.id ? 'bold' : 'normal',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              borderBottom: activeTab === tab.id ? '2px solid #f97316' : '2px solid transparent',
+              borderBottom: activeTab === tab.id ? '2px solid #FF8200' : '2px solid transparent',
               marginBottom: '-1px'
             }}
           >

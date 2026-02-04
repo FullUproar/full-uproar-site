@@ -10,7 +10,7 @@ const discoverSections = [
     description: 'Learn about our game series, how they work, and find the perfect one for your group.',
     href: '/discover/games',
     icon: Gamepad2,
-    color: '#f97316',
+    color: '#FF8200',
   },
   {
     title: 'Meet Fugly',
@@ -24,7 +24,7 @@ const discoverSections = [
     description: 'The team behind Full Uproar and our mission to revolutionize game nights.',
     href: '/discover/about',
     icon: Users,
-    color: '#8b5cf6',
+    color: '#7D55C7',
   },
   {
     title: 'The Line',
@@ -78,7 +78,7 @@ export default function DiscoverPage() {
           <h1 style={{
             fontSize: 'clamp(2.5rem, 6vw, 4rem)',
             fontWeight: 900,
-            background: 'linear-gradient(45deg, #f97316, #fbbf24, #f97316)',
+            background: 'linear-gradient(45deg, #FF8200, #fbbf24, #FF8200)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
@@ -86,7 +86,7 @@ export default function DiscoverPage() {
           }}>
             Discover Full Uproar
           </h1>
-          <p style={{ fontSize: '1.25rem', color: '#fdba74', maxWidth: '600px', margin: '0 auto' }}>
+          <p style={{ fontSize: '1.25rem', color: '#FBDB65', maxWidth: '600px', margin: '0 auto' }}>
             Learn about our games, meet our team, and explore what makes Full Uproar the home of beautiful chaos.
           </p>
         </div>

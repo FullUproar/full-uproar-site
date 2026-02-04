@@ -21,8 +21,8 @@ const styles = {
   spinner: {
     width: '48px',
     height: '48px',
-    border: '4px solid rgba(249, 115, 22, 0.2)',
-    borderTopColor: '#f97316',
+    border: '4px solid rgba(255, 130, 0, 0.2)',
+    borderTopColor: '#FF8200',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
   },
@@ -43,7 +43,7 @@ const styles = {
   },
   retryButton: {
     padding: '12px 24px',
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     border: 'none',
     borderRadius: '8px',

@@ -63,7 +63,7 @@ export const MEMBERSHIP_BENEFITS: Record<MembershipTier, MembershipBenefits> = {
   [MembershipTier.AFTERROAR_PLUS]: {
     displayName: 'Afterroar+',
     description: 'Premium membership with exclusive benefits and discounts',
-    color: '#f97316',
+    color: '#FF8200',
     icon: '👑',
     benefits: {
       freeShipping: false,
@@ -112,7 +112,7 @@ export const MEMBERSHIP_BENEFITS: Record<MembershipTier, MembershipBenefits> = {
   [MembershipTier.CREATOR]: {
     displayName: 'Content Creator',
     description: 'Special tier for community content creators and influencers',
-    color: '#8b5cf6',
+    color: '#7D55C7',
     icon: '🎨',
     benefits: {
       freeShipping: true,

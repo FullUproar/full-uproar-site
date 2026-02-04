@@ -167,7 +167,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
         ...adminStyles.card,
         marginBottom: '16px',
         cursor: 'pointer',
-        border: selectedOrders.includes(order.id) ? '2px solid #f97316' : '2px solid rgba(249, 115, 22, 0.2)',
+        border: selectedOrders.includes(order.id) ? '2px solid #FF8200' : '2px solid rgba(255, 130, 0, 0.2)',
       }}
       onClick={() => setSelectedOrder(order)}
     >
@@ -187,7 +187,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
               }}
               style={{ width: '18px', height: '18px' }}
             />
-            <h3 style={{ color: '#fdba74', fontSize: '18px', margin: 0 }}>
+            <h3 style={{ color: '#FBDB65', fontSize: '18px', margin: 0 }}>
               Order #{order.id.slice(-8)}
             </h3>
             {order.trackingNumber && (
@@ -223,7 +223,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
         </div>
 
         <div style={{ textAlign: 'right' }}>
-          <p style={{ color: '#fdba74', fontSize: '20px', fontWeight: 'bold', margin: 0 }}>
+          <p style={{ color: '#FBDB65', fontSize: '20px', fontWeight: 'bold', margin: 0 }}>
             ${(order.totalCents / 100).toFixed(2)}
           </p>
           <p style={{ color: '#94a3b8', fontSize: '12px', marginTop: '4px' }}>
@@ -237,7 +237,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ color: '#fdba74', fontSize: '28px', fontWeight: 'bold', margin: 0 }}>
+        <h1 style={{ color: '#FBDB65', fontSize: '28px', fontWeight: 'bold', margin: 0 }}>
           📦 Fulfillment Center
         </h1>
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -268,10 +268,10 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
             onClick={() => setActiveTab(tab)}
             style={{
               padding: '12px 24px',
-              background: activeTab === tab ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
-              border: '2px solid rgba(249, 115, 22, 0.3)',
+              background: activeTab === tab ? 'rgba(255, 130, 0, 0.2)' : 'transparent',
+              border: '2px solid rgba(255, 130, 0, 0.3)',
               borderRadius: '8px',
-              color: activeTab === tab ? '#fdba74' : '#94a3b8',
+              color: activeTab === tab ? '#FBDB65' : '#94a3b8',
               cursor: 'pointer',
               fontWeight: '500',
               textTransform: 'capitalize',
@@ -288,7 +288,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
       <div style={{ display: 'grid', gridTemplateColumns: selectedOrder ? '1fr 1fr' : '1fr', gap: '24px' }}>
         {/* Orders List */}
         <div>
-          <h2 style={{ color: '#fdba74', fontSize: '20px', marginBottom: '16px' }}>
+          <h2 style={{ color: '#FBDB65', fontSize: '20px', marginBottom: '16px' }}>
             {activeTab === 'pending' && 'Orders Ready to Ship'}
             {activeTab === 'processing' && 'Orders Being Processed'}
             {activeTab === 'shipped' && 'Shipped Orders'}
@@ -311,7 +311,7 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
         {selectedOrder && (
           <div style={adminStyles.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ color: '#fdba74', fontSize: '20px', margin: 0 }}>
+              <h2 style={{ color: '#FBDB65', fontSize: '20px', margin: 0 }}>
                 Generate Shipping Label
               </h2>
               <button
@@ -396,15 +396,15 @@ export default function FulfillmentCenter({ onNavigate }: { onNavigate: (view: a
                       style={{
                         padding: '12px',
                         marginBottom: '8px',
-                        background: selectedRate === rate ? 'rgba(249, 115, 22, 0.2)' : 'rgba(17, 24, 39, 0.5)',
-                        border: selectedRate === rate ? '2px solid #f97316' : '2px solid rgba(249, 115, 22, 0.2)',
+                        background: selectedRate === rate ? 'rgba(255, 130, 0, 0.2)' : 'rgba(17, 24, 39, 0.5)',
+                        border: selectedRate === rate ? '2px solid #FF8200' : '2px solid rgba(255, 130, 0, 0.2)',
                         borderRadius: '8px',
                         cursor: 'pointer',
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                          <p style={{ color: '#fdba74', fontWeight: '500', margin: 0 }}>
+                          <p style={{ color: '#FBDB65', fontWeight: '500', margin: 0 }}>
                             {rate.carrier.toUpperCase()} - {rate.serviceName}
                           </p>
                           <p style={{ color: '#94a3b8', fontSize: '12px', marginTop: '4px' }}>

@@ -507,14 +507,14 @@ export default function ComplianceView() {
       {/* Important Notice */}
       <div style={{
         ...adminStyles.card,
-        backgroundColor: 'rgba(249, 115, 22, 0.1)',
-        border: '2px solid #f97316',
+        backgroundColor: 'rgba(255, 130, 0, 0.1)',
+        border: '2px solid #FF8200',
         marginBottom: '2rem'
       }}>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <Info size={24} style={{ color: '#f97316', flexShrink: 0 }} />
+          <Info size={24} style={{ color: '#FF8200', flexShrink: 0 }} />
           <div>
-            <h3 style={{ color: '#fdba74', marginBottom: '0.5rem' }}>Legal Disclaimer</h3>
+            <h3 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>Legal Disclaimer</h3>
             <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.6 }}>
               This compliance tracker is for informational purposes only and does not constitute legal advice. 
               Laws vary by jurisdiction and change frequently. Always consult with a qualified attorney for your specific situation. 
@@ -540,7 +540,7 @@ export default function ComplianceView() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ fontSize: '1.5rem' }}>{category.icon}</span>
               <div>
-                <h3 style={{ color: '#f97316', fontSize: '1.25rem', marginBottom: '0.25rem' }}>
+                <h3 style={{ color: '#FF8200', fontSize: '1.25rem', marginBottom: '0.25rem' }}>
                   {category.name}
                 </h3>
                 <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>{category.description}</p>
@@ -568,7 +568,7 @@ export default function ComplianceView() {
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                       {getStatusIcon(item.status)}
                       <div style={{ flex: 1 }}>
-                        <h4 style={{ color: '#fdba74', marginBottom: '0.5rem' }}>
+                        <h4 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>
                           {item.requirement}
                         </h4>
                         <p style={{ color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
@@ -692,7 +692,7 @@ export default function ComplianceView() {
 
       {/* Quick Actions */}
       <div style={{ ...adminStyles.card, marginTop: '2rem' }}>
-        <h3 style={{ color: '#fdba74', marginBottom: '1rem' }}>Quick Actions</h3>
+        <h3 style={{ color: '#FBDB65', marginBottom: '1rem' }}>Quick Actions</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
           <button style={adminStyles.primaryButton}>
             Export Compliance Report

@@ -31,12 +31,12 @@ export default function TestModeBanner() {
       right: 0,
       zIndex: 50,
       backgroundColor: '#1f2937',
-      borderBottom: '2px solid #f97316',
+      borderBottom: '2px solid #FF8200',
       padding: '8px',
       textAlign: 'center',
     }}>
       <span style={{
-        color: '#fdba74',
+        color: '#FBDB65',
         fontSize: '14px',
         fontWeight: 'bold',
         letterSpacing: '1px',

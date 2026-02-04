@@ -86,7 +86,7 @@ export default function NewsListView({ onEdit, onNew }: NewsListViewProps) {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading news posts...</p>
+        <p style={{ color: '#FBDB65' }}>Loading news posts...</p>
       </div>
     );
   }
@@ -156,7 +156,7 @@ export default function NewsListView({ onEdit, onNew }: NewsListViewProps) {
                 {filteredPosts.map((post) => (
                   <tr key={post.id} style={adminStyles.tableRow}>
                     <td style={adminStyles.tableCell}>
-                      <div style={{ fontWeight: 'bold', color: '#f97316', marginBottom: '4px' }}>
+                      <div style={{ fontWeight: 'bold', color: '#FF8200', marginBottom: '4px' }}>
                         {post.title}
                       </div>
                     </td>

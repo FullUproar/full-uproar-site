@@ -66,7 +66,7 @@ const styles = {
   header: {
     padding: '20px 40px',
     background: 'rgba(30, 41, 59, 0.8)',
-    borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+    borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -74,7 +74,7 @@ const styles = {
   logo: {
     fontSize: '24px',
     fontWeight: 'bold',
-    color: '#f97316',
+    color: '#FF8200',
   },
   roomCodeDisplay: {
     display: 'flex',
@@ -90,9 +90,9 @@ const styles = {
   roomCode: {
     fontSize: '48px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     letterSpacing: '8px',
-    textShadow: '0 0 30px rgba(249, 115, 22, 0.5)',
+    textShadow: '0 0 30px rgba(255, 130, 0, 0.5)',
   },
   joinUrl: {
     fontSize: '18px',
@@ -116,7 +116,7 @@ const styles = {
   sectionTitle: {
     fontSize: '14px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '20px',
     textTransform: 'uppercase' as const,
     letterSpacing: '2px',
@@ -131,7 +131,7 @@ const styles = {
   },
   playerCard: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '2px solid rgba(249, 115, 22, 0.2)',
+    border: '2px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '16px',
     padding: '20px',
     display: 'flex',
@@ -148,7 +148,7 @@ const styles = {
     width: '64px',
     height: '64px',
     borderRadius: '16px',
-    background: 'rgba(249, 115, 22, 0.2)',
+    background: 'rgba(255, 130, 0, 0.2)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -175,7 +175,7 @@ const styles = {
   },
   waitingSlot: {
     background: 'rgba(30, 41, 59, 0.3)',
-    border: '2px dashed rgba(249, 115, 22, 0.2)',
+    border: '2px dashed rgba(255, 130, 0, 0.2)',
     borderRadius: '16px',
     padding: '20px',
     display: 'flex',
@@ -192,7 +192,7 @@ const styles = {
   },
   qrCard: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '16px',
     padding: '24px',
     textAlign: 'center' as const,
@@ -217,10 +217,10 @@ const styles = {
     justifyContent: 'center',
     gap: '8px',
     padding: '12px 20px',
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '10px',
-    color: '#fdba74',
+    color: '#FBDB65',
     fontSize: '14px',
     cursor: 'pointer',
     width: '100%',
@@ -228,7 +228,7 @@ const styles = {
   },
   startButton: {
     padding: '20px 40px',
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     border: 'none',
     borderRadius: '16px',
     color: '#000',
@@ -240,7 +240,7 @@ const styles = {
     justifyContent: 'center',
     gap: '12px',
     transition: 'all 0.2s',
-    boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+    boxShadow: '0 10px 40px rgba(255, 130, 0, 0.4)',
   },
   startButtonDisabled: {
     opacity: 0.5,
@@ -331,7 +331,7 @@ const styles = {
   },
   irlAddButton: {
     padding: '12px 20px',
-    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+    background: 'linear-gradient(135deg, #7D55C7 0%, #7c3aed 100%)',
     border: 'none',
     borderRadius: '8px',
     color: '#ffffff',
@@ -374,12 +374,12 @@ const styles = {
   hostControls: {
     padding: '24px',
     background: 'rgba(30, 41, 59, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '16px',
   },
   hostButton: {
     padding: '16px 24px',
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     border: 'none',
     borderRadius: '12px',
     color: '#000',
@@ -394,14 +394,14 @@ const styles = {
     marginBottom: '12px',
   },
   hostButtonSecondary: {
-    background: 'rgba(249, 115, 22, 0.2)',
-    color: '#fdba74',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.2)',
+    color: '#FBDB65',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
   },
   winnerSelectCard: {
     padding: '16px',
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '2px solid rgba(249, 115, 22, 0.2)',
+    border: '2px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '12px',
     cursor: 'pointer',
     transition: 'all 0.2s',
@@ -674,7 +674,7 @@ export default function HostView() {
   if (phase === 'loading') {
     return (
       <div style={{ ...styles.container, ...styles.loader }}>
-        <Loader2 size={64} style={{ color: '#f97316', animation: 'spin 1s linear infinite' }} />
+        <Loader2 size={64} style={{ color: '#FF8200', animation: 'spin 1s linear infinite' }} />
         <div style={{ color: '#94a3b8', fontSize: '18px' }}>Loading game...</div>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -691,10 +691,10 @@ export default function HostView() {
           onClick={() => router.push('/game-kit')}
           style={{
             padding: '12px 32px',
-            background: 'rgba(249, 115, 22, 0.2)',
-            border: '1px solid #f97316',
+            background: 'rgba(255, 130, 0, 0.2)',
+            border: '1px solid #FF8200',
             borderRadius: '10px',
-            color: '#fdba74',
+            color: '#FBDB65',
             fontSize: '16px',
             cursor: 'pointer',
             marginTop: '20px',
@@ -784,7 +784,7 @@ export default function HostView() {
                     <div style={styles.playerAvatar} className="gk-player-avatar">{player.avatarEmoji}</div>
                     <div style={styles.playerName} className="gk-player-name">
                       {player.nickname}
-                      {player.isHost && <Crown size={16} style={{ color: '#f97316' }} />}
+                      {player.isHost && <Crown size={16} style={{ color: '#FF8200' }} />}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       {player.isProxy && (
@@ -879,10 +879,10 @@ export default function HostView() {
                   {roomCode}
                 </div>
                 <div style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px' }}>
-                  Go to <strong style={{ color: '#fdba74' }}>{baseUrl}/join</strong>
+                  Go to <strong style={{ color: '#FBDB65' }}>{baseUrl}/join</strong>
                 </div>
                 <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#e2e8f0' }}>
-                  Enter code: <span style={{ color: '#f97316' }}>{roomCode}</span>
+                  Enter code: <span style={{ color: '#FF8200' }}>{roomCode}</span>
                 </div>
                 <button style={styles.copyButton} onClick={copyJoinUrl}>
                   {copied ? <Check size={16} /> : <Copy size={16} />}
@@ -940,13 +940,13 @@ export default function HostView() {
                 style={{
                   ...styles.scoreItem,
                   border: player.id === roomState.gameState.currentPlayerId
-                    ? '2px solid #f97316'
+                    ? '2px solid #FF8200'
                     : '2px solid transparent',
                 }}
               >
                 <span style={{ fontSize: '20px' }}>{player.avatarEmoji}</span>
                 <span style={{ fontWeight: 'bold' }}>{player.nickname}</span>
-                <span style={{ color: '#f97316', fontWeight: 'bold' }}>{player.score}</span>
+                <span style={{ color: '#FF8200', fontWeight: 'bold' }}>{player.score}</span>
               </div>
             ))}
           </div>
@@ -987,7 +987,7 @@ export default function HostView() {
             {/* Main Game Area */}
             <div style={{ ...styles.gameArea, flex: 1 }}>
               {judge && (
-                <div style={{ fontSize: '24px', color: '#fdba74', marginBottom: '20px' }}>
+                <div style={{ fontSize: '24px', color: '#FBDB65', marginBottom: '20px' }}>
                   <Crown size={24} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                   {judge.avatarEmoji} {judge.nickname} is judging
                   {judge.isProxy && <span style={{ ...styles.proxyBadge, marginLeft: '8px' }}>IRL</span>}
@@ -1010,7 +1010,7 @@ export default function HostView() {
                         border: showWinnerSelect ? '3px solid transparent' : 'none',
                       }}
                       onClick={() => showWinnerSelect && markWinner(submission.playerId)}
-                      onMouseEnter={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = '#f97316')}
+                      onMouseEnter={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = '#FF8200')}
                       onMouseLeave={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = 'transparent')}
                     >
                       <div style={{ fontWeight: 'bold' }}>
@@ -1033,13 +1033,13 @@ export default function HostView() {
                       key={`proxy-${playerId}`}
                       style={{
                         ...styles.cardOnTable,
-                        background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                        background: 'linear-gradient(135deg, #7D55C7 0%, #7c3aed 100%)',
                         color: '#ffffff',
                         cursor: showWinnerSelect ? 'pointer' : 'default',
                         border: showWinnerSelect ? '3px solid transparent' : 'none',
                       }}
                       onClick={() => showWinnerSelect && markWinner(playerId)}
-                      onMouseEnter={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = '#f97316')}
+                      onMouseEnter={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = '#FF8200')}
                       onMouseLeave={(e) => showWinnerSelect && (e.currentTarget.style.borderColor = 'transparent')}
                     >
                       <div style={{ fontSize: '40px', textAlign: 'center', marginBottom: '8px' }}>🎴</div>
@@ -1127,11 +1127,11 @@ export default function HostView() {
                           ...styles.winnerSelectCard,
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = '#f97316';
-                          e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                          e.currentTarget.style.borderColor = '#FF8200';
+                          e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.2)';
                           e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
                         }}
                       >
@@ -1143,7 +1143,7 @@ export default function HostView() {
                             {player.isProxy && <span style={{ ...styles.proxyBadge, marginLeft: '8px' }}>IRL</span>}
                           </div>
                         </div>
-                        <Trophy size={18} style={{ marginLeft: 'auto', color: '#f97316' }} />
+                        <Trophy size={18} style={{ marginLeft: 'auto', color: '#FF8200' }} />
                       </div>
                     ))}
                   </div>
@@ -1151,7 +1151,7 @@ export default function HostView() {
 
                 {/* IRL Player List */}
                 {hasProxyPlayers && (
-                  <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(249, 115, 22, 0.2)' }}>
+                  <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255, 130, 0, 0.2)' }}>
                     <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '8px' }}>
                       IRL Players:
                     </div>

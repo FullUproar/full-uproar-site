@@ -147,7 +147,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     heroTitle: {
       fontSize: 'clamp(3rem, 8vw, 6rem)',
       fontWeight: 'bold',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginBottom: '1rem',
       textShadow: '0 4px 20px rgba(0,0,0,0.8)',
       letterSpacing: '2px'
@@ -155,7 +155,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     
     heroTagline: {
       fontSize: 'clamp(1.2rem, 3vw, 2rem)',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '2rem',
       fontStyle: 'italic'
     },
@@ -165,7 +165,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
       alignItems: 'center',
       gap: '1rem',
       padding: '1.5rem 3rem',
-      background: 'linear-gradient(135deg, #f97316, #ea580c)',
+      background: 'linear-gradient(135deg, #FF8200, #ea580c)',
       color: 'white',
       fontSize: '1.25rem',
       fontWeight: 'bold',
@@ -173,7 +173,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
       borderRadius: '50px',
       cursor: 'pointer',
       transition: 'all 0.3s ease',
-      boxShadow: '0 10px 30px rgba(249, 115, 22, 0.3)',
+      boxShadow: '0 10px 30px rgba(255, 130, 0, 0.3)',
       textDecoration: 'none'
     },
     
@@ -201,7 +201,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     
     storyTitle: {
       fontSize: '3rem',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginBottom: '2rem',
       fontWeight: 'bold'
     },
@@ -232,7 +232,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
       background: 'linear-gradient(135deg, #1e293b, #334155)',
       padding: '2rem',
       borderRadius: '15px',
-      border: '1px solid rgba(249, 115, 22, 0.3)',
+      border: '1px solid rgba(255, 130, 0, 0.3)',
       transition: 'all 0.3s ease',
       cursor: 'pointer'
     },
@@ -240,7 +240,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     featureIcon: {
       width: '60px',
       height: '60px',
-      background: 'linear-gradient(135deg, #f97316, #ea580c)',
+      background: 'linear-gradient(135deg, #FF8200, #ea580c)',
       borderRadius: '15px',
       display: 'flex',
       alignItems: 'center',
@@ -250,7 +250,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     
     featureTitle: {
       fontSize: '1.5rem',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '0.5rem',
       fontWeight: 'bold'
     },
@@ -281,14 +281,14 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     
     testimonialQuote: {
       fontSize: '1.5rem',
-      color: '#fde68a',
+      color: '#FBDB65',
       fontStyle: 'italic',
       marginBottom: '1rem',
       lineHeight: '1.6'
     },
     
     testimonialAuthor: {
-      color: '#fdba74',
+      color: '#FBDB65',
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
@@ -333,7 +333,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     // CTA Section
     ctaSection: {
       padding: '6rem 2rem',
-      background: 'linear-gradient(135deg, #f97316, #ea580c)',
+      background: 'linear-gradient(135deg, #FF8200, #ea580c)',
       textAlign: 'center' as const
     },
     
@@ -346,7 +346,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
     
     ctaPrice: {
       fontSize: '4rem',
-      color: '#fde68a',
+      color: '#FBDB65',
       fontWeight: 'bold',
       marginBottom: '2rem'
     },
@@ -357,7 +357,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
       gap: '1rem',
       padding: '1.5rem 3rem',
       background: '#0a0a0a',
-      color: '#fde68a',
+      color: '#FBDB65',
       fontSize: '1.5rem',
       fontWeight: 'bold',
       border: 'none',
@@ -413,11 +413,11 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
             style={styles.heroCTA}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 15px 40px rgba(249, 115, 22, 0.4)';
+              e.currentTarget.style.boxShadow = '0 15px 40px rgba(255, 130, 0, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.3)';
+              e.currentTarget.style.boxShadow = '0 10px 30px rgba(255, 130, 0, 0.3)';
             }}
           >
             <ShoppingCart size={30} />
@@ -436,7 +436,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
                 {game.story || game.description}
               </p>
               {game.designer && (
-                <p style={{ color: '#fdba74', fontWeight: 'bold' }}>
+                <p style={{ color: '#FBDB65', fontWeight: 'bold' }}>
                   Designed by {game.designer}
                 </p>
               )}
@@ -469,7 +469,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
               style={styles.featureCard}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.2)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(255, 130, 0, 0.2)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
@@ -507,7 +507,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
                     key={index}
                     style={{
                       ...styles.galleryThumb,
-                      border: selectedImageIndex === index ? '2px solid #f97316' : '2px solid transparent'
+                      border: selectedImageIndex === index ? '2px solid #FF8200' : '2px solid transparent'
                     }}
                     onClick={() => setSelectedImageIndex(index)}
                   >
@@ -562,7 +562,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
               background: 'rgba(30, 41, 59, 0.5)',
               padding: '3rem',
               borderRadius: '20px',
-              border: '1px solid rgba(249, 115, 22, 0.3)'
+              border: '1px solid rgba(255, 130, 0, 0.3)'
             }}>
               <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#e2e8f0' }}>
                 {game.components}
@@ -593,7 +593,7 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
         </button>
         <div style={{ marginTop: '2rem' }}>
           {game.stock > 0 && game.stock < 10 && (
-            <p style={{ color: '#fde68a', fontSize: '1.2rem', fontWeight: 'bold' }}>
+            <p style={{ color: '#FBDB65', fontSize: '1.2rem', fontWeight: 'bold' }}>
               Only {game.stock} left in stock!
             </p>
           )}
@@ -639,10 +639,10 @@ export default function GameLandingPage({ game, testimonials, similarGames }: Ga
                       />
                     </div>
                     <div style={{ padding: '1.5rem' }}>
-                      <h3 style={{ color: '#fdba74', marginBottom: '0.5rem' }}>
+                      <h3 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>
                         {similar.title}
                       </h3>
-                      <p style={{ color: '#fde68a', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                      <p style={{ color: '#FBDB65', fontSize: '1.5rem', fontWeight: 'bold' }}>
                         ${(similar.priceCents / 100).toFixed(2)}
                       </p>
                     </div>

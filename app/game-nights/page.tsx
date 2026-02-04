@@ -45,7 +45,7 @@ interface GameNight {
 
 const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: string }> = {
   CHILL: { icon: Coffee, color: '#60a5fa', label: 'Chill', bg: 'rgba(96, 165, 250, 0.15)' },
-  COMPETITIVE: { icon: Flame, color: '#f97316', label: 'Competitive', bg: 'rgba(249, 115, 22, 0.15)' },
+  COMPETITIVE: { icon: Flame, color: '#FF8200', label: 'Competitive', bg: 'rgba(255, 130, 0, 0.15)' },
   CHAOS: { icon: Zap, color: '#a855f7', label: 'Chaos', bg: 'rgba(168, 85, 247, 0.15)' },
   PARTY: { icon: PartyPopper, color: '#ec4899', label: 'Party', bg: 'rgba(236, 72, 153, 0.15)' },
   COZY: { icon: Heart, color: '#f472b6', label: 'Cozy', bg: 'rgba(244, 114, 182, 0.15)' },
@@ -54,7 +54,7 @@ const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: 
 const statusConfig: Record<string, { color: string; label: string }> = {
   PLANNING: { color: '#fbbf24', label: 'Planning' },
   LOCKED_IN: { color: '#10b981', label: 'Locked In!' },
-  IN_PROGRESS: { color: '#f97316', label: 'Happening Now!' },
+  IN_PROGRESS: { color: '#FF8200', label: 'Happening Now!' },
   COMPLETED: { color: '#6b7280', label: 'Completed' },
   CANCELLED: { color: '#ef4444', label: 'Cancelled' },
 };
@@ -134,7 +134,7 @@ export default function GameNightsPage() {
               <h1 style={{
                 fontSize: 'clamp(2.5rem, 6vw, 4rem)',
                 fontWeight: 900,
-                background: 'linear-gradient(135deg, #f97316, #fbbf24)',
+                background: 'linear-gradient(135deg, #FF8200, #fbbf24)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 color: 'transparent',
@@ -143,7 +143,7 @@ export default function GameNightsPage() {
                 Game Nights
               </h1>
               <p style={{
-                color: '#fdba74',
+                color: '#FBDB65',
                 fontSize: '1.5rem',
                 marginBottom: '2rem',
                 maxWidth: '48rem',
@@ -173,20 +173,20 @@ export default function GameNightsPage() {
                   padding: '2rem',
                   background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9))',
                   borderRadius: '1rem',
-                  border: '2px solid rgba(249, 115, 22, 0.2)',
+                  border: '2px solid rgba(255, 130, 0, 0.2)',
                   textAlign: 'center',
                 }}>
                   <div style={{
                     width: '64px',
                     height: '64px',
                     borderRadius: '1rem',
-                    background: 'rgba(249, 115, 22, 0.15)',
+                    background: 'rgba(255, 130, 0, 0.15)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 1rem',
                   }}>
-                    <step.icon size={32} style={{ color: '#f97316' }} />
+                    <step.icon size={32} style={{ color: '#FF8200' }} />
                   </div>
                   <h3 style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 900, marginBottom: '0.5rem' }}>
                     {step.title}
@@ -200,8 +200,8 @@ export default function GameNightsPage() {
 
             {/* Value props */}
             <div style={{
-              background: 'rgba(249, 115, 22, 0.1)',
-              border: '2px solid rgba(249, 115, 22, 0.3)',
+              background: 'rgba(255, 130, 0, 0.1)',
+              border: '2px solid rgba(255, 130, 0, 0.3)',
               borderRadius: '1rem',
               padding: '2rem',
               marginBottom: '3rem',
@@ -219,7 +219,7 @@ export default function GameNightsPage() {
                 ].map((benefit, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <CheckCircle2 size={20} style={{ color: '#10b981', flexShrink: 0 }} />
-                    <span style={{ color: '#fdba74', fontSize: '1rem' }}>{benefit}</span>
+                    <span style={{ color: '#FBDB65', fontSize: '1rem' }}>{benefit}</span>
                   </div>
                 ))}
               </div>
@@ -235,14 +235,14 @@ export default function GameNightsPage() {
                     alignItems: 'center',
                     gap: '0.75rem',
                     padding: '1rem 2.5rem',
-                    background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                    background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                     border: 'none',
                     borderRadius: '50px',
                     color: '#fff',
                     fontWeight: 900,
                     fontSize: '1.25rem',
                     cursor: 'pointer',
-                    boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+                    boxShadow: '0 10px 40px rgba(255, 130, 0, 0.4)',
                     transition: 'all 0.3s',
                   }}
                 >
@@ -256,14 +256,14 @@ export default function GameNightsPage() {
                     alignItems: 'center',
                     gap: '0.75rem',
                     padding: '1rem 2.5rem',
-                    background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                    background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                     border: 'none',
                     borderRadius: '50px',
                     color: '#fff',
                     fontWeight: 900,
                     fontSize: '1.25rem',
                     cursor: 'pointer',
-                    boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+                    boxShadow: '0 10px 40px rgba(255, 130, 0, 0.4)',
                     transition: 'all 0.3s',
                   }}>
                     Try a Free Game Night
@@ -282,7 +282,7 @@ export default function GameNightsPage() {
               <h1 style={{
                 fontSize: 'clamp(2.5rem, 6vw, 4rem)',
                 fontWeight: 900,
-                background: 'linear-gradient(135deg, #f97316, #fbbf24)',
+                background: 'linear-gradient(135deg, #FF8200, #fbbf24)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 color: 'transparent',
@@ -292,7 +292,7 @@ export default function GameNightsPage() {
               }}>
                 Game Night HQ
               </h1>
-              <p style={{ color: '#fdba74', fontSize: '1.25rem', marginBottom: '2rem' }}>
+              <p style={{ color: '#FBDB65', fontSize: '1.25rem', marginBottom: '2rem' }}>
                 Rally the squad. Roll the dice. Create the chaos.
               </p>
 
@@ -303,14 +303,14 @@ export default function GameNightsPage() {
                   alignItems: 'center',
                   gap: '0.75rem',
                   padding: '1rem 2rem',
-                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                  background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                   border: 'none',
                   borderRadius: '50px',
                   color: '#fff',
                   fontWeight: 900,
                   fontSize: '1.125rem',
                   cursor: 'pointer',
-                  boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+                  boxShadow: '0 10px 40px rgba(255, 130, 0, 0.4)',
                   transition: 'all 0.3s',
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
@@ -324,7 +324,7 @@ export default function GameNightsPage() {
         )}
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '4rem', color: '#fdba74' }}>
+          <div style={{ textAlign: 'center', padding: '4rem', color: '#FBDB65' }}>
             <Sparkles size={48} style={{ animation: 'spin 2s linear infinite' }} />
             <p style={{ marginTop: '1rem', fontSize: '1.25rem' }}>Loading your game nights...</p>
           </div>
@@ -335,7 +335,7 @@ export default function GameNightsPage() {
               <h2 style={{
                 fontSize: '1.5rem',
                 fontWeight: 900,
-                color: '#f97316',
+                color: '#FF8200',
                 marginBottom: '1.5rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -496,11 +496,11 @@ function GameNightCard({
           {isHost && (
             <span style={{
               padding: '0.25rem 0.5rem',
-              background: 'rgba(249, 115, 22, 0.2)',
+              background: 'rgba(255, 130, 0, 0.2)',
               borderRadius: '0.25rem',
               fontSize: '0.75rem',
               fontWeight: 'bold',
-              color: '#f97316',
+              color: '#FF8200',
             }}>
               HOST
             </span>
@@ -667,9 +667,9 @@ function CreateGameNightModal({
           maxWidth: '480px',
           background: 'linear-gradient(145deg, #1a1f2e 0%, #0f1219 100%)',
           borderRadius: '1.5rem',
-          border: '3px solid #f97316',
+          border: '3px solid #FF8200',
           padding: '1.5rem',
-          boxShadow: '0 25px 80px rgba(249, 115, 22, 0.25), 0 0 60px rgba(249, 115, 22, 0.1)',
+          boxShadow: '0 25px 80px rgba(255, 130, 0, 0.25), 0 0 60px rgba(255, 130, 0, 0.1)',
           maxHeight: '90vh',
           overflowY: 'auto',
         }}
@@ -683,7 +683,7 @@ function CreateGameNightModal({
                 width: s === step ? '2rem' : '0.75rem',
                 height: '0.75rem',
                 borderRadius: '0.5rem',
-                background: s <= step ? '#f97316' : '#374151',
+                background: s <= step ? '#FF8200' : '#374151',
                 transition: 'all 0.3s',
               }}
             />
@@ -695,7 +695,7 @@ function CreateGameNightModal({
             <h2 style={{
               fontSize: '1.75rem',
               fontWeight: 900,
-              color: '#f97316',
+              color: '#FF8200',
               marginBottom: '0.25rem',
               textAlign: 'center',
             }}>
@@ -718,11 +718,11 @@ function CreateGameNightModal({
                 <button
                   onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))}
                   style={{
-                    background: 'rgba(249, 115, 22, 0.2)',
+                    background: 'rgba(255, 130, 0, 0.2)',
                     border: 'none',
                     borderRadius: '0.5rem',
                     padding: '0.5rem 0.75rem',
-                    color: '#f97316',
+                    color: '#FF8200',
                     cursor: 'pointer',
                     fontWeight: 'bold',
                   }}
@@ -733,11 +733,11 @@ function CreateGameNightModal({
                 <button
                   onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))}
                   style={{
-                    background: 'rgba(249, 115, 22, 0.2)',
+                    background: 'rgba(255, 130, 0, 0.2)',
                     border: 'none',
                     borderRadius: '0.5rem',
                     padding: '0.5rem 0.75rem',
-                    color: '#f97316',
+                    color: '#FF8200',
                     cursor: 'pointer',
                     fontWeight: 'bold',
                   }}
@@ -779,10 +779,10 @@ function CreateGameNightModal({
                       disabled={past}
                       style={{
                         aspectRatio: '1',
-                        border: selected ? '2px solid #f97316' : today ? '2px solid #fbbf24' : '2px solid transparent',
+                        border: selected ? '2px solid #FF8200' : today ? '2px solid #fbbf24' : '2px solid transparent',
                         borderRadius: '0.5rem',
                         background: selected
-                          ? 'linear-gradient(135deg, #f97316, #ea580c)'
+                          ? 'linear-gradient(135deg, #FF8200, #ea580c)'
                           : today
                           ? 'rgba(251, 191, 36, 0.15)'
                           : 'rgba(255, 255, 255, 0.05)',
@@ -803,8 +803,8 @@ function CreateGameNightModal({
             {/* Selected date display */}
             {formData.date && (
               <div style={{
-                background: 'rgba(249, 115, 22, 0.15)',
-                border: '2px solid rgba(249, 115, 22, 0.3)',
+                background: 'rgba(255, 130, 0, 0.15)',
+                border: '2px solid rgba(255, 130, 0, 0.3)',
                 borderRadius: '0.75rem',
                 padding: '0.75rem 1rem',
                 marginBottom: '1rem',
@@ -812,8 +812,8 @@ function CreateGameNightModal({
                 alignItems: 'center',
                 gap: '0.75rem',
               }}>
-                <Calendar size={20} style={{ color: '#f97316' }} />
-                <span style={{ color: '#fdba74', fontWeight: 'bold' }}>
+                <Calendar size={20} style={{ color: '#FF8200' }} />
+                <span style={{ color: '#FBDB65', fontWeight: 'bold' }}>
                   {new Date(formData.date + 'T12:00:00').toLocaleDateString('en-US', {
                     weekday: 'long',
                     month: 'long',
@@ -825,7 +825,7 @@ function CreateGameNightModal({
 
             {/* Time selector */}
             <div style={{ marginBottom: '1.25rem' }}>
-              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
                 <Clock size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
                 Start Time
               </label>
@@ -837,13 +837,13 @@ function CreateGameNightModal({
                     style={{
                       padding: '0.6rem 0.5rem',
                       background: formData.startTime === time.value
-                        ? 'rgba(249, 115, 22, 0.3)'
+                        ? 'rgba(255, 130, 0, 0.3)'
                         : 'rgba(0, 0, 0, 0.3)',
                       border: formData.startTime === time.value
-                        ? '2px solid #f97316'
+                        ? '2px solid #FF8200'
                         : '2px solid #374151',
                       borderRadius: '0.5rem',
-                      color: formData.startTime === time.value ? '#f97316' : '#94a3b8',
+                      color: formData.startTime === time.value ? '#FF8200' : '#94a3b8',
                       fontWeight: formData.startTime === time.value ? 'bold' : 'normal',
                       cursor: 'pointer',
                       fontSize: '0.8rem',
@@ -862,14 +862,14 @@ function CreateGameNightModal({
               style={{
                 width: '100%',
                 padding: '1rem',
-                background: formData.date ? 'linear-gradient(135deg, #f97316, #ea580c)' : '#374151',
+                background: formData.date ? 'linear-gradient(135deg, #FF8200, #ea580c)' : '#374151',
                 border: 'none',
                 borderRadius: '0.75rem',
                 color: formData.date ? '#fff' : '#6b7280',
                 fontWeight: 900,
                 fontSize: '1rem',
                 cursor: formData.date ? 'pointer' : 'not-allowed',
-                boxShadow: formData.date ? '0 10px 30px rgba(249, 115, 22, 0.3)' : 'none',
+                boxShadow: formData.date ? '0 10px 30px rgba(255, 130, 0, 0.3)' : 'none',
                 transition: 'all 0.2s',
               }}
             >
@@ -883,7 +883,7 @@ function CreateGameNightModal({
             <h2 style={{
               fontSize: '1.75rem',
               fontWeight: 900,
-              color: '#f97316',
+              color: '#FF8200',
               marginBottom: '0.25rem',
               textAlign: 'center',
             }}>
@@ -963,14 +963,14 @@ function CreateGameNightModal({
                 style={{
                   flex: 2,
                   padding: '0.875rem',
-                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                  background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                   border: 'none',
                   borderRadius: '0.75rem',
                   color: '#fff',
                   fontWeight: 900,
                   fontSize: '1rem',
                   cursor: 'pointer',
-                  boxShadow: '0 10px 30px rgba(249, 115, 22, 0.3)',
+                  boxShadow: '0 10px 30px rgba(255, 130, 0, 0.3)',
                 }}
               >
                 Almost There! →
@@ -984,7 +984,7 @@ function CreateGameNightModal({
             <h2 style={{
               fontSize: '1.75rem',
               fontWeight: 900,
-              color: '#f97316',
+              color: '#FF8200',
               marginBottom: '0.25rem',
               textAlign: 'center',
             }}>
@@ -1003,7 +1003,7 @@ function CreateGameNightModal({
               border: '2px solid #374151',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                <Calendar size={18} style={{ color: '#f97316' }} />
+                <Calendar size={18} style={{ color: '#FF8200' }} />
                 <span style={{ color: '#fff', fontSize: '0.9rem' }}>
                   {formData.date && new Date(formData.date + 'T12:00:00').toLocaleDateString('en-US', {
                     weekday: 'short',
@@ -1030,7 +1030,7 @@ function CreateGameNightModal({
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
                 Give it a name
               </label>
               <input
@@ -1048,13 +1048,13 @@ function CreateGameNightModal({
                   fontSize: '1rem',
                   outline: 'none',
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#f97316'}
+                onFocus={(e) => e.target.style.borderColor = '#FF8200'}
                 onBlur={(e) => e.target.style.borderColor = '#374151'}
               />
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
                 <MapPin size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
                 Where at?
               </label>
@@ -1073,7 +1073,7 @@ function CreateGameNightModal({
                   fontSize: '1rem',
                   outline: 'none',
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#f97316'}
+                onFocus={(e) => e.target.style.borderColor = '#FF8200'}
                 onBlur={(e) => e.target.style.borderColor = '#374151'}
               />
             </div>
@@ -1196,7 +1196,7 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
           style={{
             fontSize: '1.75rem',
             fontWeight: 900,
-            background: 'linear-gradient(135deg, #a855f7, #8b5cf6)',
+            background: 'linear-gradient(135deg, #a855f7, #7D55C7)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
@@ -1268,7 +1268,7 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
               style={{
                 width: '100%',
                 padding: '0.875rem',
-                background: 'linear-gradient(135deg, #a855f7, #8b5cf6)',
+                background: 'linear-gradient(135deg, #a855f7, #7D55C7)',
                 border: 'none',
                 borderRadius: '0.75rem',
                 color: '#fff',

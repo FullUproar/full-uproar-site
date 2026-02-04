@@ -190,7 +190,7 @@ export default function FAQPage() {
           padding: '2rem'
         }}>
           <h1 style={{ 
-            color: '#f97316', 
+            color: '#FF8200', 
             fontSize: '3rem', 
             marginBottom: '1rem',
             fontWeight: 900,
@@ -206,7 +206,7 @@ export default function FAQPage() {
             fontSize: '1.125rem'
           }}>
             Got questions? We've got answers! If you can't find what you're looking for, 
-            <a href="mailto:support@fulluproar.com" style={{ color: '#f97316', marginLeft: '0.25rem' }}>
+            <a href="mailto:support@fulluproar.com" style={{ color: '#FF8200', marginLeft: '0.25rem' }}>
               contact us
             </a>.
           </p>
@@ -225,9 +225,9 @@ export default function FAQPage() {
                 onClick={() => setSelectedCategory(category)}
                 style={{
                   padding: '0.5rem 1rem',
-                  background: selectedCategory === category ? '#f97316' : 'transparent',
+                  background: selectedCategory === category ? '#FF8200' : 'transparent',
                   color: selectedCategory === category ? '#111827' : '#94a3b8',
-                  border: `2px solid ${selectedCategory === category ? '#f97316' : '#374151'}`,
+                  border: `2px solid ${selectedCategory === category ? '#FF8200' : '#374151'}`,
                   borderRadius: '0.5rem',
                   cursor: 'pointer',
                   fontWeight: 600,
@@ -238,8 +238,8 @@ export default function FAQPage() {
                 }}
                 onMouseEnter={(e) => {
                   if (selectedCategory !== category) {
-                    e.currentTarget.style.borderColor = '#f97316';
-                    e.currentTarget.style.color = '#fdba74';
+                    e.currentTarget.style.borderColor = '#FF8200';
+                    e.currentTarget.style.color = '#FBDB65';
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -267,7 +267,7 @@ export default function FAQPage() {
                   overflow: 'hidden',
                   transition: 'border-color 0.2s'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#FF8200'}
                 onMouseLeave={(e) => e.currentTarget.style.borderColor = '#374151'}
               >
                 <button
@@ -304,7 +304,7 @@ export default function FAQPage() {
                       </span>
                     </div>
                     <h3 style={{
-                      color: '#fdba74',
+                      color: '#FBDB65',
                       fontSize: '1.125rem',
                       fontWeight: 600,
                       margin: 0
@@ -313,7 +313,7 @@ export default function FAQPage() {
                     </h3>
                   </div>
                   {expandedItems.has(index) ? (
-                    <ChevronUp size={24} style={{ color: '#f97316', flexShrink: 0 }} />
+                    <ChevronUp size={24} style={{ color: '#FF8200', flexShrink: 0 }} />
                   ) : (
                     <ChevronDown size={24} style={{ color: '#6b7280', flexShrink: 0 }} />
                   )}
@@ -339,11 +339,11 @@ export default function FAQPage() {
             padding: '2rem',
             background: 'linear-gradient(135deg, #1f2937, #111827)',
             borderRadius: '1rem',
-            border: '2px solid #f97316',
+            border: '2px solid #FF8200',
             textAlign: 'center'
           }}>
             <h2 style={{
-              color: '#f97316',
+              color: '#FF8200',
               fontSize: '2rem',
               marginBottom: '1rem',
               fontWeight: 'bold'
@@ -367,7 +367,7 @@ export default function FAQPage() {
                 href="mailto:support@fulluproar.com"
                 style={{
                   padding: '0.75rem 2rem',
-                  background: '#f97316',
+                  background: '#FF8200',
                   color: '#111827',
                   borderRadius: '0.5rem',
                   textDecoration: 'none',
@@ -385,8 +385,8 @@ export default function FAQPage() {
                 style={{
                   padding: '0.75rem 2rem',
                   background: 'transparent',
-                  color: '#f97316',
-                  border: '2px solid #f97316',
+                  color: '#FF8200',
+                  border: '2px solid #FF8200',
                   borderRadius: '0.5rem',
                   textDecoration: 'none',
                   fontWeight: 'bold',
@@ -394,12 +394,12 @@ export default function FAQPage() {
                   transition: 'all 0.2s'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#f97316';
+                  e.currentTarget.style.background = '#FF8200';
                   e.currentTarget.style.color = '#111827';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#f97316';
+                  e.currentTarget.style.color = '#FF8200';
                 }}
               >
                 Contact Form

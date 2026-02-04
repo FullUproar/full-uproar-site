@@ -47,14 +47,14 @@ const STATUS_COLORS: Record<string, string> = {
   pending: '#fbbf24',
   approved: '#10b981',
   rejected: '#ef4444',
-  flagged: '#f97316',
+  flagged: '#FF8200',
 };
 
 const STATUS_BG: Record<string, string> = {
   pending: 'rgba(251, 191, 36, 0.15)',
   approved: 'rgba(16, 185, 129, 0.15)',
   rejected: 'rgba(239, 68, 68, 0.15)',
-  flagged: 'rgba(249, 115, 22, 0.15)',
+  flagged: 'rgba(255, 130, 0, 0.15)',
 };
 
 export default function AdminReviewsPage() {
@@ -197,8 +197,8 @@ export default function AdminReviewsPage() {
           <Star
             key={star}
             size={16}
-            fill={star <= rating ? '#f97316' : 'transparent'}
-            color={star <= rating ? '#f97316' : '#4b5563'}
+            fill={star <= rating ? '#FF8200' : 'transparent'}
+            color={star <= rating ? '#FF8200' : '#4b5563'}
           />
         ))}
       </div>
@@ -216,8 +216,8 @@ export default function AdminReviewsPage() {
         {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-            <Star size={32} style={{ color: '#f97316' }} />
-            <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316' }}>
+            <Star size={32} style={{ color: '#FF8200' }} />
+            <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#FF8200' }}>
               Review Moderation
             </h1>
           </div>
@@ -288,7 +288,7 @@ export default function AdminReviewsPage() {
                 }}
                 style={{
                   padding: '0.5rem 1rem',
-                  background: statusFilter === status ? '#f97316' : 'rgba(255, 255, 255, 0.05)',
+                  background: statusFilter === status ? '#FF8200' : 'rgba(255, 255, 255, 0.05)',
                   border: statusFilter === status ? 'none' : '1px solid #374151',
                   borderRadius: '0.5rem',
                   color: statusFilter === status ? '#111827' : '#94a3b8',
@@ -324,7 +324,7 @@ export default function AdminReviewsPage() {
               type="submit"
               style={{
                 padding: '0.5rem 1rem',
-                background: '#f97316',
+                background: '#FF8200',
                 border: 'none',
                 borderRadius: '0.5rem',
                 color: '#111827',
@@ -410,13 +410,13 @@ export default function AdminReviewsPage() {
                           borderRadius: '0.25rem',
                           fontSize: '0.75rem',
                           fontWeight: 'bold',
-                          color: '#8b5cf6'
+                          color: '#7D55C7'
                         }}>
                           Test Data
                         </span>
                       )}
                     </div>
-                    <h3 style={{ color: '#fde68a', fontSize: '1.125rem', fontWeight: 'bold', margin: 0 }}>
+                    <h3 style={{ color: '#FBDB65', fontSize: '1.125rem', fontWeight: 'bold', margin: 0 }}>
                       {review.title}
                     </h3>
                   </div>
@@ -503,21 +503,21 @@ export default function AdminReviewsPage() {
                 {/* Existing Response */}
                 {review.responseText && (
                   <div style={{
-                    background: 'rgba(249, 115, 22, 0.1)',
-                    border: '1px solid rgba(249, 115, 22, 0.3)',
+                    background: 'rgba(255, 130, 0, 0.1)',
+                    border: '1px solid rgba(255, 130, 0, 0.3)',
                     borderRadius: '0.5rem',
                     padding: '1rem',
                     marginBottom: '1rem'
                   }}>
                     <div style={{
                       fontSize: '0.75rem',
-                      color: '#f97316',
+                      color: '#FF8200',
                       fontWeight: 'bold',
                       marginBottom: '0.5rem'
                     }}>
                       Official Response:
                     </div>
-                    <p style={{ color: '#fdba74', fontSize: '0.9rem', margin: 0 }}>
+                    <p style={{ color: '#FBDB65', fontSize: '0.9rem', margin: 0 }}>
                       {review.responseText}
                     </p>
                   </div>
@@ -578,7 +578,7 @@ export default function AdminReviewsPage() {
                       disabled={actionLoading}
                       style={{
                         padding: '0.5rem 1rem',
-                        background: '#f97316',
+                        background: '#FF8200',
                         border: 'none',
                         borderRadius: '0.5rem',
                         color: '#111827',
@@ -708,7 +708,7 @@ export default function AdminReviewsPage() {
               disabled={page === 1}
               style={{
                 padding: '0.5rem 1rem',
-                background: page === 1 ? '#374151' : '#f97316',
+                background: page === 1 ? '#374151' : '#FF8200',
                 border: 'none',
                 borderRadius: '0.5rem',
                 color: page === 1 ? '#6b7280' : '#111827',
@@ -729,7 +729,7 @@ export default function AdminReviewsPage() {
               disabled={page === data.totalPages}
               style={{
                 padding: '0.5rem 1rem',
-                background: page === data.totalPages ? '#374151' : '#f97316',
+                background: page === data.totalPages ? '#374151' : '#FF8200',
                 border: 'none',
                 borderRadius: '0.5rem',
                 color: page === data.totalPages ? '#6b7280' : '#111827',
@@ -766,16 +766,16 @@ export default function AdminReviewsPage() {
                 maxWidth: '500px',
                 background: '#111827',
                 borderRadius: '1rem',
-                border: '2px solid #f97316',
+                border: '2px solid #FF8200',
                 padding: '1.5rem'
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 style={{ color: '#f97316', fontSize: '1.5rem', fontWeight: 900, marginBottom: '1rem' }}>
+              <h2 style={{ color: '#FF8200', fontSize: '1.5rem', fontWeight: 900, marginBottom: '1rem' }}>
                 Official Response
               </h2>
               <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                Responding to: <strong style={{ color: '#fde68a' }}>{selectedReview.title}</strong>
+                Responding to: <strong style={{ color: '#FBDB65' }}>{selectedReview.title}</strong>
               </p>
 
               <form onSubmit={handleResponse}>
@@ -824,7 +824,7 @@ export default function AdminReviewsPage() {
                     style={{
                       flex: 1,
                       padding: '0.75rem',
-                      background: actionLoading ? '#374151' : '#f97316',
+                      background: actionLoading ? '#374151' : '#FF8200',
                       border: 'none',
                       borderRadius: '0.5rem',
                       color: actionLoading ? '#6b7280' : '#111827',
@@ -870,14 +870,14 @@ export default function AdminReviewsPage() {
                 Ban User from Reviews
               </h2>
               <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                Banning: <strong style={{ color: '#fde68a' }}>{selectedReview.userName}</strong>
+                Banning: <strong style={{ color: '#FBDB65' }}>{selectedReview.userName}</strong>
                 <br />
                 <span style={{ color: '#6b7280' }}>This will prevent them from posting new reviews.</span>
               </p>
 
               <form onSubmit={handleBanUser}>
                 <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     Reason (required)
                   </label>
                   <textarea
@@ -899,7 +899,7 @@ export default function AdminReviewsPage() {
                 </div>
 
                 <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     Duration (hours, leave empty for permanent)
                   </label>
                   <input

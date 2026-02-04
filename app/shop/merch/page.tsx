@@ -155,7 +155,7 @@ export default function ShopMerchPage() {
                   padding: '1.5rem',
                   boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.3s',
-                  border: '3px solid #8b5cf6',
+                  border: '3px solid #7D55C7',
                   transform: hoveredItem === item.id ? 'scale(1.02)' : `rotate(${index % 2 === 0 ? '1' : '-1'}deg)`,
                   cursor: 'pointer',
                   position: 'relative',
@@ -254,7 +254,7 @@ export default function ShopMerchPage() {
                   <Link
                     href={`/merch/${item.slug}`}
                     style={{
-                      background: '#8b5cf6',
+                      background: '#7D55C7',
                       color: '#111827',
                       padding: '0.625rem 1.25rem',
                       borderRadius: '50px',

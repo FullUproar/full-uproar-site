@@ -80,13 +80,13 @@ export default function AdminElevationModal({
             padding: '2rem',
             maxWidth: '450px',
             width: '100%',
-            border: '2px solid #f97316',
-            boxShadow: '0 25px 50px -12px rgba(249, 115, 22, 0.25)',
+            border: '2px solid #FF8200',
+            boxShadow: '0 25px 50px -12px rgba(255, 130, 0, 0.25)',
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <AlertTriangle size={48} style={{ color: '#f97316', margin: '0 auto 1rem' }} />
-            <h2 style={{ color: '#fde68a', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            <AlertTriangle size={48} style={{ color: '#FF8200', margin: '0 auto 1rem' }} />
+            <h2 style={{ color: '#FBDB65', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
               2FA Setup Required
             </h2>
             <p style={{ color: '#9ca3af', marginBottom: '1.5rem' }}>
@@ -95,14 +95,14 @@ export default function AdminElevationModal({
           </div>
 
           <div style={{
-            background: 'rgba(249, 115, 22, 0.1)',
-            border: '1px solid #f97316',
+            background: 'rgba(255, 130, 0, 0.1)',
+            border: '1px solid #FF8200',
             borderRadius: '0.5rem',
             padding: '1.5rem',
             textAlign: 'center',
           }}>
-            <Mail size={32} style={{ color: '#f97316', marginBottom: '0.75rem' }} />
-            <p style={{ color: '#fde68a', fontSize: '0.95rem', marginBottom: '0.5rem' }}>
+            <Mail size={32} style={{ color: '#FF8200', marginBottom: '0.75rem' }} />
+            <p style={{ color: '#FBDB65', fontSize: '0.95rem', marginBottom: '0.5rem' }}>
               Contact an existing admin to send you a 2FA setup email.
             </p>
             <p style={{ color: '#9ca3af', fontSize: '0.8rem' }}>
@@ -162,8 +162,8 @@ export default function AdminElevationModal({
           padding: '2rem',
           maxWidth: '450px',
           width: '100%',
-          border: '2px solid #f97316',
-          boxShadow: '0 25px 50px -12px rgba(249, 115, 22, 0.25)',
+          border: '2px solid #FF8200',
+          boxShadow: '0 25px 50px -12px rgba(255, 130, 0, 0.25)',
           position: 'relative',
         }}
       >
@@ -186,8 +186,8 @@ export default function AdminElevationModal({
         )}
 
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Shield size={48} style={{ color: '#f97316', margin: '0 auto 1rem' }} />
-          <h2 style={{ color: '#fde68a', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <Shield size={48} style={{ color: '#FF8200', margin: '0 auto 1rem' }} />
+          <h2 style={{ color: '#FBDB65', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Admin Verification Required
           </h2>
           <p style={{ color: '#9ca3af' }}>
@@ -236,7 +236,7 @@ export default function AdminElevationModal({
             style={{
               width: '100%',
               padding: '1rem',
-              background: loading || code.length !== 6 ? '#6b7280' : '#f97316',
+              background: loading || code.length !== 6 ? '#6b7280' : '#FF8200',
               color: loading || code.length !== 6 ? '#fff' : '#0a0a0a',
               border: 'none',
               borderRadius: '0.5rem',

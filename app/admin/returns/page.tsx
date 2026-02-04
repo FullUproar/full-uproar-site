@@ -40,7 +40,7 @@ const statusConfig = {
   requested: { icon: Clock, color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.1)' },
   approved: { icon: CheckCircle, color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
   shipping: { icon: Truck, color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' },
-  received: { icon: Package, color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+  received: { icon: Package, color: '#FF8200', bg: 'rgba(255, 130, 0, 0.1)' },
   processing: { icon: RotateCcw, color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
   completed: { icon: CheckCircle, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
   rejected: { icon: XCircle, color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' }
@@ -176,9 +176,9 @@ export default function ReturnsPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Total Returns</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalReturns}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.totalReturns}</p>
               </div>
-              <RotateCcw size={32} style={{ color: '#fdba74' }} />
+              <RotateCcw size={32} style={{ color: '#FBDB65' }} />
             </div>
           </div>
 
@@ -186,7 +186,7 @@ export default function ReturnsPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Pending</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.pendingReturns}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.pendingReturns}</p>
               </div>
               <Clock size={32} style={{ color: '#fbbf24' }} />
             </div>
@@ -196,7 +196,7 @@ export default function ReturnsPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Completed</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.completedReturns}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.completedReturns}</p>
               </div>
               <CheckCircle size={32} style={{ color: '#10b981' }} />
             </div>
@@ -206,7 +206,7 @@ export default function ReturnsPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Total Refunded</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>
                   ${(stats.totalRefunded / 100).toFixed(2)}
                 </p>
               </div>
@@ -269,7 +269,7 @@ export default function ReturnsPage() {
           {loading ? (
             <div style={{ textAlign: 'center', padding: '60px' }}>
               <RotateCcw size={32} style={{ 
-                color: '#fdba74', 
+                color: '#FBDB65', 
                 marginBottom: '16px',
                 animation: 'spin 1s linear infinite'
               }} />
@@ -317,7 +317,7 @@ export default function ReturnsPage() {
                           <span style={{ 
                             fontFamily: 'monospace', 
                             fontSize: '13px',
-                            color: '#fde68a',
+                            color: '#FBDB65',
                             fontWeight: '600'
                           }}>
                             {ret.rmaNumber}
@@ -326,7 +326,7 @@ export default function ReturnsPage() {
                         <td style={adminStyles.tableCell}>
                           <Link
                             href={`/admin/orders/${ret.orderId}`}
-                            style={{ color: '#fdba74', textDecoration: 'none' }}
+                            style={{ color: '#FBDB65', textDecoration: 'none' }}
                             onClick={(e) => e.stopPropagation()}
                           >
                             {ret.orderId.slice(0, 8)}...
@@ -351,7 +351,7 @@ export default function ReturnsPage() {
                           {getStatusDisplay(ret.status)}
                         </td>
                         <td style={adminStyles.tableCell}>
-                          <p style={{ fontWeight: '600', color: '#fde68a' }}>
+                          <p style={{ fontWeight: '600', color: '#FBDB65' }}>
                             ${(ret.order.totalCents / 100).toFixed(2)}
                           </p>
                           {ret.refundAmountCents && (
@@ -396,9 +396,9 @@ export default function ReturnsPage() {
                         <tr>
                           <td colSpan={8} style={{ padding: 0 }}>
                             <div style={{
-                              background: 'rgba(249, 115, 22, 0.05)',
+                              background: 'rgba(255, 130, 0, 0.05)',
                               padding: '24px',
-                              borderBottom: '2px solid rgba(249, 115, 22, 0.2)'
+                              borderBottom: '2px solid rgba(255, 130, 0, 0.2)'
                             }}>
                               <div style={{ 
                                 display: 'grid', 
@@ -407,7 +407,7 @@ export default function ReturnsPage() {
                               }}>
                                 <div>
                                   <h4 style={{ 
-                                    color: '#fdba74', 
+                                    color: '#FBDB65', 
                                     marginBottom: '12px',
                                     fontWeight: 'bold'
                                   }}>
@@ -416,7 +416,7 @@ export default function ReturnsPage() {
                                   {ret.items.map((item, index) => (
                                     <div key={index} style={{
                                       padding: '8px 0',
-                                      borderBottom: '1px solid rgba(249, 115, 22, 0.1)'
+                                      borderBottom: '1px solid rgba(255, 130, 0, 0.1)'
                                     }}>
                                       <span style={{ color: '#e2e8f0' }}>
                                         {item.quantity}x {item.orderItem.game?.name || item.orderItem.merch?.name || 'Item'}
@@ -426,7 +426,7 @@ export default function ReturnsPage() {
 
                                   {ret.customerNotes && (
                                     <div style={{ marginTop: '16px' }}>
-                                      <h5 style={{ color: '#fdba74', marginBottom: '8px', fontSize: '14px' }}>
+                                      <h5 style={{ color: '#FBDB65', marginBottom: '8px', fontSize: '14px' }}>
                                         Customer Notes
                                       </h5>
                                       <p style={{ fontSize: '13px', color: '#e2e8f0' }}>
@@ -438,7 +438,7 @@ export default function ReturnsPage() {
 
                                 <div>
                                   <h4 style={{ 
-                                    color: '#fdba74', 
+                                    color: '#FBDB65', 
                                     marginBottom: '12px',
                                     fontWeight: 'bold'
                                   }}>

@@ -105,7 +105,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'linear-gradient(to bottom right, #1f2937, #111827, #f97316)',
+          background: 'linear-gradient(to bottom right, #1f2937, #111827, #FF8200)',
           padding: '20px'
         }}>
           <div style={{
@@ -114,7 +114,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             background: 'rgba(17, 24, 39, 0.95)',
             borderRadius: '16px',
             padding: '40px',
-            border: '2px solid rgba(249, 115, 22, 0.3)',
+            border: '2px solid rgba(255, 130, 0, 0.3)',
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
             textAlign: 'center'
           }}>
@@ -131,7 +131,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             <h1 style={{
               fontSize: '28px',
               fontWeight: 'bold',
-              color: '#fde68a',
+              color: '#FBDB65',
               marginBottom: '16px'
             }}>
               Oops! Something went fugly wrong
@@ -157,7 +157,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               }}>
                 <summary style={{
                   cursor: 'pointer',
-                  color: '#fdba74',
+                  color: '#FBDB65',
                   fontWeight: 'bold',
                   marginBottom: '8px'
                 }}>
@@ -189,21 +189,21 @@ export default class ErrorBoundary extends Component<Props, State> {
                   alignItems: 'center',
                   gap: '8px',
                   padding: '12px 24px',
-                  background: 'rgba(249, 115, 22, 0.2)',
-                  border: '2px solid rgba(249, 115, 22, 0.5)',
+                  background: 'rgba(255, 130, 0, 0.2)',
+                  border: '2px solid rgba(255, 130, 0, 0.5)',
                   borderRadius: '8px',
-                  color: '#fdba74',
+                  color: '#FBDB65',
                   fontSize: '16px',
                   fontWeight: 'bold',
                   cursor: 'pointer',
                   transition: 'all 0.2s'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(249, 115, 22, 0.3)';
+                  e.currentTarget.style.background = 'rgba(255, 130, 0, 0.3)';
                   e.currentTarget.style.transform = 'scale(1.05)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+                  e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)';
                   e.currentTarget.style.transform = 'scale(1)';
                 }}
               >

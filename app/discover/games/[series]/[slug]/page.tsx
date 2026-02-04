@@ -78,15 +78,15 @@ export default async function GameContentPage({ params }: PageProps) {
           color: '#94a3b8',
           flexWrap: 'wrap',
         }}>
-          <Link href="/discover" style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href="/discover" style={{ color: '#FF8200', textDecoration: 'none' }}>
             Discover
           </Link>
           <span>/</span>
-          <Link href="/discover/games" style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href="/discover/games" style={{ color: '#FF8200', textDecoration: 'none' }}>
             Games
           </Link>
           <span>/</span>
-          <Link href={`/discover/games/${series}`} style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href={`/discover/games/${series}`} style={{ color: '#FF8200', textDecoration: 'none' }}>
             {seriesInfo.name}
           </Link>
           <span>/</span>

@@ -118,7 +118,7 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
       fontSize: '0.75rem',
       fontFamily: 'monospace',
       zIndex: 1000,
-      border: '1px solid #f97316',
+      border: '1px solid #FF8200',
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
@@ -129,7 +129,7 @@ export default function DeploymentInfo({ isVisible }: DeploymentInfoProps) {
           background: hasNewDeployment ? '#ef4444' : '#10b981',
           animation: hasNewDeployment ? 'pulse 1s infinite' : 'none'
         }} />
-        <span style={{ color: '#f97316', fontWeight: 'bold' }}>
+        <span style={{ color: '#FF8200', fontWeight: 'bold' }}>
           {hasNewDeployment ? 'NEW DEPLOYMENT' : 'LIVE'}
         </span>
       </div>

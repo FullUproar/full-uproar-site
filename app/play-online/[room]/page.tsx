@@ -66,8 +66,8 @@ const animationStyles = `
   20%, 40%, 60%, 80% { transform: scale(0.98); }
 }
 @keyframes winnerGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.5); }
-  50% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.8); }
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 130, 0, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(255, 130, 0, 0.8); }
 }
 @keyframes winnerBounce {
   0%, 100% { transform: scale(1.05); }
@@ -102,8 +102,8 @@ const animationStyles = `
   animation: cardReveal 0.5s ease-out forwards;
 }
 .submission-hover:hover {
-  background: rgba(249, 115, 22, 0.15) !important;
-  border: 1px solid rgba(249, 115, 22, 0.4) !important;
+  background: rgba(255, 130, 0, 0.15) !important;
+  border: 1px solid rgba(255, 130, 0, 0.4) !important;
 }
 
 /* Mobile responsive styles */
@@ -189,7 +189,7 @@ const styles = {
     alignItems: 'center',
     padding: '12px 20px',
     background: 'rgba(30, 41, 59, 0.95)',
-    borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+    borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
     backdropFilter: 'blur(10px)',
     position: 'sticky' as const,
     top: 0,
@@ -198,18 +198,18 @@ const styles = {
   logo: {
     fontSize: '20px',
     fontWeight: 'bold' as const,
-    color: '#f97316',
+    color: '#FF8200',
     cursor: 'pointer',
   },
   roomCode: {
-    background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
-    color: '#fdba74',
+    background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
+    color: '#FBDB65',
     padding: '8px 16px',
     borderRadius: '8px',
     fontSize: '14px',
     fontFamily: 'monospace',
     letterSpacing: '2px',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
   },
   connectionStatus: {
     display: 'flex',
@@ -241,7 +241,7 @@ const styles = {
     width: '280px',
     background: 'rgba(30, 41, 59, 0.6)',
     padding: '20px',
-    borderLeft: '1px solid rgba(249, 115, 22, 0.2)',
+    borderLeft: '1px solid rgba(255, 130, 0, 0.2)',
     backdropFilter: 'blur(5px)',
     animation: 'fadeIn 0.5s ease-out 0.2s both',
   },
@@ -251,7 +251,7 @@ const styles = {
   sectionTitle: {
     fontSize: '14px',
     fontWeight: '600' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '12px',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
@@ -300,8 +300,8 @@ const styles = {
   },
   cardSelected: {
     transform: 'translateY(-10px) scale(1.04)',
-    boxShadow: '0 12px 32px rgba(249, 115, 22, 0.5), 0 0 0 3px #f97316',
-    border: '2px solid #f97316',
+    boxShadow: '0 12px 32px rgba(255, 130, 0, 0.5), 0 0 0 3px #FF8200',
+    border: '2px solid #FF8200',
   },
   cardGrid: {
     display: 'flex',
@@ -320,8 +320,8 @@ const styles = {
     marginBottom: '6px',
   },
   playerRowYou: {
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
   },
   playerAvatar: {
     width: '32px',
@@ -336,7 +336,7 @@ const styles = {
     color: '#fff',
   },
   playerAvatarJudge: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
   },
   playerInfo: {
@@ -361,7 +361,7 @@ const styles = {
   // Buttons
   button: {
     padding: '12px 28px',
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: '#000',
     border: 'none',
     borderRadius: '10px',
@@ -369,7 +369,7 @@ const styles = {
     fontWeight: 'bold' as const,
     cursor: 'pointer',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    boxShadow: '0 4px 14px rgba(249, 115, 22, 0.4)',
+    boxShadow: '0 4px 14px rgba(255, 130, 0, 0.4)',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
   },
@@ -381,8 +381,8 @@ const styles = {
   },
   buttonSecondary: {
     background: 'transparent',
-    border: '2px solid rgba(249, 115, 22, 0.5)',
-    color: '#f97316',
+    border: '2px solid rgba(255, 130, 0, 0.5)',
+    color: '#FF8200',
     boxShadow: 'none',
   },
   // Join form
@@ -392,7 +392,7 @@ const styles = {
     padding: '36px',
     maxWidth: '380px',
     width: '100%',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
     animation: 'slideUp 0.5s ease-out',
   },
@@ -400,7 +400,7 @@ const styles = {
     width: '100%',
     padding: '16px 18px',
     background: 'rgba(15, 23, 42, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.15)',
+    border: '2px solid rgba(255, 130, 0, 0.15)',
     borderRadius: '10px',
     color: '#fff',
     fontSize: '16px',
@@ -413,7 +413,7 @@ const styles = {
     display: 'block',
     fontSize: '12px',
     fontWeight: '600' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '8px',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
@@ -421,7 +421,7 @@ const styles = {
   message: {
     textAlign: 'center' as const,
     fontSize: '18px',
-    color: '#fdba74',
+    color: '#FBDB65',
     padding: '24px',
   },
   submissionGroup: {
@@ -436,11 +436,11 @@ const styles = {
     transition: 'all 0.2s',
   },
   submissionGroupHover: {
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
   },
   winnerBadge: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     padding: '6px 16px',
     borderRadius: '6px',
@@ -452,7 +452,7 @@ const styles = {
     position: 'absolute' as const,
     top: '-8px',
     left: '-8px',
-    background: '#8b5cf6',
+    background: '#7D55C7',
     color: '#fff',
     width: '24px',
     height: '24px',
@@ -469,7 +469,7 @@ const styles = {
     left: 0,
     right: 0,
     background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 30, 48, 0.98) 100%)',
-    borderTop: '2px solid rgba(249, 115, 22, 0.3)',
+    borderTop: '2px solid rgba(255, 130, 0, 0.3)',
     padding: '16px 24px',
     backdropFilter: 'blur(15px)',
     boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.3)',
@@ -484,7 +484,7 @@ const styles = {
   handTitle: {
     fontSize: '13px',
     fontWeight: '600' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
   },
@@ -499,8 +499,8 @@ const styles = {
   spinner: {
     width: '40px',
     height: '40px',
-    border: '3px solid rgba(249, 115, 22, 0.2)',
-    borderTop: '3px solid #f97316',
+    border: '3px solid rgba(255, 130, 0, 0.2)',
+    borderTop: '3px solid #FF8200',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
   },
@@ -1087,10 +1087,10 @@ export default function MultiplayerRoom() {
             style={{
               fontSize: '36px',
               fontWeight: 'bold',
-              color: '#f97316',
-              textShadow: '0 0 40px rgba(249, 115, 22, 0.6), 0 4px 20px rgba(0, 0, 0, 0.8)',
+              color: '#FF8200',
+              textShadow: '0 0 40px rgba(255, 130, 0, 0.6), 0 4px 20px rgba(0, 0, 0, 0.8)',
               animation: 'narrativeAppear 0.5s ease-out',
-              background: 'linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.1), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(255, 130, 0, 0.1), transparent)',
               padding: '20px 40px',
               borderRadius: '16px',
             }}
@@ -1111,7 +1111,7 @@ export default function MultiplayerRoom() {
             background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(20, 30, 48, 0.98) 100%)',
             padding: '32px',
             borderRadius: '16px',
-            border: '2px solid rgba(249, 115, 22, 0.4)',
+            border: '2px solid rgba(255, 130, 0, 0.4)',
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
             zIndex: 200,
             textAlign: 'center',
@@ -1120,11 +1120,11 @@ export default function MultiplayerRoom() {
           }}
         >
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>👋</div>
-          <h3 style={{ color: '#fdba74', marginBottom: '8px', fontSize: '20px' }}>
+          <h3 style={{ color: '#FBDB65', marginBottom: '8px', fontSize: '20px' }}>
             Welcome Back!
           </h3>
           <p style={{ color: '#9ca3af', marginBottom: '24px', fontSize: '14px' }}>
-            We found your previous session as <strong style={{ color: '#f97316' }}>{storedPlayerName}</strong>.
+            We found your previous session as <strong style={{ color: '#FF8200' }}>{storedPlayerName}</strong>.
             Would you like to rejoin?
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
@@ -1177,7 +1177,7 @@ export default function MultiplayerRoom() {
         {!playerId && isConnected && (
           <div style={styles.gameArea}>
             <div style={styles.joinForm}>
-              <h2 style={{ color: '#f97316', marginBottom: '8px', textAlign: 'center' }}>
+              <h2 style={{ color: '#FF8200', marginBottom: '8px', textAlign: 'center' }}>
                 Cards Against Humanity
               </h2>
               <p style={{ color: '#9ca3af', marginBottom: '24px', textAlign: 'center' }}>
@@ -1241,7 +1241,7 @@ export default function MultiplayerRoom() {
               {/* Lobby */}
               {gameState.status === 'lobby' && (
                 <div style={{ textAlign: 'center', maxWidth: '500px', margin: '0 auto' }}>
-                  <h2 style={{ color: '#fdba74', marginBottom: '8px' }}>Game Lobby</h2>
+                  <h2 style={{ color: '#FBDB65', marginBottom: '8px' }}>Game Lobby</h2>
                   <p style={{ color: '#9ca3af', marginBottom: '32px' }}>
                     {gameState.players.length} player{gameState.players.length !== 1 ? 's' : ''} ready
                     {gameState.players.length < 2 && ` • Need ${2 - gameState.players.length} more`}
@@ -1254,11 +1254,11 @@ export default function MultiplayerRoom() {
                       borderRadius: '12px',
                       padding: '20px',
                       marginBottom: '24px',
-                      border: '1px solid rgba(249, 115, 22, 0.2)',
+                      border: '1px solid rgba(255, 130, 0, 0.2)',
                       textAlign: 'left',
                     }}>
                       <h3 style={{
-                        color: '#fdba74',
+                        color: '#FBDB65',
                         fontSize: '12px',
                         textTransform: 'uppercase',
                         letterSpacing: '1px',
@@ -1288,7 +1288,7 @@ export default function MultiplayerRoom() {
                               width: '100%',
                               padding: '10px 12px',
                               background: 'rgba(15, 23, 42, 0.8)',
-                              border: '1px solid rgba(249, 115, 22, 0.3)',
+                              border: '1px solid rgba(255, 130, 0, 0.3)',
                               borderRadius: '8px',
                               color: '#fff',
                               fontSize: '14px',
@@ -1322,7 +1322,7 @@ export default function MultiplayerRoom() {
                               width: '100%',
                               padding: '10px 12px',
                               background: 'rgba(15, 23, 42, 0.8)',
-                              border: '1px solid rgba(249, 115, 22, 0.3)',
+                              border: '1px solid rgba(255, 130, 0, 0.3)',
                               borderRadius: '8px',
                               color: '#fff',
                               fontSize: '14px',
@@ -1386,7 +1386,7 @@ export default function MultiplayerRoom() {
                           disabled={!irlPlayerName.trim() || addingIrl}
                           style={{
                             padding: '10px 16px',
-                            background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                            background: 'linear-gradient(135deg, #7D55C7 0%, #7c3aed 100%)',
                             border: 'none',
                             borderRadius: '8px',
                             color: '#fff',
@@ -1455,8 +1455,8 @@ export default function MultiplayerRoom() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '8px',
-                            background: player.id === playerId ? 'rgba(249, 115, 22, 0.15)' : 'rgba(15, 23, 42, 0.6)',
-                            border: player.id === playerId ? '1px solid rgba(249, 115, 22, 0.4)' : '1px solid transparent',
+                            background: player.id === playerId ? 'rgba(255, 130, 0, 0.15)' : 'rgba(15, 23, 42, 0.6)',
+                            border: player.id === playerId ? '1px solid rgba(255, 130, 0, 0.4)' : '1px solid transparent',
                             padding: '8px 12px',
                             borderRadius: '20px',
                           }}
@@ -1465,7 +1465,7 @@ export default function MultiplayerRoom() {
                             width: '24px',
                             height: '24px',
                             borderRadius: '50%',
-                            background: player.isLead ? '#f97316' : '#4b5563',
+                            background: player.isLead ? '#FF8200' : '#4b5563',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1536,12 +1536,12 @@ export default function MultiplayerRoom() {
                         background: 'rgba(30, 41, 59, 0.6)',
                         padding: '10px 16px',
                         borderRadius: '12px',
-                        border: '1px solid rgba(249, 115, 22, 0.2)',
+                        border: '1px solid rgba(255, 130, 0, 0.2)',
                       }}
                     >
                       <span
                         style={{
-                          color: '#fdba74',
+                          color: '#FBDB65',
                           fontSize: '12px',
                           fontWeight: '600',
                           textTransform: 'uppercase',
@@ -1574,8 +1574,8 @@ export default function MultiplayerRoom() {
                                 width: `${Math.min((highestScore / targetScore) * 100, 100)}%`,
                                 height: '100%',
                                 background: highestScore >= targetScore - 1
-                                  ? 'linear-gradient(90deg, #ef4444, #f97316)'
-                                  : 'linear-gradient(90deg, #f97316, #22c55e)',
+                                  ? 'linear-gradient(90deg, #ef4444, #FF8200)'
+                                  : 'linear-gradient(90deg, #FF8200, #22c55e)',
                                 borderRadius: '3px',
                                 transition: 'width 0.5s ease-out',
                               }} />
@@ -1695,8 +1695,8 @@ export default function MultiplayerRoom() {
                                 ...styles.submissionGroup,
                                 ...(isWinnerSubmission
                                   ? {
-                                      background: 'rgba(249, 115, 22, 0.15)',
-                                      border: '2px solid rgba(249, 115, 22, 0.5)',
+                                      background: 'rgba(255, 130, 0, 0.15)',
+                                      border: '2px solid rgba(255, 130, 0, 0.5)',
                                       transform: 'scale(1.05)',
                                     }
                                   : { opacity: 0.6 }),
@@ -1729,7 +1729,7 @@ export default function MultiplayerRoom() {
                 <div style={{ textAlign: 'center', animation: 'fadeIn 0.5s ease-out' }}>
                   <div style={{ fontSize: '64px', marginBottom: '16px' }}>🏆</div>
                   <h2 style={{
-                    color: '#f97316',
+                    color: '#FF8200',
                     fontSize: '32px',
                     fontWeight: 'bold',
                     marginBottom: '8px',
@@ -1745,7 +1745,7 @@ export default function MultiplayerRoom() {
                     return (
                       <>
                         <p style={{
-                          color: isWinner ? '#22c55e' : '#fdba74',
+                          color: isWinner ? '#22c55e' : '#FBDB65',
                           fontSize: '24px',
                           marginBottom: '32px',
                         }}>
@@ -1759,10 +1759,10 @@ export default function MultiplayerRoom() {
                           padding: '24px',
                           maxWidth: '400px',
                           margin: '0 auto 32px',
-                          border: '2px solid rgba(249, 115, 22, 0.3)',
+                          border: '2px solid rgba(255, 130, 0, 0.3)',
                         }}>
                           <h3 style={{
-                            color: '#fdba74',
+                            color: '#FBDB65',
                             fontSize: '14px',
                             textTransform: 'uppercase',
                             letterSpacing: '1px',
@@ -1781,7 +1781,7 @@ export default function MultiplayerRoom() {
                                   alignItems: 'center',
                                   justifyContent: 'space-between',
                                   padding: '12px',
-                                  background: idx === 0 ? 'rgba(249, 115, 22, 0.15)' : 'transparent',
+                                  background: idx === 0 ? 'rgba(255, 130, 0, 0.15)' : 'transparent',
                                   borderRadius: '8px',
                                   marginBottom: '4px',
                                 }}
@@ -1795,7 +1795,7 @@ export default function MultiplayerRoom() {
                                     {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`}
                                   </span>
                                   <span style={{
-                                    color: player.id === playerId ? '#f97316' : '#e2e8f0',
+                                    color: player.id === playerId ? '#FF8200' : '#e2e8f0',
                                     fontWeight: player.id === playerId ? 'bold' : 'normal',
                                   }}>
                                     {player.name}
@@ -1803,7 +1803,7 @@ export default function MultiplayerRoom() {
                                   </span>
                                 </div>
                                 <span style={{
-                                  color: idx === 0 ? '#f97316' : '#9ca3af',
+                                  color: idx === 0 ? '#FF8200' : '#9ca3af',
                                   fontWeight: 'bold',
                                   fontSize: '18px',
                                 }}>
@@ -1880,11 +1880,11 @@ export default function MultiplayerRoom() {
                             style={{
                               ...styles.badge,
                               background: isCurrentJudge
-                                ? 'rgba(249, 115, 22, 0.2)'
+                                ? 'rgba(255, 130, 0, 0.2)'
                                 : playerSubmitted
                                 ? 'rgba(34, 197, 94, 0.2)'
                                 : 'rgba(234, 179, 8, 0.2)',
-                              color: isCurrentJudge ? '#f97316' : playerSubmitted ? '#22c55e' : '#eab308',
+                              color: isCurrentJudge ? '#FF8200' : playerSubmitted ? '#22c55e' : '#eab308',
                             }}
                           >
                             {isCurrentJudge ? 'CZAR' : playerSubmitted ? 'READY' : '...'}
@@ -1966,7 +1966,7 @@ export default function MultiplayerRoom() {
                               width: '100%',
                               padding: '6px 8px',
                               background: 'rgba(30, 41, 59, 0.8)',
-                              border: '1px solid rgba(249, 115, 22, 0.3)',
+                              border: '1px solid rgba(255, 130, 0, 0.3)',
                               borderRadius: '6px',
                               color: '#e2e8f0',
                               fontSize: '12px',

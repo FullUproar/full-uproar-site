@@ -619,10 +619,10 @@ export default function OperatorManual({ onNavigate }: { onNavigate: (view: any,
             ...adminStyles.card,
             marginBottom: '2rem',
             background: 'linear-gradient(135deg, rgba(249,115,22,0.1) 0%, rgba(234,88,12,0.05) 100%)',
-            borderLeft: '3px solid #f97316'
+            borderLeft: '3px solid #FF8200'
           }}>
             <h3 style={{ fontWeight: 'bold', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Lightbulb size={20} style={{ color: '#f97316' }} />
+              <Lightbulb size={20} style={{ color: '#FF8200' }} />
               Overview
             </h3>
             <p style={{ lineHeight: 1.6 }}>{selectedSection.content.overview}</p>
@@ -985,7 +985,7 @@ export default function OperatorManual({ onNavigate }: { onNavigate: (view: any,
           </button>
           <button style={{
             ...adminStyles.button,
-            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+            background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'

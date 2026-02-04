@@ -297,7 +297,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
       background: 'rgba(30, 41, 59, 0.8)',
       borderRadius: '16px',
       padding: '32px',
-      border: '3px solid #f97316',
+      border: '3px solid #FF8200',
       backdropFilter: 'blur(10px)'
     },
     section: {
@@ -306,9 +306,9 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
     sectionTitle: {
       fontSize: '24px',
       fontWeight: 'bold',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '24px',
-      borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+      borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
       paddingBottom: '12px'
     },
     grid: {
@@ -327,13 +327,13 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
       gap: '8px'
     },
     label: {
-      color: '#fde68a',
+      color: '#FBDB65',
       fontSize: '14px',
       fontWeight: '600'
     },
     input: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -343,7 +343,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
     },
     textarea: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -358,7 +358,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
     },
     select: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -400,7 +400,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
       gap: '8px'
     },
     saveButton: {
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: 'white'
     },
     cancelButton: {
@@ -423,14 +423,14 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
       marginTop: '8px'
     },
     tag: {
-      background: 'rgba(249, 115, 22, 0.2)',
-      border: '1px solid rgba(249, 115, 22, 0.3)',
+      background: 'rgba(255, 130, 0, 0.2)',
+      border: '1px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '20px',
       padding: '6px 12px',
       display: 'flex',
       alignItems: 'center',
       gap: '6px',
-      color: '#fdba74',
+      color: '#FBDB65',
       fontSize: '14px'
     },
     tagInput: {
@@ -439,11 +439,11 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
       marginTop: '8px'
     },
     addButton: {
-      background: 'rgba(249, 115, 22, 0.2)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      background: 'rgba(255, 130, 0, 0.2)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '8px 16px',
-      color: '#fdba74',
+      color: '#FBDB65',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
@@ -467,8 +467,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
           </div>
@@ -480,8 +480,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.slug}
               onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
           </div>
@@ -493,8 +493,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.tagline || ''}
               onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="Optional catchy tagline"
             />
           </div>
@@ -505,8 +505,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.teaser || ''}
               onChange={(e) => setFormData({ ...formData, teaser: e.target.value })}
               style={{ ...styles.textarea, minHeight: '80px' }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="Short, enticing marketing hook for the product hero section (1-2 sentences)"
             />
             <span style={styles.helpText}>This appears in the hero section. Make it intriguing, not complete - tease the experience!</span>
@@ -518,8 +518,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               style={styles.textarea}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
           </div>
@@ -530,8 +530,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.story || ''}
               onChange={(e) => setFormData({ ...formData, story: e.target.value })}
               style={{ ...styles.textarea, minHeight: '150px' }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="The game's backstory or narrative setup that draws players in..."
             />
             <span style={styles.helpText}>Displayed on the product page "The Story" section. Make it immersive!</span>
@@ -719,8 +719,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.priceCents}
               onChange={(e) => setFormData({ ...formData, priceCents: parseInt(e.target.value) || 0 })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
             <span style={styles.helpText}>Enter 1999 for $19.99</span>
@@ -733,8 +733,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.stock}
               onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
             />
             <span style={styles.helpText}>Use Inventory management instead</span>
           </div>
@@ -753,8 +753,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               value={formData.weightOz || ''}
               onChange={(e) => setFormData({ ...formData, weightOz: e.target.value ? parseInt(e.target.value) : null })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="e.g., 32"
               min="1"
             />
@@ -774,7 +774,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                 href={`/admin/manage-images/game/${game.id}`}
                 style={{
                   fontSize: '14px',
-                  color: '#f97316',
+                  color: '#FF8200',
                   textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'center',
@@ -795,7 +795,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
             border: '1px solid rgba(234, 179, 8, 0.3)',
             borderRadius: '8px',
             padding: '16px',
-            color: '#fde68a',
+            color: '#FBDB65',
             textAlign: 'center'
           }}>
             <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Save the game first to add images</p>
@@ -891,7 +891,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
             />
             <div style={{ flex: 1 }}>
-              <p style={{ color: '#fde68a', fontWeight: 'bold', marginBottom: '4px' }}>
+              <p style={{ color: '#FBDB65', fontWeight: 'bold', marginBottom: '4px' }}>
                 Legacy Image URL
               </p>
               <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '8px' }}>
@@ -1000,7 +1000,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                     background: 'rgba(17, 24, 39, 0.5)',
                     borderRadius: '12px',
                     overflow: 'hidden',
-                    border: image.isPrimary ? '3px solid #f97316' : '2px solid rgba(249, 115, 22, 0.3)',
+                    border: image.isPrimary ? '3px solid #FF8200' : '2px solid rgba(255, 130, 0, 0.3)',
                     cursor: 'move',
                     transition: 'all 0.2s'
                   }}
@@ -1026,7 +1026,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                     }}>
                       <div style={{
                         background: 'rgba(0, 0, 0, 0.7)',
-                        color: '#fdba74',
+                        color: '#FBDB65',
                         padding: '3px 8px',
                         borderRadius: '4px',
                         fontSize: '10px',
@@ -1037,7 +1037,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                       </div>
                       {image.isPrimary && (
                         <div style={{
-                          background: '#f97316',
+                          background: '#FF8200',
                           color: 'white',
                           padding: '3px 8px',
                           borderRadius: '4px',
@@ -1070,7 +1070,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                       style={{
                         width: '100%',
                         background: 'rgba(17, 24, 39, 0.8)',
-                        border: '1px solid rgba(249, 115, 22, 0.3)',
+                        border: '1px solid rgba(255, 130, 0, 0.3)',
                         borderRadius: '4px',
                         padding: '4px 6px',
                         color: '#e2e8f0',
@@ -1091,11 +1091,11 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                           type="button"
                           onClick={() => handleSetPrimary(image.id)}
                           style={{
-                            background: 'rgba(249, 115, 22, 0.2)',
-                            border: '1px solid rgba(249, 115, 22, 0.4)',
+                            background: 'rgba(255, 130, 0, 0.2)',
+                            border: '1px solid rgba(255, 130, 0, 0.4)',
                             borderRadius: '6px',
                             padding: '4px 8px',
-                            color: '#fdba74',
+                            color: '#FBDB65',
                             cursor: 'pointer',
                             fontSize: '11px',
                             display: 'flex',
@@ -1107,7 +1107,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                           Primary
                         </button>
                       ) : (
-                        <span style={{ fontSize: '11px', color: '#f97316', fontWeight: 'bold' }}>Main</span>
+                        <span style={{ fontSize: '11px', color: '#FF8200', fontWeight: 'bold' }}>Main</span>
                       )}
                       <button
                         type="button"
@@ -1147,8 +1147,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
             value={formData.components || ''}
             onChange={(e) => setFormData({ ...formData, components: e.target.value })}
             style={styles.textarea}
-            onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+            onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
             placeholder="List all components included in the game"
           />
           <span style={styles.helpText}>List each component on a new line</span>
@@ -1160,8 +1160,8 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
             value={formData.howToPlay || ''}
             onChange={(e) => setFormData({ ...formData, howToPlay: e.target.value })}
             style={{ ...styles.textarea, ...styles.textareaLarge }}
-            onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+            onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
             placeholder="Enter detailed instructions on how to play the game"
           />
           <span style={styles.helpText}>Supports basic HTML or markdown formatting</span>
@@ -1293,7 +1293,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                 Hidden from Public Shop (Test Product)
               </label>
             </div>
-            <p style={{ ...styles.helpText, marginTop: '8px', color: formData.isHidden ? '#fde68a' : '#fca5a5' }}>
+            <p style={{ ...styles.helpText, marginTop: '8px', color: formData.isHidden ? '#FBDB65' : '#fca5a5' }}>
               {formData.isHidden
                 ? 'This product is hidden from the public shop. Only accessible via direct URL.'
                 : 'Check this to hide the product from the public shop (for testing).'}
@@ -1330,7 +1330,7 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
                   onClick={() => removeTag(tag)}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                 >
-                  <X style={{ width: '14px', height: '14px', color: '#fdba74' }} />
+                  <X style={{ width: '14px', height: '14px', color: '#FBDB65' }} />
                 </button>
               </div>
             ))}

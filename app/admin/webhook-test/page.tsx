@@ -219,12 +219,12 @@ export default function WebhookTestPage() {
           <div style={{
             width: '50px',
             height: '50px',
-            border: '3px solid rgba(249, 115, 22, 0.2)',
-            borderTopColor: '#f97316',
+            border: '3px solid rgba(255, 130, 0, 0.2)',
+            borderTopColor: '#FF8200',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}></div>
-          <p style={{ marginTop: '20px', color: '#fdba74' }}>Loading webhook info...</p>
+          <p style={{ marginTop: '20px', color: '#FBDB65' }}>Loading webhook info...</p>
         </div>
       </div>
     );
@@ -278,7 +278,7 @@ export default function WebhookTestPage() {
         </div>
 
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#1a1a1a', borderRadius: '8px' }}>
-          <p style={{ marginBottom: '10px', color: '#fdba74' }}>
+          <p style={{ marginBottom: '10px', color: '#FBDB65' }}>
             <strong>Instructions:</strong>
           </p>
           <ol style={{ marginLeft: '20px', lineHeight: '1.8' }}>
@@ -316,8 +316,8 @@ export default function WebhookTestPage() {
                     <span style={{
                       padding: '4px 8px',
                       borderRadius: '4px',
-                      backgroundColor: user.role === 'GOD' ? '#8b5cf6' :
-                                     user.role === 'ADMIN' ? '#f97316' : '#4b5563',
+                      backgroundColor: user.role === 'GOD' ? '#7D55C7' :
+                                     user.role === 'ADMIN' ? '#FF8200' : '#4b5563',
                       color: '#fff'
                     }}>
                       {user.role}
@@ -363,7 +363,7 @@ export default function WebhookTestPage() {
             disabled={creating}
             style={{
               ...adminStyles.button,
-              backgroundColor: '#f97316',
+              backgroundColor: '#FF8200',
               opacity: creating ? 0.5 : 1,
             }}
           >
@@ -407,7 +407,7 @@ export default function WebhookTestPage() {
             onClick={syncAllUsers}
             style={{
               ...adminStyles.button,
-              backgroundColor: '#8b5cf6',
+              backgroundColor: '#7D55C7',
             }}
           >
             Sync All Missing Users

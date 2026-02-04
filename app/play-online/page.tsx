@@ -70,14 +70,14 @@ const cardStyles = {
   },
   selected: {
     transform: 'translateY(-8px) scale(1.02)',
-    boxShadow: '0 8px 24px rgba(249, 115, 22, 0.4)',
-    border: '2px solid #f97316',
+    boxShadow: '0 8px 24px rgba(255, 130, 0, 0.4)',
+    border: '2px solid #FF8200',
   },
   orderBadge: {
     position: 'absolute' as const,
     top: '-8px',
     left: '-8px',
-    background: '#8b5cf6',
+    background: '#7D55C7',
     color: '#fff',
     width: '24px',
     height: '24px',
@@ -139,16 +139,16 @@ const styles = {
     padding: '16px 24px',
     background: 'rgba(30, 41, 59, 0.8)',
     borderRadius: '12px',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
   },
   title: {
     fontSize: '28px',
     fontWeight: 'bold' as const,
-    color: '#f97316',
+    color: '#FF8200',
   },
   phaseTag: {
-    background: 'rgba(249, 115, 22, 0.2)',
-    color: '#fdba74',
+    background: 'rgba(255, 130, 0, 0.2)',
+    color: '#FBDB65',
     padding: '8px 16px',
     borderRadius: '8px',
     fontSize: '14px',
@@ -178,7 +178,7 @@ const styles = {
   sectionTitle: {
     fontSize: '16px',
     fontWeight: '600' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '16px',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
@@ -191,7 +191,7 @@ const styles = {
   },
   button: {
     padding: '12px 24px',
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     border: 'none',
     borderRadius: '8px',
@@ -207,8 +207,8 @@ const styles = {
   },
   buttonSecondary: {
     background: 'transparent',
-    border: '2px solid rgba(249, 115, 22, 0.5)',
-    color: '#f97316',
+    border: '2px solid rgba(255, 130, 0, 0.5)',
+    color: '#FF8200',
   },
   playerRow: {
     display: 'flex',
@@ -232,7 +232,7 @@ const styles = {
     color: '#fff',
   },
   playerAvatarJudge: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
   },
   playerInfo: {
@@ -257,7 +257,7 @@ const styles = {
   message: {
     textAlign: 'center' as const,
     fontSize: '18px',
-    color: '#fdba74',
+    color: '#FBDB65',
     padding: '24px',
   },
   submissionGroup: {
@@ -272,7 +272,7 @@ const styles = {
     transition: 'all 0.2s',
   },
   winnerBadge: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     padding: '4px 12px',
     borderRadius: '4px',
@@ -487,7 +487,7 @@ export default function PlayOnlinePage() {
       {/* No game state - show options */}
       {!gameState && !showLocalTest && (
         <div style={{ textAlign: 'center', padding: '60px', maxWidth: '600px', margin: '0 auto' }}>
-          <h2 style={{ color: '#fdba74', marginBottom: '12px', fontSize: '32px' }}>
+          <h2 style={{ color: '#FBDB65', marginBottom: '12px', fontSize: '32px' }}>
             Play Cards Against Humanity
           </h2>
           <p style={{ color: '#9ca3af', marginBottom: '40px' }}>
@@ -525,7 +525,7 @@ export default function PlayOnlinePage() {
                 textAlign: 'center',
                 width: '160px',
                 background: 'rgba(30, 41, 59, 0.8)',
-                border: '2px solid rgba(249, 115, 22, 0.3)',
+                border: '2px solid rgba(255, 130, 0, 0.3)',
                 borderRadius: '8px',
                 color: '#fff',
                 textTransform: 'uppercase',
@@ -791,11 +791,11 @@ export default function PlayOnlinePage() {
                         style={{
                           ...styles.statusBadge,
                           background: isCurrentJudge
-                            ? 'rgba(249, 115, 22, 0.2)'
+                            ? 'rgba(255, 130, 0, 0.2)'
                             : playerSubmitted
                             ? 'rgba(34, 197, 94, 0.2)'
                             : 'rgba(234, 179, 8, 0.2)',
-                          color: isCurrentJudge ? '#f97316' : playerSubmitted ? '#22c55e' : '#eab308',
+                          color: isCurrentJudge ? '#FF8200' : playerSubmitted ? '#22c55e' : '#eab308',
                         }}
                       >
                         {isCurrentJudge ? 'CZAR' : playerSubmitted ? 'READY' : '...'}

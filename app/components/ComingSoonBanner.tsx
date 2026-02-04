@@ -20,19 +20,19 @@ export default function ComingSoonBanner() {
       position: 'relative',
       zIndex: 100
     }}>
-      <Sparkles size={14} color="#f97316" />
+      <Sparkles size={14} color="#FF8200" />
       <span style={{
-        color: '#fdba74',
+        color: '#FBDB65',
         fontSize: '0.8125rem',
         fontWeight: 500,
         letterSpacing: '0.02em'
       }}>
         We're putting the finishing touches on chaos.
-        <span style={{ color: '#f97316', fontWeight: 700, marginLeft: '0.375rem' }}>
+        <span style={{ color: '#FF8200', fontWeight: 700, marginLeft: '0.375rem' }}>
           Game mods drop Spring 2026.
         </span>
       </span>
-      <Sparkles size={14} color="#f97316" />
+      <Sparkles size={14} color="#FF8200" />
       <button
         onClick={() => setDismissed(true)}
         style={{

@@ -100,7 +100,7 @@ function OrderConfirmationContent() {
           <div style={{ marginBottom: '1rem' }}>
             <FuglyLogo size={100} />
           </div>
-          <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f97316' }}>Loading your chaos...</p>
+          <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF8200' }}>Loading your chaos...</p>
         </div>
       </div>
     );
@@ -161,7 +161,7 @@ function OrderConfirmationContent() {
               marginTop: '1rem'
             }}>
               <span style={{ color: '#9ca3af' }}>Order ID:</span>
-              <span style={{ color: '#f97316', fontFamily: 'monospace', fontWeight: 'bold' }}>{orderId}</span>
+              <span style={{ color: '#FF8200', fontFamily: 'monospace', fontWeight: 'bold' }}>{orderId}</span>
               <button
                 onClick={copyOrderId}
                 style={{
@@ -193,12 +193,12 @@ function OrderConfirmationContent() {
               background: '#1f2937',
               borderRadius: '0.75rem',
               padding: '1.5rem',
-              border: '4px solid rgba(249, 115, 22, 0.2)'
+              border: '4px solid rgba(255, 130, 0, 0.2)'
             }}>
               <h2 style={{
                 fontSize: '1.25rem',
                 fontWeight: 900,
-                color: '#f97316',
+                color: '#FF8200',
                 marginBottom: '1rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -236,12 +236,12 @@ function OrderConfirmationContent() {
               background: '#1f2937',
               borderRadius: '0.75rem',
               padding: '1.5rem',
-              border: '4px solid rgba(249, 115, 22, 0.2)'
+              border: '4px solid rgba(255, 130, 0, 0.2)'
             }}>
               <h2 style={{
                 fontSize: '1.25rem',
                 fontWeight: 900,
-                color: '#f97316',
+                color: '#FF8200',
                 marginBottom: '1rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -299,7 +299,7 @@ function OrderConfirmationContent() {
                   paddingTop: '1rem',
                   marginTop: '0.5rem'
                 }}>
-                  <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316' }}>Total</span>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FF8200' }}>Total</span>
                   <span style={{ fontSize: '1.25rem', fontWeight: 900, color: 'white' }}>
                     ${(order.totalCents / 100).toFixed(2)}
                   </span>
@@ -313,7 +313,7 @@ function OrderConfirmationContent() {
             background: '#1f2937',
             borderRadius: '0.75rem',
             padding: '2rem',
-            border: '4px solid rgba(249, 115, 22, 0.2)',
+            border: '4px solid rgba(255, 130, 0, 0.2)',
             textAlign: 'center'
           }}>
             <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
@@ -323,7 +323,7 @@ function OrderConfirmationContent() {
             <h2 style={{
               fontSize: '1.5rem',
               fontWeight: 900,
-              color: '#f97316',
+              color: '#FF8200',
               marginBottom: '1rem'
             }}>
               What Happens Next?
@@ -339,14 +339,14 @@ function OrderConfirmationContent() {
                 <div style={{
                   width: '4rem',
                   height: '4rem',
-                  background: 'rgba(249, 115, 22, 0.2)',
+                  background: 'rgba(255, 130, 0, 0.2)',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 0.75rem'
                 }}>
-                  <Mail style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
+                  <Mail style={{ width: '2rem', height: '2rem', color: '#FF8200' }} />
                 </div>
                 <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 1</p>
                 <p style={{ color: '#9ca3af', margin: 0 }}>Fugly will send you a confirmation email</p>
@@ -356,14 +356,14 @@ function OrderConfirmationContent() {
                 <div style={{
                   width: '4rem',
                   height: '4rem',
-                  background: 'rgba(249, 115, 22, 0.2)',
+                  background: 'rgba(255, 130, 0, 0.2)',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 0.75rem'
                 }}>
-                  <Package style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
+                  <Package style={{ width: '2rem', height: '2rem', color: '#FF8200' }} />
                 </div>
                 <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 2</p>
                 <p style={{ color: '#9ca3af', margin: 0 }}>Fugly will pack your chaos with extra care</p>
@@ -373,14 +373,14 @@ function OrderConfirmationContent() {
                 <div style={{
                   width: '4rem',
                   height: '4rem',
-                  background: 'rgba(249, 115, 22, 0.2)',
+                  background: 'rgba(255, 130, 0, 0.2)',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 0.75rem'
                 }}>
-                  <Truck style={{ width: '2rem', height: '2rem', color: '#f97316' }} />
+                  <Truck style={{ width: '2rem', height: '2rem', color: '#FF8200' }} />
                 </div>
                 <p style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '0.25rem' }}>Step 3</p>
                 <p style={{ color: '#9ca3af', margin: 0 }}>Follow your Fugly delivery</p>
@@ -401,7 +401,7 @@ function OrderConfirmationContent() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.5rem',
-                  background: '#f97316',
+                  background: '#FF8200',
                   color: '#111827',
                   fontWeight: 900,
                   padding: '1rem 2rem',
@@ -455,7 +455,7 @@ export default function OrderConfirmationPage() {
           <div style={{ marginBottom: '1rem' }}>
             <FuglyLogo size={100} />
           </div>
-          <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f97316' }}>Loading...</p>
+          <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF8200' }}>Loading...</p>
         </div>
       </div>
     }>

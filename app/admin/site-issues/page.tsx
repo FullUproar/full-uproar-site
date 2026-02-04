@@ -151,7 +151,7 @@ export default function SiteIssuesPage() {
             onClick={() => setShowCreateModal(true)}
             style={{
               ...adminStyles.button,
-              background: '#f97316',
+              background: '#FF8200',
               color: '#0a0a0a'
             }}
           >
@@ -163,7 +163,7 @@ export default function SiteIssuesPage() {
       {/* Filters */}
       <div style={{ ...adminStyles.card, marginBottom: '2rem' }}>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <label style={{ color: '#fde68a' }}>Filter:</label>
+          <label style={{ color: '#FBDB65' }}>Filter:</label>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as any)}
@@ -303,7 +303,7 @@ export default function SiteIssuesPage() {
         }}>
           <div style={{
             backgroundColor: '#1a1a1a',
-            border: '2px solid #f97316',
+            border: '2px solid #FF8200',
             borderRadius: '8px',
             padding: '2rem',
             maxWidth: '600px',
@@ -314,7 +314,7 @@ export default function SiteIssuesPage() {
             <h2 style={{
               fontSize: '1.5rem',
               fontWeight: 'bold',
-              color: '#f97316',
+              color: '#FF8200',
               marginBottom: '1rem'
             }}>Create New Issue</h2>
             

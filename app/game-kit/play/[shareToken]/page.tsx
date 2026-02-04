@@ -42,7 +42,7 @@ const styles = {
   },
   gameCard: {
     background: 'rgba(30, 41, 59, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '20px',
     padding: '48px',
     maxWidth: '500px',
@@ -56,7 +56,7 @@ const styles = {
   gameName: {
     fontSize: '32px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '8px',
   },
   gameDescription: {
@@ -140,7 +140,7 @@ export default function PlayGamePage({ params }: { params: Promise<{ shareToken:
   if (loading) {
     return (
       <div style={{ ...styles.container, ...styles.playContainer }}>
-        <Loader2 size={48} style={{ color: '#fdba74', animation: 'spin 1s linear infinite' }} />
+        <Loader2 size={48} style={{ color: '#FBDB65', animation: 'spin 1s linear infinite' }} />
         <p style={{ color: '#94a3b8', marginTop: '16px' }}>Loading game...</p>
         <style jsx global>{`
           @keyframes spin {

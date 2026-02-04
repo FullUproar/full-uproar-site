@@ -67,7 +67,7 @@ export default function ComicsListView({ onEdit, onNew }: ComicsListViewProps) {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading comics...</p>
+        <p style={{ color: '#FBDB65' }}>Loading comics...</p>
       </div>
     );
   }
@@ -140,7 +140,7 @@ export default function ComicsListView({ onEdit, onNew }: ComicsListViewProps) {
                   )}
                 </div>
                 
-                <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#fdba74', marginBottom: '8px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '8px' }}>
                   {comic.title}
                 </h3>
                 

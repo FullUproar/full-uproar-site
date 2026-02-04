@@ -214,8 +214,8 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
       engineering: '#3b82f6',
       marketing: '#ec4899',
       sales: '#10b981',
-      operations: '#f97316',
-      finance: '#8b5cf6',
+      operations: '#FF8200',
+      finance: '#7D55C7',
       hr: '#06b6d4',
       executive: '#fbbf24'
     };
@@ -236,12 +236,12 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
     <div>
       {/* KPI Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-        <div style={{ ...adminStyles.card, background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05))' }}>
+        <div style={{ ...adminStyles.card, background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.1), rgba(255, 130, 0, 0.05))' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <Users size={24} style={{ color: '#f97316' }} />
+            <Users size={24} style={{ color: '#FF8200' }} />
             <span style={{ color: '#10b981', fontSize: '12px' }}>+12%</span>
           </div>
-          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a', margin: '10px 0' }}>
+          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65', margin: '10px 0' }}>
             {employees.filter(e => e.status === 'active').length}
           </h3>
           <p style={{ color: '#94a3b8', fontSize: '14px' }}>Active Employees</p>
@@ -252,7 +252,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
             <Clock size={24} style={{ color: '#3b82f6' }} />
             <span style={{ color: '#10b981', fontSize: '12px' }}>On Track</span>
           </div>
-          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a', margin: '10px 0' }}>
+          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65', margin: '10px 0' }}>
             98.5%
           </h3>
           <p style={{ color: '#94a3b8', fontSize: '14px' }}>Attendance Rate</p>
@@ -260,10 +260,10 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
 
         <div style={{ ...adminStyles.card, background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05))' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <DollarSign size={24} style={{ color: '#8b5cf6' }} />
+            <DollarSign size={24} style={{ color: '#7D55C7' }} />
             <span style={{ color: '#f59e0b', fontSize: '12px' }}>Review</span>
           </div>
-          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a', margin: '10px 0' }}>
+          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65', margin: '10px 0' }}>
             $2.4M
           </h3>
           <p style={{ color: '#94a3b8', fontSize: '14px' }}>Annual Payroll</p>
@@ -274,7 +274,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
             <Trophy size={24} style={{ color: '#10b981' }} />
             <span style={{ color: '#10b981', fontSize: '12px' }}>High</span>
           </div>
-          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a', margin: '10px 0' }}>
+          <h3 style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65', margin: '10px 0' }}>
             4.2/5
           </h3>
           <p style={{ color: '#94a3b8', fontSize: '14px' }}>Avg Performance</p>
@@ -285,7 +285,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
       <div style={adminStyles.card}>
         <h3 style={{ ...adminStyles.sectionTitle, marginBottom: '20px' }}>Quick Actions</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-          <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #f97316, #ea580c)' }}>
+          <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #FF8200, #ea580c)' }}>
             <UserPlus size={16} style={{ marginRight: '8px' }} />
             Add Employee
           </button>
@@ -297,7 +297,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
             <Calendar size={16} style={{ marginRight: '8px' }} />
             Approve PTO
           </button>
-          <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}>
+          <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #7D55C7, #7c3aed)' }}>
             <CreditCard size={16} style={{ marginRight: '8px' }} />
             Run Payroll
           </button>
@@ -328,7 +328,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                   {emp.firstName[0]}{emp.lastName[0]}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: '#fde68a', fontWeight: '500' }}>
+                  <div style={{ color: '#FBDB65', fontWeight: '500' }}>
                     {emp.firstName} {emp.lastName}
                   </div>
                   <div style={{ color: '#64748b', fontSize: '12px' }}>
@@ -365,7 +365,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                     {years}Y
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ color: '#fde68a', fontWeight: '500' }}>
+                    <div style={{ color: '#FBDB65', fontWeight: '500' }}>
                       {emp.firstName} {emp.lastName}
                     </div>
                     <div style={{ color: '#64748b', fontSize: '12px' }}>
@@ -411,7 +411,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
         </select>
         <button 
           onClick={() => setShowEmployeeModal(true)}
-          style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #f97316, #ea580c)' }}
+          style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #FF8200, #ea580c)' }}
         >
           <Plus size={16} style={{ marginRight: '8px' }} />
           Add Employee
@@ -437,7 +437,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                 border: '2px solid transparent'
               }}
               onClick={() => setSelectedEmployee(emp)}
-              onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
+              onMouseEnter={e => e.currentTarget.style.borderColor = '#FF8200'}
               onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
@@ -456,7 +456,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                   {emp.firstName[0]}{emp.lastName[0]}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <h4 style={{ color: '#fde68a', fontSize: '18px', marginBottom: '4px' }}>
+                  <h4 style={{ color: '#FBDB65', fontSize: '18px', marginBottom: '4px' }}>
                     {emp.firstName} {emp.lastName}
                   </h4>
                   <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>
@@ -528,10 +528,10 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
             width: '90%',
             maxHeight: '90vh',
             overflowY: 'auto',
-            border: '2px solid rgba(249, 115, 22, 0.3)'
+            border: '2px solid rgba(255, 130, 0, 0.3)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <h2 style={{ color: '#fde68a', fontSize: '24px' }}>
+              <h2 style={{ color: '#FBDB65', fontSize: '24px' }}>
                 {selectedEmployee.firstName} {selectedEmployee.lastName}
               </h2>
               <button 
@@ -545,7 +545,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
               {/* Personal Info */}
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Personal Information</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Personal Information</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
                   <div><strong style={{ color: '#94a3b8' }}>Employee ID:</strong> <span style={{ color: '#e2e8f0' }}>{selectedEmployee.employeeId}</span></div>
                   <div><strong style={{ color: '#94a3b8' }}>Email:</strong> <span style={{ color: '#e2e8f0' }}>{selectedEmployee.email}</span></div>
@@ -559,7 +559,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
 
               {/* Work Info */}
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Work Information</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Work Information</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
                   <div><strong style={{ color: '#94a3b8' }}>Department:</strong> <span style={{ color: '#e2e8f0', textTransform: 'capitalize' }}>{selectedEmployee.department}</span></div>
                   <div><strong style={{ color: '#94a3b8' }}>Position:</strong> <span style={{ color: '#e2e8f0' }}>{selectedEmployee.position}</span></div>
@@ -574,7 +574,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
 
               {/* Compensation */}
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Compensation</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Compensation</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
                   <div><strong style={{ color: '#94a3b8' }}>Salary:</strong> <span style={{ color: '#10b981' }}>${selectedEmployee.compensation.salary.toLocaleString()}</span></div>
                   {selectedEmployee.compensation.bonus && (
@@ -591,7 +591,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
 
               {/* Time Off */}
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Time Off Balance</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Time Off Balance</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
                   <div>
                     <strong style={{ color: '#94a3b8' }}>Vacation:</strong>{' '}
@@ -640,7 +640,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2 style={{ ...adminStyles.sectionTitle, margin: 0 }}>
-          <Clock size={24} style={{ marginRight: '10px', color: '#f97316' }} />
+          <Clock size={24} style={{ marginRight: '10px', color: '#FF8200' }} />
           Time Tracking
         </h2>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -676,7 +676,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%' }}>
             <thead>
-              <tr style={{ borderBottom: '2px solid rgba(249, 115, 22, 0.3)' }}>
+              <tr style={{ borderBottom: '2px solid rgba(255, 130, 0, 0.3)' }}>
                 <th style={{ ...adminStyles.tableHeader, textAlign: 'left' }}>Employee</th>
                 <th style={adminStyles.tableHeader}>Date</th>
                 <th style={adminStyles.tableHeader}>Clock In</th>
@@ -710,7 +710,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                           {employee?.firstName[0]}{employee?.lastName[0]}
                         </div>
                         <div>
-                          <div style={{ color: '#fde68a', fontSize: '14px' }}>
+                          <div style={{ color: '#FBDB65', fontSize: '14px' }}>
                             {employee?.firstName} {employee?.lastName}
                           </div>
                           <div style={{ color: '#64748b', fontSize: '12px' }}>
@@ -790,22 +790,22 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
         <div style={adminStyles.card}>
           <h4 style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '10px' }}>Current Period</h4>
-          <div style={{ color: '#fde68a', fontSize: '24px', fontWeight: 'bold' }}>$198,500</div>
+          <div style={{ color: '#FBDB65', fontSize: '24px', fontWeight: 'bold' }}>$198,500</div>
           <div style={{ color: '#10b981', fontSize: '12px', marginTop: '5px' }}>↑ 5.2% from last period</div>
         </div>
         <div style={adminStyles.card}>
           <h4 style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '10px' }}>YTD Total</h4>
-          <div style={{ color: '#fde68a', fontSize: '24px', fontWeight: 'bold' }}>$2.4M</div>
+          <div style={{ color: '#FBDB65', fontSize: '24px', fontWeight: 'bold' }}>$2.4M</div>
           <div style={{ color: '#64748b', fontSize: '12px', marginTop: '5px' }}>Annual projection: $2.88M</div>
         </div>
         <div style={adminStyles.card}>
           <h4 style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '10px' }}>Taxes & Benefits</h4>
-          <div style={{ color: '#fde68a', fontSize: '24px', fontWeight: 'bold' }}>$42,300</div>
+          <div style={{ color: '#FBDB65', fontSize: '24px', fontWeight: 'bold' }}>$42,300</div>
           <div style={{ color: '#64748b', fontSize: '12px', marginTop: '5px' }}>21.3% of gross</div>
         </div>
         <div style={adminStyles.card}>
           <h4 style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '10px' }}>Next Payroll</h4>
-          <div style={{ color: '#fde68a', fontSize: '24px', fontWeight: 'bold' }}>Dec 15</div>
+          <div style={{ color: '#FBDB65', fontSize: '24px', fontWeight: 'bold' }}>Dec 15</div>
           <div style={{ color: '#f59e0b', fontSize: '12px', marginTop: '5px' }}>In 3 days</div>
         </div>
       </div>
@@ -816,7 +816,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%' }}>
             <thead>
-              <tr style={{ borderBottom: '2px solid rgba(249, 115, 22, 0.3)' }}>
+              <tr style={{ borderBottom: '2px solid rgba(255, 130, 0, 0.3)' }}>
                 <th style={{ ...adminStyles.tableHeader, textAlign: 'left' }}>Employee</th>
                 <th style={adminStyles.tableHeader}>Base Salary</th>
                 <th style={adminStyles.tableHeader}>Bonus</th>
@@ -832,7 +832,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                 <tr key={emp.id} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
                   <td style={{ ...adminStyles.tableCell, textAlign: 'left' }}>
                     <div>
-                      <div style={{ color: '#fde68a' }}>{emp.firstName} {emp.lastName}</div>
+                      <div style={{ color: '#FBDB65' }}>{emp.firstName} {emp.lastName}</div>
                       <div style={{ color: '#64748b', fontSize: '12px' }}>{emp.position}</div>
                     </div>
                   </td>
@@ -845,7 +845,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                   <td style={adminStyles.tableCell}>
                     ${Math.floor(emp.compensation.salary * 0.25).toLocaleString()}
                   </td>
-                  <td style={{ ...adminStyles.tableCell, color: '#fde68a', fontWeight: 'bold' }}>
+                  <td style={{ ...adminStyles.tableCell, color: '#FBDB65', fontWeight: 'bold' }}>
                     ${(emp.compensation.salary + (emp.compensation.bonus || 0) + Math.floor(emp.compensation.salary * 0.25)).toLocaleString()}
                   </td>
                   <td style={adminStyles.tableCell}>
@@ -855,7 +855,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                     {emp.performance.nextReview?.toLocaleDateString() || 'N/A'}
                   </td>
                   <td style={adminStyles.tableCell}>
-                    <button style={{ ...adminStyles.iconButton, color: '#f97316' }}>
+                    <button style={{ ...adminStyles.iconButton, color: '#FF8200' }}>
                       <Edit size={16} />
                     </button>
                   </td>
@@ -871,7 +871,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
   const renderPerformance = () => (
     <div>
       <h2 style={{ ...adminStyles.sectionTitle, marginBottom: '20px' }}>
-        <TrendingUp size={24} style={{ marginRight: '10px', color: '#8b5cf6' }} />
+        <TrendingUp size={24} style={{ marginRight: '10px', color: '#7D55C7' }} />
         Performance Management
       </h2>
 
@@ -887,7 +887,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                   <Star key={i} size={16} style={{ color: '#fbbf24', fill: '#fbbf24' }} />
                 ))}
               </div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>
                 {count}
               </div>
               <div style={{ fontSize: '12px', color: '#64748b' }}>
@@ -909,14 +909,14 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
               .slice(0, 5)
               .map(emp => (
                 <div key={emp.id} style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <Calendar size={20} style={{ color: '#8b5cf6' }} />
+                  <Calendar size={20} style={{ color: '#7D55C7' }} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ color: '#fde68a' }}>{emp.firstName} {emp.lastName}</div>
+                    <div style={{ color: '#FBDB65' }}>{emp.firstName} {emp.lastName}</div>
                     <div style={{ color: '#64748b', fontSize: '12px' }}>
                       {emp.performance.nextReview?.toLocaleDateString()}
                     </div>
                   </div>
-                  <button style={{ ...adminStyles.iconButton, color: '#8b5cf6' }}>
+                  <button style={{ ...adminStyles.iconButton, color: '#7D55C7' }}>
                     <ChevronRight size={16} />
                   </button>
                 </div>
@@ -937,10 +937,10 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
               <div key={goal.key} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
-                    <div style={{ color: '#fde68a', fontSize: '14px' }}>{goal.title}</div>
+                    <div style={{ color: '#FBDB65', fontSize: '14px' }}>{goal.title}</div>
                     <div style={{ color: '#64748b', fontSize: '12px' }}>{goal.employeeName}</div>
                   </div>
-                  <span style={{ color: '#8b5cf6', fontSize: '14px', fontWeight: 'bold' }}>
+                  <span style={{ color: '#7D55C7', fontSize: '14px', fontWeight: 'bold' }}>
                     {goal.progress}%
                   </span>
                 </div>
@@ -953,7 +953,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
                   <div style={{ 
                     width: `${goal.progress}%`, 
                     height: '100%', 
-                    background: 'linear-gradient(90deg, #8b5cf6, #a78bfa)'
+                    background: 'linear-gradient(90deg, #7D55C7, #a78bfa)'
                   }} />
                 </div>
               </div>
@@ -1029,7 +1029,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
               <div>
-                <h4 style={{ color: '#fde68a', marginBottom: '5px' }}>Sarah Mayhem</h4>
+                <h4 style={{ color: '#FBDB65', marginBottom: '5px' }}>Sarah Mayhem</h4>
                 <p style={{ color: '#94a3b8', fontSize: '14px' }}>Vacation Request</p>
               </div>
               <span style={{ 
@@ -1095,7 +1095,7 @@ export default function EmployeeHub({ onNavigate }: { onNavigate: (view: any, la
             style={{
               ...adminStyles.button,
               background: activeTab === tab.id ? 
-                'linear-gradient(135deg, #f97316, #ea580c)' : 
+                'linear-gradient(135deg, #FF8200, #ea580c)' : 
                 'rgba(148, 163, 184, 0.1)',
               color: activeTab === tab.id ? '#fff' : '#94a3b8',
               display: 'flex',

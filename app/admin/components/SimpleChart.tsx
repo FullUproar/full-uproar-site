@@ -13,7 +13,7 @@ export default function SimpleChart({
   data, 
   type = 'bar', 
   height = 200,
-  color = '#f97316' 
+  color = '#FF8200' 
 }: ChartProps) {
   const [dimensions, setDimensions] = useState({ width: 0, height: height - 40 });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -78,7 +78,7 @@ export default function SimpleChart({
                   y1={y}
                   x2={padding.left + chartWidth}
                   y2={y}
-                  stroke="rgba(249, 115, 22, 0.1)"
+                  stroke="rgba(255, 130, 0, 0.1)"
                   strokeWidth="1"
                 />
                 <text
@@ -100,7 +100,7 @@ export default function SimpleChart({
             y1={padding.top + chartHeight}
             x2={padding.left + chartWidth}
             y2={padding.top + chartHeight}
-            stroke="rgba(249, 115, 22, 0.3)"
+            stroke="rgba(255, 130, 0, 0.3)"
             strokeWidth="2"
           />
           
@@ -110,7 +110,7 @@ export default function SimpleChart({
             y1={padding.top}
             x2={padding.left}
             y2={padding.top + chartHeight}
-            stroke="rgba(249, 115, 22, 0.3)"
+            stroke="rgba(255, 130, 0, 0.3)"
             strokeWidth="2"
           />
           

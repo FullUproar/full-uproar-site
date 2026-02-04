@@ -91,7 +91,7 @@ export default function GameEditForm({ game }: GameEditFormProps) {
       background: 'rgba(30, 41, 59, 0.8)',
       borderRadius: '16px',
       padding: '32px',
-      border: '3px solid #f97316',
+      border: '3px solid #FF8200',
       backdropFilter: 'blur(10px)'
     },
     section: {
@@ -100,9 +100,9 @@ export default function GameEditForm({ game }: GameEditFormProps) {
     sectionTitle: {
       fontSize: '24px',
       fontWeight: 'bold',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '16px',
-      borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+      borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
       paddingBottom: '8px'
     },
     grid: {
@@ -116,13 +116,13 @@ export default function GameEditForm({ game }: GameEditFormProps) {
       gap: '8px'
     },
     label: {
-      color: '#fde68a',
+      color: '#FBDB65',
       fontSize: '14px',
       fontWeight: '600'
     },
     input: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -132,7 +132,7 @@ export default function GameEditForm({ game }: GameEditFormProps) {
     },
     textarea: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -147,7 +147,7 @@ export default function GameEditForm({ game }: GameEditFormProps) {
     },
     select: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -189,7 +189,7 @@ export default function GameEditForm({ game }: GameEditFormProps) {
       gap: '8px'
     },
     saveButton: {
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: 'white'
     },
     cancelButton: {
@@ -222,8 +222,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
           </div>
@@ -235,8 +235,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.slug}
               onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
           </div>
@@ -248,8 +248,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.tagline}
               onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="Optional catchy tagline"
             />
           </div>
@@ -260,8 +260,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               style={styles.textarea}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
           </div>
@@ -279,8 +279,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.priceCents}
               onChange={(e) => setFormData({ ...formData, priceCents: parseInt(e.target.value) || 0 })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               required
             />
             <span style={styles.helpText}>Enter 1999 for $19.99</span>
@@ -293,8 +293,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.stock}
               onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
             />
           </div>
 
@@ -305,8 +305,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.players}
               onChange={(e) => setFormData({ ...formData, players: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="e.g., 2-4 Players"
               required
             />
@@ -319,8 +319,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.timeToPlay}
               onChange={(e) => setFormData({ ...formData, timeToPlay: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="e.g., 30-45 min"
               required
             />
@@ -333,8 +333,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.ageRating}
               onChange={(e) => setFormData({ ...formData, ageRating: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="e.g., 13+"
               required
             />
@@ -359,8 +359,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.imageUrl}
               onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
               style={styles.input}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="https://..."
             />
           </div>
@@ -376,8 +376,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
             value={formData.howToPlay}
             onChange={(e) => setFormData({ ...formData, howToPlay: e.target.value })}
             style={{ ...styles.textarea, ...styles.textareaLarge }}
-            onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+            onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
             placeholder="Enter detailed instructions on how to play the game. You can use markdown formatting."
           />
           <span style={styles.helpText}>Supports basic HTML or line breaks. Use {'<br>'} for line breaks.</span>
@@ -389,8 +389,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
             value={formData.components}
             onChange={(e) => setFormData({ ...formData, components: e.target.value })}
             style={styles.textarea}
-            onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+            onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
             placeholder="List all components included in the game"
           />
         </div>
@@ -402,8 +402,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
             value={formData.videoUrl}
             onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
             style={styles.input}
-            onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+            onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
             placeholder="https://www.youtube.com/embed/VIDEO_ID"
           />
           <span style={styles.helpText}>Use the embed URL format: https://www.youtube.com/embed/VIDEO_ID</span>
@@ -420,8 +420,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
               value={formData.bundleInfo}
               onChange={(e) => setFormData({ ...formData, bundleInfo: e.target.value })}
               style={styles.textarea}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               placeholder="Describe what's included in this bundle"
             />
           </div>
@@ -439,8 +439,8 @@ export default function GameEditForm({ game }: GameEditFormProps) {
             value={formData.launchDate}
             onChange={(e) => setFormData({ ...formData, launchDate: e.target.value })}
             style={styles.input}
-            onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+            onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
           />
           <span style={styles.helpText}>Set a launch date for pre-orders or to show "New" badges</span>
         </div>

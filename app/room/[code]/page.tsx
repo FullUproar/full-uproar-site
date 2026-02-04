@@ -57,7 +57,7 @@ const styles = {
   header: {
     padding: '16px 20px',
     background: 'rgba(30, 41, 59, 0.8)',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -65,7 +65,7 @@ const styles = {
   roomCode: {
     fontSize: '24px',
     fontWeight: 'bold',
-    color: '#f97316',
+    color: '#FF8200',
     letterSpacing: '2px',
   },
   connectionStatus: {
@@ -86,14 +86,14 @@ const styles = {
   },
   card: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '16px',
     padding: '20px',
   },
   cardTitle: {
     fontSize: '14px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '12px',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
@@ -102,7 +102,7 @@ const styles = {
     width: '100%',
     padding: '14px 16px',
     background: 'rgba(15, 23, 42, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '12px',
     color: '#e2e8f0',
     fontSize: '16px',
@@ -123,13 +123,13 @@ const styles = {
     transition: 'all 0.2s',
   },
   primaryButton: {
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: '#000',
   },
   secondaryButton: {
-    background: 'rgba(249, 115, 22, 0.1)',
-    color: '#fdba74',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    color: '#FBDB65',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
   },
   playerList: {
     display: 'flex',
@@ -148,7 +148,7 @@ const styles = {
     width: '40px',
     height: '40px',
     borderRadius: '10px',
-    background: 'rgba(249, 115, 22, 0.2)',
+    background: 'rgba(255, 130, 0, 0.2)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -422,7 +422,7 @@ export default function PlayRoom() {
   if (phase === 'loading') {
     return (
       <div style={{ ...styles.container, ...styles.loader }}>
-        <Loader2 size={48} style={{ color: '#f97316', animation: 'spin 1s linear infinite' }} />
+        <Loader2 size={48} style={{ color: '#FF8200', animation: 'spin 1s linear infinite' }} />
         <div style={{ color: '#94a3b8' }}>Finding room...</div>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -488,8 +488,8 @@ export default function PlayRoom() {
                       width: '48px',
                       height: '48px',
                       borderRadius: '10px',
-                      border: selectedEmoji === emoji ? '2px solid #f97316' : '2px solid transparent',
-                      background: selectedEmoji === emoji ? 'rgba(249, 115, 22, 0.2)' : 'rgba(15, 23, 42, 0.4)',
+                      border: selectedEmoji === emoji ? '2px solid #FF8200' : '2px solid transparent',
+                      background: selectedEmoji === emoji ? 'rgba(255, 130, 0, 0.2)' : 'rgba(15, 23, 42, 0.4)',
                       fontSize: '24px',
                       cursor: 'pointer',
                     }}
@@ -550,7 +550,7 @@ export default function PlayRoom() {
                   <div style={styles.playerInfo}>
                     <div style={styles.playerName}>
                       {player.nickname}
-                      {player.isHost && <Crown size={14} style={{ color: '#f97316' }} />}
+                      {player.isHost && <Crown size={14} style={{ color: '#FF8200' }} />}
                       {player.id === myPlayerId && <span style={{ fontSize: '10px', color: '#64748b' }}>(you)</span>}
                     </div>
                     <div style={styles.playerStatus}>
@@ -609,7 +609,7 @@ export default function PlayRoom() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }} className="gk-header-actions">
             <div style={styles.connectionStatus}>
               {isMyTurn ? (
-                <span style={{ color: '#f97316', fontWeight: 'bold' }}>YOUR TURN</span>
+                <span style={{ color: '#FF8200', fontWeight: 'bold' }}>YOUR TURN</span>
               ) : (
                 <span style={{ color: '#64748b' }}>Waiting...</span>
               )}
@@ -651,10 +651,10 @@ export default function PlayRoom() {
                     color: card.textColor || '#1a1a1a',
                     transform: selectedCards.includes(index) ? 'translateY(-10px)' : 'none',
                     boxShadow: selectedCards.includes(index)
-                      ? '0 10px 30px rgba(249, 115, 22, 0.5)'
+                      ? '0 10px 30px rgba(255, 130, 0, 0.5)'
                       : '0 4px 12px rgba(0,0,0,0.3)',
                     border: selectedCards.includes(index)
-                      ? '3px solid #f97316'
+                      ? '3px solid #FF8200'
                       : '3px solid transparent',
                   }}
                 >

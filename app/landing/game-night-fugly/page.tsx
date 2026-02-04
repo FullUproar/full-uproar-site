@@ -81,8 +81,8 @@ export default function ChaosUnleashedLanding() {
       position: 'absolute' as const,
       top: '20px',
       right: '20px',
-      background: 'rgba(249, 115, 22, 0.2)',
-      border: '2px solid #f97316',
+      background: 'rgba(255, 130, 0, 0.2)',
+      border: '2px solid #FF8200',
       borderRadius: '50%',
       width: '50px',
       height: '50px',
@@ -114,22 +114,22 @@ export default function ChaosUnleashedLanding() {
     fuglyLogoText: {
       fontSize: 'clamp(5rem, 20vw, 16rem)',
       fontWeight: 900,
-      color: '#f97316',
+      color: '#FF8200',
       textTransform: 'uppercase' as const,
       lineHeight: 1,
       letterSpacing: '0.1em',
       WebkitTextStroke: '4px #000',
-      textShadow: '0 0 40px rgba(249, 115, 22, 0.8), 0 0 80px rgba(249, 115, 22, 0.4), 0 0 120px rgba(249, 115, 22, 0.2)',
+      textShadow: '0 0 40px rgba(255, 130, 0, 0.8), 0 0 80px rgba(255, 130, 0, 0.4), 0 0 120px rgba(255, 130, 0, 0.2)',
       animation: showLogo ? 'cheshireFade 2.5s ease-out' : 'none',
     },
     impactText: {
       fontSize: 'clamp(3rem, 15vw, 10rem)',
       fontWeight: 900,
-      color: '#f97316',
+      color: '#FF8200',
       textAlign: 'center' as const,
       textTransform: 'uppercase' as const,
       lineHeight: 1,
-      textShadow: '0 0 20px rgba(249, 115, 22, 0.8), 0 0 40px rgba(249, 115, 22, 0.5)',
+      textShadow: '0 0 20px rgba(255, 130, 0, 0.8), 0 0 40px rgba(255, 130, 0, 0.5)',
       letterSpacing: '0.05em',
       margin: '20px 0',
       WebkitTextStroke: '2px #000',
@@ -150,7 +150,7 @@ export default function ChaosUnleashedLanding() {
     logoText: {
       fontSize: 'clamp(3rem, 12vw, 8rem)',
       fontWeight: 900,
-      color: '#fdba74',
+      color: '#FBDB65',
       textAlign: 'center' as const,
       textTransform: 'uppercase' as const,
       textShadow: '0 0 20px rgba(253, 186, 116, 0.8)',
@@ -171,7 +171,7 @@ export default function ChaosUnleashedLanding() {
       zIndex: 20,
     },
     primaryButton: {
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: '#fff',
       fontSize: 'clamp(1.2rem, 3vw, 2rem)',
       fontWeight: 900,
@@ -179,7 +179,7 @@ export default function ChaosUnleashedLanding() {
       border: 'none',
       borderRadius: '50px',
       cursor: 'pointer',
-      boxShadow: '0 10px 30px rgba(249, 115, 22, 0.5), 0 0 20px rgba(249, 115, 22, 0.3)',
+      boxShadow: '0 10px 30px rgba(255, 130, 0, 0.5), 0 0 20px rgba(255, 130, 0, 0.3)',
       textTransform: 'uppercase' as const,
       letterSpacing: '0.1em',
       transition: 'all 0.3s ease',
@@ -192,7 +192,7 @@ export default function ChaosUnleashedLanding() {
       position: 'absolute' as const,
       width: '100%',
       height: '100%',
-      background: 'radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.15) 0%, transparent 70%)',
+      background: 'radial-gradient(circle at 50% 50%, rgba(255, 130, 0, 0.15) 0%, transparent 70%)',
       animation: 'pulse 3s ease-in-out infinite',
     },
   };
@@ -207,8 +207,8 @@ export default function ChaosUnleashedLanding() {
         onClick={() => setIsMuted(!isMuted)}
         style={{
           ...styles.muteButton,
-          background: isMuted ? 'rgba(239, 68, 68, 0.2)' : 'rgba(249, 115, 22, 0.2)',
-          borderColor: isMuted ? '#ef4444' : '#f97316',
+          background: isMuted ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 130, 0, 0.2)',
+          borderColor: isMuted ? '#ef4444' : '#FF8200',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.1)';
@@ -217,7 +217,7 @@ export default function ChaosUnleashedLanding() {
           e.currentTarget.style.transform = 'scale(1)';
         }}
       >
-        {isMuted ? <VolumeX size={24} color="#ef4444" /> : <Volume2 size={24} color="#f97316" />}
+        {isMuted ? <VolumeX size={24} color="#ef4444" /> : <Volume2 size={24} color="#FF8200" />}
       </button>
 
       {/* Text sequence */}
@@ -277,11 +277,11 @@ export default function ChaosUnleashedLanding() {
             style={styles.primaryButton}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 15px 40px rgba(249, 115, 22, 0.7), 0 0 30px rgba(249, 115, 22, 0.5)';
+              e.currentTarget.style.boxShadow = '0 15px 40px rgba(255, 130, 0, 0.7), 0 0 30px rgba(255, 130, 0, 0.5)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.5), 0 0 20px rgba(249, 115, 22, 0.3)';
+              e.currentTarget.style.boxShadow = '0 10px 30px rgba(255, 130, 0, 0.5), 0 0 20px rgba(255, 130, 0, 0.3)';
             }}
           >
             UNLEASH THE CHAOS
@@ -372,27 +372,27 @@ export default function ChaosUnleashedLanding() {
         @keyframes cheshireFade {
           0% {
             opacity: 0;
-            filter: brightness(0) drop-shadow(0 0 0px rgba(249, 115, 22, 0));
+            filter: brightness(0) drop-shadow(0 0 0px rgba(255, 130, 0, 0));
           }
           20% {
             opacity: 0.1;
-            filter: brightness(0.3) drop-shadow(0 0 10px rgba(249, 115, 22, 0.2));
+            filter: brightness(0.3) drop-shadow(0 0 10px rgba(255, 130, 0, 0.2));
           }
           40% {
             opacity: 0.3;
-            filter: brightness(0.5) drop-shadow(0 0 20px rgba(249, 115, 22, 0.4));
+            filter: brightness(0.5) drop-shadow(0 0 20px rgba(255, 130, 0, 0.4));
           }
           60% {
             opacity: 0.6;
-            filter: brightness(0.8) drop-shadow(0 0 30px rgba(249, 115, 22, 0.6));
+            filter: brightness(0.8) drop-shadow(0 0 30px rgba(255, 130, 0, 0.6));
           }
           80% {
             opacity: 0.9;
-            filter: brightness(1) drop-shadow(0 0 40px rgba(249, 115, 22, 0.8));
+            filter: brightness(1) drop-shadow(0 0 40px rgba(255, 130, 0, 0.8));
           }
           100% {
             opacity: 1;
-            filter: brightness(1) drop-shadow(0 0 40px rgba(249, 115, 22, 0.8)) drop-shadow(0 0 80px rgba(249, 115, 22, 0.4));
+            filter: brightness(1) drop-shadow(0 0 40px rgba(255, 130, 0, 0.8)) drop-shadow(0 0 80px rgba(255, 130, 0, 0.4));
           }
         }
       `}</style>

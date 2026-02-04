@@ -57,11 +57,11 @@ export default async function SeriesPage({ params }: PageProps) {
           color: '#94a3b8',
           flexWrap: 'wrap'
         }}>
-          <Link href="/discover" style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href="/discover" style={{ color: '#FF8200', textDecoration: 'none' }}>
             Discover
           </Link>
           <span>/</span>
-          <Link href="/discover/games" style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href="/discover/games" style={{ color: '#FF8200', textDecoration: 'none' }}>
             Games
           </Link>
           <span>/</span>
@@ -72,7 +72,7 @@ export default async function SeriesPage({ params }: PageProps) {
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <div style={{
             fontSize: '1rem',
-            color: '#f97316',
+            color: '#FF8200',
             fontWeight: 'bold',
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
@@ -83,7 +83,7 @@ export default async function SeriesPage({ params }: PageProps) {
           <h1 style={{
             fontSize: 'clamp(2.5rem, 8vw, 5rem)',
             fontWeight: 900,
-            background: 'linear-gradient(45deg, #f97316, #fbbf24, #f97316)',
+            background: 'linear-gradient(45deg, #FF8200, #fbbf24, #FF8200)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
@@ -210,14 +210,14 @@ export default async function SeriesPage({ params }: PageProps) {
         <div style={{
           marginTop: '6rem',
           padding: '3rem',
-          background: 'rgba(249, 115, 22, 0.1)',
+          background: 'rgba(255, 130, 0, 0.1)',
           borderRadius: '1.5rem',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
         }}>
           <h2 style={{
             fontSize: '2rem',
             fontWeight: 900,
-            color: '#f97316',
+            color: '#FF8200',
             marginBottom: '2rem',
             textAlign: 'center',
           }}>
@@ -240,7 +240,7 @@ export default async function SeriesPage({ params }: PageProps) {
                   width: '3rem',
                   height: '3rem',
                   borderRadius: '50%',
-                  background: 'linear-gradient(45deg, #f97316, #fbbf24)',
+                  background: 'linear-gradient(45deg, #FF8200, #fbbf24)',
                   color: '#0a0a0a',
                   fontWeight: 900,
                   fontSize: '1.5rem',
@@ -264,7 +264,7 @@ export default async function SeriesPage({ params }: PageProps) {
 
         {/* CTA */}
         <div style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center' }}>
-          <p style={{ fontSize: '1.25rem', color: '#fdba74', marginBottom: '1.5rem' }}>
+          <p style={{ fontSize: '1.25rem', color: '#FBDB65', marginBottom: '1.5rem' }}>
             Ready to transform your game nights?
           </p>
           <Link
@@ -272,7 +272,7 @@ export default async function SeriesPage({ params }: PageProps) {
             style={{
               display: 'inline-block',
               padding: '1rem 2.5rem',
-              background: 'linear-gradient(45deg, #f97316, #fb923c)',
+              background: 'linear-gradient(45deg, #FF8200, #fb923c)',
               color: '#0a0a0a',
               borderRadius: '9999px',
               fontWeight: 900,

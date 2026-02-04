@@ -25,7 +25,7 @@ export default function FinancialIntelligence({ onNavigate }: { onNavigate: (vie
         background: 'rgba(30, 41, 59, 0.8)',
       }}>
         <DollarSign size={64} style={{ color: '#64748b', marginBottom: '20px', opacity: 0.5 }} />
-        <h2 style={{ color: '#fde68a', fontSize: '24px', marginBottom: '16px' }}>
+        <h2 style={{ color: '#FBDB65', fontSize: '24px', marginBottom: '16px' }}>
           Financial Dashboard Coming Soon
         </h2>
         <p style={{ color: '#94a3b8', maxWidth: '500px', margin: '0 auto 30px' }}>

@@ -170,7 +170,7 @@ export default function ThreadPage() {
     },
     threadHeader: {
       background: 'rgba(30, 41, 59, 0.95)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       padding: '2rem',
       marginBottom: '2rem',
@@ -178,7 +178,7 @@ export default function ThreadPage() {
     },
     post: {
       background: 'rgba(30, 41, 59, 0.95)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       padding: '1.5rem',
       marginBottom: '1rem',
@@ -190,13 +190,13 @@ export default function ThreadPage() {
       gap: '1rem',
       marginBottom: '1rem',
       paddingBottom: '1rem',
-      borderBottom: '1px solid rgba(249, 115, 22, 0.2)'
+      borderBottom: '1px solid rgba(255, 130, 0, 0.2)'
     },
     avatar: {
       width: '48px',
       height: '48px',
       borderRadius: '50%',
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -206,7 +206,7 @@ export default function ThreadPage() {
     },
     replyBox: {
       background: 'rgba(30, 41, 59, 0.95)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       padding: '1.5rem',
       marginTop: '2rem',
@@ -216,7 +216,7 @@ export default function ThreadPage() {
       width: '100%',
       padding: '12px',
       borderRadius: '8px',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       background: 'rgba(17, 24, 39, 0.8)',
       color: '#f3f4f6',
       fontSize: '16px',
@@ -238,7 +238,7 @@ export default function ThreadPage() {
           alignItems: 'center', 
           minHeight: '50vh' 
         }}>
-          <p style={{ color: '#fdba74' }}>Loading thread...</p>
+          <p style={{ color: '#FBDB65' }}>Loading thread...</p>
         </div>
       </div>
     );
@@ -255,11 +255,11 @@ export default function ThreadPage() {
       <div style={styles.content}>
         {/* Breadcrumb */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-          <Link href="/forum" style={{ color: '#fdba74', textDecoration: 'none' }}>
+          <Link href="/forum" style={{ color: '#FBDB65', textDecoration: 'none' }}>
             Forum
           </Link>
           <span style={{ color: '#64748b' }}>/</span>
-          <Link href={`/forum/${thread.board.slug}`} style={{ color: '#fdba74', textDecoration: 'none' }}>
+          <Link href={`/forum/${thread.board.slug}`} style={{ color: '#FBDB65', textDecoration: 'none' }}>
             {thread.board.name}
           </Link>
           <span style={{ color: '#64748b' }}>/</span>
@@ -269,9 +269,9 @@ export default function ThreadPage() {
         {/* Thread Header */}
         <div style={styles.threadHeader}>
           <div style={{ display: 'flex', alignItems: 'start', gap: '12px', marginBottom: '1rem' }}>
-            {thread.isPinned && <Pin size={24} style={{ color: '#f97316' }} />}
+            {thread.isPinned && <Pin size={24} style={{ color: '#FF8200' }} />}
             {thread.isLocked && <Lock size={24} style={{ color: '#ef4444' }} />}
-            <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316', flex: 1 }}>
+            <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#FF8200', flex: 1 }}>
               {thread.title}
             </h1>
             {userId && userId !== thread.authorId && (
@@ -360,8 +360,8 @@ export default function ThreadPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {index === 0 && (
                   <span style={{
-                    background: 'rgba(249, 115, 22, 0.2)',
-                    color: '#f97316',
+                    background: 'rgba(255, 130, 0, 0.2)',
+                    color: '#FF8200',
                     padding: '4px 12px',
                     borderRadius: '4px',
                     fontSize: '12px',
@@ -441,7 +441,7 @@ export default function ThreadPage() {
                 style={{
                   marginTop: '1rem',
                   padding: '12px 24px',
-                  background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                  background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
@@ -470,7 +470,7 @@ export default function ThreadPage() {
             <Link 
               href="/sign-in" 
               style={{
-                color: '#f97316',
+                color: '#FF8200',
                 textDecoration: 'none',
                 fontWeight: 'bold'
               }}

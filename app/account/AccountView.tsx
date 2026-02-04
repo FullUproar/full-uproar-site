@@ -293,9 +293,9 @@ export default function AccountView() {
       textAlign: 'left' as const
     },
     activeTab: {
-      background: 'rgba(249, 115, 22, 0.1)',
-      color: '#fdba74',
-      borderLeft: '3px solid #f97316'
+      background: 'rgba(255, 130, 0, 0.1)',
+      color: '#FBDB65',
+      borderLeft: '3px solid #FF8200'
     },
     input: {
       width: '100%',
@@ -309,7 +309,7 @@ export default function AccountView() {
     },
     button: {
       padding: '10px 20px',
-      background: '#f97316',
+      background: '#FF8200',
       color: 'white',
       border: 'none',
       borderRadius: '8px',
@@ -346,7 +346,7 @@ export default function AccountView() {
             alignItems: 'center', 
             minHeight: '80vh' 
           }}>
-            <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#f97316' }} />
+            <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#FF8200' }} />
           </div>
         </div>
       </>
@@ -379,8 +379,8 @@ export default function AccountView() {
                   transition: 'all 0.2s'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#f97316';
-                  e.currentTarget.style.color = '#fdba74';
+                  e.currentTarget.style.borderColor = '#FF8200';
+                  e.currentTarget.style.color = '#FBDB65';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = '#334155';
@@ -390,7 +390,7 @@ export default function AccountView() {
                 <ArrowLeft size={20} />
               </button>
               <div>
-                <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#fdba74' }}>
+                <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#FBDB65' }}>
                   My Account
                 </h1>
               </div>
@@ -444,7 +444,7 @@ export default function AccountView() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: '2px solid #f97316'
+                    border: '2px solid #FF8200'
                   }}>
                     {user.imageUrl ? (
                       <img
@@ -755,7 +755,7 @@ export default function AccountView() {
                                       {item.product?.title || item.product?.name || 'Unknown Product'} 
                                       {item.quantity > 1 && ` (x${item.quantity})`}
                                     </p>
-                                    <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#fdba74' }}>
+                                    <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#FBDB65' }}>
                                       ${(item.priceCents / 100).toFixed(2)}
                                     </p>
                                   </div>
@@ -773,7 +773,7 @@ export default function AccountView() {
                             }}>
                               <div>
                                 <p style={{ fontSize: '14px', color: '#94a3b8' }}>Total</p>
-                                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#f97316' }}>
+                                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#FF8200' }}>
                                   ${(order.totalAmount / 100).toFixed(2)}
                                 </p>
                               </div>
@@ -812,12 +812,12 @@ export default function AccountView() {
                         width: '40px',
                         height: '40px',
                         borderRadius: '50%',
-                        background: 'rgba(249, 115, 22, 0.2)',
+                        background: 'rgba(255, 130, 0, 0.2)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
                       }}>
-                        <ShoppingBag size={20} style={{ color: '#f97316' }} />
+                        <ShoppingBag size={20} style={{ color: '#FF8200' }} />
                       </div>
                       <div style={{ flex: 1 }}>
                         <p style={{ fontWeight: 'bold' }}>Order Placed</p>
@@ -947,7 +947,7 @@ export default function AccountView() {
                     </h3>
                     {loadingSessions ? (
                       <div style={{ textAlign: 'center', padding: '40px' }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#fdba74' }} />
+                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#FBDB65' }} />
                       </div>
                     ) : sessions.length === 0 ? (
                       <div style={{
@@ -968,7 +968,7 @@ export default function AccountView() {
                               background: 'rgba(51, 65, 85, 0.5)',
                               borderRadius: '8px',
                               padding: '20px',
-                              border: index === 0 ? '2px solid rgba(249, 115, 22, 0.3)' : 'none'
+                              border: index === 0 ? '2px solid rgba(255, 130, 0, 0.3)' : 'none'
                             }}
                           >
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>

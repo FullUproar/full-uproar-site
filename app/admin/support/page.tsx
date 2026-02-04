@@ -49,7 +49,7 @@ const statusConfig = {
 const priorityConfig = {
   low: { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
   normal: { color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  high: { color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+  high: { color: '#FF8200', bg: 'rgba(255, 130, 0, 0.1)' },
   urgent: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' }
 };
 
@@ -399,7 +399,7 @@ export default function SupportPage() {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '10px 16px',
-                background: '#f97316',
+                background: '#FF8200',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -439,7 +439,7 @@ export default function SupportPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>New Tickets</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalNew}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.totalNew}</p>
               </div>
               <AlertCircle size={32} style={{ color: '#fbbf24' }} />
             </div>
@@ -449,7 +449,7 @@ export default function SupportPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>In Progress</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalInProgress}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.totalInProgress}</p>
               </div>
               <Clock size={32} style={{ color: '#3b82f6' }} />
             </div>
@@ -459,7 +459,7 @@ export default function SupportPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Resolved Today</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalResolved}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.totalResolved}</p>
               </div>
               <CheckCircle size={32} style={{ color: '#10b981' }} />
             </div>
@@ -469,7 +469,7 @@ export default function SupportPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Avg Response</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>
                   {stats.avgResponseTime}h
                 </p>
               </div>
@@ -568,7 +568,7 @@ export default function SupportPage() {
               {loading ? (
                 <div style={{ textAlign: 'center', padding: '40px' }}>
                   <MessageSquare size={32} style={{ 
-                    color: '#fdba74', 
+                    color: '#FBDB65', 
                     marginBottom: '16px',
                     animation: 'pulse 2s infinite'
                   }} />
@@ -587,11 +587,11 @@ export default function SupportPage() {
                       style={{
                         padding: '16px',
                         background: selectedTicket?.id === ticket.id 
-                          ? 'rgba(249, 115, 22, 0.1)' 
+                          ? 'rgba(255, 130, 0, 0.1)' 
                           : 'rgba(30, 41, 59, 0.5)',
                         borderRadius: '8px',
                         border: `2px solid ${selectedTicket?.id === ticket.id 
-                          ? 'rgba(249, 115, 22, 0.5)' 
+                          ? 'rgba(255, 130, 0, 0.5)' 
                           : 'transparent'}`,
                         cursor: 'pointer',
                         transition: 'all 0.2s'
@@ -607,7 +607,7 @@ export default function SupportPage() {
                         <div>
                           <p style={{ 
                             fontWeight: '600', 
-                            color: '#fde68a',
+                            color: '#FBDB65',
                             fontSize: '14px',
                             marginBottom: '4px'
                           }}>
@@ -658,7 +658,7 @@ export default function SupportPage() {
           {selectedTicket && (
             <div style={adminStyles.section}>
               <div style={{ 
-                borderBottom: '2px solid rgba(249, 115, 22, 0.2)', 
+                borderBottom: '2px solid rgba(255, 130, 0, 0.2)', 
                 paddingBottom: '16px',
                 marginBottom: '24px'
               }}>
@@ -672,7 +672,7 @@ export default function SupportPage() {
                     <h2 style={{ 
                       fontSize: '20px', 
                       fontWeight: 'bold', 
-                      color: '#fdba74',
+                      color: '#FBDB65',
                       marginBottom: '8px'
                     }}>
                       {selectedTicket.subject}
@@ -687,7 +687,7 @@ export default function SupportPage() {
                       {selectedTicket.orderId && (
                         <Link
                           href={`/admin/orders/${selectedTicket.orderId}`}
-                          style={{ fontSize: '14px', color: '#fdba74', textDecoration: 'none' }}
+                          style={{ fontSize: '14px', color: '#FBDB65', textDecoration: 'none' }}
                         >
                           Order: {selectedTicket.orderId.slice(0, 8)}...
                         </Link>
@@ -743,9 +743,9 @@ export default function SupportPage() {
                       padding: '16px',
                       background: message.senderType === 'customer'
                         ? 'rgba(59, 130, 246, 0.1)'
-                        : 'rgba(249, 115, 22, 0.1)',
+                        : 'rgba(255, 130, 0, 0.1)',
                       borderRadius: '8px',
-                      borderLeft: `4px solid ${message.senderType === 'customer' ? '#3b82f6' : '#f97316'}`
+                      borderLeft: `4px solid ${message.senderType === 'customer' ? '#3b82f6' : '#FF8200'}`
                     }}
                   >
                     <div style={{
@@ -755,7 +755,7 @@ export default function SupportPage() {
                     }}>
                       <p style={{
                         fontWeight: '600',
-                        color: message.senderType === 'customer' ? '#3b82f6' : '#f97316',
+                        color: message.senderType === 'customer' ? '#3b82f6' : '#FF8200',
                         fontSize: '14px'
                       }}>
                         {message.senderType === 'customer' ? selectedTicket.customerName : 'Support Team'}
@@ -778,7 +778,7 @@ export default function SupportPage() {
 
               {/* Reply Box */}
               <div style={{ 
-                borderTop: '2px solid rgba(249, 115, 22, 0.2)', 
+                borderTop: '2px solid rgba(255, 130, 0, 0.2)', 
                 paddingTop: '16px' 
               }}>
                 <textarea

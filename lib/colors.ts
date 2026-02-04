@@ -10,12 +10,12 @@
  * If you see any of the "WRONG" colors below in the codebase, replace them.
  *
  * WRONG → CORRECT:
- * - #f97316 → #FF8200 (Tailwind orange-500 vs our Pantone 151 C)
+ * - #FF8200 → #FF8200 (Tailwind orange-500 vs our Pantone 151 C)
  * - #fb923c → #FF8200 (Tailwind orange-400)
  * - #ea580c → #FF8200 for primary use (only use for hover/dark states)
- * - #fde68a → #FBDB65 for headline text (Tailwind yellow-200 vs Pantone 120 C)
- * - #fdba74 → #FBDB65 for headline text (orange-300 vs cream yellow)
- * - #8b5cf6 → #7D55C7 for purple accents (Tailwind vs Pantone 266 C)
+ * - #FBDB65 → #FBDB65 for headline text (Tailwind yellow-200 vs Pantone 120 C)
+ * - #FBDB65 → #FBDB65 for headline text (orange-300 vs cream yellow)
+ * - #7D55C7 → #7D55C7 for purple accents (Tailwind vs Pantone 266 C)
  *
  * Usage pattern:
  * ```typescript
@@ -52,7 +52,7 @@ export const colors = {
   // LEGACY/UTILITY COLORS (aliased for compatibility)
   // ============================================
   primary: '#FF8200',           // Alias for chaosOrange (PMS 151 C)
-  primaryLight: '#fdba74',      // Light orange/peach for accents
+  primaryLight: '#FBDB65',      // Light orange/peach for accents
   primaryDark: '#ea580c',       // Darker orange for hover states
 
   // Background Colors

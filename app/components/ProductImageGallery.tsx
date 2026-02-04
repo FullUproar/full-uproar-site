@@ -193,7 +193,7 @@ export default function ProductImageGallery({ images, primaryImageUrl, productNa
                 style={{
                   minWidth: '80px',
                   height: '80px',
-                  border: selectedIndex === index ? '3px solid #f97316' : '3px solid transparent',
+                  border: selectedIndex === index ? '3px solid #FF8200' : '3px solid transparent',
                   borderRadius: '0.5rem',
                   overflow: 'hidden',
                   cursor: 'pointer',

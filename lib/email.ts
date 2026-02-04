@@ -81,7 +81,7 @@ export async function sendCustomerConfirmation(data: TicketEmailData): Promise<b
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 30px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #FF8200 0%, #ea580c 100%); padding: 30px; text-align: center;">
               <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
                 Full Uproar
               </h1>
@@ -109,7 +109,7 @@ export async function sendCustomerConfirmation(data: TicketEmailData): Promise<b
                     <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
                       Your Ticket Number
                     </p>
-                    <p style="color: #f97316; font-size: 24px; font-weight: bold; margin: 0 0 15px 0;">
+                    <p style="color: #FF8200; font-size: 24px; font-weight: bold; margin: 0 0 15px 0;">
                       ${data.ticketNumber}
                     </p>
                     <p style="color: #64748b; font-size: 13px; margin: 0;">
@@ -132,7 +132,7 @@ export async function sendCustomerConfirmation(data: TicketEmailData): Promise<b
                 <tr>
                   <td align="center">
                     <a href="${BASE_URL}/support/ticket/${data.accessToken}"
-                       style="display: inline-block; background-color: #f97316; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                       style="display: inline-block; background-color: #FF8200; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
                       View Your Ticket
                     </a>
                   </td>
@@ -150,7 +150,7 @@ export async function sendCustomerConfirmation(data: TicketEmailData): Promise<b
             <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
               <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
                 Full Uproar Games Inc.<br>
-                <span style="color: #f97316;">Professionally ruining game nights since day one.</span>
+                <span style="color: #FF8200;">Professionally ruining game nights since day one.</span>
               </p>
             </td>
           </tr>
@@ -237,7 +237,7 @@ export async function sendTeamNotification(data: TicketEmailData): Promise<boole
                     <p style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 5px 0;">
                       Ticket
                     </p>
-                    <p style="color: #f97316; font-size: 18px; font-weight: bold; margin: 0;">
+                    <p style="color: #FF8200; font-size: 18px; font-weight: bold; margin: 0;">
                       ${data.ticketNumber}
                     </p>
                   </td>
@@ -273,7 +273,7 @@ export async function sendTeamNotification(data: TicketEmailData): Promise<boole
               <p style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0;">
                 Message
               </p>
-              <div style="background-color: #1f2937; border-radius: 8px; padding: 20px; border-left: 3px solid #f97316;">
+              <div style="background-color: #1f2937; border-radius: 8px; padding: 20px; border-left: 3px solid #FF8200;">
                 <p style="color: #e2e8f0; font-size: 14px; line-height: 1.7; margin: 0; white-space: pre-wrap;">${data.message}</p>
               </div>
 
@@ -282,7 +282,7 @@ export async function sendTeamNotification(data: TicketEmailData): Promise<boole
                 <tr>
                   <td>
                     <a href="mailto:${data.customerEmail}?subject=Re: ${data.ticketNumber} - ${encodeURIComponent(data.subject)}"
-                       style="display: inline-block; background-color: #f97316; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">
+                       style="display: inline-block; background-color: #FF8200; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">
                       Reply to Customer
                     </a>
                   </td>
@@ -402,7 +402,7 @@ export async function sendStaffReplyNotification(data: StaffReplyData): Promise<
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 30px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #FF8200 0%, #ea580c 100%); padding: 30px; text-align: center;">
               <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
                 Full Uproar
               </h1>
@@ -441,10 +441,10 @@ export async function sendStaffReplyNotification(data: StaffReplyData): Promise<
               </table>
 
               <!-- Reply Preview -->
-              <p style="color: #f97316; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0; font-weight: 600;">
+              <p style="color: #FF8200; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0; font-weight: 600;">
                 Our Reply
               </p>
-              <div style="background-color: rgba(249, 115, 22, 0.1); border-radius: 8px; padding: 20px; border-left: 3px solid #f97316; margin-bottom: 25px;">
+              <div style="background-color: rgba(255, 130, 0, 0.1); border-radius: 8px; padding: 20px; border-left: 3px solid #FF8200; margin-bottom: 25px;">
                 <p style="color: #e2e8f0; font-size: 14px; line-height: 1.7; margin: 0; white-space: pre-wrap;">${data.newMessage.length > 500 ? data.newMessage.slice(0, 500) + '...' : data.newMessage}</p>
               </div>
 
@@ -457,7 +457,7 @@ export async function sendStaffReplyNotification(data: StaffReplyData): Promise<
                 <tr>
                   <td align="center">
                     <a href="${BASE_URL}/support/ticket/${data.accessToken}"
-                       style="display: inline-block; background-color: #f97316; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                       style="display: inline-block; background-color: #FF8200; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
                       View Full Conversation
                     </a>
                   </td>
@@ -475,7 +475,7 @@ export async function sendStaffReplyNotification(data: StaffReplyData): Promise<
             <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
               <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
                 Full Uproar Games Inc.<br>
-                <span style="color: #f97316;">Professionally ruining game nights since day one.</span>
+                <span style="color: #FF8200;">Professionally ruining game nights since day one.</span>
               </p>
             </td>
           </tr>
@@ -546,7 +546,7 @@ const vibeEmoji: Record<string, string> = {
 
 const vibeColors: Record<string, string> = {
   CHILL: '#60a5fa',
-  COMPETITIVE: '#f97316',
+  COMPETITIVE: '#FF8200',
   CHAOS: '#a855f7',
   PARTY: '#ec4899',
   COZY: '#f472b6',
@@ -561,7 +561,7 @@ export async function sendGameNightInvite(data: GameNightInviteData): Promise<bo
     return false;
   }
 
-  const vibeColor = vibeColors[data.gameNightVibe] || '#f97316';
+  const vibeColor = vibeColors[data.gameNightVibe] || '#FF8200';
   const emoji = vibeEmoji[data.gameNightVibe] || '🎮';
   const vibeName = data.gameNightVibe.charAt(0) + data.gameNightVibe.slice(1).toLowerCase();
   const rsvpUrl = `${BASE_URL}/join/${data.inviteToken}`;
@@ -599,8 +599,8 @@ export async function sendGameNightInvite(data: GameNightInviteData): Promise<bo
               </p>
 
               ${data.personalMessage ? `
-              <div style="background-color: rgba(249, 115, 22, 0.1); border-radius: 8px; padding: 20px; border-left: 4px solid #f97316; margin-bottom: 25px;">
-                <p style="color: #fdba74; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
+              <div style="background-color: rgba(255, 130, 0, 0.1); border-radius: 8px; padding: 20px; border-left: 4px solid #FF8200; margin-bottom: 25px;">
+                <p style="color: #FBDB65; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
                   Message from ${data.hostName}
                 </p>
                 <p style="color: #e2e8f0; font-size: 15px; line-height: 1.6; margin: 0; font-style: italic;">
@@ -677,7 +677,7 @@ export async function sendGameNightInvite(data: GameNightInviteData): Promise<bo
           <tr>
             <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
               <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
-                Powered by <span style="color: #f97316; font-weight: bold;">Full Uproar</span> Game Nights<br>
+                Powered by <span style="color: #FF8200; font-weight: bold;">Full Uproar</span> Game Nights<br>
                 <span style="color: #94a3b8;">Where chaos becomes unforgettable memories</span>
               </p>
             </td>
@@ -747,8 +747,8 @@ export async function sendCustomerReplyNotification(data: CustomerReplyData): Pr
   };
 
   const conversationHtml = data.conversationHistory.map((msg) => `
-    <div style="padding: 15px; margin-bottom: 10px; background-color: ${msg.senderType === 'staff' ? 'rgba(249, 115, 22, 0.1)' : '#1f2937'}; border-radius: 8px; border-left: 3px solid ${msg.senderType === 'staff' ? '#f97316' : '#3b82f6'};">
-      <p style="color: ${msg.senderType === 'staff' ? '#f97316' : '#3b82f6'}; font-size: 12px; margin: 0 0 8px 0; font-weight: 500;">
+    <div style="padding: 15px; margin-bottom: 10px; background-color: ${msg.senderType === 'staff' ? 'rgba(255, 130, 0, 0.1)' : '#1f2937'}; border-radius: 8px; border-left: 3px solid ${msg.senderType === 'staff' ? '#FF8200' : '#3b82f6'};">
+      <p style="color: ${msg.senderType === 'staff' ? '#FF8200' : '#3b82f6'}; font-size: 12px; margin: 0 0 8px 0; font-weight: 500;">
         ${msg.senderType === 'staff' ? 'Full Uproar Support' : msg.senderName} • ${formatDate(msg.createdAt)}
       </p>
       <p style="color: #e2e8f0; font-size: 14px; line-height: 1.6; margin: 0; white-space: pre-wrap;">${msg.message}</p>
@@ -790,7 +790,7 @@ export async function sendCustomerReplyNotification(data: CustomerReplyData): Pr
                     <p style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 5px 0;">
                       Ticket
                     </p>
-                    <p style="color: #f97316; font-size: 18px; font-weight: bold; margin: 0;">
+                    <p style="color: #FF8200; font-size: 18px; font-weight: bold; margin: 0;">
                       ${data.ticketNumber}
                     </p>
                   </td>
@@ -841,7 +841,7 @@ export async function sendCustomerReplyNotification(data: CustomerReplyData): Pr
                 <tr>
                   <td>
                     <a href="mailto:${data.customerEmail}?subject=Re: ${data.ticketNumber} - ${encodeURIComponent(data.subject)}"
-                       style="display: inline-block; background-color: #f97316; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">
+                       style="display: inline-block; background-color: #FF8200; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">
                       Reply to Customer
                     </a>
                   </td>
@@ -957,7 +957,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
           <span style="color: #94a3b8; font-size: 14px;">×${item.quantity}</span>
         </td>
         <td style="padding: 12px 0; border-bottom: 1px solid #374151; text-align: right;">
-          <span style="color: #fde68a; font-size: 14px; font-weight: 500;">$${((item.priceCents * item.quantity) / 100).toFixed(2)}</span>
+          <span style="color: #FBDB65; font-size: 14px; font-weight: 500;">$${((item.priceCents * item.quantity) / 100).toFixed(2)}</span>
         </td>
       </tr>
     `;
@@ -984,7 +984,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 35px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #FF8200 0%, #ea580c 100%); padding: 35px; text-align: center;">
               <div style="font-size: 48px; margin-bottom: 10px;">🎉</div>
               <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
                 Order Confirmed!
@@ -1016,7 +1016,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
                           <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 5px 0;">
                             Order Number
                           </p>
-                          <p style="color: #f97316; font-size: 16px; font-weight: bold; margin: 0; font-family: monospace;">
+                          <p style="color: #FF8200; font-size: 16px; font-weight: bold; margin: 0; font-family: monospace;">
                             ${data.orderId.slice(0, 8).toUpperCase()}
                           </p>
                         </td>
@@ -1035,15 +1035,15 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
               </table>
 
               <!-- Items Table -->
-              <p style="color: #fdba74; font-size: 14px; font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;">
+              <p style="color: #FBDB65; font-size: 14px; font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;">
                 Your Items
               </p>
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
                 <thead>
                   <tr>
-                    <th style="text-align: left; padding: 8px 0; border-bottom: 2px solid #f97316; color: #94a3b8; font-size: 12px; font-weight: 500;">Item</th>
-                    <th style="text-align: center; padding: 8px 0; border-bottom: 2px solid #f97316; color: #94a3b8; font-size: 12px; font-weight: 500;">Qty</th>
-                    <th style="text-align: right; padding: 8px 0; border-bottom: 2px solid #f97316; color: #94a3b8; font-size: 12px; font-weight: 500;">Price</th>
+                    <th style="text-align: left; padding: 8px 0; border-bottom: 2px solid #FF8200; color: #94a3b8; font-size: 12px; font-weight: 500;">Item</th>
+                    <th style="text-align: center; padding: 8px 0; border-bottom: 2px solid #FF8200; color: #94a3b8; font-size: 12px; font-weight: 500;">Qty</th>
+                    <th style="text-align: right; padding: 8px 0; border-bottom: 2px solid #FF8200; color: #94a3b8; font-size: 12px; font-weight: 500;">Price</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1082,10 +1082,10 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
                       </tr>
                       <tr>
                         <td style="padding: 8px 0; border-top: 1px solid #374151;">
-                          <span style="color: #fdba74; font-size: 16px; font-weight: bold;">Total:</span>
+                          <span style="color: #FBDB65; font-size: 16px; font-weight: bold;">Total:</span>
                         </td>
                         <td style="padding: 8px 0; border-top: 1px solid #374151; text-align: right;">
-                          <span style="color: #fde68a; font-size: 18px; font-weight: bold;">$${(data.totalCents / 100).toFixed(2)}</span>
+                          <span style="color: #FBDB65; font-size: 18px; font-weight: bold;">$${(data.totalCents / 100).toFixed(2)}</span>
                         </td>
                       </tr>
                     </table>
@@ -1094,7 +1094,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
               </table>
 
               <!-- Shipping Address -->
-              <p style="color: #fdba74; font-size: 14px; font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;">
+              <p style="color: #FBDB65; font-size: 14px; font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;">
                 Shipping To
               </p>
               <div style="background-color: #1f2937; border-radius: 8px; padding: 16px; margin-bottom: 25px;">
@@ -1109,7 +1109,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
 
               <!-- Support Link -->
               <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
-                Questions? Hit us up at <a href="mailto:support@fulluproar.com" style="color: #f97316; text-decoration: none;">support@fulluproar.com</a>
+                Questions? Hit us up at <a href="mailto:support@fulluproar.com" style="color: #FF8200; text-decoration: none;">support@fulluproar.com</a>
               </p>
             </td>
           </tr>
@@ -1119,7 +1119,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
             <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
               <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
                 Full Uproar Games Inc.<br>
-                <span style="color: #f97316;">Professionally ruining game nights since day one.</span>
+                <span style="color: #FF8200;">Professionally ruining game nights since day one.</span>
               </p>
             </td>
           </tr>
@@ -1226,7 +1226,7 @@ export async function sendOrderShippedNotification(data: {
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 35px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #7D55C7 0%, #7c3aed 100%); padding: 35px; text-align: center;">
               <div style="font-size: 48px; margin-bottom: 10px;">📦</div>
               <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
                 Your Order Shipped!
@@ -1249,7 +1249,7 @@ export async function sendOrderShippedNotification(data: {
               </p>
 
               <!-- Tracking Box -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px; border: 2px solid #8b5cf6;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px; border: 2px solid #7D55C7;">
                 <tr>
                   <td style="padding: 25px; text-align: center;">
                     <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
@@ -1263,7 +1263,7 @@ export async function sendOrderShippedNotification(data: {
                     </p>
                     ${trackingUrl ? `
                     <a href="${trackingUrl}"
-                       style="display: inline-block; background-color: #8b5cf6; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                       style="display: inline-block; background-color: #7D55C7; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
                       Track Your Package
                     </a>
                     ` : ''}
@@ -1276,7 +1276,7 @@ export async function sendOrderShippedNotification(data: {
               </p>
 
               <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
-                Questions? Hit us up at <a href="mailto:support@fulluproar.com" style="color: #f97316; text-decoration: none;">support@fulluproar.com</a>
+                Questions? Hit us up at <a href="mailto:support@fulluproar.com" style="color: #FF8200; text-decoration: none;">support@fulluproar.com</a>
               </p>
             </td>
           </tr>
@@ -1286,7 +1286,7 @@ export async function sendOrderShippedNotification(data: {
             <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
               <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
                 Full Uproar Games Inc.<br>
-                <span style="color: #f97316;">Professionally ruining game nights since day one.</span>
+                <span style="color: #FF8200;">Professionally ruining game nights since day one.</span>
               </p>
             </td>
           </tr>

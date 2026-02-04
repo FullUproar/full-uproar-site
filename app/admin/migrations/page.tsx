@@ -30,7 +30,7 @@ export default function MigrationsPage() {
     title: {
       fontSize: '36px',
       fontWeight: '900',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '8px'
     },
     subtitle: {
@@ -43,7 +43,7 @@ export default function MigrationsPage() {
     },
     migrationCard: {
       background: 'rgba(30, 41, 59, 0.8)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       padding: '24px',
       backdropFilter: 'blur(10px)',
@@ -52,7 +52,7 @@ export default function MigrationsPage() {
     migrationTitle: {
       fontSize: '20px',
       fontWeight: 'bold',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '8px'
     },
     migrationDescription: {
@@ -77,7 +77,7 @@ export default function MigrationsPage() {
       color: '#94a3b8'
     },
     runButton: {
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: 'white',
       padding: '10px 20px',
       borderRadius: '8px',
@@ -89,11 +89,11 @@ export default function MigrationsPage() {
     },
     backButton: {
       display: 'inline-block',
-      color: '#fdba74',
+      color: '#FBDB65',
       textDecoration: 'none',
       marginBottom: '20px',
       padding: '8px 16px',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       transition: 'all 0.2s'
     },
@@ -189,20 +189,20 @@ export default function MigrationsPage() {
             style={{
               marginTop: '16px',
               padding: '8px 16px',
-              background: 'rgba(249, 115, 22, 0.2)',
-              border: '2px solid rgba(249, 115, 22, 0.5)',
+              background: 'rgba(255, 130, 0, 0.2)',
+              border: '2px solid rgba(255, 130, 0, 0.5)',
               borderRadius: '8px',
-              color: '#fdba74',
+              color: '#FBDB65',
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: 'bold',
               transition: 'all 0.2s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.3)';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.3)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)';
             }}
           >
             {showCompleted ? 'Hide' : 'Show'} Completed Migrations
@@ -221,11 +221,11 @@ export default function MigrationsPage() {
                   textAlign: 'center',
                   padding: '60px',
                   background: 'rgba(30, 41, 59, 0.8)',
-                  border: '2px solid rgba(249, 115, 22, 0.3)',
+                  border: '2px solid rgba(255, 130, 0, 0.3)',
                   borderRadius: '12px',
                   backdropFilter: 'blur(10px)'
                 }}>
-                  <h3 style={{ color: '#fdba74', fontSize: '24px', marginBottom: '16px' }}>
+                  <h3 style={{ color: '#FBDB65', fontSize: '24px', marginBottom: '16px' }}>
                     ✅ All Migrations Complete!
                   </h3>
                   <p style={{ color: '#e2e8f0', fontSize: '16px' }}>
@@ -293,7 +293,7 @@ function MigrationCard({ migration, styles, isCompleted, onComplete }: any) {
         ...styles.migrationCard,
         borderColor: status === 'success' ? 'rgba(134, 239, 172, 0.3)' : 
                      status === 'error' ? 'rgba(252, 165, 165, 0.3)' : 
-                     'rgba(249, 115, 22, 0.3)'
+                     'rgba(255, 130, 0, 0.3)'
       }}
     >
       <h3 style={styles.migrationTitle}>{migration.title}</h3>
@@ -303,7 +303,7 @@ function MigrationCard({ migration, styles, isCompleted, onComplete }: any) {
         <div style={{
           ...styles.statusDot,
           background: status === 'idle' ? '#64748b' :
-                     status === 'running' ? '#f97316' :
+                     status === 'running' ? '#FF8200' :
                      status === 'success' ? '#10b981' :
                      '#ef4444'
         }} />

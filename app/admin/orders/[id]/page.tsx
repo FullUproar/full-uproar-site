@@ -214,7 +214,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       shipped: '#a78bfa',
       delivered: '#10b981',
       cancelled: '#ef4444',
-      refunded: '#f97316',
+      refunded: '#FF8200',
       payment_failed: '#ef4444'
     };
     return colors[status] || '#6b7280';
@@ -225,7 +225,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       <div style={adminStyles.container}>
         <div style={adminStyles.content}>
           <div style={{ textAlign: 'center', padding: '60px' }}>
-            <Package size={48} style={{ color: '#fdba74', marginBottom: '16px', animation: 'pulse 2s infinite' }} />
+            <Package size={48} style={{ color: '#FBDB65', marginBottom: '16px', animation: 'pulse 2s infinite' }} />
             <p style={{ color: '#94a3b8' }}>Loading order details...</p>
           </div>
         </div>
@@ -334,7 +334,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h2 style={{ 
               fontSize: '18px', 
               fontWeight: 'bold', 
-              color: '#fdba74', 
+              color: '#FBDB65', 
               marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
@@ -354,7 +354,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px' }}>Email</p>
                 <p style={{ fontSize: '14px', color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Mail size={14} />
-                  <a href={`mailto:${order.customerEmail}`} style={{ color: '#fdba74', textDecoration: 'none' }}>
+                  <a href={`mailto:${order.customerEmail}`} style={{ color: '#FBDB65', textDecoration: 'none' }}>
                     {order.customerEmail}
                   </a>
                 </p>
@@ -364,7 +364,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px' }}>Phone</p>
                   <p style={{ fontSize: '14px', color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Phone size={14} />
-                    <a href={`tel:${order.customerPhone}`} style={{ color: '#fdba74', textDecoration: 'none' }}>
+                    <a href={`tel:${order.customerPhone}`} style={{ color: '#FBDB65', textDecoration: 'none' }}>
                       {order.customerPhone}
                     </a>
                   </p>
@@ -391,7 +391,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h2 style={{ 
               fontSize: '18px', 
               fontWeight: 'bold', 
-              color: '#fdba74', 
+              color: '#FBDB65', 
               marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
@@ -420,7 +420,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px' }}>Tracking</p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Truck size={14} />
-                    <span style={{ fontWeight: '600', color: '#fdba74' }}>
+                    <span style={{ fontWeight: '600', color: '#FBDB65' }}>
                       {order.trackingNumber}
                     </span>
                     {order.shippingCarrier && (
@@ -450,7 +450,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h2 style={{ 
               fontSize: '18px', 
               fontWeight: 'bold', 
-              color: '#fdba74', 
+              color: '#FBDB65', 
               marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
@@ -465,7 +465,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 gridTemplateColumns: '1fr 1fr',
                 gap: '16px',
                 paddingBottom: '16px',
-                borderBottom: '1px solid rgba(249, 115, 22, 0.2)'
+                borderBottom: '1px solid rgba(255, 130, 0, 0.2)'
               }}>
                 <div>
                   <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px' }}>Subtotal</p>
@@ -487,7 +487,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
                 <div>
                   <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px' }}>Total</p>
-                  <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#fde68a' }}>
+                  <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#FBDB65' }}>
                     ${(order.totalCents / 100).toFixed(2)}
                   </p>
                 </div>
@@ -496,11 +496,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               {order.refundAmountCents > 0 && (
                 <div style={{
                   padding: '12px',
-                  background: 'rgba(249, 115, 22, 0.1)',
+                  background: 'rgba(255, 130, 0, 0.1)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(249, 115, 22, 0.3)'
+                  border: '1px solid rgba(255, 130, 0, 0.3)'
                 }}>
-                  <p style={{ fontSize: '14px', color: '#f97316', fontWeight: '600' }}>
+                  <p style={{ fontSize: '14px', color: '#FF8200', fontWeight: '600' }}>
                     Refunded: ${(order.refundAmountCents / 100).toFixed(2)}
                   </p>
                   {order.refundedAt && (
@@ -547,7 +547,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           <h2 style={{ 
             fontSize: '18px', 
             fontWeight: 'bold', 
-            color: '#fdba74', 
+            color: '#FBDB65', 
             marginBottom: '16px',
             display: 'flex',
             alignItems: 'center',
@@ -598,7 +598,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                       ${(item.priceCents / 100).toFixed(2)}
                     </td>
                     <td style={adminStyles.tableCell}>
-                      <span style={{ fontWeight: '600', color: '#fde68a' }}>
+                      <span style={{ fontWeight: '600', color: '#FBDB65' }}>
                         ${((item.priceCents * item.quantity) / 100).toFixed(2)}
                       </span>
                     </td>
@@ -648,7 +648,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h2 style={{ 
               fontSize: '18px', 
               fontWeight: 'bold', 
-              color: '#fdba74', 
+              color: '#FBDB65', 
               marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
@@ -716,7 +716,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h2 style={{ 
               fontSize: '18px', 
               fontWeight: 'bold', 
-              color: '#fdba74', 
+              color: '#FBDB65', 
               marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
@@ -793,7 +793,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             )}
 
             {/* Add Note Button */}
-            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(249, 115, 22, 0.2)' }}>
+            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255, 130, 0, 0.2)' }}>
               {addingNote ? (
                 <div>
                   <textarea
@@ -852,7 +852,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <h3 style={{ 
                   fontSize: '16px', 
                   fontWeight: 'bold', 
-                  color: '#fdba74', 
+                  color: '#FBDB65', 
                   marginBottom: '12px' 
                 }}>
                   Returns ({order.returns.length})
@@ -872,8 +872,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                         padding: '2px 8px',
                         borderRadius: '4px',
                         fontSize: '12px',
-                        background: 'rgba(249, 115, 22, 0.2)',
-                        color: '#f97316'
+                        background: 'rgba(255, 130, 0, 0.2)',
+                        color: '#FF8200'
                       }}>
                         {ret.status}
                       </span>
@@ -889,7 +889,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <h3 style={{ 
                   fontSize: '16px', 
                   fontWeight: 'bold', 
-                  color: '#fdba74', 
+                  color: '#FBDB65', 
                   marginBottom: '12px' 
                 }}>
                   Support Tickets ({order.tickets.length})

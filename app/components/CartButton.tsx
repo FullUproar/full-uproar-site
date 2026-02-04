@@ -32,7 +32,7 @@ export default function CartButton() {
         cursor: 'pointer'
       }}
     >
-      <ShoppingCart style={{ height: '1.25rem', width: '1.25rem', color: '#fdba74' }} />
+      <ShoppingCart style={{ height: '1.25rem', width: '1.25rem', color: '#FBDB65' }} />
       {mounted && cartItems > 0 && (
         <span 
           {...getTestId(TestId.CART_BADGE)}

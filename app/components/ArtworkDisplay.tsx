@@ -79,7 +79,7 @@ export default function ArtworkDisplay({
   if (loading) {
     return (
       <div className={className} style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ color: '#f97316', fontWeight: 'bold' }}>Loading Fugly art...</span>
+        <span style={{ color: '#FF8200', fontWeight: 'bold' }}>Loading Fugly art...</span>
       </div>
     );
   }
@@ -87,7 +87,7 @@ export default function ArtworkDisplay({
   if (artwork.length === 0) {
     return (
       <div className={className} style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ color: '#f97316', fontWeight: 'bold', fontSize: 'inherit' }}>{fallbackText}</span>
+        <span style={{ color: '#FF8200', fontWeight: 'bold', fontSize: 'inherit' }}>{fallbackText}</span>
       </div>
     );
   }

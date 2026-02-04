@@ -273,7 +273,7 @@ export default function RedirectsAdminPage() {
           href="/admin/dashboard"
           style={adminStyles.backButton}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+            e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
@@ -372,7 +372,7 @@ export default function RedirectsAdminPage() {
                       <tr key={redirect.id} style={adminStyles.tableRow}>
                         <td style={adminStyles.tableCell}>
                           <div>
-                            <div style={{ fontWeight: 'bold', color: '#fdba74' }}>
+                            <div style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                               {redirect.name || redirect.slug}
                             </div>
                             <div style={{
@@ -429,11 +429,11 @@ export default function RedirectsAdminPage() {
                               }
                             }}
                             style={{
-                              background: 'rgba(249, 115, 22, 0.1)',
-                              border: '1px solid rgba(249, 115, 22, 0.3)',
+                              background: 'rgba(255, 130, 0, 0.1)',
+                              border: '1px solid rgba(255, 130, 0, 0.3)',
                               borderRadius: '6px',
                               padding: '4px 12px',
-                              color: '#fdba74',
+                              color: '#FBDB65',
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
@@ -531,7 +531,7 @@ export default function RedirectsAdminPage() {
                             <div style={{
                               fontSize: '14px',
                               fontWeight: 'bold',
-                              color: '#fdba74',
+                              color: '#FBDB65',
                               marginBottom: '12px',
                             }}>
                               Recent Scans
@@ -614,14 +614,14 @@ export default function RedirectsAdminPage() {
         }}>
           <div style={{
             background: 'linear-gradient(to bottom right, #1e293b, #0f172a)',
-            border: '2px solid rgba(249, 115, 22, 0.3)',
+            border: '2px solid rgba(255, 130, 0, 0.3)',
             borderRadius: '16px',
             padding: '32px',
             width: '100%',
             maxWidth: '500px',
             margin: '20px',
           }}>
-            <h2 style={{ color: '#fdba74', marginBottom: '24px', fontSize: '24px' }}>
+            <h2 style={{ color: '#FBDB65', marginBottom: '24px', fontSize: '24px' }}>
               {editingRedirect ? 'Edit Redirect' : 'New Redirect'}
             </h2>
 
@@ -698,7 +698,7 @@ export default function RedirectsAdminPage() {
                     type="checkbox"
                     checked={formData.isActive}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    style={{ width: '18px', height: '18px', accentColor: '#f97316' }}
+                    style={{ width: '18px', height: '18px', accentColor: '#FF8200' }}
                   />
                   Active (redirect is live)
                 </label>
@@ -761,7 +761,7 @@ export default function RedirectsAdminPage() {
             </div>
 
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <div style={{ color: '#fdba74', fontWeight: 'bold', marginBottom: '4px' }}>
+              <div style={{ color: '#FBDB65', fontWeight: 'bold', marginBottom: '4px' }}>
                 {qrModal.name || qrModal.slug}
               </div>
               <div style={{ color: '#94a3b8', fontSize: '14px' }}>
@@ -827,7 +827,7 @@ export default function RedirectsAdminPage() {
                   style={{
                     width: '100%',
                     height: '38px',
-                    border: '2px solid rgba(249, 115, 22, 0.3)',
+                    border: '2px solid rgba(255, 130, 0, 0.3)',
                     borderRadius: '8px',
                     cursor: 'pointer',
                   }}
@@ -844,7 +844,7 @@ export default function RedirectsAdminPage() {
                   style={{
                     width: '100%',
                     height: '38px',
-                    border: '2px solid rgba(249, 115, 22, 0.3)',
+                    border: '2px solid rgba(255, 130, 0, 0.3)',
                     borderRadius: '8px',
                     cursor: 'pointer',
                   }}
@@ -873,12 +873,12 @@ export default function RedirectsAdminPage() {
                   Classic
                 </button>
                 <button
-                  onClick={() => { setQrColor('#f97316'); setQrBgColor('#0a0a0a'); }}
+                  onClick={() => { setQrColor('#FF8200'); setQrBgColor('#0a0a0a'); }}
                   style={{
                     padding: '6px 12px',
                     background: '#0a0a0a',
-                    color: '#f97316',
-                    border: '2px solid #f97316',
+                    color: '#FF8200',
+                    border: '2px solid #FF8200',
                     borderRadius: '6px',
                     cursor: 'pointer',
                     fontSize: '12px',
@@ -887,10 +887,10 @@ export default function RedirectsAdminPage() {
                   Full Uproar
                 </button>
                 <button
-                  onClick={() => { setQrColor('#0a0a0a'); setQrBgColor('#f97316'); }}
+                  onClick={() => { setQrColor('#0a0a0a'); setQrBgColor('#FF8200'); }}
                   style={{
                     padding: '6px 12px',
-                    background: '#f97316',
+                    background: '#FF8200',
                     color: '#0a0a0a',
                     border: '2px solid #0a0a0a',
                     borderRadius: '6px',
@@ -901,12 +901,12 @@ export default function RedirectsAdminPage() {
                   Inverted
                 </button>
                 <button
-                  onClick={() => { setQrColor('#8b5cf6'); setQrBgColor('#fde68a'); }}
+                  onClick={() => { setQrColor('#7D55C7'); setQrBgColor('#FBDB65'); }}
                   style={{
                     padding: '6px 12px',
-                    background: '#fde68a',
-                    color: '#8b5cf6',
-                    border: '2px solid #8b5cf6',
+                    background: '#FBDB65',
+                    color: '#7D55C7',
+                    border: '2px solid #7D55C7',
                     borderRadius: '6px',
                     cursor: 'pointer',
                     fontSize: '12px',

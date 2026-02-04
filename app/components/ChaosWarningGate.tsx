@@ -38,7 +38,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#f97316',
+        color: '#FF8200',
         fontSize: '2rem',
         fontWeight: 'bold'
       }}>
@@ -94,7 +94,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
         maxWidth: '700px',
         width: '100%',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        border: '3px solid #f97316',
+        border: '3px solid #FF8200',
         position: 'relative',
         zIndex: 10
       }}>
@@ -105,28 +105,28 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
           gap: '1rem',
           marginBottom: '2rem'
         }}>
-          <Sparkles size={48} style={{ color: '#f97316' }} />
+          <Sparkles size={48} style={{ color: '#FF8200' }} />
           <h1 style={{
             fontSize: '2.5rem',
             fontWeight: 900,
-            color: '#f97316',
+            color: '#FF8200',
             margin: 0,
             textTransform: 'uppercase'
           }}>
             Buckle Up!
           </h1>
-          <Sparkles size={48} style={{ color: '#f97316' }} />
+          <Sparkles size={48} style={{ color: '#FF8200' }} />
         </div>
 
         <div style={{
-          background: 'rgba(249, 115, 22, 0.1)',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          background: 'rgba(255, 130, 0, 0.1)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
           borderRadius: '1rem',
           padding: '1.5rem',
           marginBottom: '2rem'
         }}>
           <p style={{
-            color: '#fdba74',
+            color: '#FBDB65',
             fontSize: '1.25rem',
             fontWeight: 'bold',
             marginBottom: '1rem',
@@ -135,7 +135,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
             🎮 Get ready for the WILDEST game site you've ever seen!
           </p>
           <ul style={{
-            color: '#fde68a',
+            color: '#FBDB65',
             fontSize: '1rem',
             listStyle: 'none',
             padding: 0,
@@ -173,7 +173,7 @@ export default function ChaosWarningGate({ onProceed }: ChaosWarningGateProps) {
           <button
             onClick={() => handleProceedFromWarning(true)}
             style={{
-              background: 'linear-gradient(135deg, #f97316, #ea580c)',
+              background: 'linear-gradient(135deg, #FF8200, #ea580c)',
               color: '#111827',
               padding: '1.5rem',
               borderRadius: '0.75rem',

@@ -116,7 +116,7 @@ export default function ContactPage() {
           padding: '2rem'
         }}>
           <h1 style={{ 
-            color: '#f97316', 
+            color: '#FF8200', 
             fontSize: '3rem', 
             marginBottom: '1rem',
             fontWeight: 900,
@@ -148,7 +148,7 @@ export default function ContactPage() {
               border: '2px solid #374151'
             }}>
               <h2 style={{
-                color: '#fdba74',
+                color: '#FBDB65',
                 fontSize: '1.5rem',
                 marginBottom: '1.5rem',
                 fontWeight: 'bold'
@@ -168,7 +168,7 @@ export default function ContactPage() {
                   <h3 style={{ color: '#10b981', marginBottom: '0.5rem' }}>Message Sent!</h3>
                   {ticketNumber && (
                     <p style={{
-                      color: '#f97316',
+                      color: '#FF8200',
                       fontWeight: 'bold',
                       fontSize: '1.125rem',
                       marginBottom: '0.75rem'
@@ -374,7 +374,7 @@ export default function ContactPage() {
                     disabled={isSubmitting}
                     style={{
                       padding: '0.75rem 1.5rem',
-                      background: isSubmitting ? '#6b7280' : 'linear-gradient(45deg, #f97316, #ea580c)',
+                      background: isSubmitting ? '#6b7280' : 'linear-gradient(45deg, #FF8200, #ea580c)',
                       color: isSubmitting ? '#9ca3af' : '#111827',
                       border: 'none',
                       borderRadius: '0.5rem',
@@ -408,7 +408,7 @@ export default function ContactPage() {
                 marginBottom: '2rem'
               }}>
                 <h2 style={{
-                  color: '#fdba74',
+                  color: '#FBDB65',
                   fontSize: '1.5rem',
                   marginBottom: '1.5rem',
                   fontWeight: 'bold'
@@ -418,7 +418,7 @@ export default function ContactPage() {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   <div>
-                    <h3 style={{ color: '#f97316', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    <h3 style={{ color: '#FF8200', marginBottom: '0.5rem', fontWeight: 'bold' }}>
                       📧 Email Us Directly
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -432,7 +432,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <h3 style={{ color: '#f97316', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    <h3 style={{ color: '#FF8200', marginBottom: '0.5rem', fontWeight: 'bold' }}>
                       📦 Wholesale Inquiries
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -446,7 +446,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <h3 style={{ color: '#f97316', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    <h3 style={{ color: '#FF8200', marginBottom: '0.5rem', fontWeight: 'bold' }}>
                       🎮 Marketing & Partnerships
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -460,7 +460,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <h3 style={{ color: '#f97316', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    <h3 style={{ color: '#FF8200', marginBottom: '0.5rem', fontWeight: 'bold' }}>
                       ↩️ Returns & Refunds
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -476,7 +476,7 @@ export default function ContactPage() {
               </div>
 
               <div style={{
-                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                 borderRadius: '1rem',
                 padding: '2rem',
                 color: '#111827'

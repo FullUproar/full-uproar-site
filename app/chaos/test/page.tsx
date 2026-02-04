@@ -81,7 +81,7 @@ export default function ChaosTestPage() {
         participantId: myId,
         displayName: 'You (Tester)',
         pronouns: '',
-        avatarColor: '#f97316',
+        avatarColor: '#FF8200',
         isHost: true,
         isConnected: true,
         chaosPoints: 100,
@@ -306,7 +306,7 @@ export default function ChaosTestPage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{
-                color: '#f97316',
+                color: '#FF8200',
                 fontWeight: 'bold',
                 fontSize: '14px',
                 textTransform: 'uppercase',
@@ -315,7 +315,7 @@ export default function ChaosTestPage() {
                 Chaos Agent
               </span>
               <span style={{
-                backgroundColor: '#8b5cf6',
+                backgroundColor: '#7D55C7',
                 color: '#fff',
                 padding: '2px 8px',
                 borderRadius: '4px',
@@ -335,7 +335,7 @@ export default function ChaosTestPage() {
             onClick={() => setShowDebug(prev => !prev)}
             style={{
               padding: '8px 12px',
-              backgroundColor: showDebug ? '#f97316' : '#2a2a2a',
+              backgroundColor: showDebug ? '#FF8200' : '#2a2a2a',
               color: showDebug ? '#000' : '#e2e8f0',
               border: 'none',
               borderRadius: '8px',
@@ -350,9 +350,9 @@ export default function ChaosTestPage() {
             backgroundColor: '#0a0a0a',
             padding: '8px 16px',
             borderRadius: '20px',
-            border: '2px solid #f97316',
+            border: '2px solid #FF8200',
           }}>
-            <span style={{ color: '#fde68a', fontWeight: 'bold', fontSize: '18px' }}>
+            <span style={{ color: '#FBDB65', fontWeight: 'bold', fontSize: '18px' }}>
               {myPoints}
             </span>
             <span style={{ color: '#9ca3af', fontSize: '12px', marginLeft: '4px' }}>pts</span>
@@ -362,9 +362,9 @@ export default function ChaosTestPage() {
 
       {/* Test Mode Banner */}
       <div style={{
-        backgroundColor: '#8b5cf620',
+        backgroundColor: '#7D55C720',
         padding: '8px 16px',
-        borderBottom: '1px solid #8b5cf6',
+        borderBottom: '1px solid #7D55C7',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -380,7 +380,7 @@ export default function ChaosTestPage() {
         <div style={{
           backgroundColor: '#7c3aed',
           padding: '16px 20px',
-          borderBottom: '2px solid #8b5cf6',
+          borderBottom: '2px solid #7D55C7',
         }}>
           <div style={{
             display: 'flex',
@@ -529,7 +529,7 @@ export default function ChaosTestPage() {
                   onClick={() => alert(`Mini game "${game.title}" would start here!`)}
                   style={{
                     padding: '8px 16px',
-                    backgroundColor: '#f97316',
+                    backgroundColor: '#FF8200',
                     color: '#000',
                     border: 'none',
                     borderRadius: '8px',
@@ -558,7 +558,7 @@ export default function ChaosTestPage() {
             }}>
               <span style={{ fontSize: '24px' }}>{modeInfo.icon}</span>
               <div>
-                <div style={{ color: '#f97316', fontWeight: 'bold', fontSize: '14px' }}>
+                <div style={{ color: '#FF8200', fontWeight: 'bold', fontSize: '14px' }}>
                   {modeInfo.label}
                 </div>
                 <div style={{ color: '#6b7280', fontSize: '12px' }}>
@@ -593,7 +593,7 @@ export default function ChaosTestPage() {
                   borderLeft: `3px solid ${
                     obj.status === 'VERIFIED' ? '#10b981' :
                     obj.status === 'CLAIMED' ? '#f59e0b' :
-                    obj.status === 'FAILED' ? '#ef4444' : '#f97316'
+                    obj.status === 'FAILED' ? '#ef4444' : '#FF8200'
                   }`,
                 }}>
                   <div style={{
@@ -607,7 +607,7 @@ export default function ChaosTestPage() {
                       backgroundColor: '#0a0a0a',
                       padding: '4px 8px',
                       borderRadius: '4px',
-                      color: '#fde68a',
+                      color: '#FBDB65',
                       fontSize: '12px',
                       fontWeight: 'bold',
                     }}>
@@ -623,7 +623,7 @@ export default function ChaosTestPage() {
                       style={{
                         width: '100%',
                         padding: '10px',
-                        backgroundColor: '#f97316',
+                        backgroundColor: '#FF8200',
                         color: '#000',
                         border: 'none',
                         borderRadius: '8px',
@@ -703,7 +703,7 @@ export default function ChaosTestPage() {
                         )}
                       </div>
                     </div>
-                    <span style={{ color: '#fde68a', fontWeight: 'bold' }}>
+                    <span style={{ color: '#FBDB65', fontWeight: 'bold' }}>
                       {p.chaosPoints} pts
                     </span>
                   </div>
@@ -784,9 +784,9 @@ export default function ChaosTestPage() {
               flexDirection: 'column',
               alignItems: 'center',
               padding: '8px',
-              backgroundColor: activeTab === tab ? 'rgba(249, 115, 22, 0.1)' : 'transparent',
+              backgroundColor: activeTab === tab ? 'rgba(255, 130, 0, 0.1)' : 'transparent',
               border: 'none',
-              borderTop: activeTab === tab ? '2px solid #f97316' : '2px solid transparent',
+              borderTop: activeTab === tab ? '2px solid #FF8200' : '2px solid transparent',
               cursor: 'pointer',
             }}
           >
@@ -799,7 +799,7 @@ export default function ChaosTestPage() {
             <span style={{
               fontSize: '10px',
               marginTop: '4px',
-              color: activeTab === tab ? '#f97316' : '#6b7280',
+              color: activeTab === tab ? '#FF8200' : '#6b7280',
               fontWeight: activeTab === tab ? 'bold' : 'normal',
               textTransform: 'capitalize',
             }}>
@@ -859,7 +859,7 @@ function BetsSection({
         style={{
           width: '100%',
           padding: '16px',
-          backgroundColor: '#f97316',
+          backgroundColor: '#FF8200',
           color: '#000',
           border: 'none',
           borderRadius: '12px',

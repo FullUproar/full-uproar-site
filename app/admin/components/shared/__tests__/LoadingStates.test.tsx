@@ -24,7 +24,7 @@ describe('Spinner', () => {
     const spinner = container.querySelector('svg');
     
     expect(spinner).toBeInTheDocument();
-    expect(spinner).toHaveStyle({ color: '#f97316' });
+    expect(spinner).toHaveStyle({ color: '#FF8200' });
   });
 
   it('should render with different sizes', () => {
@@ -310,7 +310,7 @@ describe('LoadingButton', () => {
     const dangerBtn = danger.querySelector('button');
     
     expect(primaryBtn).toHaveStyle({
-      background: expect.stringContaining('#f97316'),
+      background: expect.stringContaining('#FF8200'),
     });
     expect(dangerBtn).toHaveStyle({
       background: expect.stringContaining('#ef4444'),

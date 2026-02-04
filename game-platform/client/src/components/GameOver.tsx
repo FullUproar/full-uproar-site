@@ -43,12 +43,12 @@ const styles = {
   title: {
     fontSize: '36px',
     fontWeight: 'bold' as const,
-    color: '#f97316',
+    color: '#FF8200',
     marginBottom: '8px',
   },
   subtitle: {
     fontSize: '18px',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '24px',
   },
   winnerName: {
@@ -69,13 +69,13 @@ const styles = {
     border: 'none',
   },
   primaryButton: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
   },
   secondaryButton: {
     background: 'transparent',
-    border: '2px solid rgba(249, 115, 22, 0.5)',
-    color: '#f97316',
+    border: '2px solid rgba(255, 130, 0, 0.5)',
+    color: '#FF8200',
   },
 };
 

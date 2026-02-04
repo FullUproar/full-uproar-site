@@ -48,7 +48,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
     backgroundPattern: {
       position: 'absolute' as const,
       inset: 0,
-      background: 'radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(253, 186, 116, 0.05) 0%, transparent 50%)',
+      background: 'radial-gradient(circle at 20% 80%, rgba(255, 130, 0, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(253, 186, 116, 0.05) 0%, transparent 50%)',
       pointerEvents: 'none' as const
     },
     card: {
@@ -60,7 +60,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
       width: '100%',
       textAlign: 'center' as const,
       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-      border: '3px solid #f97316',
+      border: '3px solid #FF8200',
       position: 'relative' as const,
       zIndex: 10
     },
@@ -73,8 +73,8 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
     },
     fuglyImage: {
       borderRadius: '0.5rem',
-      border: '2px solid rgba(249, 115, 22, 0.5)',
-      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.5)',
+      boxShadow: '0 4px 12px rgba(255, 130, 0, 0.3)',
       transform: 'rotate(-2deg)'
     },
     fuglyImage2: {
@@ -93,7 +93,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
     logo: {
       width: 'clamp(4rem, 10vw, 5rem)',
       height: 'clamp(4rem, 10vw, 5rem)',
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
@@ -101,20 +101,20 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
       fontSize: 'clamp(1.5rem, 4vw, 2rem)',
       fontWeight: 900,
       color: 'white',
-      boxShadow: '0 8px 20px rgba(249, 115, 22, 0.5)',
-      border: '3px solid #fdba74'
+      boxShadow: '0 8px 20px rgba(255, 130, 0, 0.5)',
+      border: '3px solid #FBDB65'
     },
     title: {
       fontSize: 'clamp(2rem, 6vw, 3rem)',
       fontWeight: 900,
-      color: '#f97316',
+      color: '#FF8200',
       marginBottom: '0.25rem',
-      textShadow: '0 4px 12px rgba(249, 115, 22, 0.5)',
+      textShadow: '0 4px 12px rgba(255, 130, 0, 0.5)',
       letterSpacing: '-0.02em'
     },
     brandName: {
       fontSize: 'clamp(0.875rem, 2vw, 1rem)',
-      color: '#fdba74',
+      color: '#FBDB65',
       fontWeight: 700,
       textTransform: 'uppercase' as const,
       letterSpacing: '0.1em',
@@ -140,7 +140,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
       width: '100%',
       padding: 'clamp(0.75rem, 2vw, 1rem)',
       paddingRight: '3rem',
-      border: `2px solid ${isWrong ? '#ef4444' : 'rgba(249, 115, 22, 0.3)'}`,
+      border: `2px solid ${isWrong ? '#ef4444' : 'rgba(255, 130, 0, 0.3)'}`,
       borderRadius: '0.5rem',
       fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
       outline: 'none',
@@ -157,14 +157,14 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
       background: 'none',
       border: 'none',
       cursor: 'pointer',
-      color: '#fdba74',
+      color: '#FBDB65',
       padding: '0.25rem',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center'
     },
     button: {
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: 'white',
       padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem)',
       borderRadius: '0.5rem',
@@ -178,7 +178,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
       justifyContent: 'center',
       gap: '0.5rem',
       width: '100%',
-      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)'
+      boxShadow: '0 4px 12px rgba(255, 130, 0, 0.3)'
     },
     errorMessage: {
       color: '#fca5a5',
@@ -196,8 +196,8 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
       opacity: 0.8
     },
     gameIcon: {
-      color: '#fdba74',
-      filter: 'drop-shadow(0 2px 4px rgba(249, 115, 22, 0.3))'
+      color: '#FBDB65',
+      filter: 'drop-shadow(0 2px 4px rgba(255, 130, 0, 0.3))'
     }
   };
 
@@ -242,7 +242,7 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
         <p style={styles.subtitle}>
           Where gaming gets loud, proud, and unapologetically FUGLY!
           <br />
-          <strong style={{ color: '#fdba74' }}>🔥 Early Access Only 🔥</strong>
+          <strong style={{ color: '#FBDB65' }}>🔥 Early Access Only 🔥</strong>
         </p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -254,12 +254,12 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
               placeholder="Enter access code..."
               style={styles.input}
               onFocus={(e) => {
-                e.target.style.borderColor = '#f97316';
-                e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)';
+                e.target.style.borderColor = '#FF8200';
+                e.target.style.boxShadow = '0 0 0 3px rgba(255, 130, 0, 0.1)';
               }}
               onBlur={(e) => {
                 if (!isWrong) {
-                  e.target.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+                  e.target.style.borderColor = 'rgba(255, 130, 0, 0.3)';
                   e.target.style.boxShadow = 'none';
                 }
               }}
@@ -280,11 +280,11 @@ export default function PasswordGate({ onCorrectPassword }: PasswordGateProps) {
             style={styles.button}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(249, 115, 22, 0.4)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 130, 0, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(249, 115, 22, 0.3)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 130, 0, 0.3)';
             }}
           >
             <Skull size={24} />

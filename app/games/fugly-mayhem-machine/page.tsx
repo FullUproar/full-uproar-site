@@ -23,7 +23,7 @@ export default function FuglyMayhemMachinePage() {
         }}>
           <div style={{
             fontSize: '1rem',
-            color: '#f97316',
+            color: '#FF8200',
             fontWeight: 'bold',
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
@@ -34,7 +34,7 @@ export default function FuglyMayhemMachinePage() {
           <h1 style={{
             fontSize: 'clamp(2.5rem, 8vw, 5rem)',
             fontWeight: 900,
-            background: 'linear-gradient(45deg, #f97316, #fbbf24, #f97316)',
+            background: 'linear-gradient(45deg, #FF8200, #fbbf24, #FF8200)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
@@ -42,7 +42,7 @@ export default function FuglyMayhemMachinePage() {
             letterSpacing: '0.05em',
             lineHeight: 1.1,
             margin: 0,
-            textShadow: '0 0 60px rgba(249, 115, 22, 0.5)',
+            textShadow: '0 0 60px rgba(255, 130, 0, 0.5)',
           }}>
             {FMM_SERIES.name}
           </h1>
@@ -187,14 +187,14 @@ export default function FuglyMayhemMachinePage() {
         <div style={{
           marginTop: '6rem',
           padding: '3rem',
-          background: 'rgba(249, 115, 22, 0.1)',
+          background: 'rgba(255, 130, 0, 0.1)',
           borderRadius: '1.5rem',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
         }}>
           <h2 style={{
             fontSize: '2rem',
             fontWeight: 900,
-            color: '#f97316',
+            color: '#FF8200',
             marginBottom: '2rem',
           }}>
             How The Mayhem Machine Works
@@ -216,7 +216,7 @@ export default function FuglyMayhemMachinePage() {
                   width: '3rem',
                   height: '3rem',
                   borderRadius: '50%',
-                  background: 'linear-gradient(45deg, #f97316, #fbbf24)',
+                  background: 'linear-gradient(45deg, #FF8200, #fbbf24)',
                   color: '#0a0a0a',
                   fontWeight: 900,
                   fontSize: '1.5rem',
@@ -245,7 +245,7 @@ export default function FuglyMayhemMachinePage() {
         }}>
           <p style={{
             fontSize: '1.25rem',
-            color: '#fdba74',
+            color: '#FBDB65',
             marginBottom: '1.5rem',
           }}>
             Ready to transform your game nights?
@@ -255,7 +255,7 @@ export default function FuglyMayhemMachinePage() {
             style={{
               display: 'inline-block',
               padding: '1rem 2.5rem',
-              background: 'linear-gradient(45deg, #f97316, #fb923c)',
+              background: 'linear-gradient(45deg, #FF8200, #fb923c)',
               color: '#0a0a0a',
               borderRadius: '9999px',
               fontWeight: 900,

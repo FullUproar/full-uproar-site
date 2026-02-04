@@ -93,7 +93,7 @@ export default function TestModesView() {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading test modes...</p>
+        <p style={{ color: '#FBDB65' }}>Loading test modes...</p>
       </div>
     );
   }
@@ -109,14 +109,14 @@ export default function TestModesView() {
         <div style={{
           ...adminStyles.card,
           padding: '24px',
-          backgroundColor: 'rgba(249, 115, 22, 0.1)',
-          borderColor: '#f97316',
+          backgroundColor: 'rgba(255, 130, 0, 0.1)',
+          borderColor: '#FF8200',
           marginBottom: '24px'
         }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-            <AlertTriangle size={24} style={{ color: '#f97316', flexShrink: 0 }} />
+            <AlertTriangle size={24} style={{ color: '#FF8200', flexShrink: 0 }} />
             <div>
-              <h3 style={{ color: '#fdba74', marginBottom: '8px', fontSize: '18px' }}>
+              <h3 style={{ color: '#FBDB65', marginBottom: '8px', fontSize: '18px' }}>
                 Warning: Test Modes Active
               </h3>
               <p style={{ color: '#94a3b8', fontSize: '14px' }}>
@@ -137,12 +137,12 @@ export default function TestModesView() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '16px',
-                backgroundColor: mode.enabled ? 'rgba(249, 115, 22, 0.05)' : 'transparent',
-                borderColor: mode.enabled ? '#f97316' : '#334155'
+                backgroundColor: mode.enabled ? 'rgba(255, 130, 0, 0.05)' : 'transparent',
+                borderColor: mode.enabled ? '#FF8200' : '#334155'
               }}
             >
               <div style={{ 
-                color: mode.enabled ? '#f97316' : '#64748b',
+                color: mode.enabled ? '#FF8200' : '#64748b',
                 flexShrink: 0
               }}>
                 {mode.icon}
@@ -150,7 +150,7 @@ export default function TestModesView() {
               
               <div style={{ flex: 1 }}>
                 <h3 style={{ 
-                  color: '#fdba74', 
+                  color: '#FBDB65', 
                   marginBottom: '4px',
                   fontSize: '16px',
                   fontWeight: 'bold'
@@ -200,7 +200,7 @@ export default function TestModesView() {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  backgroundColor: mode.enabled ? '#f97316' : '#475569',
+                  backgroundColor: mode.enabled ? '#FF8200' : '#475569',
                   borderRadius: '12px',
                   transition: 'all 0.3s',
                 }}>
@@ -241,7 +241,7 @@ export default function TestModesView() {
                 <span
                   key={mode.key}
                   style={{
-                    backgroundColor: '#f97316',
+                    backgroundColor: '#FF8200',
                     color: '#111827',
                     padding: '4px 12px',
                     borderRadius: '6px',

@@ -282,7 +282,7 @@ export default function AdminPromoCodesPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
         {/* Code */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Promo Code *
           </label>
           <input
@@ -306,7 +306,7 @@ export default function AdminPromoCodesPage() {
 
         {/* Description */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Description
           </label>
           <input
@@ -330,7 +330,7 @@ export default function AdminPromoCodesPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
         {/* Discount Type */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Discount Type *
           </label>
           <select
@@ -353,7 +353,7 @@ export default function AdminPromoCodesPage() {
 
         {/* Discount Value */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             {formData.discountType === 'percentage' ? 'Percentage Off *' : 'Amount Off (cents) *'}
           </label>
           <input
@@ -377,7 +377,7 @@ export default function AdminPromoCodesPage() {
 
         {/* Min Order */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Min Order ($)
           </label>
           <input
@@ -402,7 +402,7 @@ export default function AdminPromoCodesPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
         {/* Max Discount */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Max Discount ($)
           </label>
           <input
@@ -425,7 +425,7 @@ export default function AdminPromoCodesPage() {
 
         {/* Max Uses */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Total Uses Limit
           </label>
           <input
@@ -448,7 +448,7 @@ export default function AdminPromoCodesPage() {
 
         {/* Max Uses Per User */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Uses Per Customer
           </label>
           <input
@@ -472,7 +472,7 @@ export default function AdminPromoCodesPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
         {/* Start Date */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Start Date
           </label>
           <input
@@ -493,7 +493,7 @@ export default function AdminPromoCodesPage() {
 
         {/* Expiry Date */}
         <div>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Expiry Date
           </label>
           <input
@@ -520,7 +520,7 @@ export default function AdminPromoCodesPage() {
             type="checkbox"
             checked={formData.applicableToGames}
             onChange={(e) => setFormData({ ...formData, applicableToGames: e.target.checked })}
-            style={{ width: '18px', height: '18px', accentColor: '#f97316' }}
+            style={{ width: '18px', height: '18px', accentColor: '#FF8200' }}
           />
           Apply to Games
         </label>
@@ -529,7 +529,7 @@ export default function AdminPromoCodesPage() {
             type="checkbox"
             checked={formData.applicableToMerch}
             onChange={(e) => setFormData({ ...formData, applicableToMerch: e.target.checked })}
-            style={{ width: '18px', height: '18px', accentColor: '#f97316' }}
+            style={{ width: '18px', height: '18px', accentColor: '#FF8200' }}
           />
           Apply to Merch
         </label>
@@ -538,7 +538,7 @@ export default function AdminPromoCodesPage() {
             type="checkbox"
             checked={formData.newCustomersOnly}
             onChange={(e) => setFormData({ ...formData, newCustomersOnly: e.target.checked })}
-            style={{ width: '18px', height: '18px', accentColor: '#f97316' }}
+            style={{ width: '18px', height: '18px', accentColor: '#FF8200' }}
           />
           New Customers Only
         </label>
@@ -547,7 +547,7 @@ export default function AdminPromoCodesPage() {
             type="checkbox"
             checked={formData.isTest}
             onChange={(e) => setFormData({ ...formData, isTest: e.target.checked })}
-            style={{ width: '18px', height: '18px', accentColor: '#8b5cf6' }}
+            style={{ width: '18px', height: '18px', accentColor: '#7D55C7' }}
           />
           Test Mode
         </label>
@@ -581,7 +581,7 @@ export default function AdminPromoCodesPage() {
           style={{
             flex: 1,
             padding: '0.75rem',
-            background: actionLoading ? '#374151' : '#f97316',
+            background: actionLoading ? '#374151' : '#FF8200',
             border: 'none',
             borderRadius: '0.5rem',
             color: actionLoading ? '#6b7280' : '#111827',
@@ -607,8 +607,8 @@ export default function AdminPromoCodesPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-              <Tag size={32} style={{ color: '#f97316' }} />
-              <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316' }}>
+              <Tag size={32} style={{ color: '#FF8200' }} />
+              <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#FF8200' }}>
                 Promo Codes
               </h1>
             </div>
@@ -626,7 +626,7 @@ export default function AdminPromoCodesPage() {
               alignItems: 'center',
               gap: '0.5rem',
               padding: '0.75rem 1.5rem',
-              background: '#f97316',
+              background: '#FF8200',
               border: 'none',
               borderRadius: '0.5rem',
               color: '#111827',
@@ -671,12 +671,12 @@ export default function AdminPromoCodesPage() {
               <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Expired</div>
             </div>
             <div style={{
-              background: 'rgba(249, 115, 22, 0.1)',
-              border: '2px solid #f97316',
+              background: 'rgba(255, 130, 0, 0.1)',
+              border: '2px solid #FF8200',
               borderRadius: '0.75rem',
               padding: '1rem'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 900, color: '#FF8200' }}>
                 {data.stats.totalUsageToday}
               </div>
               <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Used Today</div>
@@ -702,7 +702,7 @@ export default function AdminPromoCodesPage() {
                 }}
                 style={{
                   padding: '0.5rem 1rem',
-                  background: statusFilter === status ? '#f97316' : 'rgba(255, 255, 255, 0.05)',
+                  background: statusFilter === status ? '#FF8200' : 'rgba(255, 255, 255, 0.05)',
                   border: statusFilter === status ? 'none' : '1px solid #374151',
                   borderRadius: '0.5rem',
                   color: statusFilter === status ? '#111827' : '#94a3b8',
@@ -737,7 +737,7 @@ export default function AdminPromoCodesPage() {
               type="submit"
               style={{
                 padding: '0.5rem 1rem',
-                background: '#f97316',
+                background: '#FF8200',
                 border: 'none',
                 borderRadius: '0.5rem',
                 color: '#111827',
@@ -771,7 +771,7 @@ export default function AdminPromoCodesPage() {
               }}
               style={{
                 padding: '0.75rem 1.5rem',
-                background: '#f97316',
+                background: '#FF8200',
                 border: 'none',
                 borderRadius: '0.5rem',
                 color: '#111827',
@@ -808,7 +808,7 @@ export default function AdminPromoCodesPage() {
                       <code style={{
                         fontSize: '1.5rem',
                         fontWeight: 900,
-                        color: '#fde68a',
+                        color: '#FBDB65',
                         background: 'rgba(0, 0, 0, 0.3)',
                         padding: '0.25rem 0.75rem',
                         borderRadius: '0.5rem'
@@ -859,7 +859,7 @@ export default function AdminPromoCodesPage() {
                           borderRadius: '0.25rem',
                           fontSize: '0.75rem',
                           fontWeight: 'bold',
-                          color: '#8b5cf6'
+                          color: '#7D55C7'
                         }}>
                           TEST
                         </span>
@@ -876,7 +876,7 @@ export default function AdminPromoCodesPage() {
                     textAlign: 'right',
                     fontSize: '2rem',
                     fontWeight: 900,
-                    color: '#f97316'
+                    color: '#FF8200'
                   }}>
                     {promo.discountType === 'percentage' ? (
                       <>{promo.discountValue}% <span style={{ fontSize: '1rem', color: '#94a3b8' }}>OFF</span></>
@@ -914,7 +914,7 @@ export default function AdminPromoCodesPage() {
                      promo.applicableToGames ? 'Games only' : 'Merch only'}
                   </span>
                   {promo.newCustomersOnly && (
-                    <span style={{ color: '#f97316' }}>New customers only</span>
+                    <span style={{ color: '#FF8200' }}>New customers only</span>
                   )}
                 </div>
 
@@ -999,7 +999,7 @@ export default function AdminPromoCodesPage() {
               disabled={page === 1}
               style={{
                 padding: '0.5rem 1rem',
-                background: page === 1 ? '#374151' : '#f97316',
+                background: page === 1 ? '#374151' : '#FF8200',
                 border: 'none',
                 borderRadius: '0.5rem',
                 color: page === 1 ? '#6b7280' : '#111827',
@@ -1020,7 +1020,7 @@ export default function AdminPromoCodesPage() {
               disabled={page === data.totalPages}
               style={{
                 padding: '0.5rem 1rem',
-                background: page === data.totalPages ? '#374151' : '#f97316',
+                background: page === data.totalPages ? '#374151' : '#FF8200',
                 border: 'none',
                 borderRadius: '0.5rem',
                 color: page === data.totalPages ? '#6b7280' : '#111827',
@@ -1062,14 +1062,14 @@ export default function AdminPromoCodesPage() {
                 maxWidth: '700px',
                 background: '#111827',
                 borderRadius: '1rem',
-                border: '2px solid #f97316',
+                border: '2px solid #FF8200',
                 padding: '1.5rem',
                 maxHeight: '90vh',
                 overflow: 'auto'
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 style={{ color: '#f97316', fontSize: '1.5rem', fontWeight: 900, marginBottom: '1.5rem' }}>
+              <h2 style={{ color: '#FF8200', fontSize: '1.5rem', fontWeight: 900, marginBottom: '1.5rem' }}>
                 {editingPromo ? 'Edit Promo Code' : 'Create New Promo Code'}
               </h2>
               {renderForm()}

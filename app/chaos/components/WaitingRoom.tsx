@@ -103,13 +103,13 @@ export default function WaitingRoom({
           padding: '8px 20px',
           backgroundColor: '#0a0a0a',
           borderRadius: '8px',
-          border: '2px solid #f97316',
+          border: '2px solid #FF8200',
         }}>
           <span style={{ color: '#9ca3af', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>
             Room Code
           </span>
           <div style={{
-            color: '#f97316',
+            color: '#FF8200',
             fontSize: '28px',
             fontFamily: 'monospace',
             fontWeight: 'bold',
@@ -145,7 +145,7 @@ export default function WaitingRoom({
             />
           </div>
           <h1 style={{
-            color: '#fde68a',
+            color: '#FBDB65',
             fontSize: '20px',
             margin: '0 0 4px 0',
           }}>
@@ -214,7 +214,7 @@ export default function WaitingRoom({
                   width: '40px',
                   height: '40px',
                   borderRadius: '50%',
-                  backgroundColor: p.avatarColor || '#f97316',
+                  backgroundColor: p.avatarColor || '#FF8200',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -247,7 +247,7 @@ export default function WaitingRoom({
                     {p.displayName}
                     {p.isHost && (
                       <span style={{
-                        color: '#f97316',
+                        color: '#FF8200',
                         fontSize: '11px',
                         marginLeft: '8px',
                       }}>
@@ -278,11 +278,11 @@ export default function WaitingRoom({
             <div style={{
               marginTop: '16px',
               padding: '12px',
-              backgroundColor: '#f9731620',
+              backgroundColor: '#FF820020',
               borderRadius: '8px',
               textAlign: 'center',
             }}>
-              <span style={{ color: '#f97316', fontSize: '13px' }}>
+              <span style={{ color: '#FF8200', fontSize: '13px' }}>
                 Waiting for more players to join...
               </span>
             </div>
@@ -297,7 +297,7 @@ export default function WaitingRoom({
           borderRadius: '12px',
           padding: '16px 20px',
           marginBottom: '24px',
-          borderLeft: '4px solid #8b5cf6',
+          borderLeft: '4px solid #7D55C7',
         }}>
           <div style={{
             display: 'flex',
@@ -379,7 +379,7 @@ export default function WaitingRoom({
             style={{
               width: '100%',
               padding: '18px',
-              backgroundColor: connectedCount >= 1 ? '#f97316' : '#3a3a3a',
+              backgroundColor: connectedCount >= 1 ? '#FF8200' : '#3a3a3a',
               color: connectedCount >= 1 ? '#000' : '#666',
               border: 'none',
               borderRadius: '12px',
@@ -428,7 +428,7 @@ export default function WaitingRoom({
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              backgroundColor: '#f97316',
+              backgroundColor: '#FF8200',
               animation: 'pulse 1.5s infinite',
             }} />
             <span style={{ color: '#e2e8f0', fontSize: '14px' }}>

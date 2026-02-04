@@ -48,7 +48,7 @@ type ShopTab = 'games' | 'merch';
 
 const gameCategories = [
   { id: 'MOD', name: 'Game Mods', icon: Shuffle, description: 'Transform any game with chaos', featured: true, color: '#FF8200' },
-  { id: 'TTRPG', name: 'TTRPGs', icon: Map, description: 'Tabletop roleplaying adventures', color: '#8b5cf6' },
+  { id: 'TTRPG', name: 'TTRPGs', icon: Map, description: 'Tabletop roleplaying adventures', color: '#7D55C7' },
   { id: 'BOARD_GAME', name: 'Board Games', icon: Dice1, description: 'Classic chaos on your table', color: '#10b981' },
   { id: 'CARD_GAME', name: 'Card Games', icon: Package, description: 'Deck-based mayhem', color: '#3b82f6' },
   { id: 'PARTY_GAME', name: 'Party Games', icon: Trophy, description: 'Group chaos generators', color: '#ec4899' }
@@ -233,7 +233,7 @@ function ShopContent() {
           </h1>
           <p style={{
             fontSize: '1.25rem',
-            color: '#fdba74',
+            color: '#FBDB65',
             marginBottom: '2rem'
           }}>
             Games, mods, and merch to fuel your chaos
@@ -407,7 +407,7 @@ function ShopContent() {
                 border: '3px solid #FF8200',
                 position: 'relative',
                 overflow: 'hidden',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(249, 115, 22, 0.1)'
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(255, 130, 0, 0.1)'
               }}>
                 <div style={{
                   position: 'absolute',
@@ -517,13 +517,13 @@ function ShopContent() {
                 <h3 style={{ fontSize: '1.75rem', fontWeight: 900, color: activeGameCategory.color, marginBottom: '0.25rem' }}>
                   {activeGameCategory.name}
                 </h3>
-                <p style={{ fontSize: '1rem', color: '#fdba74' }}>{activeGameCategory.description}</p>
+                <p style={{ fontSize: '1rem', color: '#FBDB65' }}>{activeGameCategory.description}</p>
               </div>
             )}
 
             {/* Games Grid */}
             {gamesLoading ? (
-              <div style={{ textAlign: 'center', padding: '4rem', color: '#fdba74' }}>
+              <div style={{ textAlign: 'center', padding: '4rem', color: '#FBDB65' }}>
                 <div style={{ fontSize: '1.5rem' }}>Loading chaos...</div>
               </div>
             ) : filteredGames.length === 0 ? (
@@ -678,12 +678,12 @@ function ShopContent() {
 
                         <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem', marginTop: 'auto' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                            <Users style={{ width: '0.875rem', height: '0.875rem', color: '#fdba74' }} />
-                            <span style={{ fontSize: '0.75rem', color: '#fde68a' }}>{game.players}</span>
+                            <Users style={{ width: '0.875rem', height: '0.875rem', color: '#FBDB65' }} />
+                            <span style={{ fontSize: '0.75rem', color: '#FBDB65' }}>{game.players}</span>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                            <Play style={{ width: '0.875rem', height: '0.875rem', color: '#fdba74' }} />
-                            <span style={{ fontSize: '0.75rem', color: '#fde68a' }}>{game.timeToPlay}</span>
+                            <Play style={{ width: '0.875rem', height: '0.875rem', color: '#FBDB65' }} />
+                            <span style={{ fontSize: '0.75rem', color: '#FBDB65' }}>{game.timeToPlay}</span>
                           </div>
                         </div>
 
@@ -700,12 +700,12 @@ function ShopContent() {
                         <div style={{
                           padding: '0.875rem',
                           background: 'linear-gradient(135deg, #1e293b, #0f172a)',
-                          border: '2px solid #f97316',
+                          border: '2px solid #FF8200',
                           borderRadius: '0.5rem',
                           textAlign: 'center',
                           boxSizing: 'border-box'
                         }}>
-                          <div style={{ color: '#f97316', fontWeight: 900, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                          <div style={{ color: '#FF8200', fontWeight: 900, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
                             COMING SPRING 2026
                           </div>
                           <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
@@ -864,7 +864,7 @@ function ShopContent() {
                       padding: '1.5rem',
                       boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
                       transition: 'all 0.3s',
-                      border: '3px solid #8b5cf6',
+                      border: '3px solid #7D55C7',
                       transform: hoveredMerch === item.id ? 'scale(1.02)' : `rotate(${index % 2 === 0 ? '1' : '-1'}deg)`,
                       cursor: 'pointer',
                       position: 'relative',
@@ -963,7 +963,7 @@ function ShopContent() {
                       <Link
                         href={`/merch/${item.slug}`}
                         style={{
-                          background: '#8b5cf6',
+                          background: '#7D55C7',
                           color: '#111827',
                           padding: '0.625rem 1.25rem',
                           borderRadius: '50px',
@@ -1017,7 +1017,7 @@ export default function ShopPage() {
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: '60vh',
-          color: '#f97316',
+          color: '#FF8200',
           fontSize: '1.5rem'
         }}>
           Loading shop...

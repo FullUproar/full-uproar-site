@@ -135,7 +135,7 @@ export default function BoardPage() {
     },
     header: {
       background: 'rgba(30, 41, 59, 0.95)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       padding: '2rem',
       marginBottom: '2rem',
@@ -143,7 +143,7 @@ export default function BoardPage() {
     },
     threadList: {
       background: 'rgba(30, 41, 59, 0.95)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       overflow: 'hidden'
     },
@@ -151,7 +151,7 @@ export default function BoardPage() {
       display: 'flex',
       alignItems: 'center',
       padding: '1rem',
-      borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+      borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
       transition: 'background 0.2s',
       textDecoration: 'none',
       color: 'inherit'
@@ -166,9 +166,9 @@ export default function BoardPage() {
     sortButton: {
       padding: '8px 16px',
       background: 'transparent',
-      border: '1px solid rgba(249, 115, 22, 0.3)',
+      border: '1px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '6px',
-      color: '#fdba74',
+      color: '#FBDB65',
       cursor: 'pointer',
       fontSize: '14px',
       transition: 'all 0.2s'
@@ -185,7 +185,7 @@ export default function BoardPage() {
           alignItems: 'center', 
           minHeight: '50vh' 
         }}>
-          <p style={{ color: '#fdba74' }}>Loading...</p>
+          <p style={{ color: '#FBDB65' }}>Loading...</p>
         </div>
       </div>
     );
@@ -202,7 +202,7 @@ export default function BoardPage() {
             display: 'inline-flex', 
             alignItems: 'center', 
             gap: '8px', 
-            color: '#fdba74', 
+            color: '#FBDB65', 
             marginBottom: '1rem',
             textDecoration: 'none'
           }}
@@ -217,7 +217,7 @@ export default function BoardPage() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                 {board?.icon && <span style={{ fontSize: '32px' }}>{board.icon}</span>}
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#f97316' }}>
+                <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#FF8200' }}>
                   {board?.name}
                 </h1>
               </div>
@@ -231,7 +231,7 @@ export default function BoardPage() {
               onClick={() => router.push(`/forum/new-thread?board=${boardSlug}`)}
               style={{
                 padding: '12px 24px',
-                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
@@ -262,8 +262,8 @@ export default function BoardPage() {
             style={{
               ...styles.sortButton,
               ...(sortBy === 'lastPostAt' ? { 
-                background: 'rgba(249, 115, 22, 0.2)',
-                borderColor: '#f97316'
+                background: 'rgba(255, 130, 0, 0.2)',
+                borderColor: '#FF8200'
               } : {})
             }}
           >
@@ -275,8 +275,8 @@ export default function BoardPage() {
             style={{
               ...styles.sortButton,
               ...(sortBy === 'createdAt' ? { 
-                background: 'rgba(249, 115, 22, 0.2)',
-                borderColor: '#f97316'
+                background: 'rgba(255, 130, 0, 0.2)',
+                borderColor: '#FF8200'
               } : {})
             }}
           >
@@ -288,8 +288,8 @@ export default function BoardPage() {
             style={{
               ...styles.sortButton,
               ...(sortBy === 'viewCount' ? { 
-                background: 'rgba(249, 115, 22, 0.2)',
-                borderColor: '#f97316'
+                background: 'rgba(255, 130, 0, 0.2)',
+                borderColor: '#FF8200'
               } : {})
             }}
           >
@@ -312,7 +312,7 @@ export default function BoardPage() {
               margin: '0 auto 1.5rem',
               borderRadius: '50%',
               background: accessDenied.accessLevel === 'SUBSCRIBERS_ONLY'
-                ? 'linear-gradient(135deg, #f97316, #ea580c)'
+                ? 'linear-gradient(135deg, #FF8200, #ea580c)'
                 : 'linear-gradient(135deg, #3b82f6, #2563eb)',
               display: 'flex',
               alignItems: 'center',
@@ -404,7 +404,7 @@ export default function BoardPage() {
                   alignItems: 'center',
                   gap: '8px',
                   padding: '10px 20px',
-                  background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                  background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
@@ -443,7 +443,7 @@ export default function BoardPage() {
                     alignItems: 'center',
                     gap: '8px',
                     padding: '10px 20px',
-                    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
                     color: 'white',
                     border: 'none',
                     borderRadius: '8px',
@@ -481,7 +481,7 @@ export default function BoardPage() {
                   ...(index === threads.length - 1 ? { borderBottom: 'none' } : {})
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                  e.currentTarget.style.background = 'rgba(255, 130, 0, 0.05)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
@@ -491,7 +491,7 @@ export default function BoardPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                     {thread.isPinned && (
                       <span title="Pinned">
-                        <Pin size={16} style={{ color: '#f97316' }} />
+                        <Pin size={16} style={{ color: '#FF8200' }} />
                       </span>
                     )}
                     {thread.isLocked && (
@@ -540,9 +540,9 @@ export default function BoardPage() {
                 onClick={() => setPage(pageNum)}
                 style={{
                   padding: '8px 12px',
-                  background: page === pageNum ? '#f97316' : 'transparent',
-                  color: page === pageNum ? 'white' : '#fdba74',
-                  border: `1px solid ${page === pageNum ? '#f97316' : 'rgba(249, 115, 22, 0.3)'}`,
+                  background: page === pageNum ? '#FF8200' : 'transparent',
+                  color: page === pageNum ? 'white' : '#FBDB65',
+                  border: `1px solid ${page === pageNum ? '#FF8200' : 'rgba(255, 130, 0, 0.3)'}`,
                   borderRadius: '6px',
                   cursor: 'pointer',
                   fontWeight: page === pageNum ? 'bold' : 'normal'

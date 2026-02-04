@@ -17,7 +17,7 @@ export default function ReturnsPolicy() {
           color: '#e2e8f0'
         }}>
           <h1 style={{ 
-            color: '#f97316', 
+            color: '#FF8200', 
             fontSize: '2.5rem', 
             marginBottom: '2rem',
             fontWeight: 'bold'
@@ -29,13 +29,13 @@ export default function ReturnsPolicy() {
             backgroundColor: '#1f2937',
             padding: '2rem',
             borderRadius: '8px',
-            border: '2px solid #f97316'
+            border: '2px solid #FF8200'
           }}>
-            <p style={{ marginBottom: '1rem', color: '#fdba74' }}>
+            <p style={{ marginBottom: '1rem', color: '#FBDB65' }}>
               <strong>Last Updated: January 2025</strong>
             </p>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               30-Day Return Policy
             </h2>
             <p style={{ marginBottom: '1rem', lineHeight: '1.6' }}>
@@ -43,7 +43,7 @@ export default function ReturnsPolicy() {
               your order, you may return most items within 30 days of delivery for a full refund.
             </p>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               Eligible Items
             </h2>
             <ul style={{ marginBottom: '1rem', lineHeight: '1.6', paddingLeft: '1.5rem' }}>
@@ -52,7 +52,7 @@ export default function ReturnsPolicy() {
               <li>Accessories in original packaging</li>
             </ul>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               Non-Returnable Items
             </h2>
             <ul style={{ marginBottom: '1rem', lineHeight: '1.6', paddingLeft: '1.5rem' }}>
@@ -62,7 +62,7 @@ export default function ReturnsPolicy() {
               <li>Items marked as final sale</li>
             </ul>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               How to Return
             </h2>
             <ol style={{ marginBottom: '1rem', lineHeight: '1.6', paddingLeft: '1.5rem' }}>
@@ -73,7 +73,7 @@ export default function ReturnsPolicy() {
               <li>Drop off at any authorized shipping location</li>
             </ol>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               Refund Processing
             </h2>
             <p style={{ marginBottom: '1rem', lineHeight: '1.6' }}>
@@ -81,7 +81,7 @@ export default function ReturnsPolicy() {
               5-7 business days. Refunds will be issued to your original payment method.
             </p>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               Damaged or Defective Items
             </h2>
             <p style={{ marginBottom: '1rem', lineHeight: '1.6' }}>
@@ -89,7 +89,7 @@ export default function ReturnsPolicy() {
               of the damage. We'll arrange for a replacement or full refund including shipping costs.
             </p>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               International Returns
             </h2>
             <p style={{ marginBottom: '1rem', lineHeight: '1.6' }}>
@@ -97,12 +97,12 @@ export default function ReturnsPolicy() {
               was damaged or defective. Please allow additional time for processing.
             </p>
 
-            <h2 style={{ color: '#f97316', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#FF8200', fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>
               Contact Us
             </h2>
             <p style={{ marginBottom: '1rem', lineHeight: '1.6' }}>
               For questions about returns or refunds, please contact us at{' '}
-              <a href="mailto:returns@fulluproar.com" style={{ color: '#f97316' }}>
+              <a href="mailto:returns@fulluproar.com" style={{ color: '#FF8200' }}>
                 returns@fulluproar.com
               </a>
             </p>
@@ -112,9 +112,9 @@ export default function ReturnsPolicy() {
           <div style={{
             marginTop: '2rem',
             padding: '1.5rem',
-            background: 'rgba(249, 115, 22, 0.1)',
+            background: 'rgba(255, 130, 0, 0.1)',
             borderRadius: '8px',
-            border: '1px solid rgba(249, 115, 22, 0.3)',
+            border: '1px solid rgba(255, 130, 0, 0.3)',
           }}>
             <div style={{
               display: 'flex',
@@ -126,11 +126,11 @@ export default function ReturnsPolicy() {
               <Link
                 href="/"
                 style={{
-                  color: '#f97316',
+                  color: '#FF8200',
                   textDecoration: 'none',
                   padding: '0.5rem 1rem',
                   borderRadius: '6px',
-                  border: '1px solid #f97316',
+                  border: '1px solid #FF8200',
                   fontWeight: '600',
                   transition: 'all 0.2s'
                 }}

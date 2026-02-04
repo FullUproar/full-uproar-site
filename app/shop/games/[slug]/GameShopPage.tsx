@@ -183,7 +183,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
           <h1 style={{
             fontSize: 'clamp(3rem, 8vw, 5rem)',
             fontWeight: 'bold',
-            color: '#fde68a',
+            color: '#FBDB65',
             marginBottom: '1rem',
             textShadow: '0 4px 20px rgba(0,0,0,0.8)'
           }}>
@@ -193,7 +193,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
           {game.tagline && (
             <p style={{
               fontSize: 'clamp(1.2rem, 3vw, 1.8rem)',
-              color: '#fdba74',
+              color: '#FBDB65',
               marginBottom: '1.5rem',
               fontStyle: 'italic',
               fontWeight: 600
@@ -232,7 +232,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
           }}>
             <div style={{
               fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
-              color: '#fde68a',
+              color: '#FBDB65',
               fontWeight: 'bold',
               marginBottom: '1rem',
               textShadow: '0 2px 10px rgba(0,0,0,0.8)'
@@ -247,7 +247,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                 alignItems: 'center',
                 gap: '0.75rem',
                 padding: 'clamp(0.875rem, 2vw, 1.25rem) clamp(1.5rem, 3vw, 2.5rem)',
-                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                 color: 'white',
                 fontSize: 'clamp(1rem, 2vw, 1.3rem)',
                 fontWeight: 'bold',
@@ -255,7 +255,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                 borderRadius: '50px',
                 cursor: 'pointer',
                 transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 8px 30px rgba(249, 115, 22, 0.5)'
+                boxShadow: '0 8px 30px rgba(255, 130, 0, 0.5)'
               }}
             >
               <ShoppingCart size={isMobile ? 22 : 26} />
@@ -332,7 +332,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
             <div style={{ fontSize: 'clamp(1rem, 1.5vw, 1.1rem)', lineHeight: '1.8', color: '#e2e8f0' }}>
               <h2 style={{
                 fontSize: 'clamp(2rem, 5vw, 3rem)',
-                color: '#fde68a',
+                color: '#FBDB65',
                 marginBottom: 'clamp(1rem, 3vw, 2rem)',
                 fontWeight: 'bold'
               }}>
@@ -342,7 +342,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                 {game.story || game.description}
               </p>
               {game.designer && (
-                <p style={{ color: '#fdba74', fontWeight: 'bold' }}>
+                <p style={{ color: '#FBDB65', fontWeight: 'bold' }}>
                   Designed by {game.designer}
                 </p>
               )}
@@ -367,7 +367,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
       {/* Features Section */}
       <section style={{ padding: 'clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem)', background: '#0a0a0a' }}>
         <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 4rem)' }}>
-          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#fde68a', marginBottom: '1rem', fontWeight: 'bold' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#FBDB65', marginBottom: '1rem', fontWeight: 'bold' }}>
             Game Features
           </h2>
           <p style={{ color: '#94a3b8', fontSize: 'clamp(1rem, 1.8vw, 1.2rem)' }}>
@@ -389,7 +389,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                 background: 'linear-gradient(135deg, #1e293b, #334155)',
                 padding: 'clamp(1.5rem, 3vw, 2rem)',
                 borderRadius: '15px',
-                border: '1px solid rgba(249, 115, 22, 0.3)',
+                border: '1px solid rgba(255, 130, 0, 0.3)',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                 cursor: 'pointer'
               }}
@@ -397,17 +397,17 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
               <div style={{
                 width: 'clamp(48px, 8vw, 60px)',
                 height: 'clamp(48px, 8vw, 60px)',
-                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                 borderRadius: 'clamp(10px, 2vw, 15px)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '1rem',
-                boxShadow: '0 8px 20px rgba(249, 115, 22, 0.3)'
+                boxShadow: '0 8px 20px rgba(255, 130, 0, 0.3)'
               }}>
                 {feature.icon}
               </div>
-              <h3 style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', color: '#fdba74', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              <h3 style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', color: '#FBDB65', marginBottom: '0.5rem', fontWeight: 'bold' }}>
                 {feature.title}
               </h3>
               <p style={{ color: '#94a3b8', lineHeight: '1.6', fontSize: 'clamp(0.875rem, 1.3vw, 1rem)' }}>
@@ -423,7 +423,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
         <section style={{ padding: 'clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem)', background: '#0a0a0a' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 'clamp(1.5rem, 4vw, 3rem)' }}>
-              <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#fde68a', fontWeight: 'bold' }}>
+              <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#FBDB65', fontWeight: 'bold' }}>
                 See It In Action
               </h2>
             </div>
@@ -456,7 +456,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                       borderRadius: '10px',
                       overflow: 'hidden',
                       cursor: 'pointer',
-                      border: selectedImageIndex === index ? '2px solid #f97316' : '2px solid transparent',
+                      border: selectedImageIndex === index ? '2px solid #FF8200' : '2px solid transparent',
                       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
                     }}
                     onClick={() => setSelectedImageIndex(index)}
@@ -490,7 +490,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <h2 style={{
               fontSize: 'clamp(2rem, 5vw, 3rem)',
-              color: '#fde68a',
+              color: '#FBDB65',
               textAlign: 'center',
               marginBottom: 'clamp(1.5rem, 4vw, 3rem)',
               fontWeight: 'bold'
@@ -501,7 +501,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
               background: 'rgba(30, 41, 59, 0.5)',
               padding: 'clamp(1.5rem, 4vw, 3rem)',
               borderRadius: 'clamp(12px, 2vw, 20px)',
-              border: '1px solid rgba(249, 115, 22, 0.3)'
+              border: '1px solid rgba(255, 130, 0, 0.3)'
             }}>
               <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.1rem)', lineHeight: '1.8', color: '#e2e8f0' }}>
                 {game.components}
@@ -514,13 +514,13 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
       {/* Final CTA Section */}
       <section style={{
         padding: 'clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem)',
-        background: 'linear-gradient(135deg, #f97316, #ea580c)',
+        background: 'linear-gradient(135deg, #FF8200, #ea580c)',
         textAlign: 'center'
       }}>
         <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'white', marginBottom: '1rem', fontWeight: 'bold' }}>
           Ready to Play?
         </h2>
-        <div style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: '#fde68a', fontWeight: 'bold', marginBottom: 'clamp(1rem, 3vw, 2rem)' }}>
+        <div style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: '#FBDB65', fontWeight: 'bold', marginBottom: 'clamp(1rem, 3vw, 2rem)' }}>
           ${(game.priceCents / 100).toFixed(2)}
         </div>
         <button
@@ -532,7 +532,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
             gap: '1rem',
             padding: 'clamp(1rem, 2vw, 1.5rem) clamp(2rem, 4vw, 3rem)',
             background: '#0a0a0a',
-            color: '#fde68a',
+            color: '#FBDB65',
             fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
             fontWeight: 'bold',
             border: 'none',
@@ -547,7 +547,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
         </button>
         <div style={{ marginTop: '2rem' }}>
           {game.stock > 0 && game.stock < 10 && (
-            <p style={{ color: '#fde68a', fontSize: '1.2rem', fontWeight: 'bold' }}>
+            <p style={{ color: '#FBDB65', fontSize: '1.2rem', fontWeight: 'bold' }}>
               Only {game.stock} left in stock!
             </p>
           )}
@@ -560,7 +560,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <h2 style={{
               fontSize: 'clamp(2rem, 5vw, 3rem)',
-              color: '#fde68a',
+              color: '#FBDB65',
               textAlign: 'center',
               marginBottom: 'clamp(1.5rem, 4vw, 3rem)',
               fontWeight: 'bold'
@@ -586,7 +586,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                       overflow: 'hidden',
                       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                       cursor: 'pointer',
-                      border: '1px solid rgba(249, 115, 22, 0.2)'
+                      border: '1px solid rgba(255, 130, 0, 0.2)'
                     }}
                   >
                     <div style={{ height: 'clamp(150px, 20vw, 200px)', overflow: 'hidden' }}>
@@ -602,10 +602,10 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                       />
                     </div>
                     <div style={{ padding: '1.5rem' }}>
-                      <h3 style={{ color: '#fdba74', marginBottom: '0.5rem' }}>
+                      <h3 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>
                         {similar.title}
                       </h3>
-                      <p style={{ color: '#fde68a', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                      <p style={{ color: '#FBDB65', fontSize: '1.5rem', fontWeight: 'bold' }}>
                         ${(similar.priceCents / 100).toFixed(2)}
                       </p>
                     </div>
@@ -626,7 +626,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
         background: 'rgba(10, 10, 10, 0.97)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(249, 115, 22, 0.4)',
+        borderTop: '1px solid rgba(255, 130, 0, 0.4)',
         padding: isMobile ? '0.875rem 1rem' : '1.25rem 2rem',
         zIndex: 100,
         opacity: showStickyFooter ? 1 : 0,
@@ -678,7 +678,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
               <div style={{
                 fontSize: isMobile ? '1.25rem' : '1.5rem',
                 fontWeight: 'bold',
-                color: '#fde68a'
+                color: '#FBDB65'
               }}>
                 ${(game.priceCents / 100).toFixed(2)}
               </div>
@@ -696,7 +696,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: isMobile ? '0.75rem 1.25rem' : '1rem 2rem',
-                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                 color: 'white',
                 fontSize: isMobile ? '0.9rem' : '1rem',
                 fontWeight: 'bold',
@@ -704,7 +704,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                 borderRadius: '50px',
                 cursor: 'pointer',
                 transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 4px 15px rgba(249, 115, 22, 0.4)',
+                boxShadow: '0 4px 15px rgba(255, 130, 0, 0.4)',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -741,14 +741,14 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
         /* Premium hover effects for feature cards */
         .feature-card:hover {
           transform: translateY(-8px);
-          border-color: rgba(249, 115, 22, 0.6) !important;
-          box-shadow: 0 20px 40px rgba(249, 115, 22, 0.15);
+          border-color: rgba(255, 130, 0, 0.6) !important;
+          box-shadow: 0 20px 40px rgba(255, 130, 0, 0.15);
         }
 
         /* Smooth image gallery hover */
         .gallery-thumb:hover {
           transform: scale(1.05);
-          border-color: rgba(249, 115, 22, 0.6) !important;
+          border-color: rgba(255, 130, 0, 0.6) !important;
         }
 
         /* Similar games card hover */
@@ -769,12 +769,12 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
 
         .sticky-cta:hover {
           transform: scale(1.02);
-          box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5) !important;
+          box-shadow: 0 6px 20px rgba(255, 130, 0, 0.5) !important;
         }
 
         .hero-cta:hover {
           transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 12px 40px rgba(249, 115, 22, 0.6) !important;
+          box-shadow: 0 12px 40px rgba(255, 130, 0, 0.6) !important;
         }
 
         /* Smooth scroll indicator pulse */

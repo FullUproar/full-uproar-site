@@ -153,7 +153,7 @@ interface ChatMessage {
 
 const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: string }> = {
   CHILL: { icon: Coffee, color: '#60a5fa', label: 'Chill', bg: 'rgba(96, 165, 250, 0.15)' },
-  COMPETITIVE: { icon: Flame, color: '#f97316', label: 'Competitive', bg: 'rgba(249, 115, 22, 0.15)' },
+  COMPETITIVE: { icon: Flame, color: '#FF8200', label: 'Competitive', bg: 'rgba(255, 130, 0, 0.15)' },
   CHAOS: { icon: Zap, color: '#a855f7', label: 'Chaos', bg: 'rgba(168, 85, 247, 0.15)' },
   PARTY: { icon: PartyPopper, color: '#ec4899', label: 'Party', bg: 'rgba(236, 72, 153, 0.15)' },
   COZY: { icon: Heart, color: '#f472b6', label: 'Cozy', bg: 'rgba(244, 114, 182, 0.15)' },
@@ -162,7 +162,7 @@ const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: 
 const statusConfig: Record<string, { color: string; label: string; actions: string[] }> = {
   PLANNING: { color: '#fbbf24', label: 'Planning', actions: ['LOCKED_IN', 'CANCELLED'] },
   LOCKED_IN: { color: '#10b981', label: 'Locked In!', actions: ['IN_PROGRESS', 'PLANNING', 'CANCELLED'] },
-  IN_PROGRESS: { color: '#f97316', label: 'Happening Now!', actions: ['COMPLETED'] },
+  IN_PROGRESS: { color: '#FF8200', label: 'Happening Now!', actions: ['COMPLETED'] },
   COMPLETED: { color: '#6b7280', label: 'Completed', actions: [] },
   CANCELLED: { color: '#ef4444', label: 'Cancelled', actions: ['PLANNING'] },
 };
@@ -327,7 +327,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
       <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)' }}>
         <Navigation />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-          <div style={{ textAlign: 'center', color: '#fdba74' }}>
+          <div style={{ textAlign: 'center', color: '#FBDB65' }}>
             <Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} />
             <p style={{ marginTop: '1rem', fontSize: '1.25rem' }}>Loading game night...</p>
           </div>
@@ -345,7 +345,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
           <div style={{ textAlign: 'center', color: '#ef4444' }}>
             <Gamepad2 size={64} style={{ marginBottom: '1rem', opacity: 0.5 }} />
             <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{error || 'Something went wrong'}</h2>
-            <Link href="/game-nights" style={{ color: '#f97316' }}>← Back to Game Nights</Link>
+            <Link href="/game-nights" style={{ color: '#FF8200' }}>← Back to Game Nights</Link>
           </div>
         </div>
       </div>
@@ -432,11 +432,11 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                 {gameNight.isHost && (
                   <span style={{
                     padding: '0.25rem 0.75rem',
-                    background: 'rgba(249, 115, 22, 0.2)',
+                    background: 'rgba(255, 130, 0, 0.2)',
                     borderRadius: '0.5rem',
                     fontSize: '0.875rem',
                     fontWeight: 'bold',
-                    color: '#f97316',
+                    color: '#FF8200',
                   }}>
                     HOST
                   </span>
@@ -588,7 +588,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>
-                <Users size={24} style={{ color: '#f97316' }} />
+                <Users size={24} style={{ color: '#FF8200' }} />
                 The Squad
               </h2>
               {gameNight.isHost && (
@@ -599,10 +599,10 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                     alignItems: 'center',
                     gap: '0.25rem',
                     padding: '0.5rem 1rem',
-                    background: 'rgba(249, 115, 22, 0.2)',
-                    border: '2px solid #f97316',
+                    background: 'rgba(255, 130, 0, 0.2)',
+                    border: '2px solid #FF8200',
                     borderRadius: '0.5rem',
-                    color: '#f97316',
+                    color: '#FF8200',
                     fontWeight: 'bold',
                     fontSize: '0.875rem',
                     cursor: 'pointer',
@@ -638,14 +638,14 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                 alignItems: 'center',
                 gap: '1rem',
                 padding: '0.75rem',
-                background: 'rgba(249, 115, 22, 0.1)',
+                background: 'rgba(255, 130, 0, 0.1)',
                 borderRadius: '0.75rem',
               }}>
                 <div style={{
                   width: '40px',
                   height: '40px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                  background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -656,7 +656,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ color: '#fff', fontWeight: 'bold' }}>{gameNight.host.displayName || gameNight.host.username}</div>
-                  <div style={{ color: '#f97316', fontSize: '0.75rem' }}>Host</div>
+                  <div style={{ color: '#FF8200', fontSize: '0.75rem' }}>Host</div>
                 </div>
                 <span style={{ color: '#10b981' }}>✅</span>
               </div>
@@ -1110,9 +1110,9 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
         {gameNight.status === 'IN_PROGRESS' && gameNight.isHost && (
           <div style={{
             marginTop: '1.5rem',
-            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(139, 92, 246, 0.15))',
+            background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.15), rgba(139, 92, 246, 0.15))',
             borderRadius: '1rem',
-            border: '2px solid #f97316',
+            border: '2px solid #FF8200',
             padding: '1.5rem',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -1145,7 +1145,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                     textAlign: 'center',
                   }}>
                     <div style={{ color: '#9ca3af', fontSize: '0.7rem', textTransform: 'uppercase' }}>Room Code</div>
-                    <div style={{ color: '#fde68a', fontWeight: 'bold', fontSize: '1.25rem', fontFamily: 'monospace', letterSpacing: '2px' }}>
+                    <div style={{ color: '#FBDB65', fontWeight: 'bold', fontSize: '1.25rem', fontFamily: 'monospace', letterSpacing: '2px' }}>
                       {chaosSession.roomCode}
                     </div>
                   </div>
@@ -1156,7 +1156,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                       alignItems: 'center',
                       gap: '0.5rem',
                       padding: '0.75rem 1.5rem',
-                      background: '#f97316',
+                      background: '#FF8200',
                       border: 'none',
                       borderRadius: '0.5rem',
                       color: '#000',
@@ -1178,7 +1178,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                     alignItems: 'center',
                     gap: '0.5rem',
                     padding: '0.75rem 1.5rem',
-                    background: activatingChaos ? '#6b7280' : '#f97316',
+                    background: activatingChaos ? '#6b7280' : '#FF8200',
                     border: 'none',
                     borderRadius: '0.5rem',
                     color: '#000',
@@ -1209,7 +1209,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                 fontSize: '0.875rem',
                 color: '#9ca3af',
               }}>
-                <strong style={{ color: '#fde68a' }}>How it works:</strong> Share the room code with your guests. They can join at{' '}
+                <strong style={{ color: '#FBDB65' }}>How it works:</strong> Share the room code with your guests. They can join at{' '}
                 <code style={{ background: 'rgba(255,255,255,0.1)', padding: '0.125rem 0.375rem', borderRadius: '0.25rem' }}>
                   fulluproar.com/chaos
                 </code>
@@ -1815,7 +1815,7 @@ function GameLineupItem({
         padding: '1rem',
         background: 'rgba(255, 255, 255, 0.05)',
         borderRadius: '0.75rem',
-        border: game.status === 'PLAYING' ? '2px solid #f97316' : '2px solid transparent',
+        border: game.status === 'PLAYING' ? '2px solid #FF8200' : '2px solid transparent',
       }}
     >
       {/* Vote Buttons */}
@@ -1876,7 +1876,7 @@ function GameLineupItem({
         width: '32px',
         height: '32px',
         borderRadius: '0.5rem',
-        background: game.status === 'COMPLETED' ? '#10b981' : game.status === 'PLAYING' ? '#f97316' : '#374151',
+        background: game.status === 'COMPLETED' ? '#10b981' : game.status === 'PLAYING' ? '#FF8200' : '#374151',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -1920,7 +1920,7 @@ function GameLineupItem({
 
 // Snack categories for the roster
 const snackCategories = [
-  { key: 'snacks', label: 'Snacks', icon: Pizza, color: '#f97316', emoji: '🍿' },
+  { key: 'snacks', label: 'Snacks', icon: Pizza, color: '#FF8200', emoji: '🍿' },
   { key: 'drinks', label: 'Drinks', icon: Wine, color: '#3b82f6', emoji: '🥤' },
   { key: 'desserts', label: 'Desserts', icon: Cookie, color: '#ec4899', emoji: '🍪' },
   { key: 'main', label: 'Main Dishes', icon: Soup, color: '#10b981', emoji: '🍕' },
@@ -2136,7 +2136,7 @@ function SnackSignupModal({
 
         {/* Who's signing up */}
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Who's bringing this?
           </label>
           <select
@@ -2166,7 +2166,7 @@ function SnackSignupModal({
 
         {/* Category Selection */}
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Category
           </label>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -2227,7 +2227,7 @@ function SnackSignupModal({
 
         {/* Custom Item */}
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             What are you bringing?
           </label>
           <input
@@ -2546,7 +2546,7 @@ function AddGuestModal({
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
           <h3 style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <UserPlus size={24} style={{ color: '#f97316' }} />
+            <UserPlus size={24} style={{ color: '#FF8200' }} />
             Invite Guest
           </h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer' }}>
@@ -2572,7 +2572,7 @@ function AddGuestModal({
         )}
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Name *
           </label>
           <input
@@ -2593,7 +2593,7 @@ function AddGuestModal({
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Email
           </label>
           <input
@@ -2682,7 +2682,7 @@ function AddGuestModal({
           style={{
             width: '100%',
             padding: '0.75rem',
-            background: guestName.trim() && !adding && !result ? 'linear-gradient(135deg, #f97316, #ea580c)' : '#374151',
+            background: guestName.trim() && !adding && !result ? 'linear-gradient(135deg, #FF8200, #ea580c)' : '#374151',
             border: 'none',
             borderRadius: '0.5rem',
             color: '#fff',
@@ -2791,7 +2791,7 @@ function AddGameModal({
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
             Game Name
           </label>
           <input

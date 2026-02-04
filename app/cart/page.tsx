@@ -48,8 +48,8 @@ export default function CartPage() {
         <Navigation />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
           <div style={{ textAlign: 'center' }}>
-            <ShoppingCart style={{ width: '4rem', height: '4rem', color: '#f97316', margin: '0 auto' }} />
-            <p style={{ color: '#fdba74', fontSize: '1.5rem', marginTop: '1rem' }}>Preparing mayhem machine...</p>
+            <ShoppingCart style={{ width: '4rem', height: '4rem', color: '#FF8200', margin: '0 auto' }} />
+            <p style={{ color: '#FBDB65', fontSize: '1.5rem', marginTop: '1rem' }}>Preparing mayhem machine...</p>
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function CartPage() {
         <h1 style={{
           fontSize: '3rem',
           fontWeight: 900,
-          color: '#f97316',
+          color: '#FF8200',
           textAlign: 'center',
           marginBottom: '3rem',
           textTransform: 'uppercase',
@@ -84,21 +84,21 @@ export default function CartPage() {
             <p style={{ 
               fontSize: '2rem', 
               fontWeight: 'bold', 
-              color: '#fde68a', 
+              color: '#FBDB65', 
               marginBottom: '1rem' 
             }}>
               Your cart is empty
             </p>
             <p style={{ 
               fontSize: '1.25rem', 
-              color: '#fdba74', 
+              color: '#FBDB65', 
               marginBottom: '3rem' 
             }}>
               Fugly is disappointed. Add some chaos!
             </p>
             <Link href="/shop">
               <button style={{
-                background: '#f97316',
+                background: '#FF8200',
                 color: '#111827',
                 padding: '1rem 2rem',
                 borderRadius: '50px',
@@ -117,7 +117,7 @@ export default function CartPage() {
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.background = '#f97316';
+                e.currentTarget.style.background = '#FF8200';
               }}>
                 <ArrowLeft size={20} />
                 BROWSE GAMES
@@ -133,7 +133,7 @@ export default function CartPage() {
           }}>
             {/* Cart Items */}
             <div style={{ background: '#1f2937', borderRadius: '1rem', padding: isMobile ? '1rem' : '2rem', border: '4px solid #fb923c' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fdba74', marginBottom: '2rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#FBDB65', marginBottom: '2rem' }}>
                 Cart Items ({getTotalItems()})
               </h2>
               
@@ -185,7 +185,7 @@ export default function CartPage() {
                       <h3 style={{ 
                         fontWeight: 'bold', 
                         fontSize: '1.25rem',
-                        color: '#fde68a',
+                        color: '#FBDB65',
                         marginBottom: '0.25rem'
                       }}>
                         {item.name}
@@ -196,7 +196,7 @@ export default function CartPage() {
                         </p>
                       )}
                       <p style={{ 
-                        color: '#f97316', 
+                        color: '#FF8200', 
                         fontWeight: 'bold',
                         fontSize: '1.125rem',
                         marginTop: '0.5rem'
@@ -220,7 +220,7 @@ export default function CartPage() {
                             padding: '0.75rem',
                             background: 'transparent',
                             border: 'none',
-                            color: '#fdba74',
+                            color: '#FBDB65',
                             cursor: 'pointer',
                             transition: 'all 0.2s'
                           }}
@@ -243,7 +243,7 @@ export default function CartPage() {
                             padding: '0.75rem',
                             background: 'transparent',
                             border: 'none',
-                            color: '#fdba74',
+                            color: '#FBDB65',
                             cursor: 'pointer',
                             transition: 'all 0.2s'
                           }}
@@ -313,7 +313,7 @@ export default function CartPage() {
               <h2 style={{
                 fontSize: '1.5rem',
                 fontWeight: 'bold',
-                color: '#fdba74',
+                color: '#FBDB65',
                 marginBottom: '2rem'
               }}>
                 Order Summary
@@ -321,15 +321,15 @@ export default function CartPage() {
 
               {/* Shipping Info Box */}
               <div style={{
-                background: 'rgba(249, 115, 22, 0.1)',
-                border: '2px solid #f97316',
+                background: 'rgba(255, 130, 0, 0.1)',
+                border: '2px solid #FF8200',
                 borderRadius: '0.75rem',
                 padding: '1rem',
                 marginBottom: '1.5rem'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                  <Truck size={18} style={{ color: '#f97316' }} />
-                  <span style={{ fontWeight: 'bold', color: '#fdba74' }}>
+                  <Truck size={18} style={{ color: '#FF8200' }} />
+                  <span style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                     Shipping
                   </span>
                 </div>
@@ -370,10 +370,10 @@ export default function CartPage() {
                   justifyContent: 'space-between', 
                   fontSize: '1.25rem',
                   fontWeight: 'bold',
-                  color: '#fde68a'
+                  color: '#FBDB65'
                 }}>
                   <span>Total</span>
-                  <span style={{ color: '#f97316' }}>
+                  <span style={{ color: '#FF8200' }}>
                     ${((getTotalPrice() + (getTotalPrice() > 5000 ? 0 : 999)) / 100).toFixed(2)}
                   </span>
                 </div>
@@ -383,7 +383,7 @@ export default function CartPage() {
                 onClick={handleCheckout}
                 style={{
                   width: '100%',
-                  background: '#f97316',
+                  background: '#FF8200',
                   color: '#111827',
                   padding: '1rem',
                   borderRadius: '50px',
@@ -404,7 +404,7 @@ export default function CartPage() {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.background = '#f97316';
+                  e.currentTarget.style.background = '#FF8200';
                 }}
               >
                 Checkout Now →
@@ -415,7 +415,7 @@ export default function CartPage() {
                 <button style={{
                   width: '100%',
                   background: 'transparent',
-                  color: '#fdba74',
+                  color: '#FBDB65',
                   padding: '0.75rem',
                   borderRadius: '0.5rem',
                   fontWeight: 'bold',

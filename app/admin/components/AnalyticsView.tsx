@@ -166,7 +166,7 @@ export default function AnalyticsView() {
         title: 'Unique Visitors',
         value: formatNumber(data.overview.uniqueVisitors),
         icon: <Users size={20} />,
-        color: '#8b5cf6'
+        color: '#7D55C7'
       },
       {
         title: 'Orders',
@@ -178,7 +178,7 @@ export default function AnalyticsView() {
         title: 'Conversion Rate',
         value: `${data.overview.conversionRate}%`,
         icon: <TrendingUp size={20} />,
-        color: '#f97316'
+        color: '#FF8200'
       }
     ];
 
@@ -217,7 +217,7 @@ export default function AnalyticsView() {
                   <h3 style={{
                     fontSize: '32px',
                     fontWeight: 'bold',
-                    color: '#fde68a'
+                    color: '#FBDB65'
                   }}>
                     {metric.value}
                   </h3>
@@ -242,7 +242,7 @@ export default function AnalyticsView() {
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '2px solid rgba(249, 115, 22, 0.3)' }}>
+                  <tr style={{ borderBottom: '2px solid rgba(255, 130, 0, 0.3)' }}>
                     <th style={adminStyles.tableHeader}>Product</th>
                     <th style={adminStyles.tableHeader}>Views</th>
                   </tr>
@@ -252,18 +252,18 @@ export default function AnalyticsView() {
                     <tr
                       key={index}
                       style={{
-                        borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+                        borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
                         transition: 'background 0.2s',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                        e.currentTarget.style.background = 'rgba(255, 130, 0, 0.05)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = 'transparent';
                       }}
                     >
                       <td style={adminStyles.tableCell}>
-                        <div style={{ fontWeight: 'bold', color: '#fde68a' }}>
+                        <div style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                           {product.productName || 'Unknown Product'}
                         </div>
                       </td>
@@ -294,7 +294,7 @@ export default function AnalyticsView() {
                 data={processTimeSeriesData(data.timeseries)}
                 type="line"
                 height={300}
-                color="#f97316"
+                color="#FF8200"
               />
             </div>
           </div>
@@ -309,7 +309,7 @@ export default function AnalyticsView() {
                 data={processRecentActivityData(data.recentActivity)}
                 type="line"
                 height={250}
-                color="#8b5cf6"
+                color="#7D55C7"
               />
             </div>
           </div>
@@ -340,10 +340,10 @@ export default function AnalyticsView() {
                   justifyContent: 'space-between',
                   marginBottom: '8px'
                 }}>
-                  <span style={{ fontWeight: 'bold', color: '#fde68a' }}>
+                  <span style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                     {stage.stage}
                   </span>
-                  <span style={{ color: '#fdba74' }}>
+                  <span style={{ color: '#FBDB65' }}>
                     {formatNumber(stage.count)}
                     {index > 0 && dropoffPercent > 0 && (
                       <span style={{ color: '#ef4444', marginLeft: '8px', fontSize: '14px' }}>
@@ -353,13 +353,13 @@ export default function AnalyticsView() {
                   </span>
                 </div>
                 <div style={{
-                  background: 'rgba(249, 115, 22, 0.1)',
+                  background: 'rgba(255, 130, 0, 0.1)',
                   borderRadius: '8px',
                   height: '24px',
                   overflow: 'hidden'
                 }}>
                   <div style={{
-                    background: `linear-gradient(to right, #f97316, #fdba74)`,
+                    background: `linear-gradient(to right, #FF8200, #FBDB65)`,
                     height: '100%',
                     width: `${percentage}%`,
                     transition: 'width 0.5s ease-out'
@@ -396,7 +396,7 @@ export default function AnalyticsView() {
           {/* Tab Navigation */}
           <div style={{
             display: 'flex',
-            background: 'rgba(249, 115, 22, 0.1)',
+            background: 'rgba(255, 130, 0, 0.1)',
             borderRadius: '8px',
             padding: '4px',
             gap: '4px'
@@ -411,10 +411,10 @@ export default function AnalyticsView() {
                 onClick={() => setActiveTab(tab.id)}
                 style={{
                   padding: '8px 16px',
-                  background: activeTab === tab.id ? '#f97316' : 'transparent',
+                  background: activeTab === tab.id ? '#FF8200' : 'transparent',
                   border: 'none',
                   borderRadius: '6px',
-                  color: activeTab === tab.id ? '#111827' : '#fdba74',
+                  color: activeTab === tab.id ? '#111827' : '#FBDB65',
                   fontWeight: activeTab === tab.id ? 'bold' : 'normal',
                   cursor: 'pointer',
                   display: 'flex',
@@ -459,7 +459,7 @@ export default function AnalyticsView() {
       {/* Content */}
       {loading ? (
         <div style={adminStyles.section}>
-          <p style={{ color: '#fdba74', textAlign: 'center' }}>Loading analytics...</p>
+          <p style={{ color: '#FBDB65', textAlign: 'center' }}>Loading analytics...</p>
         </div>
       ) : (
         <>

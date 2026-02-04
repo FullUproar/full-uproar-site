@@ -46,7 +46,7 @@ interface FulfillmentStats {
 
 const priorityConfig = {
   normal: { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', label: 'Normal' },
-  rush: { color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)', label: 'Rush' },
+  rush: { color: '#FF8200', bg: 'rgba(255, 130, 0, 0.1)', label: 'Rush' },
   expedited: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', label: 'Expedited' }
 };
 
@@ -271,7 +271,7 @@ export default function FulfillmentPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '4px' }}>Pending Orders</p>
-                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{stats.pendingOrders}</p>
+                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.pendingOrders}</p>
               </div>
               <Clock size={28} style={{ color: '#fbbf24' }} />
             </div>
@@ -281,7 +281,7 @@ export default function FulfillmentPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '4px' }}>Ready to Ship</p>
-                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{stats.readyToShip}</p>
+                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.readyToShip}</p>
               </div>
               <PackageCheck size={28} style={{ color: '#10b981' }} />
             </div>
@@ -291,7 +291,7 @@ export default function FulfillmentPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '4px' }}>Rush Orders</p>
-                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{stats.rushOrders}</p>
+                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.rushOrders}</p>
               </div>
               <Timer size={28} style={{ color: '#ef4444' }} />
             </div>
@@ -301,7 +301,7 @@ export default function FulfillmentPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '4px' }}>Orders Today</p>
-                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{stats.ordersToday}</p>
+                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.ordersToday}</p>
               </div>
               <Calendar size={28} style={{ color: '#3b82f6' }} />
             </div>
@@ -311,7 +311,7 @@ export default function FulfillmentPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '4px' }}>Avg Processing</p>
-                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{stats.averageProcessingTime}h</p>
+                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.averageProcessingTime}h</p>
               </div>
               <TrendingUp size={28} style={{ color: '#a78bfa' }} />
             </div>
@@ -321,9 +321,9 @@ export default function FulfillmentPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '4px' }}>Awaiting Stock</p>
-                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#fde68a' }}>{stats.awaitingStock}</p>
+                <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.awaitingStock}</p>
               </div>
-              <AlertCircle size={28} style={{ color: '#f97316' }} />
+              <AlertCircle size={28} style={{ color: '#FF8200' }} />
             </div>
           </div>
         </div>
@@ -346,13 +346,13 @@ export default function FulfillmentPage() {
                     gap: '8px',
                     padding: '12px 20px',
                     background: isActive 
-                      ? 'rgba(249, 115, 22, 0.2)' 
+                      ? 'rgba(255, 130, 0, 0.2)' 
                       : 'rgba(30, 41, 59, 0.5)',
                     border: `2px solid ${isActive 
-                      ? 'rgba(249, 115, 22, 0.5)' 
+                      ? 'rgba(255, 130, 0, 0.5)' 
                       : 'transparent'}`,
                     borderRadius: '8px',
-                    color: isActive ? '#fdba74' : '#e2e8f0',
+                    color: isActive ? '#FBDB65' : '#e2e8f0',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     whiteSpace: 'nowrap'
@@ -361,7 +361,7 @@ export default function FulfillmentPage() {
                   <Icon size={20} />
                   <span style={{ fontWeight: '600' }}>{stage.label}</span>
                   <span style={{
-                    background: isActive ? '#f97316' : '#64748b',
+                    background: isActive ? '#FF8200' : '#64748b',
                     color: '#0f172a',
                     padding: '2px 8px',
                     borderRadius: '12px',
@@ -413,7 +413,7 @@ export default function FulfillmentPage() {
 
             {selectedOrders.size > 0 && (
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <span style={{ color: '#fdba74', fontWeight: '600', fontSize: '14px' }}>
+                <span style={{ color: '#FBDB65', fontWeight: '600', fontSize: '14px' }}>
                   {selectedOrders.size} selected
                 </span>
                 <button
@@ -445,7 +445,7 @@ export default function FulfillmentPage() {
           {loading ? (
             <div style={{ textAlign: 'center', padding: '60px' }}>
               <Package size={32} style={{ 
-                color: '#fdba74', 
+                color: '#FBDB65', 
                 marginBottom: '16px',
                 animation: 'pulse 2s infinite'
               }} />
@@ -469,7 +469,7 @@ export default function FulfillmentPage() {
                 padding: '12px',
                 background: 'rgba(30, 41, 59, 0.5)',
                 borderRadius: '8px',
-                border: '2px solid rgba(249, 115, 22, 0.2)'
+                border: '2px solid rgba(255, 130, 0, 0.2)'
               }}>
                 <input
                   type="checkbox"
@@ -489,11 +489,11 @@ export default function FulfillmentPage() {
                   style={{
                     padding: '20px',
                     background: selectedOrders.has(order.id) 
-                      ? 'rgba(249, 115, 22, 0.1)' 
+                      ? 'rgba(255, 130, 0, 0.1)' 
                       : 'rgba(30, 41, 59, 0.5)',
                     borderRadius: '8px',
                     border: `2px solid ${selectedOrders.has(order.id) 
-                      ? 'rgba(249, 115, 22, 0.5)' 
+                      ? 'rgba(255, 130, 0, 0.5)' 
                       : 'transparent'}`,
                     transition: 'all 0.2s'
                   }}
@@ -518,7 +518,7 @@ export default function FulfillmentPage() {
                             <p style={{ 
                               fontFamily: 'monospace', 
                               fontSize: '14px',
-                              color: '#fde68a',
+                              color: '#FBDB65',
                               fontWeight: '600'
                             }}>
                               {order.id.slice(0, 8)}...
@@ -534,7 +534,7 @@ export default function FulfillmentPage() {
                         </div>
                         
                         <div style={{ textAlign: 'right' }}>
-                          <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#fde68a' }}>
+                          <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#FBDB65' }}>
                             ${(order.totalCents / 100).toFixed(2)}
                           </p>
                           <p style={{ fontSize: '12px', color: '#94a3b8' }}>
@@ -550,7 +550,7 @@ export default function FulfillmentPage() {
                         borderRadius: '6px',
                         marginBottom: '12px'
                       }}>
-                        <p style={{ fontSize: '13px', color: '#fdba74', fontWeight: '600', marginBottom: '8px' }}>
+                        <p style={{ fontSize: '13px', color: '#FBDB65', fontWeight: '600', marginBottom: '8px' }}>
                           Items ({order.items.length})
                         </p>
                         {order.items.map((item, index) => (

@@ -12,7 +12,7 @@ const styles = {
   container: {
     padding: '16px',
     background: 'rgba(30, 41, 59, 0.8)',
-    borderTop: '2px solid rgba(249, 115, 22, 0.3)',
+    borderTop: '2px solid rgba(255, 130, 0, 0.3)',
   },
   header: {
     display: 'flex',
@@ -23,13 +23,13 @@ const styles = {
   title: {
     fontSize: '14px',
     fontWeight: '600' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
   },
   submitButton: {
     padding: '8px 24px',
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     border: 'none',
     borderRadius: '8px',

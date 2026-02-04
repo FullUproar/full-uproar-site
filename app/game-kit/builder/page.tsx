@@ -220,7 +220,7 @@ const componentPresets: ComponentPreset[] = [
         id: 'action-card',
         type: 'action',
         name: 'Action Card',
-        color: '#f97316',
+        color: '#FF8200',
         textColor: '#ffffff',
         properties: [
           { name: 'color', type: 'string', label: 'Card Color' },
@@ -280,7 +280,7 @@ const componentPresets: ComponentPreset[] = [
         id: 'question',
         type: 'question',
         name: 'Question Card',
-        color: '#8b5cf6',
+        color: '#7D55C7',
         textColor: '#ffffff',
         properties: [
           { name: 'question', type: 'string', label: 'Question' },
@@ -492,7 +492,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'round',
     name: 'Round',
     icon: <Repeat size={16} />,
-    color: '#8b5cf6',
+    color: '#7D55C7',
     description: 'A repeating round of play',
     canHaveChildren: true,
     category: 'Structure',
@@ -540,7 +540,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Draw Cards',
     icon: <Plus size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Draw cards from a deck',
     category: 'Cards',
     defaultProperties: { count: 1, from: 'deck', to: 'hand' },
@@ -550,7 +550,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Play Card',
     icon: <ArrowRightLeft size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Play a card to the table',
     category: 'Cards',
     defaultProperties: { from: 'hand', to: 'table' },
@@ -560,7 +560,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Discard',
     icon: <Trash2 size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Discard cards',
     category: 'Cards',
     defaultProperties: { to: 'discard' },
@@ -570,7 +570,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Shuffle',
     icon: <Shuffle size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Shuffle a deck or zone',
     category: 'Cards',
     defaultProperties: { zone: 'deck' },
@@ -580,7 +580,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Reveal Cards',
     icon: <Eye size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Show cards to players',
     category: 'Cards',
     defaultProperties: { to: 'all' },
@@ -590,7 +590,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Hide Cards',
     icon: <EyeOff size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Hide cards from view',
     category: 'Cards',
   },
@@ -599,7 +599,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Flip Cards',
     icon: <RotateCcw size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Flip cards over',
     category: 'Cards',
   },
@@ -608,7 +608,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Move Cards',
     icon: <ArrowRightLeft size={16} />,
-    color: '#f97316',
+    color: '#FF8200',
     description: 'Move cards between zones',
     category: 'Cards',
     defaultProperties: { from: 'hand', to: 'table' },
@@ -1120,7 +1120,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Form Meld',
     icon: <Layers size={16} />,
-    color: '#8b5cf6',
+    color: '#7D55C7',
     description: 'Create a meld (run or set)',
     category: 'Meld',
     defaultProperties: { type: 'setOrRun', minCards: 3 },
@@ -1130,7 +1130,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Lay Off',
     icon: <Plus size={16} />,
-    color: '#8b5cf6',
+    color: '#7D55C7',
     description: 'Add card to existing meld',
     category: 'Meld',
   },
@@ -1139,7 +1139,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Check for Book',
     icon: <Filter size={16} />,
-    color: '#8b5cf6',
+    color: '#7D55C7',
     description: 'Check for 4-of-a-kind (Go Fish book)',
     category: 'Meld',
     defaultProperties: { size: 4, groupBy: 'rank' },
@@ -1297,7 +1297,7 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '16px 24px',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
     background: 'rgba(30, 41, 59, 0.6)',
     backdropFilter: 'blur(10px)',
   },
@@ -1325,7 +1325,7 @@ const styles = {
   title: {
     fontSize: '20px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
@@ -1343,13 +1343,13 @@ const styles = {
     transition: 'all 0.2s',
   },
   primaryButton: {
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: '#000',
   },
   secondaryButton: {
-    background: 'rgba(249, 115, 22, 0.1)',
-    color: '#fdba74',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    color: '#FBDB65',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
   },
   main: {
     display: 'flex',
@@ -1361,19 +1361,19 @@ const styles = {
     minWidth: '200px',
     flexShrink: 0,
     background: 'rgba(30, 41, 59, 0.4)',
-    borderRight: '1px solid rgba(249, 115, 22, 0.1)',
+    borderRight: '1px solid rgba(255, 130, 0, 0.1)',
     display: 'flex',
     flexDirection: 'column' as const,
     overflow: 'hidden',
   },
   sidebarHeader: {
     padding: '16px',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.1)',
     fontSize: '12px',
     fontWeight: 'bold',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
-    color: '#fdba74',
+    color: '#FBDB65',
     flexShrink: 0,
   },
   sidebarContent: {
@@ -1449,20 +1449,20 @@ const styles = {
     maxWidth: '400px',
     flexShrink: 1,
     background: 'rgba(30, 41, 59, 0.4)',
-    borderLeft: '1px solid rgba(249, 115, 22, 0.1)',
+    borderLeft: '1px solid rgba(255, 130, 0, 0.1)',
     display: 'flex',
     flexDirection: 'column' as const,
     overflow: 'hidden',
   },
   propertiesHeader: {
     padding: '16px',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.1)',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
     fontSize: '14px',
     fontWeight: '600',
-    color: '#fdba74',
+    color: '#FBDB65',
     flexShrink: 0,
   },
   propertiesContent: {
@@ -1475,7 +1475,7 @@ const styles = {
     gap: '4px',
     padding: '8px 24px',
     background: 'rgba(15, 23, 42, 0.4)',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.1)',
   },
   tab: {
     padding: '10px 20px',
@@ -1492,9 +1492,9 @@ const styles = {
     gap: '8px',
   },
   tabActive: {
-    background: 'rgba(249, 115, 22, 0.15)',
-    color: '#fdba74',
-    borderBottom: '2px solid #f97316',
+    background: 'rgba(255, 130, 0, 0.15)',
+    color: '#FBDB65',
+    borderBottom: '2px solid #FF8200',
   },
   componentsContainer: {
     flex: 1,
@@ -1503,7 +1503,7 @@ const styles = {
   },
   componentSection: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '12px',
     marginBottom: '24px',
   },
@@ -1512,12 +1512,12 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '16px 20px',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.1)',
   },
   componentTitle: {
     fontSize: '16px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
@@ -1533,7 +1533,7 @@ const styles = {
     background: 'rgba(15, 23, 42, 0.4)',
     borderRadius: '8px',
     marginBottom: '8px',
-    border: '1px solid rgba(249, 115, 22, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.1)',
   },
   componentItemPreview: {
     width: '40px',
@@ -1566,10 +1566,10 @@ const styles = {
     alignItems: 'center',
     gap: '6px',
     padding: '8px 16px',
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
-    color: '#fdba74',
+    color: '#FBDB65',
     fontSize: '13px',
     fontWeight: '600',
     cursor: 'pointer',
@@ -1577,7 +1577,7 @@ const styles = {
   smallInput: {
     padding: '6px 10px',
     background: 'rgba(15, 23, 42, 0.6)',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '6px',
     color: '#e2e8f0',
     fontSize: '13px',
@@ -1588,7 +1588,7 @@ const styles = {
     width: '32px',
     height: '32px',
     borderRadius: '6px',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     cursor: 'pointer',
     padding: 0,
     overflow: 'hidden',
@@ -1665,7 +1665,7 @@ const styles = {
     borderTop: '1px dashed rgba(255, 255, 255, 0.1)',
   },
   dropZone: {
-    border: '2px dashed rgba(249, 115, 22, 0.3)',
+    border: '2px dashed rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
     padding: '16px',
     textAlign: 'center' as const,
@@ -1675,13 +1675,13 @@ const styles = {
     transition: 'all 0.2s',
   },
   dropZoneActive: {
-    borderColor: '#f97316',
-    background: 'rgba(249, 115, 22, 0.1)',
-    color: '#fdba74',
+    borderColor: '#FF8200',
+    background: 'rgba(255, 130, 0, 0.1)',
+    color: '#FBDB65',
   },
   gameBlock: {
     background: 'rgba(30, 41, 59, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.4)',
+    border: '2px solid rgba(255, 130, 0, 0.4)',
     borderRadius: '16px',
     padding: '20px',
     marginBottom: '16px',
@@ -1692,12 +1692,12 @@ const styles = {
     gap: '12px',
     marginBottom: '16px',
     paddingBottom: '16px',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
   },
   gameBlockTitle: {
     fontSize: '18px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
   },
   propertyGroup: {
     marginBottom: '20px',
@@ -1715,7 +1715,7 @@ const styles = {
     width: '100%',
     padding: '10px 12px',
     background: 'rgba(15, 23, 42, 0.6)',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '8px',
     color: '#e2e8f0',
     fontSize: '14px',
@@ -1726,7 +1726,7 @@ const styles = {
     width: '100%',
     padding: '10px 12px',
     background: 'rgba(15, 23, 42, 0.6)',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '8px',
     color: '#e2e8f0',
     fontSize: '14px',
@@ -1747,7 +1747,7 @@ const styles = {
   },
   modalContent: {
     background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '16px',
     width: '100%',
     maxWidth: '480px',
@@ -1761,7 +1761,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '16px 20px',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
   },
   modalTitle: {
     display: 'flex',
@@ -1769,15 +1769,15 @@ const styles = {
     gap: '10px',
     fontSize: '16px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
   },
   modalClose: {
     width: '32px',
     height: '32px',
     borderRadius: '8px',
     border: 'none',
-    background: 'rgba(249, 115, 22, 0.1)',
-    color: '#fdba74',
+    background: 'rgba(255, 130, 0, 0.1)',
+    color: '#FBDB65',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
@@ -2607,7 +2607,7 @@ export default function GameBuilder() {
   if (loading) {
     return (
       <div style={{ ...styles.container, justifyContent: 'center', alignItems: 'center' }}>
-        <Loader2 size={48} style={{ color: '#f97316', animation: 'spin 1s linear infinite' }} />
+        <Loader2 size={48} style={{ color: '#FF8200', animation: 'spin 1s linear infinite' }} />
         <div style={{ marginTop: '16px', color: '#94a3b8' }}>Loading game...</div>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -2624,8 +2624,8 @@ export default function GameBuilder() {
             href="/game-kit"
             style={styles.backButton}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-              e.currentTarget.style.color = '#fdba74';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
+              e.currentTarget.style.color = '#FBDB65';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent';
@@ -2637,7 +2637,7 @@ export default function GameBuilder() {
           </Link>
 
           <div style={styles.title}>
-            <Sparkles size={20} style={{ color: '#f97316' }} />
+            <Sparkles size={20} style={{ color: '#FF8200' }} />
             <input
               value={gameName}
               onChange={(e) => setGameName(e.target.value)}
@@ -2645,7 +2645,7 @@ export default function GameBuilder() {
                 background: 'transparent',
                 border: 'none',
                 outline: 'none',
-                color: '#fdba74',
+                color: '#FBDB65',
                 fontSize: '20px',
                 fontWeight: 'bold',
                 width: '200px',
@@ -2749,15 +2749,15 @@ export default function GameBuilder() {
             padding: '4px',
             background: 'rgba(30, 41, 59, 0.6)',
             borderRadius: '8px',
-            border: '1px solid rgba(249, 115, 22, 0.2)',
+            border: '1px solid rgba(255, 130, 0, 0.2)',
           }}>
             <button
               style={{
                 padding: '6px 12px',
                 borderRadius: '6px',
                 border: 'none',
-                background: viewMode === 'visual' ? 'rgba(249, 115, 22, 0.3)' : 'transparent',
-                color: viewMode === 'visual' ? '#fdba74' : '#64748b',
+                background: viewMode === 'visual' ? 'rgba(255, 130, 0, 0.3)' : 'transparent',
+                color: viewMode === 'visual' ? '#FBDB65' : '#64748b',
                 fontSize: '12px',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -2776,8 +2776,8 @@ export default function GameBuilder() {
                 padding: '6px 12px',
                 borderRadius: '6px',
                 border: 'none',
-                background: viewMode === 'code' ? 'rgba(249, 115, 22, 0.3)' : 'transparent',
-                color: viewMode === 'code' ? '#fdba74' : '#64748b',
+                background: viewMode === 'code' ? 'rgba(255, 130, 0, 0.3)' : 'transparent',
+                color: viewMode === 'code' ? '#FBDB65' : '#64748b',
                 fontSize: '12px',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -2803,7 +2803,7 @@ export default function GameBuilder() {
             <div style={{ maxWidth: '900px', margin: '0 auto' }}>
               {/* Quick Add Section */}
               <div style={{
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%)',
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(255, 130, 0, 0.1) 100%)',
                 border: '1px solid rgba(139, 92, 246, 0.3)',
                 borderRadius: '12px',
                 padding: '20px',
@@ -2848,7 +2848,7 @@ export default function GameBuilder() {
                           transition: 'all 0.2s',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = '#8b5cf6';
+                          e.currentTarget.style.borderColor = '#7D55C7';
                           e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
                         }}
                         onMouseLeave={(e) => {
@@ -2898,7 +2898,7 @@ export default function GameBuilder() {
                           transition: 'all 0.2s',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = '#8b5cf6';
+                          e.currentTarget.style.borderColor = '#7D55C7';
                           e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
                         }}
                         onMouseLeave={(e) => {
@@ -2948,7 +2948,7 @@ export default function GameBuilder() {
                           transition: 'all 0.2s',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = '#8b5cf6';
+                          e.currentTarget.style.borderColor = '#7D55C7';
                           e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
                         }}
                         onMouseLeave={(e) => {
@@ -3164,7 +3164,7 @@ export default function GameBuilder() {
                         style={{
                           ...styles.componentItemPreview,
                           background: 'rgba(139, 92, 246, 0.2)',
-                          border: '2px dashed #8b5cf6',
+                          border: '2px dashed #7D55C7',
                           fontSize: '18px',
                         }}
                       >
@@ -3255,7 +3255,7 @@ export default function GameBuilder() {
                       <div
                         style={{
                           ...styles.componentItemPreview,
-                          background: 'linear-gradient(135deg, #eab308 0%, #f97316 100%)',
+                          background: 'linear-gradient(135deg, #eab308 0%, #FF8200 100%)',
                           color: '#000',
                           fontSize: '14px',
                         }}
@@ -3364,7 +3364,7 @@ export default function GameBuilder() {
                       <div
                         style={{
                           ...styles.componentItemPreview,
-                          background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                          background: 'linear-gradient(135deg, #3b82f6 0%, #7D55C7 100%)',
                           color: '#fff',
                           fontSize: '12px',
                           fontWeight: 'bold',
@@ -3469,8 +3469,8 @@ export default function GameBuilder() {
                     marginLeft: '-4px',
                     marginRight: '-4px',
                     borderRadius: '4px',
-                    background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
-                    color: '#fdba74',
+                    background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                    color: '#FBDB65',
                   }}
                   onClick={() => toggleCategory('_recent')}
                 >
@@ -3536,7 +3536,7 @@ export default function GameBuilder() {
                   }}
                   onClick={() => toggleCategory(category)}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                    e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent';
@@ -3596,7 +3596,7 @@ export default function GameBuilder() {
               {/* Game Info Block */}
               <div style={styles.gameBlock}>
                 <div style={styles.gameBlockHeader}>
-                  <Sparkles size={24} style={{ color: '#f97316' }} />
+                  <Sparkles size={24} style={{ color: '#FF8200' }} />
                   <div style={styles.gameBlockTitle}>{gameName}</div>
                 </div>
 
@@ -3685,7 +3685,7 @@ export default function GameBuilder() {
                   height: '300px',
                   padding: '12px',
                   borderRadius: '8px',
-                  border: '1px solid rgba(249, 115, 22, 0.3)',
+                  border: '1px solid rgba(255, 130, 0, 0.3)',
                   background: 'rgba(15, 23, 42, 0.8)',
                   color: '#e2e8f0',
                   fontFamily: "'Fira Code', 'Consolas', monospace",

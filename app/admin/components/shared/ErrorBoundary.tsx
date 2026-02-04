@@ -212,7 +212,7 @@ export class ErrorBoundary extends Component<Props, State> {
               }}>
                 <summary style={{
                   cursor: 'pointer',
-                  color: '#fdba74',
+                  color: '#FBDB65',
                   fontSize: '14px',
                   marginBottom: '10px',
                 }}>
@@ -238,7 +238,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   )}
                   {errorInfo?.componentStack && (
                     <details style={{ marginTop: '10px' }}>
-                      <summary style={{ cursor: 'pointer', color: '#fdba74' }}>
+                      <summary style={{ cursor: 'pointer', color: '#FBDB65' }}>
                         Component Stack
                       </summary>
                       <pre style={{

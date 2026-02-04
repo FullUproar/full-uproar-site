@@ -26,9 +26,9 @@ interface User {
 
 const TIER_ICONS: Record<string, React.ReactNode> = {
   FREE: <Users size={16} style={{ color: '#64748b' }} />,
-  AFTERROAR_PLUS: <Crown size={16} style={{ color: '#f97316' }} />,
+  AFTERROAR_PLUS: <Crown size={16} style={{ color: '#FF8200' }} />,
   VIP: <Star size={16} style={{ color: '#fbbf24' }} />,
-  CREATOR: <Palette size={16} style={{ color: '#8b5cf6' }} />,
+  CREATOR: <Palette size={16} style={{ color: '#7D55C7' }} />,
   BETA_TESTER: <Beaker size={16} style={{ color: '#10b981' }} />
 };
 
@@ -147,25 +147,25 @@ export default function MembershipManagement() {
               border: '1px solid rgba(148, 163, 184, 0.2)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <Users size={20} style={{ color: '#fdba74' }} />
+                <Users size={20} style={{ color: '#FBDB65' }} />
                 <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Total Members</span>
               </div>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#fde68a' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FBDB65' }}>
                 {stats.totalMembers}
               </div>
             </div>
 
             <div style={{
               padding: '1rem',
-              background: 'rgba(249, 115, 22, 0.1)',
+              background: 'rgba(255, 130, 0, 0.1)',
               borderRadius: '8px',
-              border: '1px solid rgba(249, 115, 22, 0.3)'
+              border: '1px solid rgba(255, 130, 0, 0.3)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <Crown size={20} style={{ color: '#f97316' }} />
-                <span style={{ color: '#fdba74', fontSize: '0.875rem' }}>Afterroar+</span>
+                <Crown size={20} style={{ color: '#FF8200' }} />
+                <span style={{ color: '#FBDB65', fontSize: '0.875rem' }}>Afterroar+</span>
               </div>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f97316' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FF8200' }}>
                 {stats.primeMembers}
               </div>
             </div>
@@ -178,7 +178,7 @@ export default function MembershipManagement() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                 <Star size={20} style={{ color: '#fbbf24' }} />
-                <span style={{ color: '#fde68a', fontSize: '0.875rem' }}>VIP Members</span>
+                <span style={{ color: '#FBDB65', fontSize: '0.875rem' }}>VIP Members</span>
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#fbbf24' }}>
                 {stats.vipMembers}
@@ -241,7 +241,7 @@ export default function MembershipManagement() {
                   paddingTop: '0.5rem', 
                   borderTop: '1px solid rgba(148, 163, 184, 0.2)',
                   fontSize: '0.75rem',
-                  color: '#fdba74'
+                  color: '#FBDB65'
                 }}>
                   ${(benefits.pricing.monthly / 100).toFixed(2)}/mo
                 </div>
@@ -345,7 +345,7 @@ export default function MembershipManagement() {
                           style={{ ...adminStyles.input, width: '150px' }}
                         />
                       ) : (
-                        <span style={{ color: user.membershipExpiry ? '#fdba74' : '#64748b', fontSize: '0.875rem' }}>
+                        <span style={{ color: user.membershipExpiry ? '#FBDB65' : '#64748b', fontSize: '0.875rem' }}>
                           {user.membershipExpiry 
                             ? new Date(user.membershipExpiry).toLocaleDateString()
                             : 'Never'}

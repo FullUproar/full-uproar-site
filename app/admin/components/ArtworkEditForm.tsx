@@ -156,11 +156,11 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
         onClick={onBack}
         style={adminStyles.backButton}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
-          e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+          e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
+          e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+          e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
           e.currentTarget.style.background = 'transparent';
         }}
       >
@@ -203,7 +203,7 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
                     width: '300px', 
                     height: 'auto',
                     borderRadius: '8px',
-                    border: '2px solid rgba(249, 115, 22, 0.3)',
+                    border: '2px solid rgba(255, 130, 0, 0.3)',
                     display: 'block'
                   }} 
                 />

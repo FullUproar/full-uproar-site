@@ -92,13 +92,13 @@ export default function RootLayout({
       appearance={{
         baseTheme: dark,
         variables: {
-          colorPrimary: '#f97316',
-          colorText: '#fdba74',
+          colorPrimary: '#FF8200',
+          colorText: '#FBDB65',
           colorTextOnPrimaryBackground: '#111827',
           colorTextSecondary: '#94a3b8',
           colorBackground: '#1e293b',
           colorInputBackground: '#0f172a',
-          colorInputText: '#fdba74',
+          colorInputText: '#FBDB65',
           borderRadius: '0.5rem',
         },
         elements: {

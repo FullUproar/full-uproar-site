@@ -123,7 +123,7 @@ export default function Navigation() {
     },
     logoSubtext: {
       fontSize: isMobile ? '0.625rem' : '0.75rem',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginTop: '-0.25rem'
     },
     navLinks: {
@@ -133,7 +133,7 @@ export default function Navigation() {
     },
     navLink: {
       fontWeight: 'bold',
-      color: '#fde68a',
+      color: '#FBDB65',
       textDecoration: 'none',
       transition: 'color 0.3s',
       paddingBottom: '0.25rem',
@@ -150,7 +150,7 @@ export default function Navigation() {
       alignItems: 'center',
       gap: '0.25rem',
       fontWeight: 'bold',
-      color: '#fde68a',
+      color: '#FBDB65',
       textDecoration: 'none',
       transition: 'color 0.3s',
       paddingBottom: '0.25rem',
@@ -174,14 +174,14 @@ export default function Navigation() {
     dropdownItem: {
       display: 'block',
       padding: '0.625rem 1rem',
-      color: '#fde68a',
+      color: '#FBDB65',
       textDecoration: 'none',
       borderRadius: '0.5rem',
       transition: 'all 0.2s',
       fontSize: '0.9rem',
     },
     dropdownItemHover: {
-      background: 'rgba(249, 115, 22, 0.15)',
+      background: 'rgba(255, 130, 0, 0.15)',
       color: '#FF8200',
     }
   };
@@ -234,16 +234,16 @@ export default function Navigation() {
                                 href={child.href}
                                 style={{
                                   ...styles.dropdownItem,
-                                  ...(pathname === child.href ? { color: '#FF8200', background: 'rgba(249, 115, 22, 0.1)' } : {})
+                                  ...(pathname === child.href ? { color: '#FF8200', background: 'rgba(255, 130, 0, 0.1)' } : {})
                                 }}
                                 onMouseEnter={(e) => {
-                                  e.currentTarget.style.background = 'rgba(249, 115, 22, 0.15)';
+                                  e.currentTarget.style.background = 'rgba(255, 130, 0, 0.15)';
                                   e.currentTarget.style.color = '#FF8200';
                                 }}
                                 onMouseLeave={(e) => {
                                   if (pathname !== child.href) {
                                     e.currentTarget.style.background = 'transparent';
-                                    e.currentTarget.style.color = '#fde68a';
+                                    e.currentTarget.style.color = '#FBDB65';
                                   }
                                 }}
                                 onClick={() => setOpenDropdown(null)}
@@ -308,12 +308,12 @@ export default function Navigation() {
                       },
                       variables: {
                         colorPrimary: "#FF8200",
-                        colorText: "#fdba74",
+                        colorText: "#FBDB65",
                         colorTextOnPrimaryBackground: "#111827",
                         colorTextSecondary: "#94a3b8",
                         colorBackground: "#111827",
                         colorInputBackground: "#1f2937",
-                        colorInputText: "#fdba74",
+                        colorInputText: "#FBDB65",
                         borderRadius: "0.5rem"
                       }
                     }}
@@ -412,7 +412,7 @@ export default function Navigation() {
                       border: 'none',
                       cursor: 'pointer',
                       fontWeight: 'bold',
-                      color: pathname.startsWith(link.href) ? '#FF8200' : '#fde68a',
+                      color: pathname.startsWith(link.href) ? '#FF8200' : '#FBDB65',
                       fontSize: '1rem',
                     }}
                   >
@@ -444,7 +444,7 @@ export default function Navigation() {
                             textDecoration: 'none',
                             fontSize: '0.95rem',
                             borderRadius: '0.5rem',
-                            background: pathname === child.href ? 'rgba(249, 115, 22, 0.1)' : 'transparent',
+                            background: pathname === child.href ? 'rgba(255, 130, 0, 0.1)' : 'transparent',
                           }}
                           onClick={() => setIsMenuOpen(false)}
                         >

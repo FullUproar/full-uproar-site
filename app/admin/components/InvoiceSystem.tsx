@@ -227,7 +227,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
     const colors: Record<string, string> = {
       draft: '#64748b',
       sent: '#3b82f6',
-      viewed: '#8b5cf6',
+      viewed: '#7D55C7',
       paid: '#10b981',
       overdue: '#ef4444',
       cancelled: '#6b7280',
@@ -325,7 +325,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
           </div>
           <button 
             onClick={() => setShowInvoiceModal(true)}
-            style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #f97316, #ea580c)' }}
+            style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #FF8200, #ea580c)' }}
           >
             <Plus size={16} style={{ marginRight: '8px' }} />
             New Invoice
@@ -337,7 +337,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid rgba(249, 115, 22, 0.3)' }}>
+                <tr style={{ borderBottom: '2px solid rgba(255, 130, 0, 0.3)' }}>
                   <th style={{ ...adminStyles.tableHeader, textAlign: 'left' }}>Number</th>
                   <th style={{ ...adminStyles.tableHeader, textAlign: 'left' }}>Customer</th>
                   <th style={adminStyles.tableHeader}>Amount</th>
@@ -360,7 +360,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                         <button
                           onClick={() => setSelectedInvoice(invoice)}
                           style={{ 
-                            color: '#fde68a',
+                            color: '#FBDB65',
                             background: 'none',
                             border: 'none',
                             cursor: 'pointer',
@@ -378,7 +378,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                           )}
                         </div>
                       </td>
-                      <td style={{ ...adminStyles.tableCell, fontWeight: 'bold', color: '#fde68a' }}>
+                      <td style={{ ...adminStyles.tableCell, fontWeight: 'bold', color: '#FBDB65' }}>
                         ${invoice.amounts.total.toLocaleString()}
                       </td>
                       <td style={adminStyles.tableCell}>
@@ -433,7 +433,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                             </button>
                           )}
                           <button 
-                            style={{ ...adminStyles.iconButton, color: '#8b5cf6' }}
+                            style={{ ...adminStyles.iconButton, color: '#7D55C7' }}
                             title="Download PDF"
                           >
                             <Download size={16} />
@@ -469,12 +469,12 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
               width: '90%',
               maxHeight: '90vh',
               overflowY: 'auto',
-              border: '2px solid rgba(249, 115, 22, 0.3)'
+              border: '2px solid rgba(255, 130, 0, 0.3)'
             }}>
               {/* Invoice Header */}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
                 <div>
-                  <h2 style={{ color: '#fde68a', fontSize: '28px', marginBottom: '10px' }}>
+                  <h2 style={{ color: '#FBDB65', fontSize: '28px', marginBottom: '10px' }}>
                     INVOICE
                   </h2>
                   <p style={{ color: '#94a3b8', fontSize: '16px' }}>{selectedInvoice.number}</p>
@@ -495,7 +495,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
               {/* Bill To */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
                 <div>
-                  <h3 style={{ color: '#fdba74', fontSize: '14px', marginBottom: '10px' }}>BILL TO</h3>
+                  <h3 style={{ color: '#FBDB65', fontSize: '14px', marginBottom: '10px' }}>BILL TO</h3>
                   <div style={{ color: '#e2e8f0' }}>
                     <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>{selectedInvoice.customer.name}</div>
                     {selectedInvoice.customer.company && <div>{selectedInvoice.customer.company}</div>}
@@ -506,7 +506,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                   </div>
                 </div>
                 <div>
-                  <h3 style={{ color: '#fdba74', fontSize: '14px', marginBottom: '10px' }}>INVOICE DETAILS</h3>
+                  <h3 style={{ color: '#FBDB65', fontSize: '14px', marginBottom: '10px' }}>INVOICE DETAILS</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#94a3b8' }}>Issue Date:</span>
@@ -538,7 +538,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
               <div style={{ marginBottom: '30px' }}>
                 <table style={{ width: '100%' }}>
                   <thead>
-                    <tr style={{ borderBottom: '2px solid rgba(249, 115, 22, 0.3)' }}>
+                    <tr style={{ borderBottom: '2px solid rgba(255, 130, 0, 0.3)' }}>
                       <th style={{ ...adminStyles.tableHeader, textAlign: 'left' }}>Description</th>
                       <th style={{ ...adminStyles.tableHeader, textAlign: 'center' }}>Qty</th>
                       <th style={{ ...adminStyles.tableHeader, textAlign: 'right' }}>Rate</th>
@@ -581,12 +581,12 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                     display: 'flex', 
                     justifyContent: 'space-between',
                     paddingTop: '12px',
-                    borderTop: '2px solid rgba(249, 115, 22, 0.3)',
+                    borderTop: '2px solid rgba(255, 130, 0, 0.3)',
                     fontSize: '18px',
                     fontWeight: 'bold'
                   }}>
-                    <span style={{ color: '#fdba74' }}>Total</span>
-                    <span style={{ color: '#fdba74' }}>${selectedInvoice.amounts.total.toFixed(2)}</span>
+                    <span style={{ color: '#FBDB65' }}>Total</span>
+                    <span style={{ color: '#FBDB65' }}>${selectedInvoice.amounts.total.toFixed(2)}</span>
                   </div>
                   {selectedInvoice.amounts.paid > 0 && (
                     <>
@@ -601,8 +601,8 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                         fontSize: '16px',
                         fontWeight: 'bold'
                       }}>
-                        <span style={{ color: '#fde68a' }}>Balance Due</span>
-                        <span style={{ color: '#fde68a' }}>${selectedInvoice.amounts.balance.toFixed(2)}</span>
+                        <span style={{ color: '#FBDB65' }}>Balance Due</span>
+                        <span style={{ color: '#FBDB65' }}>${selectedInvoice.amounts.balance.toFixed(2)}</span>
                       </div>
                     </>
                   )}
@@ -612,7 +612,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
               {/* Notes */}
               {selectedInvoice.notes && (
                 <div style={{ marginBottom: '20px', padding: '15px', background: 'rgba(148, 163, 184, 0.1)', borderRadius: '8px' }}>
-                  <h4 style={{ color: '#fdba74', fontSize: '14px', marginBottom: '8px' }}>Notes</h4>
+                  <h4 style={{ color: '#FBDB65', fontSize: '14px', marginBottom: '8px' }}>Notes</h4>
                   <p style={{ color: '#e2e8f0', fontSize: '14px' }}>{selectedInvoice.notes}</p>
                 </div>
               )}
@@ -624,7 +624,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                     <Printer size={16} style={{ marginRight: '8px' }} />
                     Print
                   </button>
-                  <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}>
+                  <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #7D55C7, #7c3aed)' }}>
                     <Download size={16} style={{ marginRight: '8px' }} />
                     Download PDF
                   </button>
@@ -680,7 +680,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
                     {payment.icon}
                   </div>
                   <div>
-                    <div style={{ color: '#fde68a' }}>{payment.method}</div>
+                    <div style={{ color: '#FBDB65' }}>{payment.method}</div>
                     <div style={{ color: '#64748b', fontSize: '12px' }}>{payment.processor}</div>
                   </div>
                 </div>
@@ -710,7 +710,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
             ].map((payment, idx) => (
               <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={{ color: '#fde68a', fontSize: '14px' }}>{payment.invoice}</div>
+                  <div style={{ color: '#FBDB65', fontSize: '14px' }}>{payment.invoice}</div>
                   <div style={{ color: '#64748b', fontSize: '12px' }}>
                     {payment.date.toLocaleDateString()} • {payment.method}
                   </div>
@@ -730,7 +730,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%' }}>
             <thead>
-              <tr style={{ borderBottom: '2px solid rgba(249, 115, 22, 0.3)' }}>
+              <tr style={{ borderBottom: '2px solid rgba(255, 130, 0, 0.3)' }}>
                 <th style={{ ...adminStyles.tableHeader, textAlign: 'left' }}>Invoice</th>
                 <th style={{ ...adminStyles.tableHeader, textAlign: 'left' }}>Customer</th>
                 <th style={adminStyles.tableHeader}>Amount</th>
@@ -794,7 +794,7 @@ export default function InvoiceSystem({ onNavigate }: { onNavigate: (view: any, 
             style={{
               ...adminStyles.button,
               background: activeTab === tab.id ? 
-                'linear-gradient(135deg, #f97316, #ea580c)' : 
+                'linear-gradient(135deg, #FF8200, #ea580c)' : 
                 'rgba(148, 163, 184, 0.1)',
               color: activeTab === tab.id ? '#fff' : '#94a3b8',
               display: 'flex',

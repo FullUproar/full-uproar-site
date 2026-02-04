@@ -82,7 +82,7 @@ export default function ArtworkListView({ onEdit, onNew }: ArtworkListViewProps)
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading artwork...</p>
+        <p style={{ color: '#FBDB65' }}>Loading artwork...</p>
       </div>
     );
   }
@@ -158,7 +158,7 @@ export default function ArtworkListView({ onEdit, onNew }: ArtworkListViewProps)
                     position: 'absolute',
                     top: '8px',
                     right: '8px',
-                    background: 'linear-gradient(135deg, #f97316, #ef4444)',
+                    background: 'linear-gradient(135deg, #FF8200, #ef4444)',
                     color: 'white',
                     padding: '4px 12px',
                     borderRadius: '20px',
@@ -199,7 +199,7 @@ export default function ArtworkListView({ onEdit, onNew }: ArtworkListViewProps)
                 <h3 style={{ 
                   fontSize: '16px', 
                   fontWeight: 'bold', 
-                  color: '#fdba74', 
+                  color: '#FBDB65', 
                   marginBottom: '8px',
                   lineHeight: '1.2'
                 }}>
@@ -213,8 +213,8 @@ export default function ArtworkListView({ onEdit, onNew }: ArtworkListViewProps)
                   marginBottom: '8px' 
                 }}>
                   <span style={{
-                    background: 'rgba(249, 115, 22, 0.2)',
-                    color: '#fdba74',
+                    background: 'rgba(255, 130, 0, 0.2)',
+                    color: '#FBDB65',
                     padding: '2px 8px',
                     borderRadius: '4px',
                     fontSize: '12px',

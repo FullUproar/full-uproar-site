@@ -22,9 +22,9 @@ interface User {
 const ROLE_ICONS: Record<Role, React.ReactNode> = {
   [Role.GOD]: <Crown size={16} style={{ color: '#fbbf24' }} />,
   [Role.SUPER_ADMIN]: <Shield size={16} style={{ color: '#ef4444' }} />,
-  [Role.ADMIN]: <Shield size={16} style={{ color: '#f97316' }} />,
+  [Role.ADMIN]: <Shield size={16} style={{ color: '#FF8200' }} />,
   [Role.HR]: <Users size={16} style={{ color: '#3b82f6' }} />,
-  [Role.PRODUCT_MANAGER]: <Package size={16} style={{ color: '#8b5cf6' }} />,
+  [Role.PRODUCT_MANAGER]: <Package size={16} style={{ color: '#7D55C7' }} />,
   [Role.MARKETING]: <TrendingUp size={16} style={{ color: '#10b981' }} />,
   [Role.CUSTOMER_SERVICE]: <HeadphonesIcon size={16} style={{ color: '#06b6d4' }} />,
   [Role.WAREHOUSE]: <Warehouse size={16} style={{ color: '#6366f1' }} />,
@@ -217,7 +217,7 @@ export default function RolesManagement() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                 {ROLE_ICONS[role]}
-                <strong style={{ color: '#fdba74' }}>{role}</strong>
+                <strong style={{ color: '#FBDB65' }}>{role}</strong>
               </div>
               <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.5rem' }}>
                 {ROLE_DESCRIPTIONS[role]}
@@ -286,10 +286,10 @@ export default function RolesManagement() {
                         {ROLE_ICONS[user.role as Role]}
                         <span style={{ 
                           padding: '0.25rem 0.5rem',
-                          background: user.role === 'GOD' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(249, 115, 22, 0.2)',
+                          background: user.role === 'GOD' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 130, 0, 0.2)',
                           borderRadius: '4px',
                           fontSize: '0.75rem',
-                          color: user.role === 'GOD' ? '#fbbf24' : '#fdba74'
+                          color: user.role === 'GOD' ? '#fbbf24' : '#FBDB65'
                         }}>
                           {user.role}
                         </span>
@@ -305,12 +305,12 @@ export default function RolesManagement() {
                               style={{
                                 padding: '0.25rem 0.5rem',
                                 background: selectedRoles.includes(role) 
-                                  ? 'rgba(249, 115, 22, 0.3)' 
+                                  ? 'rgba(255, 130, 0, 0.3)' 
                                   : 'rgba(148, 163, 184, 0.1)',
-                                border: `1px solid ${selectedRoles.includes(role) ? '#f97316' : 'transparent'}`,
+                                border: `1px solid ${selectedRoles.includes(role) ? '#FF8200' : 'transparent'}`,
                                 borderRadius: '4px',
                                 fontSize: '0.75rem',
-                                color: selectedRoles.includes(role) ? '#fdba74' : '#94a3b8',
+                                color: selectedRoles.includes(role) ? '#FBDB65' : '#94a3b8',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s'
                               }}
@@ -409,7 +409,7 @@ export default function RolesManagement() {
             <tbody>
               {Object.entries(ADMIN_SECTIONS).map(([section, _]) => (
                 <tr key={section}>
-                  <td style={{ fontWeight: 'bold', color: '#fdba74' }}>{section}</td>
+                  <td style={{ fontWeight: 'bold', color: '#FBDB65' }}>{section}</td>
                   {Object.values(Role).slice(0, 10).map(role => {
                     const hasAccess = ROLE_PERMISSIONS[role]?.some(p => 
                       section.includes('products') ? p.resource.includes('products') :

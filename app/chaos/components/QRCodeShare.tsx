@@ -94,12 +94,12 @@ export default function QRCodeShare({ roomCode, isOpen, onClose }: QRCodeSharePr
           maxWidth: '340px',
           width: '100%',
           textAlign: 'center',
-          border: '2px solid #f97316',
+          border: '2px solid #FF8200',
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <h2 style={{
-          color: '#f97316',
+          color: '#FF8200',
           fontSize: '24px',
           marginBottom: '8px',
           fontWeight: 'bold',
@@ -134,7 +134,7 @@ export default function QRCodeShare({ roomCode, isOpen, onClose }: QRCodeSharePr
             Room Code
           </div>
           <div style={{
-            color: '#fde68a',
+            color: '#FBDB65',
             fontSize: '32px',
             fontFamily: 'monospace',
             fontWeight: 'bold',
@@ -179,7 +179,7 @@ export default function QRCodeShare({ roomCode, isOpen, onClose }: QRCodeSharePr
             style={{
               flex: 1,
               padding: '14px',
-              backgroundColor: '#f97316',
+              backgroundColor: '#FF8200',
               color: '#000',
               border: 'none',
               borderRadius: '10px',

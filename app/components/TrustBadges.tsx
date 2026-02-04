@@ -16,7 +16,7 @@ export default function TrustBadges({ variant = 'horizontal', showAll = true }: 
     padding: '1.5rem',
     background: 'rgba(31, 41, 59, 0.3)',
     borderRadius: '12px',
-    border: '1px solid rgba(249, 115, 22, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.1)',
     marginTop: '1.5rem',
     marginBottom: '1.5rem'
   };
@@ -44,7 +44,7 @@ export default function TrustBadges({ variant = 'horizontal', showAll = true }: 
 
   const titleStyle = {
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '0.125rem'
   };
 
@@ -213,7 +213,7 @@ export default function TrustBadges({ variant = 'horizontal', showAll = true }: 
         background: 'rgba(0, 0, 0, 0.2)',
         borderRadius: '8px'
       }}>
-        <div style={{ color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+        <div style={{ color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
           🔒 Your Information is Safe & Secure
         </div>
         <div style={{ color: '#94a3b8', fontSize: '0.75rem', lineHeight: '1.5' }}>
@@ -234,15 +234,15 @@ export default function TrustBadges({ variant = 'horizontal', showAll = true }: 
         fontSize: '0.875rem'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontWeight: 'bold', color: '#f97316', fontSize: '1.5rem' }}>1,000+</div>
+          <div style={{ fontWeight: 'bold', color: '#FF8200', fontSize: '1.5rem' }}>1,000+</div>
           <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Happy Customers</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontWeight: 'bold', color: '#f97316', fontSize: '1.5rem' }}>4.9/5</div>
+          <div style={{ fontWeight: 'bold', color: '#FF8200', fontSize: '1.5rem' }}>4.9/5</div>
           <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Average Rating</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontWeight: 'bold', color: '#f97316', fontSize: '1.5rem' }}>99%</div>
+          <div style={{ fontWeight: 'bold', color: '#FF8200', fontSize: '1.5rem' }}>99%</div>
           <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Satisfaction Rate</div>
         </div>
       </div>

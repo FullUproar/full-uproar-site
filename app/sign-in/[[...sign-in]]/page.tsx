@@ -69,7 +69,7 @@ export default function SignInPage() {
     },
     card: {
       background: 'rgba(17, 24, 39, 0.95)',
-      border: '2px solid #f97316',
+      border: '2px solid #FF8200',
       borderRadius: '1rem',
       padding: '2rem',
       width: '100%',
@@ -79,7 +79,7 @@ export default function SignInPage() {
     title: {
       fontSize: '2rem',
       fontWeight: 900,
-      color: '#f97316',
+      color: '#FF8200',
       textAlign: 'center' as const,
       marginBottom: '0.5rem'
     },
@@ -113,7 +113,7 @@ export default function SignInPage() {
     },
     button: {
       padding: '0.75rem 1.5rem',
-      background: 'linear-gradient(45deg, #f97316, #ea580c)',
+      background: 'linear-gradient(45deg, #FF8200, #ea580c)',
       color: '#111827',
       border: 'none',
       borderRadius: '0.5rem',
@@ -132,7 +132,7 @@ export default function SignInPage() {
       fontSize: '0.875rem'
     },
     link: {
-      color: '#f97316',
+      color: '#FF8200',
       textDecoration: 'none',
       fontWeight: 500
     },

@@ -27,12 +27,12 @@ export default function MobileCartButton({ onClose }: MobileCartButtonProps) {
         onClose(); 
       }} 
       style={{
-        background: 'rgba(249, 115, 22, 0.2)',
-        color: '#fdba74',
+        background: 'rgba(255, 130, 0, 0.2)',
+        color: '#FBDB65',
         padding: '0.75rem',
         borderRadius: '0.5rem',
         fontWeight: 'bold',
-        border: '2px solid #f97316',
+        border: '2px solid #FF8200',
         cursor: 'pointer',
         width: '100%',
         display: 'flex',

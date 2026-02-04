@@ -59,7 +59,7 @@ export default function CookieConsent() {
       backgroundColor: 'rgba(17, 24, 39, 0.98)',
       backdropFilter: 'blur(12px)',
       WebkitBackdropFilter: 'blur(12px)',
-      borderTop: '3px solid #f97316',
+      borderTop: '3px solid #FF8200',
       padding: '1.5rem',
       zIndex: 9999,
       transform: isAnimating ? 'translateY(0)' : 'translateY(100%)',
@@ -81,10 +81,10 @@ export default function CookieConsent() {
           gap: '1rem',
           flex: 1,
         }}>
-          <Cookie size={32} style={{ color: '#f97316', flexShrink: 0, marginTop: '0.25rem' }} />
+          <Cookie size={32} style={{ color: '#FF8200', flexShrink: 0, marginTop: '0.25rem' }} />
           <div>
             <h3 style={{
-              color: '#fdba74',
+              color: '#FBDB65',
               fontSize: '1.125rem',
               fontWeight: 'bold',
               marginBottom: '0.5rem',
@@ -148,7 +148,7 @@ export default function CookieConsent() {
             onClick={handleAccept}
             style={{
               padding: '0.75rem 2rem',
-              backgroundColor: '#f97316',
+              backgroundColor: '#FF8200',
               color: '#111827',
               border: 'none',
               borderRadius: '0.5rem',

@@ -22,7 +22,7 @@ const baseStyles = {
   },
   card: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '20px',
     padding: '40px',
     textAlign: 'center' as const,
@@ -32,7 +32,7 @@ const baseStyles = {
   title: {
     fontSize: '24px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '12px',
   },
   subtitle: {
@@ -55,14 +55,14 @@ const baseStyles = {
     textDecoration: 'none',
   },
   primaryButton: {
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: '#000',
-    boxShadow: '0 4px 20px rgba(249, 115, 22, 0.3)',
+    boxShadow: '0 4px 20px rgba(255, 130, 0, 0.3)',
   },
   secondaryButton: {
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
-    color: '#fdba74',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
+    color: '#FBDB65',
   },
   icon: {
     fontSize: '48px',
@@ -101,7 +101,7 @@ export function LoadingState({
     <>
       <Loader2
         size={48}
-        style={{ color: '#f97316', animation: 'spin 1s linear infinite' }}
+        style={{ color: '#FF8200', animation: 'spin 1s linear infinite' }}
       />
       <p style={{ color: '#94a3b8', marginTop: '16px', fontSize: '18px' }}>
         {message}
@@ -292,7 +292,7 @@ export function SaveStatus({ status }: SaveStatusProps) {
   const getStatusInfo = () => {
     switch (status) {
       case 'saving':
-        return { icon: <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />, text: 'Saving...', color: '#fdba74' };
+        return { icon: <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />, text: 'Saving...', color: '#FBDB65' };
       case 'saved':
         return { icon: '✓', text: 'Saved!', color: '#22c55e' };
       case 'error':

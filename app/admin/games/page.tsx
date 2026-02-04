@@ -114,7 +114,7 @@ export default function GamesAdminPage() {
           href="/admin/dashboard" 
           style={adminStyles.backButton}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+            e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
@@ -180,10 +180,10 @@ export default function GamesAdminPage() {
                   paddingLeft: '44px',
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
                 }}
               />
             </div>
@@ -239,7 +239,7 @@ export default function GamesAdminPage() {
                   height: '200px',
                   background: game.imageUrl 
                     ? `url(${game.imageUrl}) center/cover`
-                    : 'rgba(249, 115, 22, 0.1)',
+                    : 'rgba(255, 130, 0, 0.1)',
                   borderRadius: '8px',
                   marginBottom: '16px',
                   display: 'flex',
@@ -296,7 +296,7 @@ export default function GamesAdminPage() {
                 <h3 style={{ 
                   fontSize: '18px', 
                   fontWeight: 'bold', 
-                  color: '#fde68a',
+                  color: '#FBDB65',
                   marginBottom: '4px',
                 }}>
                   {game.title}
@@ -321,19 +321,19 @@ export default function GamesAdminPage() {
                   fontSize: '13px',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8f0' }}>
-                    <DollarSign size={14} style={{ color: '#fdba74' }} />
+                    <DollarSign size={14} style={{ color: '#FBDB65' }} />
                     ${(game.priceCents / 100).toFixed(2)}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8f0' }}>
-                    <Package size={14} style={{ color: '#fdba74' }} />
+                    <Package size={14} style={{ color: '#FBDB65' }} />
                     {game.stock} in stock
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8f0' }}>
-                    <Users size={14} style={{ color: '#fdba74' }} />
+                    <Users size={14} style={{ color: '#FBDB65' }} />
                     {formatPlayerCount(game.playerCount)}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8f0' }}>
-                    <Clock size={14} style={{ color: '#fdba74' }} />
+                    <Clock size={14} style={{ color: '#FBDB65' }} />
                     {formatPlayTime(game.playTime)}
                   </div>
                 </div>
@@ -343,7 +343,7 @@ export default function GamesAdminPage() {
                   display: 'flex', 
                   gap: '8px',
                   paddingTop: '16px',
-                  borderTop: '1px solid rgba(249, 115, 22, 0.2)',
+                  borderTop: '1px solid rgba(255, 130, 0, 0.2)',
                 }}>
                   <Link
                     href={`/shop/games/${game.slug}`}
@@ -358,7 +358,7 @@ export default function GamesAdminPage() {
                       padding: '6px 12px',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                      e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = 'transparent';

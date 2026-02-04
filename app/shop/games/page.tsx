@@ -31,7 +31,7 @@ interface Game {
 
 const gameCategories = [
   { id: 'MOD', name: 'Game Mods', icon: Shuffle, description: 'Transform any game with chaos', featured: true, color: '#FF8200' },
-  { id: 'TTRPG', name: 'TTRPGs', icon: Map, description: 'Tabletop roleplaying adventures', color: '#8b5cf6' },
+  { id: 'TTRPG', name: 'TTRPGs', icon: Map, description: 'Tabletop roleplaying adventures', color: '#7D55C7' },
   { id: 'BOARD_GAME', name: 'Board Games', icon: Dice1, description: 'Classic chaos on your table', color: '#10b981' },
   { id: 'CARD_GAME', name: 'Card Games', icon: Package, description: 'Deck-based mayhem', color: '#3b82f6' },
   { id: 'PARTY_GAME', name: 'Party Games', icon: Trophy, description: 'Group chaos generators', color: '#ec4899' }
@@ -95,7 +95,7 @@ export default function ShopGamesPage() {
           }}>
             All Games
           </h1>
-          <p style={{ fontSize: '1.25rem', color: '#fdba74' }}>
+          <p style={{ fontSize: '1.25rem', color: '#FBDB65' }}>
             Games, mods, and chaos generators
           </p>
         </div>
@@ -192,13 +192,13 @@ export default function ShopGamesPage() {
             <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: activeCategory.color, marginBottom: '0.25rem' }}>
               {activeCategory.name}
             </h3>
-            <p style={{ fontSize: '1rem', color: '#fdba74' }}>{activeCategory.description}</p>
+            <p style={{ fontSize: '1rem', color: '#FBDB65' }}>{activeCategory.description}</p>
           </div>
         )}
 
         {/* Games Grid */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '4rem', color: '#fdba74' }}>
+          <div style={{ textAlign: 'center', padding: '4rem', color: '#FBDB65' }}>
             <div style={{ fontSize: '1.5rem' }}>Loading chaos...</div>
           </div>
         ) : filteredGames.length === 0 ? (
@@ -322,12 +322,12 @@ export default function ShopGamesPage() {
 
                     <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem', marginTop: 'auto' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                        <Users style={{ width: '0.875rem', height: '0.875rem', color: '#fdba74' }} />
-                        <span style={{ fontSize: '0.75rem', color: '#fde68a' }}>{game.players}</span>
+                        <Users style={{ width: '0.875rem', height: '0.875rem', color: '#FBDB65' }} />
+                        <span style={{ fontSize: '0.75rem', color: '#FBDB65' }}>{game.players}</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                        <Play style={{ width: '0.875rem', height: '0.875rem', color: '#fdba74' }} />
-                        <span style={{ fontSize: '0.75rem', color: '#fde68a' }}>{game.timeToPlay}</span>
+                        <Play style={{ width: '0.875rem', height: '0.875rem', color: '#FBDB65' }} />
+                        <span style={{ fontSize: '0.75rem', color: '#FBDB65' }}>{game.timeToPlay}</span>
                       </div>
                     </div>
 
@@ -344,11 +344,11 @@ export default function ShopGamesPage() {
                     <div style={{
                       padding: '0.875rem',
                       background: 'linear-gradient(135deg, #1e293b, #0f172a)',
-                      border: '2px solid #f97316',
+                      border: '2px solid #FF8200',
                       borderRadius: '0.5rem',
                       textAlign: 'center'
                     }}>
-                      <div style={{ color: '#f97316', fontWeight: 900, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                      <div style={{ color: '#FF8200', fontWeight: 900, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
                         COMING SOON
                       </div>
                       <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>

@@ -35,7 +35,7 @@ const styles = {
   },
   gameCard: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '2px solid rgba(249, 115, 22, 0.2)',
+    border: '2px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '12px',
     padding: '20px',
     transition: 'all 0.2s',
@@ -76,10 +76,10 @@ const styles = {
   },
   iconButton: {
     padding: '8px',
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '6px',
-    color: '#fdba74',
+    color: '#FBDB65',
     cursor: 'pointer',
     transition: 'all 0.2s',
     display: 'flex',
@@ -188,12 +188,12 @@ export default function GameKitDashboard() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              color: '#fdba74',
+              color: '#FBDB65',
               textDecoration: 'none',
               fontSize: '14px',
               padding: '8px 16px',
-              background: 'rgba(249, 115, 22, 0.1)',
-              border: '1px solid rgba(249, 115, 22, 0.3)',
+              background: 'rgba(255, 130, 0, 0.1)',
+              border: '1px solid rgba(255, 130, 0, 0.3)',
               borderRadius: '8px',
             }}
           >
@@ -238,11 +238,11 @@ export default function GameKitDashboard() {
                 key={game.id}
                 style={styles.gameCard}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
                   e.currentTarget.style.transform = 'translateY(-2px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.2)';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >

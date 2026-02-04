@@ -141,7 +141,7 @@ export default function ImageUpload({
       backgroundColor: '#f9fafb'
     },
     uploadAreaHover: {
-      borderColor: '#f97316',
+      borderColor: '#FF8200',
       backgroundColor: '#fff7ed'
     },
     hiddenInput: {
@@ -153,7 +153,7 @@ export default function ImageUpload({
       fontWeight: 600
     },
     uploadButton: {
-      background: '#f97316',
+      background: '#FF8200',
       color: 'white',
       border: 'none',
       padding: '0.5rem 1rem',

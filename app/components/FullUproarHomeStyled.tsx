@@ -1266,7 +1266,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
             </h2>
             <p style={{
               fontSize: '1.125rem',
-              color: '#fdba74',
+              color: '#FBDB65',
               textAlign: 'center',
               marginBottom: '2.5rem',
               fontWeight: 600,
@@ -1311,7 +1311,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                     fontSize: isMobile ? '2rem' : '2.5rem',
                     fontWeight: 900,
                     marginBottom: '0.75rem',
-                    color: '#fdba74'
+                    color: '#FBDB65'
                   }}>
                     {featuredGame.title}
                   </h3>
@@ -1323,7 +1323,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                   <div style={{ marginBottom: '1.5rem' }}>
                     {(gameValueProps[featuredGame.title] || gameValueProps['default']).slice(0, 3).map((prop, idx) => (
                       <div key={idx} style={{
-                        color: '#fdba74',
+                        color: '#FBDB65',
                         fontSize: '0.9rem',
                         marginBottom: '0.4rem',
                         fontWeight: 'bold',
@@ -1484,7 +1484,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
-                    color: '#fdba74',
+                    color: '#FBDB65',
                     background: '#374151',
                     padding: '0.25rem 0.75rem',
                     borderRadius: '50px'
@@ -1494,7 +1494,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
                   </div>
                 ) : (
                   <div style={{
-                    color: '#fdba74',
+                    color: '#FBDB65',
                     background: '#374151',
                     padding: '0.25rem 0.75rem',
                     borderRadius: '50px'

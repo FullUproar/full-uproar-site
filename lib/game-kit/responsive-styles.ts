@@ -15,7 +15,7 @@ export const gameKitResponsiveCSS = `
   .gk-container select:focus-visible,
   .gk-container textarea:focus-visible,
   .gk-container [tabindex]:focus-visible {
-    outline: 2px solid #f97316 !important;
+    outline: 2px solid #FF8200 !important;
     outline-offset: 2px !important;
   }
 
@@ -28,9 +28,9 @@ export const gameKitResponsiveCSS = `
 
   /* High contrast focus for cards */
   .gk-container .gk-card-interactive:focus-visible {
-    outline: 3px solid #f97316 !important;
+    outline: 3px solid #FF8200 !important;
     outline-offset: 3px !important;
-    box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.2) !important;
+    box-shadow: 0 0 0 6px rgba(255, 130, 0, 0.2) !important;
   }
 
   /* Skip link for screen readers */
@@ -39,7 +39,7 @@ export const gameKitResponsiveCSS = `
     top: -100px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    background: #f97316 !important;
+    background: #FF8200 !important;
     color: #000 !important;
     padding: 12px 24px !important;
     border-radius: 8px !important;

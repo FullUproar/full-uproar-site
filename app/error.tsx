@@ -45,7 +45,7 @@ export default function Error({
         <AlertTriangle style={{
           width: '80px',
           height: '80px',
-          color: '#f97316',
+          color: '#FF8200',
           margin: '0 auto 2rem',
           animation: 'shake 0.5s ease-in-out infinite'
         }} />
@@ -54,7 +54,7 @@ export default function Error({
           fontSize: '2.5rem',
           fontWeight: 900,
           marginBottom: '1rem',
-          color: '#fdba74',
+          color: '#FBDB65',
           textTransform: 'uppercase'
         }}>
           Maximum Chaos Achieved
@@ -62,7 +62,7 @@ export default function Error({
         
         <p style={{
           fontSize: '1.25rem',
-          color: '#fde68a',
+          color: '#FBDB65',
           marginBottom: '3rem',
           fontWeight: 'bold'
         }}>
@@ -83,7 +83,7 @@ export default function Error({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              background: '#f97316',
+              background: '#FF8200',
               color: '#111827',
               padding: '1rem 2rem',
               borderRadius: '50px',
@@ -105,22 +105,22 @@ export default function Error({
             alignItems: 'center',
             gap: '0.5rem',
             background: 'transparent',
-            color: '#f97316',
+            color: '#FF8200',
             padding: '1rem 2rem',
             borderRadius: '50px',
             fontWeight: 900,
             textDecoration: 'none',
-            border: '3px solid #f97316',
+            border: '3px solid #FF8200',
             transition: 'all 0.2s',
             fontSize: '1.1rem'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f97316';
+            e.currentTarget.style.background = '#FF8200';
             e.currentTarget.style.color = '#111827';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.color = '#f97316';
+            e.currentTarget.style.color = '#FF8200';
           }}>
             <Home size={20} />
             RUN HOME
@@ -139,7 +139,7 @@ export default function Error({
             fontSize: '0.9rem',
             margin: 0
           }}>
-            <strong style={{ color: '#fdba74' }}>Error Details:</strong> {error.message || 'Unknown chaos occurred'}
+            <strong style={{ color: '#FBDB65' }}>Error Details:</strong> {error.message || 'Unknown chaos occurred'}
             {error.digest && (
               <>
                 <br />

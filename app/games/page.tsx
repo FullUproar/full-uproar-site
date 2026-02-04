@@ -37,14 +37,14 @@ const categories = [
     icon: Shuffle,
     description: 'Transform any game with chaos',
     featured: true,
-    color: '#f97316'
+    color: '#FF8200'
   },
   { 
     id: 'TTRPG', 
     name: 'TTRPGs', 
     icon: Map,
     description: 'Tabletop roleplaying adventures',
-    color: '#8b5cf6'
+    color: '#7D55C7'
   },
   { 
     id: 'BOARD_GAME', 
@@ -127,10 +127,10 @@ export default function GamesPage() {
             borderRadius: '1.5rem',
             padding: '3rem',
             marginBottom: '4rem',
-            border: '3px solid #f97316',
+            border: '3px solid #FF8200',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(249, 115, 22, 0.1)'
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(255, 130, 0, 0.1)'
           }}>
             {/* Background Pattern */}
             <div style={{
@@ -144,8 +144,8 @@ export default function GamesPage() {
                 45deg,
                 transparent,
                 transparent 10px,
-                #f97316 10px,
-                #f97316 20px
+                #FF8200 10px,
+                #FF8200 20px
               )`,
               pointerEvents: 'none'
             }} />
@@ -159,11 +159,11 @@ export default function GamesPage() {
                   gap: '1rem',
                   marginBottom: '1rem'
                 }}>
-                  <Zap style={{ width: '3rem', height: '3rem', color: '#f97316' }} />
+                  <Zap style={{ width: '3rem', height: '3rem', color: '#FF8200' }} />
                   <h1 style={{
                     fontSize: '4rem',
                     fontWeight: 900,
-                    background: 'linear-gradient(45deg, #f97316, #fbbf24)',
+                    background: 'linear-gradient(45deg, #FF8200, #fbbf24)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     color: 'transparent',
@@ -173,7 +173,7 @@ export default function GamesPage() {
                   }}>
                     Fugly's Mayhem Machine
                   </h1>
-                  <Zap style={{ width: '3rem', height: '3rem', color: '#f97316' }} />
+                  <Zap style={{ width: '3rem', height: '3rem', color: '#FF8200' }} />
                 </div>
                 <p style={{
                   fontSize: '1.5rem',
@@ -198,10 +198,10 @@ export default function GamesPage() {
                   background: 'rgba(0, 0, 0, 0.6)',
                   borderRadius: '1rem',
                   padding: '1.5rem',
-                  border: '2px solid rgba(249, 115, 22, 0.5)'
+                  border: '2px solid rgba(255, 130, 0, 0.5)'
                 }}>
-                  <Shield style={{ width: '4rem', height: '4rem', color: '#f97316', margin: '0 auto 0.5rem' }} />
-                  <h3 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 900 }}>Universal</h3>
+                  <Shield style={{ width: '4rem', height: '4rem', color: '#FF8200', margin: '0 auto 0.5rem' }} />
+                  <h3 style={{ color: '#FF8200', fontSize: '1.25rem', fontWeight: 900 }}>Universal</h3>
                   <p style={{ color: '#ffffff', fontSize: '0.875rem' }}>Works with ANY game</p>
                 </div>
                 
@@ -209,18 +209,18 @@ export default function GamesPage() {
                   background: 'rgba(0, 0, 0, 0.9)',
                   borderRadius: '1rem',
                   padding: '2rem',
-                  border: '2px solid #f97316',
-                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(249, 115, 22, 0.1)'
+                  border: '2px solid #FF8200',
+                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(255, 130, 0, 0.1)'
                 }}>
                   <h2 style={{ 
-                    color: '#f97316', 
+                    color: '#FF8200', 
                     fontSize: '1.75rem', 
                     fontWeight: 900,
                     marginBottom: '1rem',
                     textAlign: 'center',
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
-                    textShadow: '0 2px 10px rgba(249, 115, 22, 0.5)'
+                    textShadow: '0 2px 10px rgba(255, 130, 0, 0.5)'
                   }}>
                     What is the Mayhem Machine?
                   </h2>
@@ -231,7 +231,7 @@ export default function GamesPage() {
                     marginBottom: '1rem',
                     textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)'
                   }}>
-                    The Mayhem Machine is our revolutionary game modification system. These aren't expansions or new games - they're <strong style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(249, 115, 22, 0.5)' }}>universal game modifiers</strong> that transform ANY game you already own into something completely new and insane.
+                    The Mayhem Machine is our revolutionary game modification system. These aren't expansions or new games - they're <strong style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(255, 130, 0, 0.5)' }}>universal game modifiers</strong> that transform ANY game you already own into something completely new and insane.
                   </p>
                   <p style={{ 
                     color: '#fbbf24', 
@@ -241,9 +241,9 @@ export default function GamesPage() {
                     fontWeight: 'bold',
                     marginTop: '1.5rem',
                     padding: '1rem',
-                    background: 'rgba(249, 115, 22, 0.1)',
+                    background: 'rgba(255, 130, 0, 0.1)',
                     borderRadius: '0.5rem',
-                    border: '1px solid rgba(249, 115, 22, 0.3)'
+                    border: '1px solid rgba(255, 130, 0, 0.3)'
                   }}>
                     "Why buy 100 new games when you can make the games you have 100x more fun?"
                   </p>
@@ -254,10 +254,10 @@ export default function GamesPage() {
                   background: 'rgba(0, 0, 0, 0.6)',
                   borderRadius: '1rem',
                   padding: '1.5rem',
-                  border: '2px solid rgba(249, 115, 22, 0.5)'
+                  border: '2px solid rgba(255, 130, 0, 0.5)'
                 }}>
-                  <Sparkles style={{ width: '4rem', height: '4rem', color: '#f97316', margin: '0 auto 0.5rem' }} />
-                  <h3 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 900 }}>Transformative</h3>
+                  <Sparkles style={{ width: '4rem', height: '4rem', color: '#FF8200', margin: '0 auto 0.5rem' }} />
+                  <h3 style={{ color: '#FF8200', fontSize: '1.25rem', fontWeight: 900 }}>Transformative</h3>
                   <p style={{ color: '#ffffff', fontSize: '0.875rem' }}>Fresh chaos every time</p>
                 </div>
               </div>
@@ -280,7 +280,7 @@ export default function GamesPage() {
                     borderRadius: '0.75rem',
                     padding: '1rem',
                     textAlign: 'center',
-                    border: '2px solid #f97316',
+                    border: '2px solid #FF8200',
                     boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
                   }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{feature.icon}</div>
@@ -343,7 +343,7 @@ export default function GamesPage() {
                     position: 'absolute',
                     top: '-8px',
                     right: '10px',
-                    background: '#f97316',
+                    background: '#FF8200',
                     color: '#000',
                     padding: '0.125rem 0.5rem',
                     borderRadius: '0.25rem',
@@ -388,7 +388,7 @@ export default function GamesPage() {
             </h2>
             <p style={{
               fontSize: '1.25rem',
-              color: '#fdba74'
+              color: '#FBDB65'
             }}>
               {activeCategory.description}
             </p>
@@ -397,7 +397,7 @@ export default function GamesPage() {
 
         {/* Games Grid */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '5rem', color: '#fdba74' }}>
+          <div style={{ textAlign: 'center', padding: '5rem', color: '#FBDB65' }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>Loading chaos...</div>
           </div>
         ) : filteredGames.length === 0 ? (
@@ -435,7 +435,7 @@ export default function GamesPage() {
                   position: 'relative',
                   transform: hoveredGame === game.id ? 'translateY(-10px) scale(1.05)' : 'translateY(0)',
                   boxShadow: hoveredGame === game.id 
-                    ? '0 20px 40px rgba(249, 115, 22, 0.4), 0 0 60px rgba(249, 115, 22, 0.2)' 
+                    ? '0 20px 40px rgba(255, 130, 0, 0.4), 0 0 60px rgba(255, 130, 0, 0.2)' 
                     : '0 10px 30px rgba(0, 0, 0, 0.3)',
                 }}
                 onMouseEnter={() => setHoveredGame(game.id)}
@@ -447,7 +447,7 @@ export default function GamesPage() {
                     position: 'absolute',
                     top: '-15px',
                     right: '-15px',
-                    background: 'linear-gradient(45deg, #f97316, #fb923c)',
+                    background: 'linear-gradient(45deg, #FF8200, #fb923c)',
                     color: '#000',
                     padding: '0.75rem',
                     borderRadius: '50%',
@@ -460,7 +460,7 @@ export default function GamesPage() {
                     fontWeight: 900,
                     fontSize: '0.75rem',
                     border: '3px solid #fed7aa',
-                    boxShadow: '0 4px 20px rgba(249, 115, 22, 0.6)',
+                    boxShadow: '0 4px 20px rgba(255, 130, 0, 0.6)',
                     transform: 'rotate(15deg)',
                     zIndex: 10  // Ensure it's above the card
                   }}>
@@ -489,7 +489,7 @@ export default function GamesPage() {
                     <h3 style={{
                       fontSize: '1.5rem',
                       fontWeight: 900,
-                      color: '#f97316',
+                      color: '#FF8200',
                       marginBottom: '0.5rem',
                       textTransform: 'uppercase'
                     }}>
@@ -528,19 +528,19 @@ export default function GamesPage() {
                       marginBottom: '1rem'
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Users style={{ width: '1rem', height: '1rem', color: '#fdba74' }} />
-                        <span style={{ fontSize: '0.75rem', color: '#fde68a' }}>{game.players}</span>
+                        <Users style={{ width: '1rem', height: '1rem', color: '#FBDB65' }} />
+                        <span style={{ fontSize: '0.75rem', color: '#FBDB65' }}>{game.players}</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Play style={{ width: '1rem', height: '1rem', color: '#fdba74' }} />
-                        <span style={{ fontSize: '0.75rem', color: '#fde68a' }}>{game.timeToPlay}</span>
+                        <Play style={{ width: '1rem', height: '1rem', color: '#FBDB65' }} />
+                        <span style={{ fontSize: '0.75rem', color: '#FBDB65' }}>{game.timeToPlay}</span>
                       </div>
                     </div>
                     
                     <div style={{
                       fontSize: '2rem',
                       fontWeight: 900,
-                      color: '#f97316',
+                      color: '#FF8200',
                       marginBottom: '1rem'
                     }}>
                       ${(game.priceCents / 100).toFixed(2)}
@@ -581,7 +581,7 @@ export default function GamesPage() {
                     position: 'absolute',
                     top: '10px',
                     left: '10px',
-                    background: 'linear-gradient(45deg, #f97316, #fbbf24)',
+                    background: 'linear-gradient(45deg, #FF8200, #fbbf24)',
                     color: '#000',
                     padding: '0.5rem 1rem',
                     borderRadius: '0.5rem',
@@ -619,10 +619,10 @@ export default function GamesPage() {
             }}>
               Coming Soon!
             </h3>
-            <p style={{ color: '#fdba74', fontSize: '1.125rem' }}>
+            <p style={{ color: '#FBDB65', fontSize: '1.125rem' }}>
               We're cooking up some incredible {activeCategory?.name.toLowerCase()} for you.
             </p>
-            <p style={{ color: '#fde68a', marginTop: '0.5rem' }}>
+            <p style={{ color: '#FBDB65', marginTop: '0.5rem' }}>
               Meanwhile, check out our revolutionary Mayhem Machine mods!
             </p>
           </div>
@@ -633,12 +633,12 @@ export default function GamesPage() {
           <div style={{
             marginTop: '4rem',
             padding: '2rem',
-            background: 'rgba(249, 115, 22, 0.1)',
+            background: 'rgba(255, 130, 0, 0.1)',
             borderRadius: '1rem',
-            border: '2px dashed #f97316'
+            border: '2px dashed #FF8200'
           }}>
-            <h3 style={{ color: '#f97316', marginBottom: '1rem' }}>🎨 Suggested Graphics to Generate:</h3>
-            <ul style={{ color: '#fde68a', lineHeight: '2' }}>
+            <h3 style={{ color: '#FF8200', marginBottom: '1rem' }}>🎨 Suggested Graphics to Generate:</h3>
+            <ul style={{ color: '#FBDB65', lineHeight: '2' }}>
               <li>A logo for "Fugly's Mayhem Machine" - mechanical gears with dice, cards, and game pieces integrated</li>
               <li>Banner image showing game pieces being transformed by orange energy/chaos magic</li>
               <li>Icon set for each mod showing how it transforms games (shuffle icon, timer, wildcards, etc.)</li>

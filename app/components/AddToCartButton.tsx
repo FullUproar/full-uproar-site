@@ -116,7 +116,7 @@ export default function AddToCartButton({ onClick, disabled = false, size = 'med
         className={`cart-button ${className}`}
         {...getTestId(TestId.PRODUCT_CARD_ADD_TO_CART)}
         style={{
-          background: showSuccess ? '#10b981' : showError ? '#ef4444' : disabled ? '#6b7280' : '#f97316',
+          background: showSuccess ? '#10b981' : showError ? '#ef4444' : disabled ? '#6b7280' : '#FF8200',
           color: showSuccess || showError ? 'white' : '#111827',
           padding: currentSize.padding,
           fontSize: currentSize.fontSize,
@@ -141,7 +141,7 @@ export default function AddToCartButton({ onClick, disabled = false, size = 'med
         onMouseLeave={(e) => {
           if (!disabled && !isAdding && !showSuccess && !showError) {
             e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.background = '#f97316';
+            e.currentTarget.style.background = '#FF8200';
           }
         }}
       >

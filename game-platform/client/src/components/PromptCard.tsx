@@ -35,7 +35,7 @@ const styles = {
   },
   filledBlank: {
     display: 'inline',
-    color: '#f97316',
+    color: '#FF8200',
     fontWeight: 'bold' as const,
   },
   footer: {

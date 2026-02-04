@@ -57,7 +57,7 @@ const COLOR_MAP: Record<string, string> = {
   'Blue': '#2563eb',
   'Green': '#16a34a',
   'Yellow': '#eab308',
-  'Orange': '#f97316',
+  'Orange': '#FF8200',
   'Purple': '#9333ea',
   'Pink': '#ec4899',
   'Gray': '#6b7280',
@@ -221,7 +221,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       borderRadius: '16px',
       overflow: 'hidden',
       background: 'rgba(30, 41, 59, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       marginBottom: '16px',
       aspectRatio: '1'
     },
@@ -261,7 +261,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       border: '2px solid transparent'
     },
     thumbnailActive: {
-      border: '2px solid #f97316'
+      border: '2px solid #FF8200'
     },
     thumbnailImage: {
       width: '100%',
@@ -278,12 +278,12 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       borderRadius: '16px',
       padding: '24px',
       backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(249, 115, 22, 0.2)'
+      border: '1px solid rgba(255, 130, 0, 0.2)'
     },
     title: {
       fontSize: isMobile ? '28px' : '36px',
       fontWeight: '900',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '16px',
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
     },
@@ -293,9 +293,9 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       borderRadius: '20px',
       fontSize: '12px',
       fontWeight: 'bold',
-      background: 'rgba(249, 115, 22, 0.2)',
-      color: '#fdba74',
-      border: '1px solid rgba(249, 115, 22, 0.3)',
+      background: 'rgba(255, 130, 0, 0.2)',
+      color: '#FBDB65',
+      border: '1px solid rgba(255, 130, 0, 0.3)',
       marginBottom: '16px'
     },
     description: {
@@ -305,7 +305,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
     },
     buyBox: {
       background: 'rgba(30, 41, 59, 0.8)',
-      border: '3px solid #f97316',
+      border: '3px solid #FF8200',
       borderRadius: '16px',
       padding: isMobile ? '20px' : '24px',
       backdropFilter: 'blur(10px)',
@@ -314,7 +314,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
     priceDisplay: {
       fontSize: isMobile ? '32px' : '42px',
       fontWeight: '900',
-      color: '#f97316',
+      color: '#FF8200',
       marginBottom: '8px',
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
     },
@@ -335,7 +335,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       marginBottom: '20px'
     },
     sizeLabel: {
-      color: '#fdba74',
+      color: '#FBDB65',
       fontSize: '16px',
       fontWeight: 'bold',
       marginBottom: '12px',
@@ -361,7 +361,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
     sizeButton: {
       padding: '10px',
       background: 'rgba(30, 41, 59, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.2)',
+      border: '2px solid rgba(255, 130, 0, 0.2)',
       borderRadius: '8px',
       color: '#e2e8f0',
       fontWeight: 'bold',
@@ -369,8 +369,8 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       transition: 'all 0.2s'
     },
     sizeButtonSelected: {
-      background: '#f97316',
-      borderColor: '#f97316',
+      background: '#FF8200',
+      borderColor: '#FF8200',
       color: '#000'
     },
     sizeButtonDisabled: {
@@ -385,7 +385,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
     },
     quantityButton: {
       background: 'rgba(30, 41, 59, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       width: '40px',
       height: '40px',
@@ -393,11 +393,11 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       alignItems: 'center',
       justifyContent: 'center',
       cursor: 'pointer',
-      color: '#fdba74',
+      color: '#FBDB65',
       transition: 'all 0.2s'
     },
     quantityDisplay: {
-      color: '#fdba74',
+      color: '#FBDB65',
       fontSize: '20px',
       fontWeight: 'bold',
       minWidth: '40px',
@@ -413,7 +413,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       padding: '16px',
       background: isInCart 
         ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-        : 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+        : 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       border: 'none',
       borderRadius: '12px',
       color: 'white',
@@ -430,9 +430,9 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
     secondaryButton: {
       padding: '16px',
       background: 'rgba(30, 41, 59, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
-      color: '#fdba74',
+      color: '#FBDB65',
       fontSize: '16px',
       fontWeight: 'bold',
       cursor: 'pointer',
@@ -457,7 +457,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       gap: '12px'
     },
     featureIcon: {
-      color: '#f97316'
+      color: '#FF8200'
     },
     featureText: {
       color: '#e2e8f0',
@@ -469,7 +469,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
     sectionTitle: {
       fontSize: '24px',
       fontWeight: 'bold',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '24px'
     },
     similarGrid: {
@@ -493,13 +493,13 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
       padding: '16px'
     },
     similarName: {
-      color: '#fdba74',
+      color: '#FBDB65',
       fontSize: '16px',
       fontWeight: 'bold',
       marginBottom: '8px'
     },
     similarPrice: {
-      color: '#f97316',
+      color: '#FF8200',
       fontSize: '20px',
       fontWeight: 'bold'
     }
@@ -516,7 +516,7 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
           <span style={{ color: '#475569' }}>/</span>
           <Link href="/merch" style={styles.breadcrumbLink}>Merch</Link>
           <span style={{ color: '#475569' }}>/</span>
-          <span style={{ color: '#fdba74' }}>{merch.name}</span>
+          <span style={{ color: '#FBDB65' }}>{merch.name}</span>
         </div>
 
         {/* Product Grid */}
@@ -643,14 +643,14 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                             borderRadius: '50%',
                             background: colorHex,
                             border: isSelected
-                              ? '3px solid #f97316'
+                              ? '3px solid #FF8200'
                               : isLight
                                 ? '2px solid rgba(0, 0, 0, 0.2)'
                                 : '2px solid transparent',
                             cursor: 'pointer',
                             transition: 'all 0.2s',
                             boxShadow: isSelected
-                              ? '0 0 0 3px rgba(249, 115, 22, 0.3)'
+                              ? '0 0 0 3px rgba(255, 130, 0, 0.3)'
                               : 'none',
                             transform: isSelected ? 'scale(1.1)' : 'scale(1)',
                             display: 'flex',
@@ -710,12 +710,12 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                             minWidth: '56px',
                             padding: '12px 16px',
                             background: isSelected
-                              ? 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)'
+                              ? 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)'
                               : 'rgba(30, 41, 59, 0.5)',
                             border: isSelected
-                              ? '2px solid #f97316'
+                              ? '2px solid #FF8200'
                               : isAvailable
-                                ? '2px solid rgba(249, 115, 22, 0.3)'
+                                ? '2px solid rgba(255, 130, 0, 0.3)'
                                 : '2px solid rgba(100, 116, 139, 0.2)',
                             borderRadius: '10px',
                             color: isSelected
@@ -761,9 +761,9 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                       borderRadius: '12px',
                       fontSize: '13px',
                       color: '#94a3b8',
-                      border: '1px solid rgba(249, 115, 22, 0.2)'
+                      border: '1px solid rgba(255, 130, 0, 0.2)'
                     }}>
-                      <strong style={{ color: '#fdba74', fontSize: '14px' }}>Size Guide (US)</strong>
+                      <strong style={{ color: '#FBDB65', fontSize: '14px' }}>Size Guide (US)</strong>
                       <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
@@ -779,11 +779,11 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                         ].map(({ size, chest }) => (
                           <div key={size} style={{
                             padding: '8px 12px',
-                            background: 'rgba(249, 115, 22, 0.1)',
+                            background: 'rgba(255, 130, 0, 0.1)',
                             borderRadius: '8px',
                             textAlign: 'center'
                           }}>
-                            <div style={{ fontWeight: 'bold', color: '#fdba74' }}>{size}</div>
+                            <div style={{ fontWeight: 'bold', color: '#FBDB65' }}>{size}</div>
                             <div style={{ fontSize: '12px' }}>Chest {chest}</div>
                           </div>
                         ))}

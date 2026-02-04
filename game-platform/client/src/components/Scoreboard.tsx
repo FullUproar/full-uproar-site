@@ -14,12 +14,12 @@ const styles = {
     padding: '24px',
     maxWidth: '400px',
     width: '100%',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
   },
   title: {
     fontSize: '20px',
     fontWeight: 'bold' as const,
-    color: '#f97316',
+    color: '#FF8200',
     marginBottom: '20px',
     textAlign: 'center' as const,
   },
@@ -38,8 +38,8 @@ const styles = {
     transition: 'all 0.2s',
   },
   rowFirst: {
-    background: 'rgba(249, 115, 22, 0.15)',
-    border: '2px solid rgba(249, 115, 22, 0.4)',
+    background: 'rgba(255, 130, 0, 0.15)',
+    border: '2px solid rgba(255, 130, 0, 0.4)',
   },
   rowYou: {
     background: 'rgba(139, 92, 246, 0.1)',
@@ -56,7 +56,7 @@ const styles = {
     fontWeight: 'bold' as const,
   },
   rankFirst: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
   },
   rankOther: {
@@ -76,7 +76,7 @@ const styles = {
     color: '#fff',
   },
   avatarFirst: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
   },
   info: {
@@ -94,10 +94,10 @@ const styles = {
   score: {
     fontSize: '24px',
     fontWeight: 'bold' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
   },
   scoreFirst: {
-    color: '#f97316',
+    color: '#FF8200',
   },
   badge: {
     fontSize: '10px',
@@ -108,8 +108,8 @@ const styles = {
     marginLeft: '8px',
   },
   badgeWinner: {
-    background: 'rgba(249, 115, 22, 0.2)',
-    color: '#f97316',
+    background: 'rgba(255, 130, 0, 0.2)',
+    color: '#FF8200',
   },
   badgeYou: {
     background: 'rgba(139, 92, 246, 0.2)',

@@ -34,7 +34,7 @@ interface Report {
 const PRIORITY_COLORS = {
   LOW: '#94a3b8',
   NORMAL: '#60a5fa',
-  HIGH: '#f97316',
+  HIGH: '#FF8200',
   URGENT: '#ef4444'
 };
 
@@ -151,8 +151,8 @@ export default function ModerationQueuePage() {
         {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-            <Shield size={32} style={{ color: '#f97316' }} />
-            <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316' }}>
+            <Shield size={32} style={{ color: '#FF8200' }} />
+            <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#FF8200' }}>
               Moderation Queue
             </h1>
           </div>
@@ -169,7 +169,7 @@ export default function ModerationQueuePage() {
               onClick={() => setStatusFilter(status)}
               style={{
                 padding: '0.5rem 1rem',
-                background: statusFilter === status ? '#f97316' : 'rgba(255, 255, 255, 0.05)',
+                background: statusFilter === status ? '#FF8200' : 'rgba(255, 255, 255, 0.05)',
                 border: statusFilter === status ? 'none' : '1px solid #374151',
                 borderRadius: '0.5rem',
                 color: statusFilter === status ? '#111827' : '#94a3b8',
@@ -244,12 +244,12 @@ export default function ModerationQueuePage() {
                       </span>
                     </div>
 
-                    <h3 style={{ color: '#f97316', fontSize: '1.125rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+                    <h3 style={{ color: '#FF8200', fontSize: '1.125rem', fontWeight: 900, marginBottom: '0.5rem' }}>
                       {report.contentType}: {report.reason}
                     </h3>
 
                     {report.description && (
-                      <p style={{ color: '#fde68a', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <p style={{ color: '#FBDB65', marginBottom: '1rem', fontSize: '0.9rem' }}>
                         {report.description}
                       </p>
                     )}
@@ -331,7 +331,7 @@ export default function ModerationQueuePage() {
                       onClick={() => handleAction(report, 'MUTE')}
                       style={{
                         padding: '0.5rem 1rem',
-                        background: '#f97316',
+                        background: '#FF8200',
                         border: 'none',
                         borderRadius: '0.5rem',
                         color: '#111827',
@@ -434,18 +434,18 @@ export default function ModerationQueuePage() {
                 maxWidth: '500px',
                 background: '#111827',
                 borderRadius: '1rem',
-                border: '2px solid #f97316',
+                border: '2px solid #FF8200',
                 padding: '1.5rem'
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 style={{ color: '#f97316', fontSize: '1.5rem', fontWeight: 900, marginBottom: '1rem' }}>
+              <h2 style={{ color: '#FF8200', fontSize: '1.5rem', fontWeight: 900, marginBottom: '1rem' }}>
                 {actionType} Action
               </h2>
 
               <form onSubmit={submitAction}>
                 <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     Reason (visible to user)
                   </label>
                   <textarea
@@ -467,7 +467,7 @@ export default function ModerationQueuePage() {
 
                 {(actionType === 'MUTE' || actionType === 'BAN') && (
                   <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                       Duration (hours, leave empty for permanent)
                     </label>
                     <input

@@ -90,7 +90,7 @@ export default function HomeWithGate() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#f97316',
+        color: '#FF8200',
         fontSize: '1.5rem',
         fontWeight: 'bold'
       }}>

@@ -10,7 +10,7 @@ function AdminLoading() {
       minHeight: '100vh',
       background: '#0a0a0a'
     }}>
-      <div style={{ color: '#fdba74', fontSize: '18px' }}>
+      <div style={{ color: '#FBDB65', fontSize: '18px' }}>
         Loading admin panel...
       </div>
     </div>

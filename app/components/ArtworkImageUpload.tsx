@@ -70,11 +70,11 @@ export default function ArtworkImageUpload({ onImageSizesGenerated, currentImage
       transition: 'all 0.3s'
     },
     activeContainer: {
-      borderColor: '#f97316',
+      borderColor: '#FF8200',
       background: '#fff7ed'
     },
     uploadButton: {
-      background: '#f97316',
+      background: '#FF8200',
       color: 'white',
       padding: '0.75rem 1.5rem',
       borderRadius: '0.5rem',
@@ -99,7 +99,7 @@ export default function ArtworkImageUpload({ onImageSizesGenerated, currentImage
       display: 'block'
     },
     progressText: {
-      color: '#f97316',
+      color: '#FF8200',
       fontWeight: 'bold',
       marginTop: '1rem',
       fontSize: '0.875rem'

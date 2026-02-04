@@ -56,7 +56,7 @@ export default function TestModeToggle() {
         gap: '12px',
         opacity: 0.5
       }}>
-        <TestTube size={20} style={{ color: '#fdba74' }} />
+        <TestTube size={20} style={{ color: '#FBDB65' }} />
         <span style={{ color: '#94a3b8' }}>Loading test mode status...</span>
       </div>
     );
@@ -65,8 +65,8 @@ export default function TestModeToggle() {
   return (
     <div style={{
       ...adminStyles.card,
-      background: testMode ? 'rgba(249, 115, 22, 0.1)' : 'rgba(30, 41, 59, 0.8)',
-      border: `2px solid ${testMode ? 'rgba(249, 115, 22, 0.5)' : 'rgba(249, 115, 22, 0.2)'}`,
+      background: testMode ? 'rgba(255, 130, 0, 0.1)' : 'rgba(30, 41, 59, 0.8)',
+      border: `2px solid ${testMode ? 'rgba(255, 130, 0, 0.5)' : 'rgba(255, 130, 0, 0.2)'}`,
       transition: 'all 0.3s'
     }}>
       <div style={{ 
@@ -76,12 +76,12 @@ export default function TestModeToggle() {
         marginBottom: '16px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <TestTube size={24} style={{ color: testMode ? '#f97316' : '#fdba74' }} />
+          <TestTube size={24} style={{ color: testMode ? '#FF8200' : '#FBDB65' }} />
           <div>
             <h3 style={{ 
               fontSize: '18px', 
               fontWeight: 'bold', 
-              color: '#fdba74',
+              color: '#FBDB65',
               marginBottom: '4px'
             }}>
               Test Mode
@@ -133,12 +133,12 @@ export default function TestModeToggle() {
       <div style={{ 
         marginTop: '16px', 
         paddingTop: '16px', 
-        borderTop: '1px solid rgba(249, 115, 22, 0.2)' 
+        borderTop: '1px solid rgba(255, 130, 0, 0.2)' 
       }}>
         <h4 style={{ 
           fontSize: '16px', 
           fontWeight: 'bold', 
-          color: '#fdba74',
+          color: '#FBDB65',
           marginBottom: '12px'
         }}>
           Test Actions

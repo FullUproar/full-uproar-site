@@ -15,7 +15,7 @@ interface SpinnerProps {
   className?: string;
 }
 
-export function Spinner({ size = 'medium', color = '#f97316', className }: SpinnerProps) {
+export function Spinner({ size = 'medium', color = '#FF8200', className }: SpinnerProps) {
   const sizes = {
     small: 16,
     medium: 24,
@@ -147,7 +147,7 @@ export function SkeletonCard() {
       padding: '20px',
       background: 'rgba(30, 41, 59, 0.8)',
       borderRadius: '12px',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
         <Skeleton width="40px" height="40px" borderRadius="50%" />
@@ -170,7 +170,7 @@ export function SkeletonTable({ rows = 5, columns = 4 }: { rows?: number; column
         gridTemplateColumns: `repeat(${columns}, 1fr)`,
         gap: '16px',
         padding: '12px 16px',
-        borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+        borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
       }}>
         {Array.from({ length: columns }).map((_, i) => (
           <Skeleton key={i} height="16px" width="80%" />
@@ -237,7 +237,7 @@ export function LoadingOverlay({ visible, message, blur = true }: LoadingOverlay
         background: 'rgba(30, 41, 59, 0.95)',
         padding: '20px 30px',
         borderRadius: '12px',
-        border: '2px solid rgba(249, 115, 22, 0.3)',
+        border: '2px solid rgba(255, 130, 0, 0.3)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -282,7 +282,7 @@ export function LoadingButton({
   ...props
 }: LoadingButtonProps) {
   const variants = {
-    primary: 'linear-gradient(135deg, #f97316, #ea580c)',
+    primary: 'linear-gradient(135deg, #FF8200, #ea580c)',
     secondary: 'rgba(148, 163, 184, 0.1)',
     danger: 'linear-gradient(135deg, #ef4444, #dc2626)',
     success: 'linear-gradient(135deg, #10b981, #059669)',
@@ -374,7 +374,7 @@ export function RefreshButton({ onRefresh, loading = false, size = 'medium' }: R
         alignItems: 'center',
         justifyContent: 'center',
       }}
-      onMouseEnter={e => e.currentTarget.style.color = '#fdba74'}
+      onMouseEnter={e => e.currentTarget.style.color = '#FBDB65'}
       onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
     >
       <RefreshCw

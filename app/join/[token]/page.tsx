@@ -57,7 +57,7 @@ interface InviteData {
 
 const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: string; emoji: string }> = {
   CHILL: { icon: Coffee, color: '#60a5fa', label: 'Chill', bg: 'rgba(96, 165, 250, 0.15)', emoji: '😌' },
-  COMPETITIVE: { icon: Flame, color: '#f97316', label: 'Competitive', bg: 'rgba(249, 115, 22, 0.15)', emoji: '🔥' },
+  COMPETITIVE: { icon: Flame, color: '#FF8200', label: 'Competitive', bg: 'rgba(255, 130, 0, 0.15)', emoji: '🔥' },
   CHAOS: { icon: Zap, color: '#a855f7', label: 'Chaos', bg: 'rgba(168, 85, 247, 0.15)', emoji: '⚡' },
   PARTY: { icon: PartyPopper, color: '#ec4899', label: 'Party', bg: 'rgba(236, 72, 153, 0.15)', emoji: '🎉' },
   COZY: { icon: Heart, color: '#f472b6', label: 'Cozy', bg: 'rgba(244, 114, 182, 0.15)', emoji: '🧡' },
@@ -158,7 +158,7 @@ export default function JoinGameNightPage({ params }: { params: Promise<{ token:
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-        <div style={{ textAlign: 'center', color: '#fdba74' }}>
+        <div style={{ textAlign: 'center', color: '#FBDB65' }}>
           <Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} />
           <p style={{ marginTop: '1rem', fontSize: '1.25rem' }}>Loading invite...</p>
         </div>
@@ -195,7 +195,7 @@ export default function JoinGameNightPage({ params }: { params: Promise<{ token:
             style={{
               display: 'inline-block',
               padding: '0.75rem 1.5rem',
-              background: 'linear-gradient(135deg, #f97316, #ea580c)',
+              background: 'linear-gradient(135deg, #FF8200, #ea580c)',
               borderRadius: '0.5rem',
               color: '#fff',
               fontWeight: 'bold',
@@ -227,7 +227,7 @@ export default function JoinGameNightPage({ params }: { params: Promise<{ token:
             <h1 style={{
               fontSize: '1.5rem',
               fontWeight: 900,
-              background: 'linear-gradient(135deg, #f97316, #fbbf24)',
+              background: 'linear-gradient(135deg, #FF8200, #fbbf24)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               color: 'transparent',
@@ -382,7 +382,7 @@ export default function JoinGameNightPage({ params }: { params: Promise<{ token:
                 {/* Name Input (if not set) */}
                 {!guest.guestName && (
                   <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                    <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
                       Your Name
                     </label>
                     <input
@@ -405,7 +405,7 @@ export default function JoinGameNightPage({ params }: { params: Promise<{ token:
 
                 {/* Bringing Input */}
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
                     <Gift size={14} style={{ display: 'inline', marginRight: '0.25rem' }} />
                     Bringing anything? (optional)
                   </label>
@@ -506,7 +506,7 @@ export default function JoinGameNightPage({ params }: { params: Promise<{ token:
         <div style={{ textAlign: 'center', marginTop: '2rem', color: '#6b7280', fontSize: '0.875rem' }}>
           <p style={{ margin: '0 0 1rem' }}>
             Game nights powered by{' '}
-            <Link href="/" style={{ color: '#f97316', textDecoration: 'none', fontWeight: 'bold' }}>
+            <Link href="/" style={{ color: '#FF8200', textDecoration: 'none', fontWeight: 'bold' }}>
               Full Uproar
             </Link>
           </p>

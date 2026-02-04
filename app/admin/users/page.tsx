@@ -243,11 +243,11 @@ export default function UserManagementPage() {
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'GOD':
-        return '#8b5cf6';
+        return '#7D55C7';
       case 'SUPER_ADMIN':
         return '#ec4899';
       case 'ADMIN':
-        return '#f97316';
+        return '#FF8200';
       case 'MODERATOR':
         return '#3b82f6';
       default:
@@ -268,12 +268,12 @@ export default function UserManagementPage() {
           <div style={{
             width: '50px',
             height: '50px',
-            border: '3px solid rgba(249, 115, 22, 0.2)',
-            borderTopColor: '#f97316',
+            border: '3px solid rgba(255, 130, 0, 0.2)',
+            borderTopColor: '#FF8200',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}></div>
-          <p style={{ marginTop: '20px', color: '#fdba74' }}>Loading users...</p>
+          <p style={{ marginTop: '20px', color: '#FBDB65' }}>Loading users...</p>
         </div>
       </div>
     );
@@ -293,11 +293,11 @@ export default function UserManagementPage() {
         marginBottom: '30px'
       }}>
         <div style={{ ...adminStyles.card, textAlign: 'center' }}>
-          <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fdba74' }}>{stats.total}</h3>
+          <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.total}</h3>
           <p style={{ color: '#9ca3af', marginTop: '5px' }}>Total Users</p>
         </div>
         <div style={{ ...adminStyles.card, textAlign: 'center' }}>
-          <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#f97316' }}>{stats.admins}</h3>
+          <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FF8200' }}>{stats.admins}</h3>
           <p style={{ color: '#9ca3af', marginTop: '5px' }}>Admins</p>
         </div>
         <div style={{ ...adminStyles.card, textAlign: 'center' }}>
@@ -374,12 +374,12 @@ export default function UserManagementPage() {
                             width: '32px',
                             height: '32px',
                             borderRadius: '50%',
-                            border: '2px solid rgba(249, 115, 22, 0.3)'
+                            border: '2px solid rgba(255, 130, 0, 0.3)'
                           }}
                         />
                       )}
                       <div>
-                        <div style={{ fontWeight: 'bold', color: '#fde68a' }}>
+                        <div style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                           {user.displayName || user.username || 'No name'}
                         </div>
                         {user.username && (
@@ -507,7 +507,7 @@ export default function UserManagementPage() {
                     borderRadius: '50%',
                     margin: '0 auto 20px',
                     display: 'block',
-                    border: '3px solid rgba(249, 115, 22, 0.3)'
+                    border: '3px solid rgba(255, 130, 0, 0.3)'
                   }}
                 />
               )}
@@ -627,11 +627,11 @@ export default function UserManagementPage() {
                   marginBottom: '20px',
                   padding: '15px',
                   background: 'rgba(139, 92, 246, 0.1)',
-                  border: '1px solid #8b5cf6',
+                  border: '1px solid #7D55C7',
                   borderRadius: '8px',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                    <Shield size={20} style={{ color: '#8b5cf6' }} />
+                    <Shield size={20} style={{ color: '#7D55C7' }} />
                     <span style={{ color: '#c4b5fd', fontWeight: 'bold' }}>2FA Not Configured</span>
                   </div>
                   <p style={{ fontSize: '13px', color: '#9ca3af', marginBottom: '10px' }}>
@@ -642,7 +642,7 @@ export default function UserManagementPage() {
                     disabled={twoFALoading}
                     style={{
                       ...adminStyles.button,
-                      backgroundColor: '#8b5cf6',
+                      backgroundColor: '#7D55C7',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
@@ -730,7 +730,7 @@ export default function UserManagementPage() {
             padding: '30px',
             maxWidth: '450px',
             width: '90%',
-            border: '2px solid #8b5cf6',
+            border: '2px solid #7D55C7',
             boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.25)',
             position: 'relative',
           }}>
@@ -754,8 +754,8 @@ export default function UserManagementPage() {
             </button>
 
             <div style={{ textAlign: 'center' }}>
-              <Shield size={48} style={{ color: '#8b5cf6', marginBottom: '15px' }} />
-              <h2 style={{ color: '#fde68a', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '10px' }}>
+              <Shield size={48} style={{ color: '#7D55C7', marginBottom: '15px' }} />
+              <h2 style={{ color: '#FBDB65', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '10px' }}>
                 2FA Setup for {twoFAData.userName}
               </h2>
               <p style={{ color: '#9ca3af', fontSize: '14px', marginBottom: '20px' }}>
@@ -790,7 +790,7 @@ export default function UserManagementPage() {
               }}>
                 <code style={{
                   flex: 1,
-                  color: '#fde68a',
+                  color: '#FBDB65',
                   fontSize: '13px',
                   wordBreak: 'break-all',
                 }}>
@@ -833,7 +833,7 @@ export default function UserManagementPage() {
                 }}
                 style={{
                   ...adminStyles.button,
-                  backgroundColor: '#8b5cf6',
+                  backgroundColor: '#7D55C7',
                   width: '100%',
                 }}
               >

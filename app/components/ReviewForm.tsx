@@ -89,7 +89,7 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
       maxHeight: '90vh',
       overflow: 'auto',
       position: 'relative' as const,
-      border: '3px solid #f97316',
+      border: '3px solid #FF8200',
       boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)'
     },
     header: {
@@ -101,7 +101,7 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
     title: {
       fontSize: '28px',
       fontWeight: '900',
-      color: '#fdba74'
+      color: '#FBDB65'
     },
     closeButton: {
       background: 'transparent',
@@ -122,7 +122,7 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
     },
     ratingLabel: {
       fontSize: '16px',
-      color: '#fde68a',
+      color: '#FBDB65',
       fontWeight: '600',
       marginBottom: '12px',
       display: 'block'
@@ -149,12 +149,12 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
     },
     label: {
       fontSize: '14px',
-      color: '#fde68a',
+      color: '#FBDB65',
       fontWeight: '600'
     },
     input: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -164,7 +164,7 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
     },
     textarea: {
       background: 'rgba(17, 24, 39, 0.5)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       padding: '12px',
       color: '#e2e8f0',
@@ -183,7 +183,7 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
       fontSize: '14px'
     },
     submitButton: {
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: 'white',
       padding: '16px',
       borderRadius: '12px',
@@ -192,7 +192,7 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
       fontWeight: '900',
       cursor: 'pointer',
       transition: 'all 0.2s',
-      boxShadow: '0 4px 20px rgba(249, 115, 22, 0.3)'
+      boxShadow: '0 4px 20px rgba(255, 130, 0, 0.3)'
     },
     submitButtonDisabled: {
       opacity: 0.5,
@@ -219,7 +219,7 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
           <button
             onClick={onClose}
             style={styles.closeButton}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)' }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
           >
             <X style={{ width: '24px', height: '24px' }} />
@@ -237,8 +237,8 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
                     ...styles.star,
                     width: '32px',
                     height: '32px',
-                    fill: value <= (hoveredRating || rating) ? '#f97316' : 'transparent',
-                    color: '#f97316',
+                    fill: value <= (hoveredRating || rating) ? '#FF8200' : 'transparent',
+                    color: '#FF8200',
                     transform: value <= (hoveredRating || rating) ? 'scale(1.1)' : 'scale(1)'
                   }}
                   onClick={() => setRating(value)}
@@ -260,8 +260,8 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Sum up your experience..."
               style={styles.input}
-              onFocus={(e) => { e.currentTarget.style.borderColor = '#f97316' }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)' }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = '#FF8200' }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)' }}
               maxLength={100}
             />
           </div>
@@ -273,8 +273,8 @@ export default function ReviewForm({ productId, productType, onClose, onSubmit }
               onChange={(e) => setComment(e.target.value)}
               placeholder="Tell us about your experience with this game. Did it successfully ruin friendships? Did tables get flipped? We want the juicy details!"
               style={styles.textarea}
-              onFocus={(e) => { e.currentTarget.style.borderColor = '#f97316' }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)' }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = '#FF8200' }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)' }}
               maxLength={1000}
             />
             <span style={{ fontSize: '12px', color: '#94a3b8', textAlign: 'right' }}>

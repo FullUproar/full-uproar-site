@@ -679,7 +679,7 @@ export default function GameEditForm({ game, onSave, onCancel }: GameEditFormPro
             </label>
             <p style={{
               fontSize: '12px',
-              color: formData.isHidden ? '#fde68a' : '#94a3b8',
+              color: formData.isHidden ? '#FBDB65' : '#94a3b8',
               marginTop: '8px',
               marginLeft: '24px'
             }}>

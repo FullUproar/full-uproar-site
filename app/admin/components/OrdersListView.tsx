@@ -87,7 +87,7 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
       case 'completed':
         return '#10b981';
       case 'processing':
-        return '#f97316';
+        return '#FF8200';
       case 'cancelled':
         return '#ef4444';
       default:
@@ -98,7 +98,7 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading orders...</p>
+        <p style={{ color: '#FBDB65' }}>Loading orders...</p>
       </div>
     );
   }
@@ -164,7 +164,7 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
           }}>
             <thead>
               <tr style={{
-                borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+                borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
               }}>
                 <th style={adminStyles.tableHeader}>Order ID</th>
                 <th style={adminStyles.tableHeader}>Customer</th>
@@ -180,11 +180,11 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
                 <tr
                   key={order.id}
                   style={{
-                    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+                    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
                     transition: 'background 0.2s',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                    e.currentTarget.style.background = 'rgba(255, 130, 0, 0.05)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent';
@@ -201,7 +201,7 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
                   </td>
                   <td style={adminStyles.tableCell}>
                     <div>
-                      <div style={{ fontWeight: 'bold', color: '#fde68a' }}>
+                      <div style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                         {order.customerName || 'Guest'}
                       </div>
                       <div style={{ fontSize: '13px', color: '#94a3b8' }}>

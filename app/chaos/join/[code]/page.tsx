@@ -16,11 +16,11 @@ export default function JoinChaosPage({ params }: PageProps) {
 
   const [displayName, setDisplayName] = useState('');
   const [pronouns, setPronouns] = useState('');
-  const [avatarColor, setAvatarColor] = useState('#f97316');
+  const [avatarColor, setAvatarColor] = useState('#FF8200');
   const [isJoining, setIsJoining] = useState(false);
   const [error, setError] = useState('');
 
-  const AVATAR_COLORS = ['#f97316', '#8b5cf6', '#10b981', '#ec4899', '#06b6d4', '#f59e0b'];
+  const AVATAR_COLORS = ['#FF8200', '#7D55C7', '#10b981', '#ec4899', '#06b6d4', '#f59e0b'];
   const PRONOUN_OPTIONS = ['', 'he/him', 'she/her', 'they/them'];
   const [sessionInfo, setSessionInfo] = useState<{
     gameNightTitle: string;
@@ -191,7 +191,7 @@ export default function JoinChaosPage({ params }: PageProps) {
           onClick={() => router.push('/chaos')}
           style={{
             padding: '12px 32px',
-            backgroundColor: '#f97316',
+            backgroundColor: '#FF8200',
             color: '#000',
             border: 'none',
             borderRadius: '8px',
@@ -227,7 +227,7 @@ export default function JoinChaosPage({ params }: PageProps) {
         }}>
           <span style={{ color: '#9ca3af', fontSize: '12px' }}>ROOM CODE</span>
           <div style={{
-            color: '#f97316',
+            color: '#FF8200',
             fontSize: '24px',
             fontFamily: 'monospace',
             fontWeight: 'bold',
@@ -240,7 +240,7 @@ export default function JoinChaosPage({ params }: PageProps) {
         {sessionInfo && (
           <>
             <h1 style={{
-              color: '#fde68a',
+              color: '#FBDB65',
               fontSize: '24px',
               margin: '0 0 8px 0',
             }}>
@@ -285,7 +285,7 @@ export default function JoinChaosPage({ params }: PageProps) {
               backgroundColor: '#0a0a0a',
               border: '2px solid #3a3a3a',
               borderRadius: '12px',
-              color: '#fde68a',
+              color: '#FBDB65',
               outline: 'none',
               boxSizing: 'border-box',
             }}
@@ -310,7 +310,7 @@ export default function JoinChaosPage({ params }: PageProps) {
                 onClick={() => setPronouns(p)}
                 style={{
                   padding: '8px 16px',
-                  backgroundColor: pronouns === p ? '#f97316' : '#0a0a0a',
+                  backgroundColor: pronouns === p ? '#FF8200' : '#0a0a0a',
                   color: pronouns === p ? '#000' : '#e2e8f0',
                   border: '1px solid #3a3a3a',
                   borderRadius: '20px',
@@ -372,7 +372,7 @@ export default function JoinChaosPage({ params }: PageProps) {
               width: '100%',
               padding: '16px',
               marginTop: '16px',
-              backgroundColor: displayName.trim() ? '#f97316' : '#3a3a3a',
+              backgroundColor: displayName.trim() ? '#FF8200' : '#3a3a3a',
               color: displayName.trim() ? '#000' : '#666',
               border: 'none',
               borderRadius: '12px',

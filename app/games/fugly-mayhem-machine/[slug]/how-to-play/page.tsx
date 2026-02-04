@@ -54,7 +54,7 @@ export default async function HowToPlayPage({ params }: PageProps) {
           color: '#94a3b8',
           flexWrap: 'wrap',
         }}>
-          <Link href="/games/fugly-mayhem-machine" style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href="/games/fugly-mayhem-machine" style={{ color: '#FF8200', textDecoration: 'none' }}>
             {FMM_SERIES.name}
           </Link>
           <span>/</span>
@@ -232,7 +232,7 @@ export default async function HowToPlayPage({ params }: PageProps) {
                 border: '1px solid rgba(251, 191, 36, 0.3)',
               }}>
                 <span style={{ fontSize: '1.25rem' }}>💡</span>
-                <p style={{ color: '#fde68a', margin: 0 }}>{tip}</p>
+                <p style={{ color: '#FBDB65', margin: 0 }}>{tip}</p>
               </div>
             ))}
           </div>
@@ -264,7 +264,7 @@ export default async function HowToPlayPage({ params }: PageProps) {
           borderRadius: '1rem',
           border: '1px solid rgba(255, 255, 255, 0.1)',
         }}>
-          <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+          <h2 style={{ color: '#FF8200', fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>
             Quick Reference
           </h2>
           <p style={{ color: '#e2e8f0', lineHeight: 1.7, margin: 0 }}>
@@ -309,18 +309,18 @@ export default async function HowToPlayPage({ params }: PageProps) {
           marginTop: '4rem',
           padding: '2rem',
           textAlign: 'center',
-          background: 'rgba(249, 115, 22, 0.1)',
+          background: 'rgba(255, 130, 0, 0.1)',
           borderRadius: '1rem',
-          border: '1px solid rgba(249, 115, 22, 0.3)',
+          border: '1px solid rgba(255, 130, 0, 0.3)',
         }}>
-          <h3 style={{ color: '#f97316', marginBottom: '0.5rem' }}>Need Help?</h3>
+          <h3 style={{ color: '#FF8200', marginBottom: '0.5rem' }}>Need Help?</h3>
           <p style={{ color: '#e2e8f0', marginBottom: '1rem', fontSize: '0.875rem' }}>
             Questions about the rules? Missing components? We've got you covered.
           </p>
           <Link
             href="/support"
             style={{
-              color: '#f97316',
+              color: '#FF8200',
               textDecoration: 'underline',
               fontSize: '0.875rem',
             }}

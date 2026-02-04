@@ -125,7 +125,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
             style={{
               width: `${percentage}%`,
               height: '100%',
-              background: '#f97316',
+              background: '#FF8200',
               borderRadius: 4,
               transition: 'width 0.3s ease',
             }}
@@ -157,7 +157,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
           marginBottom: 24,
         }}
       >
-        <h2 style={{ color: '#fde68a', fontSize: 24, margin: 0 }}>
+        <h2 style={{ color: '#FBDB65', fontSize: 24, margin: 0 }}>
           Customer Reviews
         </h2>
         {!showForm && (
@@ -165,7 +165,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
             onClick={() => setShowForm(true)}
             style={{
               padding: '10px 20px',
-              background: '#f97316',
+              background: '#FF8200',
               border: 'none',
               borderRadius: 8,
               color: '#fff',
@@ -208,7 +208,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
         >
           {/* Average Rating */}
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 48, fontWeight: 700, color: '#f97316' }}>
+            <div style={{ fontSize: 48, fontWeight: 700, color: '#FF8200' }}>
               {data.averageRating.toFixed(1)}
             </div>
             <ReviewStars rating={data.averageRating} size="medium" />
@@ -316,7 +316,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
                       </span>
                     )}
                   </div>
-                  <h4 style={{ color: '#fde68a', margin: '8px 0 4px', fontSize: 16 }}>
+                  <h4 style={{ color: '#FBDB65', margin: '8px 0 4px', fontSize: 16 }}>
                     {review.title}
                   </h4>
                 </div>
@@ -347,8 +347,8 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
                   style={{
                     marginTop: 16,
                     padding: 16,
-                    background: '#f9731610',
-                    border: '1px solid #f9731630',
+                    background: '#FF820010',
+                    border: '1px solid #FF820030',
                     borderRadius: 8,
                   }}
                 >
@@ -362,7 +362,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
                   >
                     <span
                       style={{
-                        background: '#f97316',
+                        background: '#FF8200',
                         color: '#fff',
                         padding: '2px 8px',
                         borderRadius: 4,
@@ -378,7 +378,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
                       </span>
                     )}
                   </div>
-                  <p style={{ color: '#fdba74', fontSize: 14, margin: 0 }}>
+                  <p style={{ color: '#FBDB65', fontSize: 14, margin: 0 }}>
                     {review.responseText}
                   </p>
                 </div>
@@ -472,7 +472,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
                 disabled={page === 1}
                 style={{
                   padding: '8px 16px',
-                  background: page === 1 ? '#333' : '#f97316',
+                  background: page === 1 ? '#333' : '#FF8200',
                   border: 'none',
                   borderRadius: 8,
                   color: '#fff',
@@ -489,7 +489,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
                 disabled={page === data.totalPages}
                 style={{
                   padding: '8px 16px',
-                  background: page === data.totalPages ? '#333' : '#f97316',
+                  background: page === data.totalPages ? '#333' : '#FF8200',
                   border: 'none',
                   borderRadius: 8,
                   color: '#fff',
@@ -518,7 +518,7 @@ export default function ProductReviews({ gameId, merchId, productName }: Product
               onClick={() => setShowForm(true)}
               style={{
                 padding: '12px 24px',
-                background: '#f97316',
+                background: '#FF8200',
                 border: 'none',
                 borderRadius: 8,
                 color: '#fff',

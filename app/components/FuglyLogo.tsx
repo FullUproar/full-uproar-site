@@ -79,7 +79,7 @@ export default function FuglyLogo({
 
   const fallbackStyle: React.CSSProperties = {
     ...containerStyle,
-    background: '#f97316',
+    background: '#FF8200',
     borderRadius: '50%',
     fontSize: `${size * 0.5}px`,
     fontWeight: 900,

@@ -98,7 +98,7 @@ function NewThreadForm() {
     },
     card: {
       background: 'rgba(30, 41, 59, 0.95)',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       padding: '2rem',
       backdropFilter: 'blur(10px)',
@@ -106,7 +106,7 @@ function NewThreadForm() {
     title: {
       fontSize: '2rem',
       fontWeight: 900,
-      color: '#f97316',
+      color: '#FF8200',
       marginBottom: '2rem',
     },
     label: {
@@ -120,7 +120,7 @@ function NewThreadForm() {
       width: '100%',
       padding: '12px',
       borderRadius: '8px',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       background: 'rgba(17, 24, 39, 0.8)',
       color: '#f3f4f6',
       fontSize: '16px',
@@ -131,7 +131,7 @@ function NewThreadForm() {
       width: '100%',
       padding: '12px',
       borderRadius: '8px',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       background: 'rgba(17, 24, 39, 0.8)',
       color: '#f3f4f6',
       fontSize: '16px',
@@ -143,7 +143,7 @@ function NewThreadForm() {
       width: '100%',
       padding: '12px',
       borderRadius: '8px',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       background: 'rgba(17, 24, 39, 0.8)',
       color: '#f3f4f6',
       fontSize: '16px',
@@ -158,7 +158,7 @@ function NewThreadForm() {
     },
     button: {
       padding: '12px 24px',
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: 'white',
       border: 'none',
       borderRadius: '8px',
@@ -194,7 +194,7 @@ function NewThreadForm() {
             <p style={{ color: '#94a3b8', marginBottom: '1rem' }}>
               You must be signed in to create a new thread.
             </p>
-            <Link href="/sign-in" style={{ color: '#f97316' }}>
+            <Link href="/sign-in" style={{ color: '#FF8200' }}>
               Sign in to continue
             </Link>
           </div>
@@ -214,7 +214,7 @@ function NewThreadForm() {
             display: 'inline-flex', 
             alignItems: 'center', 
             gap: '8px', 
-            color: '#fdba74', 
+            color: '#FBDB65', 
             marginBottom: '2rem',
             textDecoration: 'none'
           }}
@@ -297,7 +297,7 @@ export default function NewThreadPage() {
       <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937)' }}>
         <Navigation />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-          <p style={{ color: '#fdba74' }}>Loading...</p>
+          <p style={{ color: '#FBDB65' }}>Loading...</p>
         </div>
       </div>
     }>

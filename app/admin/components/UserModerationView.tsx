@@ -93,7 +93,7 @@ const TrustLevelDropdown = ({
                 textAlign: 'left',
                 transition: 'background 0.2s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)'}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
             >
               {level} - {name}
@@ -241,9 +241,9 @@ export default function UserModerationView({ onBack }: UserModerationViewProps) 
             style={{
               ...adminStyles.secondaryButton,
               ...(filter === tab ? { 
-                background: '#f97316', 
+                background: '#FF8200', 
                 color: '#111827',
-                borderColor: '#f97316' 
+                borderColor: '#FF8200' 
               } : {})
             }}
           >

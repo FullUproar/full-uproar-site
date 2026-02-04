@@ -100,7 +100,7 @@ export default function ReviewForm({ gameId, merchId, onSuccess, onCancel }: Rev
           href="/sign-in"
           style={{
             display: 'inline-block',
-            background: '#f97316',
+            background: '#FF8200',
             color: '#fff',
             padding: '10px 24px',
             borderRadius: 8,
@@ -123,7 +123,7 @@ export default function ReviewForm({ gameId, merchId, onSuccess, onCancel }: Rev
         padding: 24,
       }}
     >
-      <h3 style={{ color: '#fde68a', marginBottom: 20, fontSize: 18 }}>
+      <h3 style={{ color: '#FBDB65', marginBottom: 20, fontSize: 18 }}>
         Write a Review
       </h3>
 
@@ -257,7 +257,7 @@ export default function ReviewForm({ gameId, merchId, onSuccess, onCancel }: Rev
           disabled={isSubmitting}
           style={{
             padding: '12px 24px',
-            background: isSubmitting ? '#666' : '#f97316',
+            background: isSubmitting ? '#666' : '#FF8200',
             border: 'none',
             borderRadius: 8,
             color: '#fff',

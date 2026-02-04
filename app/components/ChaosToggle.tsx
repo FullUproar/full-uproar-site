@@ -29,7 +29,7 @@ export default function ChaosToggle() {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          background: chaosEnabled ? '#f97316' : '#10b981',
+          background: chaosEnabled ? '#FF8200' : '#10b981',
           color: chaosEnabled ? '#111827' : '#fff',
           border: 'none',
           borderRadius: '50px',
@@ -56,7 +56,7 @@ export default function ChaosToggle() {
             right: 0,
             marginTop: '0.5rem',
             background: '#1f2937',
-            border: '2px solid #f97316',
+            border: '2px solid #FF8200',
             borderRadius: '0.5rem',
             padding: '0.75rem',
             minWidth: '200px',
@@ -65,7 +65,7 @@ export default function ChaosToggle() {
           }}
         >
           <div style={{ 
-            color: '#fdba74', 
+            color: '#FBDB65', 
             fontSize: '0.875rem',
             fontWeight: 'bold',
             marginBottom: '0.25rem'
@@ -87,13 +87,13 @@ export default function ChaosToggle() {
       <style jsx>{`
         @keyframes pulse {
           0% {
-            box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+            box-shadow: 0 0 0 0 rgba(255, 130, 0, 0.7);
           }
           70% {
-            box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+            box-shadow: 0 0 0 10px rgba(255, 130, 0, 0);
           }
           100% {
-            box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+            box-shadow: 0 0 0 0 rgba(255, 130, 0, 0);
           }
         }
       `}</style>

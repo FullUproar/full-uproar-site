@@ -145,7 +145,7 @@ export default function FuglyPage() {
             </h2>
             <p style={{
               textAlign: 'center',
-              color: '#fdba74',
+              color: '#FBDB65',
               marginBottom: '2rem',
               fontSize: '1.125rem'
             }}>
@@ -186,7 +186,7 @@ export default function FuglyPage() {
                     <h3 style={{ color: '#FF8200', fontWeight: 900, marginBottom: '0.5rem' }}>
                       {comic.episode && `#${comic.episode}: `}{comic.title}
                     </h3>
-                    <p style={{ color: '#fdba74', fontSize: '0.875rem' }}>{comic.description}</p>
+                    <p style={{ color: '#FBDB65', fontSize: '0.875rem' }}>{comic.description}</p>
                   </div>
                 </div>
               ))}
@@ -257,7 +257,7 @@ export default function FuglyPage() {
                   onClick={() => setSelectedPost(post)}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'scale(1.02) rotate(0deg)';
-                    e.currentTarget.style.borderColor = '#f97316';
+                    e.currentTarget.style.borderColor = '#FF8200';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = `rotate(${index % 2 === 0 ? '-1' : '1'}deg)`;
@@ -283,7 +283,7 @@ export default function FuglyPage() {
                   }}>
                     {post.title}
                   </h3>
-                  <p style={{ color: '#fde68a', marginBottom: '1rem', lineHeight: 1.6, fontSize: '0.9rem' }}>
+                  <p style={{ color: '#FBDB65', marginBottom: '1rem', lineHeight: 1.6, fontSize: '0.9rem' }}>
                     {post.excerpt}
                   </p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -342,7 +342,7 @@ export default function FuglyPage() {
             <p style={{ color: '#9ca3af', marginBottom: '1rem', fontSize: '0.875rem' }}>
               {new Date(selectedPost.createdAt).toLocaleDateString()}
             </p>
-            <div style={{ color: '#fde68a', lineHeight: 1.8, marginBottom: '2rem' }}>
+            <div style={{ color: '#FBDB65', lineHeight: 1.8, marginBottom: '2rem' }}>
               {selectedPost.content || selectedPost.excerpt}
             </div>
             <button

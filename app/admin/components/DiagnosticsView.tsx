@@ -138,7 +138,7 @@ export default function DiagnosticsView() {
           disabled={loading}
           style={{
             ...adminStyles.button,
-            background: loading ? '#6b7280' : '#f97316',
+            background: loading ? '#6b7280' : '#FF8200',
             cursor: loading ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -165,7 +165,7 @@ export default function DiagnosticsView() {
       {loading && !healthData && !debugData ? (
         <div style={adminStyles.card}>
           <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <Loader2 size={48} className="animate-spin" style={{ color: '#f97316', margin: '0 auto' }} />
+            <Loader2 size={48} className="animate-spin" style={{ color: '#FF8200', margin: '0 auto' }} />
             <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Loading diagnostics...</p>
           </div>
         </div>
@@ -174,7 +174,7 @@ export default function DiagnosticsView() {
           {/* Health Status */}
           {healthData && (
             <div style={adminStyles.card}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#fdba74', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#FBDB65', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Heart size={24} />
                 Health Status
               </h3>
@@ -213,7 +213,7 @@ export default function DiagnosticsView() {
                 </div>
               </div>
 
-              <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fdba74' }}>
+              <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem', color: '#FBDB65' }}>
                 Services
               </h4>
 
@@ -258,7 +258,7 @@ export default function DiagnosticsView() {
           {debugData && (
             <div style={{ ...adminStyles.card, marginTop: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#fdba74', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#FBDB65', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
                   <Database size={24} />
                   Database Information
                 </h3>
@@ -300,7 +300,7 @@ export default function DiagnosticsView() {
                 </div>
               ) : (
                 <>
-                  <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fdba74' }}>
+                  <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem', color: '#FBDB65' }}>
                     Table Counts
                   </h4>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
@@ -315,12 +315,12 @@ export default function DiagnosticsView() {
                         }}
                       >
                         <span style={{ color: '#94a3b8' }}>{table}</span>
-                        <span style={{ color: '#fdba74', fontWeight: 'bold' }}>{String(count)}</span>
+                        <span style={{ color: '#FBDB65', fontWeight: 'bold' }}>{String(count)}</span>
                       </div>
                     ))}
                   </div>
 
-                  <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fdba74' }}>
+                  <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem', color: '#FBDB65' }}>
                     Feature Flags
                   </h4>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '0.75rem' }}>

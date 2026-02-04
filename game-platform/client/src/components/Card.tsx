@@ -48,8 +48,8 @@ const styles = {
   },
   selected: {
     transform: 'translateY(-8px) scale(1.02)',
-    boxShadow: '0 8px 24px rgba(249, 115, 22, 0.4)',
-    border: '2px solid #f97316',
+    boxShadow: '0 8px 24px rgba(255, 130, 0, 0.4)',
+    border: '2px solid #FF8200',
   },
   disabled: {
     opacity: 0.5,
@@ -59,7 +59,7 @@ const styles = {
     position: 'absolute' as const,
     top: '-8px',
     right: '-8px',
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     width: '28px',
     height: '28px',
@@ -74,7 +74,7 @@ const styles = {
     position: 'absolute' as const,
     top: '-8px',
     left: '-8px',
-    background: '#8b5cf6',
+    background: '#7D55C7',
     color: '#fff',
     width: '24px',
     height: '24px',

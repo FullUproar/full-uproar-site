@@ -58,7 +58,7 @@ export default async function GamePreviewPage({ params }: PageProps) {
           fontSize: '0.875rem',
           color: '#94a3b8',
         }}>
-          <Link href="/games/fugly-mayhem-machine" style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href="/games/fugly-mayhem-machine" style={{ color: '#FF8200', textDecoration: 'none' }}>
             {FMM_SERIES.name}
           </Link>
           <span>/</span>
@@ -206,7 +206,7 @@ export default async function GamePreviewPage({ params }: PageProps) {
                 background: 'rgba(0, 0, 0, 0.3)',
                 padding: '1rem',
                 borderRadius: '0.5rem',
-                color: '#fde68a',
+                color: '#FBDB65',
                 fontSize: '0.875rem',
                 display: 'flex',
                 alignItems: 'center',

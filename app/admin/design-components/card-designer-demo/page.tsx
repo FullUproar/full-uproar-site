@@ -59,7 +59,7 @@ export default function CardDesignerDemoPage() {
           Examples: "Poppins", "Lobster", "Bebas Neue", "Abril Fatface", "Barlow Condensed"
         </p>
         <p style={{ color: '#e2e8f0' }}>
-          Browse available fonts at: <a href="https://fonts.google.com" target="_blank" style={{ color: '#f97316' }}>fonts.google.com</a>
+          Browse available fonts at: <a href="https://fonts.google.com" target="_blank" style={{ color: '#FF8200' }}>fonts.google.com</a>
         </p>
       </div>
     </div>

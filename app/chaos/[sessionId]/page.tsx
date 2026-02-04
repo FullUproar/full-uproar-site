@@ -362,7 +362,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
           onClick={() => router.push('/chaos')}
           style={{
             padding: '12px 32px',
-            backgroundColor: '#f97316',
+            backgroundColor: '#FF8200',
             color: '#000',
             border: 'none',
             borderRadius: '8px',
@@ -424,7 +424,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
         <div className="animate-slide-down" style={{ textAlign: 'center', marginBottom: '24px' }}>
           <div className="animate-bounce" style={{ fontSize: '64px', marginBottom: '12px' }}>🏆</div>
           <h1 className="animate-glow" style={{
-            color: '#fde68a',
+            color: '#FBDB65',
             fontSize: '28px',
             marginBottom: '8px',
             textShadow: '0 0 20px rgba(253, 230, 138, 0.5)',
@@ -432,7 +432,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
             Chaos Complete!
           </h1>
           {winner && (
-            <p style={{ color: '#f97316', fontSize: '18px', fontWeight: 'bold' }}>
+            <p style={{ color: '#FF8200', fontSize: '18px', fontWeight: 'bold' }}>
               👑 {winner.displayName} wins with {winner.chaosPoints} points!
             </p>
           )}
@@ -454,7 +454,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
             className="btn-chaos"
             style={{
               padding: '14px 28px',
-              backgroundColor: '#f97316',
+              backgroundColor: '#FF8200',
               color: '#000',
               border: 'none',
               borderRadius: '10px',
@@ -523,7 +523,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
               gap: '8px',
             }}>
               <span style={{
-                color: '#f97316',
+                color: '#FF8200',
                 fontWeight: 'bold',
                 fontSize: '14px',
                 textTransform: 'uppercase',
@@ -570,9 +570,9 @@ export default function ChaosSessionPage({ params }: PageProps) {
             backgroundColor: '#0a0a0a',
             padding: '8px 16px',
             borderRadius: '20px',
-            border: '2px solid #f97316',
+            border: '2px solid #FF8200',
           }}>
-            <span style={{ color: '#fde68a', fontWeight: 'bold', fontSize: '18px' }}>
+            <span style={{ color: '#FBDB65', fontWeight: 'bold', fontSize: '18px' }}>
               {myPoints}
             </span>
             <span style={{ color: '#9ca3af', fontSize: '12px', marginLeft: '4px' }}>pts</span>
@@ -585,7 +585,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
         <div className="event-card-urgent animate-slide-down" style={{
           backgroundColor: '#7c3aed',
           padding: '16px 20px',
-          borderBottom: '2px solid #8b5cf6',
+          borderBottom: '2px solid #7D55C7',
         }}>
           <div style={{
             display: 'flex',
@@ -691,9 +691,9 @@ export default function ChaosSessionPage({ params }: PageProps) {
               flexDirection: 'column',
               alignItems: 'center',
               padding: '8px',
-              backgroundColor: activeTab === tab ? 'rgba(249, 115, 22, 0.1)' : 'transparent',
+              backgroundColor: activeTab === tab ? 'rgba(255, 130, 0, 0.1)' : 'transparent',
               border: 'none',
-              borderTop: activeTab === tab ? '2px solid #f97316' : '2px solid transparent',
+              borderTop: activeTab === tab ? '2px solid #FF8200' : '2px solid transparent',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
             }}
@@ -711,7 +711,7 @@ export default function ChaosSessionPage({ params }: PageProps) {
             <span style={{
               fontSize: '10px',
               marginTop: '4px',
-              color: activeTab === tab ? '#f97316' : '#6b7280',
+              color: activeTab === tab ? '#FF8200' : '#6b7280',
               fontWeight: activeTab === tab ? 'bold' : 'normal',
               textTransform: 'capitalize',
             }}>
@@ -760,7 +760,7 @@ function EventsTab({ currentEvent, eventHistory, isHost, socket }: {
               style={{
                 marginTop: '16px',
                 padding: '12px 24px',
-                backgroundColor: '#f97316',
+                backgroundColor: '#FF8200',
                 color: '#000',
                 border: 'none',
                 borderRadius: '8px',
@@ -877,7 +877,7 @@ function BetsTab({ bets, myPoints, participantInfo, socket }: {
         style={{
           width: '100%',
           padding: '16px',
-          backgroundColor: '#f97316',
+          backgroundColor: '#FF8200',
           color: '#000',
           border: 'none',
           borderRadius: '12px',
@@ -1071,7 +1071,7 @@ function GamesTab({ isHost, socket }: { isHost: boolean; socket: any }) {
               }))}
               style={{
                 padding: '8px 16px',
-                backgroundColor: '#f97316',
+                backgroundColor: '#FF8200',
                 color: '#000',
                 border: 'none',
                 borderRadius: '8px',
@@ -1124,7 +1124,7 @@ function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
       }}>
         <span style={{ fontSize: '24px' }}>{modeInfo.icon}</span>
         <div>
-          <div style={{ color: '#f97316', fontWeight: 'bold', fontSize: '14px' }}>
+          <div style={{ color: '#FF8200', fontWeight: 'bold', fontSize: '14px' }}>
             {modeInfo.label}
           </div>
           <div style={{ color: '#6b7280', fontSize: '12px' }}>
@@ -1138,7 +1138,7 @@ function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
             padding: '8px 16px',
             borderRadius: '8px',
           }}>
-            <span style={{ color: '#fde68a', fontWeight: 'bold', fontSize: '18px' }}>
+            <span style={{ color: '#FBDB65', fontWeight: 'bold', fontSize: '18px' }}>
               {myPoints}
             </span>
             <span style={{ color: '#6b7280', fontSize: '12px', marginLeft: '4px' }}>pts</span>
@@ -1172,7 +1172,7 @@ function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
             borderLeft: `3px solid ${
               obj.status === 'VERIFIED' ? '#10b981' :
               obj.status === 'CLAIMED' ? '#f59e0b' :
-              obj.status === 'FAILED' ? '#ef4444' : '#f97316'
+              obj.status === 'FAILED' ? '#ef4444' : '#FF8200'
             }`,
           }}>
             <div style={{
@@ -1186,7 +1186,7 @@ function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
                 backgroundColor: '#0a0a0a',
                 padding: '4px 8px',
                 borderRadius: '4px',
-                color: '#fde68a',
+                color: '#FBDB65',
                 fontSize: '12px',
                 fontWeight: 'bold',
               }}>
@@ -1205,7 +1205,7 @@ function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
                 style={{
                   width: '100%',
                   padding: '10px',
-                  backgroundColor: '#f97316',
+                  backgroundColor: '#FF8200',
                   color: '#000',
                   border: 'none',
                   borderRadius: '8px',
@@ -1266,7 +1266,7 @@ function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
                   width: '32px',
                   height: '32px',
                   borderRadius: '50%',
-                  backgroundColor: p.avatarColor || (i === 0 ? '#fde68a' : '#3a3a3a'),
+                  backgroundColor: p.avatarColor || (i === 0 ? '#FBDB65' : '#3a3a3a'),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -1286,7 +1286,7 @@ function YouTab({ objectives, participants, socket, scoringMode, myPoints }: {
                   )}
                 </div>
               </div>
-              <span style={{ color: '#fde68a', fontWeight: 'bold' }}>
+              <span style={{ color: '#FBDB65', fontWeight: 'bold' }}>
                 {p.chaosPoints} pts
               </span>
             </div>

@@ -165,7 +165,7 @@ export default function ReportButton({
 
                 <form onSubmit={handleSubmit}>
                   <div style={{ marginBottom: '1.25rem' }}>
-                    <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                    <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
                       Reason for report
                     </label>
                     <select
@@ -190,7 +190,7 @@ export default function ReportButton({
                   </div>
 
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                    <label style={{ display: 'block', color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
                       Additional details (optional)
                     </label>
                     <textarea

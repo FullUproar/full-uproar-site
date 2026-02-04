@@ -423,7 +423,7 @@ export default function AdminApp() {
           label: 'Dashboard',
           icon: <Home size={20} />,
           view: { type: 'dashboard' as ViewType },
-          color: '#fdba74',
+          color: '#FBDB65',
         },
         {
           id: 'power-dashboard',
@@ -445,7 +445,7 @@ export default function AdminApp() {
           label: 'War Room',
           icon: <Target size={20} />,
           view: { type: 'war-room' as ViewType },
-          color: '#f97316',
+          color: '#FF8200',
           badge: 'LIVE',
         },
       ]
@@ -467,7 +467,7 @@ export default function AdminApp() {
           label: 'Fulfillment Center',
           icon: <Package size={20} />,
           view: { type: 'fulfillment' as ViewType },
-          color: '#f97316',
+          color: '#FF8200',
           badge: 'SHIP',
         },
         {
@@ -475,7 +475,7 @@ export default function AdminApp() {
           label: 'Games',
           icon: <Dices size={20} />,
           view: { type: 'games-list' as ViewType },
-          color: '#f97316',
+          color: '#FF8200',
           subItems: [
             { label: 'All Games', view: { type: 'games-list' as ViewType } },
             { label: 'New Game', view: { type: 'games-new' as ViewType } },
@@ -487,7 +487,7 @@ export default function AdminApp() {
           label: 'Merchandise',
           icon: <ShoppingBag size={20} />,
           view: { type: 'merch-list' as ViewType },
-          color: '#8b5cf6',
+          color: '#7D55C7',
           subItems: [
             { label: 'All Merch', view: { type: 'merch-list' as ViewType } },
             { label: 'New Merch', view: { type: 'merch-new' as ViewType } },
@@ -529,14 +529,14 @@ export default function AdminApp() {
           label: 'Support Tickets',
           icon: <MessageSquare size={20} />,
           view: { type: 'support' as ViewType },
-          color: '#f97316',
+          color: '#FF8200',
         },
         {
           id: 'customers',
           label: 'Customers',
           icon: <Users size={20} />,
           view: { type: 'customers' as ViewType },
-          color: '#8b5cf6',
+          color: '#7D55C7',
           badge: 'PRO',
         },
         {
@@ -560,7 +560,7 @@ export default function AdminApp() {
           label: 'Afterroar+',
           icon: <Crown size={20} />,
           view: { type: 'afterroar-plus' as ViewType },
-          color: '#f97316',
+          color: '#FF8200',
           badge: 'SOON',
         },
       ]
@@ -591,7 +591,7 @@ export default function AdminApp() {
           label: 'B2B Portal',
           icon: <Building size={20} />,
           view: { type: 'b2b-portal' as ViewType },
-          color: '#8b5cf6',
+          color: '#7D55C7',
           badge: 'B2B',
         },
       ]
@@ -629,7 +629,7 @@ export default function AdminApp() {
           label: 'News',
           icon: <Newspaper size={20} />,
           view: { type: 'news-list' as ViewType },
-          color: '#f97316',
+          color: '#FF8200',
         },
         {
           id: 'comics',
@@ -699,7 +699,7 @@ export default function AdminApp() {
           label: 'Test Modes',
           icon: <TestTube size={20} />,
           view: { type: 'test-modes' as ViewType },
-          color: '#f97316',
+          color: '#FF8200',
         },
         {
           id: 'diagnostics',
@@ -1060,7 +1060,7 @@ export default function AdminApp() {
           alignItems: 'center',
           minHeight: '100vh'
         }}>
-          <div style={{ color: '#fdba74', fontSize: '18px' }}>
+          <div style={{ color: '#FBDB65', fontSize: '18px' }}>
             {!isLoaded ? 'Loading admin panel...' : isVerifying ? 'Verifying admin permissions...' : 'Loading view...'}
           </div>
         </div>
@@ -1109,7 +1109,7 @@ export default function AdminApp() {
       <div style={{
         width: isMobile ? '260px' : (sidebarCollapsed ? '60px' : '260px'),
         background: 'rgba(17, 24, 39, 0.95)',
-        borderRight: '2px solid rgba(249, 115, 22, 0.3)',
+        borderRight: '2px solid rgba(255, 130, 0, 0.3)',
         transition: 'all 0.3s',
         display: 'flex',
         flexDirection: 'column',
@@ -1121,14 +1121,14 @@ export default function AdminApp() {
         {/* Sidebar Header */}
         <div style={{
           padding: '20px',
-          borderBottom: '2px solid rgba(249, 115, 22, 0.2)',
+          borderBottom: '2px solid rgba(255, 130, 0, 0.2)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
           {!sidebarCollapsed && (
             <h2 style={{ 
-              color: '#fdba74', 
+              color: '#FBDB65', 
               fontSize: '20px', 
               fontWeight: 'bold',
               margin: 0,
@@ -1152,7 +1152,7 @@ export default function AdminApp() {
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#fdba74',
+              color: '#FBDB65',
               cursor: 'pointer',
               padding: '4px',
             }}
@@ -1186,7 +1186,7 @@ export default function AdminApp() {
                     letterSpacing: '0.5px',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#fdba74';
+                    e.currentTarget.style.color = '#FBDB65';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.color = '#94a3b8';
@@ -1223,11 +1223,11 @@ export default function AdminApp() {
                           padding: sidebarCollapsed ? '10px' : '10px 12px',
                           paddingLeft: sidebarCollapsed ? '10px' : '28px',
                           background: currentView.type.startsWith(item.id) 
-                            ? 'rgba(249, 115, 22, 0.2)' 
+                            ? 'rgba(255, 130, 0, 0.2)' 
                             : 'transparent',
                           border: 'none',
                           borderRadius: '8px',
-                          color: currentView.type.startsWith(item.id) ? '#fdba74' : '#e2e8f0',
+                          color: currentView.type.startsWith(item.id) ? '#FBDB65' : '#e2e8f0',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '12px',
@@ -1238,8 +1238,8 @@ export default function AdminApp() {
                         }}
                         onMouseEnter={(e) => {
                           if (!currentView.type.startsWith(item.id)) {
-                            e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-                            e.currentTarget.style.color = '#fde68a';
+                            e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
+                            e.currentTarget.style.color = '#FBDB65';
                           }
                         }}
                         onMouseLeave={(e) => {
@@ -1298,11 +1298,11 @@ export default function AdminApp() {
                                 width: '100%',
                                 padding: '8px 12px',
                                 background: currentView.type === subItem.view.type 
-                                  ? 'rgba(249, 115, 22, 0.15)' 
+                                  ? 'rgba(255, 130, 0, 0.15)' 
                                   : 'transparent',
                                 border: 'none',
                                 borderRadius: '6px',
-                                color: currentView.type === subItem.view.type ? '#fdba74' : '#94a3b8',
+                                color: currentView.type === subItem.view.type ? '#FBDB65' : '#94a3b8',
                                 display: 'flex',
                                 alignItems: 'center',
                                 cursor: 'pointer',
@@ -1311,7 +1311,7 @@ export default function AdminApp() {
                                 fontSize: '13px',
                               }}
                               onMouseEnter={(e) => {
-                                e.currentTarget.style.color = '#fde68a';
+                                e.currentTarget.style.color = '#FBDB65';
                               }}
                               onMouseLeave={(e) => {
                                 if (currentView.type !== subItem.view.type) {
@@ -1335,7 +1335,7 @@ export default function AdminApp() {
         {/* Back to Site Link */}
         <div style={{
           padding: '12px',
-          borderTop: '2px solid rgba(249, 115, 22, 0.2)',
+          borderTop: '2px solid rgba(255, 130, 0, 0.2)',
         }}>
           <a
             href="/"
@@ -1344,21 +1344,21 @@ export default function AdminApp() {
               alignItems: 'center',
               gap: '12px',
               padding: '12px 16px',
-              background: 'rgba(249, 115, 22, 0.1)',
-              border: '1px solid rgba(249, 115, 22, 0.3)',
+              background: 'rgba(255, 130, 0, 0.1)',
+              border: '1px solid rgba(255, 130, 0, 0.3)',
               borderRadius: '8px',
-              color: '#fdba74',
+              color: '#FBDB65',
               textDecoration: 'none',
               transition: 'all 0.2s',
               justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
-              e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-              e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
+              e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
             }}
           >
             <ArrowLeft size={20} />
@@ -1369,7 +1369,7 @@ export default function AdminApp() {
         {/* User Info */}
         <div style={{
           padding: '16px',
-          borderTop: '2px solid rgba(249, 115, 22, 0.2)',
+          borderTop: '2px solid rgba(255, 130, 0, 0.2)',
         }}>
           {!sidebarCollapsed && (
             <div style={{ 
@@ -1392,7 +1392,7 @@ export default function AdminApp() {
         {/* Header with Breadcrumbs */}
         <div style={{
           background: 'rgba(30, 41, 59, 0.8)',
-          borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+          borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
           padding: isMobile ? '16px' : '16px 32px',
           display: 'flex',
           alignItems: 'center',
@@ -1408,7 +1408,7 @@ export default function AdminApp() {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#fdba74',
+                color: '#FBDB65',
                 cursor: 'pointer',
                 padding: '4px',
                 marginRight: '8px',
@@ -1428,7 +1428,7 @@ export default function AdminApp() {
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: index === breadcrumbs.length - 1 ? '#fdba74' : '#94a3b8',
+                    color: index === breadcrumbs.length - 1 ? '#FBDB65' : '#94a3b8',
                     cursor: 'pointer',
                     fontSize: '14px',
                     fontWeight: index === breadcrumbs.length - 1 ? 'bold' : 'normal',
@@ -1436,7 +1436,7 @@ export default function AdminApp() {
                   }}
                   onMouseEnter={(e) => {
                     if (index !== breadcrumbs.length - 1) {
-                      e.currentTarget.style.color = '#fde68a';
+                      e.currentTarget.style.color = '#FBDB65';
                     }
                   }}
                   onMouseLeave={(e) => {

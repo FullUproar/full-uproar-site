@@ -129,7 +129,7 @@ export default function BundlesAdminPage() {
           href="/admin/dashboard"
           style={adminStyles.backButton}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+            e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
@@ -271,7 +271,7 @@ export default function BundlesAdminPage() {
                     height: '160px',
                     background: bundle.imageUrl
                       ? `url(${bundle.imageUrl}) center/cover`
-                      : 'linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
+                      : 'linear-gradient(135deg, rgba(255, 130, 0, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
                     borderRadius: '8px',
                     marginBottom: '16px',
                     display: 'flex',
@@ -279,7 +279,7 @@ export default function BundlesAdminPage() {
                     justifyContent: 'center',
                     position: 'relative',
                   }}>
-                    {!bundle.imageUrl && <Layers size={40} style={{ color: '#f97316' }} />}
+                    {!bundle.imageUrl && <Layers size={40} style={{ color: '#FF8200' }} />}
 
                     {/* Badges */}
                     <div style={{
@@ -316,7 +316,7 @@ export default function BundlesAdminPage() {
                   <h3 style={{
                     fontSize: '20px',
                     fontWeight: 'bold',
-                    color: '#fde68a',
+                    color: '#FBDB65',
                     marginBottom: '4px',
                   }}>
                     {bundle.title}
@@ -336,7 +336,7 @@ export default function BundlesAdminPage() {
                   <div style={{ marginBottom: '16px' }}>
                     <div style={{
                       fontSize: '12px',
-                      color: '#fdba74',
+                      color: '#FBDB65',
                       fontWeight: 'bold',
                       marginBottom: '8px',
                       textTransform: 'uppercase',
@@ -349,8 +349,8 @@ export default function BundlesAdminPage() {
                         <span
                           key={game.id}
                           style={{
-                            background: 'rgba(249, 115, 22, 0.1)',
-                            border: '1px solid rgba(249, 115, 22, 0.3)',
+                            background: 'rgba(255, 130, 0, 0.1)',
+                            border: '1px solid rgba(255, 130, 0, 0.3)',
                             borderRadius: '6px',
                             padding: '4px 10px',
                             fontSize: '12px',
@@ -441,7 +441,7 @@ export default function BundlesAdminPage() {
                     display: 'flex',
                     gap: '8px',
                     paddingTop: '16px',
-                    borderTop: '1px solid rgba(249, 115, 22, 0.2)',
+                    borderTop: '1px solid rgba(255, 130, 0, 0.2)',
                   }}>
                     <Link
                       href={`/shop/games/${bundle.slug}`}

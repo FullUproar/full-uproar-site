@@ -159,7 +159,7 @@ export default function ProfileView() {
     },
     header: {
       background: 'rgba(17, 24, 39, 0.95)',
-      borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+      borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
       padding: '80px 0 120px',
       position: 'relative' as const
     },
@@ -183,7 +183,7 @@ export default function ProfileView() {
       width: '120px',
       height: '120px',
       borderRadius: '50%',
-      border: '4px solid #f97316',
+      border: '4px solid #FF8200',
       marginBottom: '16px',
       position: 'relative' as const,
       overflow: 'hidden' as const
@@ -211,7 +211,7 @@ export default function ProfileView() {
     },
     button: {
       padding: '10px 20px',
-      background: '#f97316',
+      background: '#FF8200',
       color: 'white',
       border: 'none',
       borderRadius: '8px',
@@ -246,7 +246,7 @@ export default function ProfileView() {
           alignItems: 'center', 
           minHeight: '100vh' 
         }}>
-          <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#f97316' }} />
+          <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#FF8200' }} />
         </div>
       </div>
     );
@@ -258,7 +258,7 @@ export default function ProfileView() {
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '8px', color: '#fdba74' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '8px', color: '#FBDB65' }}>
             My Profile
           </h1>
           <p style={{ fontSize: '18px', color: '#94a3b8' }}>
@@ -323,7 +323,7 @@ export default function ProfileView() {
                 </h2>
                 <p style={{ color: '#94a3b8', marginBottom: '8px' }}>{profile.email}</p>
                 <span style={{
-                  background: '#f97316',
+                  background: '#FF8200',
                   color: 'white',
                   padding: '4px 12px',
                   borderRadius: '6px',
@@ -493,14 +493,14 @@ export default function ProfileView() {
             <div>
               {profile.favoriteQuote && (
                 <div style={{ 
-                  background: 'rgba(249, 115, 22, 0.1)', 
+                  background: 'rgba(255, 130, 0, 0.1)', 
                   padding: '20px', 
                   borderRadius: '8px',
-                  border: '1px solid rgba(249, 115, 22, 0.3)',
+                  border: '1px solid rgba(255, 130, 0, 0.3)',
                   marginBottom: '24px'
                 }}>
-                  <Quote size={20} style={{ color: '#f97316', marginBottom: '8px' }} />
-                  <p style={{ fontStyle: 'italic', color: '#fdba74' }}>
+                  <Quote size={20} style={{ color: '#FF8200', marginBottom: '8px' }} />
+                  <p style={{ fontStyle: 'italic', color: '#FBDB65' }}>
                     "{profile.favoriteQuote}"
                   </p>
                 </div>
@@ -526,7 +526,7 @@ export default function ProfileView() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8' }}>
                     <Globe size={16} />
                     <a href={profile.profile.website} target="_blank" rel="noopener noreferrer" 
-                       style={{ color: '#f97316', textDecoration: 'none' }}>
+                       style={{ color: '#FF8200', textDecoration: 'none' }}>
                       Website
                     </a>
                   </div>
@@ -536,7 +536,7 @@ export default function ProfileView() {
                     <Twitter size={16} />
                     <a href={`https://twitter.com/${profile.profile.twitter.replace('@', '')}`} 
                        target="_blank" rel="noopener noreferrer" 
-                       style={{ color: '#f97316', textDecoration: 'none' }}>
+                       style={{ color: '#FF8200', textDecoration: 'none' }}>
                       {profile.profile.twitter}
                     </a>
                   </div>

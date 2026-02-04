@@ -144,7 +144,7 @@ export default function SettingsView() {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading settings...</p>
+        <p style={{ color: '#FBDB65' }}>Loading settings...</p>
       </div>
     );
   }
@@ -159,7 +159,7 @@ export default function SettingsView() {
       {settingGroups.map(group => (
         <div key={group.title} style={{ ...adminStyles.section, marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-            <div style={{ color: '#f97316' }}>{group.icon}</div>
+            <div style={{ color: '#FF8200' }}>{group.icon}</div>
             <h2 style={adminStyles.sectionTitle}>{group.title}</h2>
           </div>
 
@@ -272,9 +272,9 @@ export default function SettingsView() {
             alignItems: 'center',
             gap: '16px'
           }}>
-            <Database size={32} style={{ color: '#f97316' }} />
+            <Database size={32} style={{ color: '#FF8200' }} />
             <div style={{ flex: 1 }}>
-              <h3 style={{ color: '#fdba74', marginBottom: '4px' }}>Database Backup</h3>
+              <h3 style={{ color: '#FBDB65', marginBottom: '4px' }}>Database Backup</h3>
               <p style={{ color: '#94a3b8', fontSize: '14px' }}>
                 Download a backup of your database
               </p>
@@ -295,7 +295,7 @@ export default function SettingsView() {
           }}>
             <RefreshCw size={32} style={{ color: '#3b82f6' }} />
             <div style={{ flex: 1 }}>
-              <h3 style={{ color: '#fdba74', marginBottom: '4px' }}>Clear Cache</h3>
+              <h3 style={{ color: '#FBDB65', marginBottom: '4px' }}>Clear Cache</h3>
               <p style={{ color: '#94a3b8', fontSize: '14px' }}>
                 Clear all system caches
               </p>

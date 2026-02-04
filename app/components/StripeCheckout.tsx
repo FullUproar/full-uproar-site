@@ -198,7 +198,7 @@ export default function StripeCheckout(props: StripeCheckoutProps) {
     appearance: {
       theme: 'night' as const,
       variables: {
-        colorPrimary: '#f97316',
+        colorPrimary: '#FF8200',
         colorBackground: '#1f2937',
         colorText: '#e5e7eb',
         colorDanger: '#ef4444',
@@ -211,11 +211,11 @@ export default function StripeCheckout(props: StripeCheckoutProps) {
         },
         '.Input': {
           backgroundColor: '#374151',
-          borderColor: 'rgba(249, 115, 22, 0.3)',
+          borderColor: 'rgba(255, 130, 0, 0.3)',
         },
         '.Input:focus': {
-          borderColor: '#f97316',
-          boxShadow: '0 0 0 2px rgba(249, 115, 22, 0.2)',
+          borderColor: '#FF8200',
+          boxShadow: '0 0 0 2px rgba(255, 130, 0, 0.2)',
         },
       },
     },

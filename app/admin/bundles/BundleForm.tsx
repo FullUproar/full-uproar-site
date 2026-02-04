@@ -187,7 +187,7 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
       gap: '8px',
     },
     label: {
-      color: '#fde68a',
+      color: '#FBDB65',
       fontSize: '14px',
       fontWeight: '600',
     },
@@ -230,26 +230,26 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
       padding: '12px',
       background: 'rgba(30, 41, 59, 0.5)',
       borderRadius: '8px',
-      border: '1px solid rgba(249, 115, 22, 0.2)',
+      border: '1px solid rgba(255, 130, 0, 0.2)',
     },
     gameImage: {
       width: '50px',
       height: '50px',
       borderRadius: '6px',
       objectFit: 'cover' as const,
-      background: 'rgba(249, 115, 22, 0.1)',
+      background: 'rgba(255, 130, 0, 0.1)',
     },
     selectedGame: {
       display: 'flex',
       alignItems: 'center',
       gap: '12px',
       padding: '12px',
-      background: 'rgba(249, 115, 22, 0.1)',
+      background: 'rgba(255, 130, 0, 0.1)',
       borderRadius: '8px',
-      border: '2px solid rgba(249, 115, 22, 0.5)',
+      border: '2px solid rgba(255, 130, 0, 0.5)',
     },
     pricingSummary: {
-      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%)',
+      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(255, 130, 0, 0.1) 100%)',
       border: '2px solid rgba(16, 185, 129, 0.3)',
       borderRadius: '12px',
       padding: '24px',
@@ -401,7 +401,7 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
               <div style={{ marginBottom: '24px' }}>
                 <div style={{
                   fontSize: '14px',
-                  color: '#fdba74',
+                  color: '#FBDB65',
                   fontWeight: 'bold',
                   marginBottom: '12px',
                 }}>
@@ -419,11 +419,11 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
                           <img src={game.imageUrl} alt={game.title} style={styles.gameImage} />
                         ) : (
                           <div style={{ ...styles.gameImage, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Package size={20} style={{ color: '#f97316' }} />
+                            <Package size={20} style={{ color: '#FF8200' }} />
                           </div>
                         )}
                         <div style={{ flex: 1 }}>
-                          <div style={{ color: '#fde68a', fontWeight: 'bold', fontSize: '15px' }}>
+                          <div style={{ color: '#FBDB65', fontWeight: 'bold', fontSize: '15px' }}>
                             {game.title}
                           </div>
                           <div style={{ color: '#10b981', fontSize: '14px' }}>
@@ -473,11 +473,11 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
                         transition: 'all 0.2s',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
-                        e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
+                        e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.2)';
                         e.currentTarget.style.background = 'rgba(30, 41, 59, 0.5)';
                       }}
                     >
@@ -499,7 +499,7 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
                       <div style={{ color: '#10b981', fontWeight: 'bold' }}>
                         ${(game.priceCents / 100).toFixed(2)}
                       </div>
-                      <Plus size={20} style={{ color: '#f97316' }} />
+                      <Plus size={20} style={{ color: '#FF8200' }} />
                     </div>
                   ))}
                 {availableGames.filter(g => !selectedGameIds.includes(g.id)).length === 0 && (
@@ -565,7 +565,7 @@ export default function BundleForm({ bundle, isEdit = false }: BundleFormProps) 
               {/* Pricing Summary */}
               {selectedGameIds.length > 0 && (
                 <div style={styles.pricingSummary}>
-                  <h3 style={{ color: '#fde68a', marginBottom: '16px', fontSize: '16px' }}>
+                  <h3 style={{ color: '#FBDB65', marginBottom: '16px', fontSize: '16px' }}>
                     Pricing Summary
                   </h3>
 

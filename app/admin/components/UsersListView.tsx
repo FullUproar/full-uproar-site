@@ -137,9 +137,9 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
     const roleStyles: Record<UserRole, React.CSSProperties> = {
       GOD: { backgroundColor: '#fbbf24', color: 'black' },
       SUPER_ADMIN: { backgroundColor: '#dc2626', color: 'white' },
-      ADMIN: { backgroundColor: '#f97316', color: 'white' },
+      ADMIN: { backgroundColor: '#FF8200', color: 'white' },
       HR: { backgroundColor: '#3b82f6', color: 'white' },
-      PRODUCT_MANAGER: { backgroundColor: '#8b5cf6', color: 'white' },
+      PRODUCT_MANAGER: { backgroundColor: '#7D55C7', color: 'white' },
       MARKETING: { backgroundColor: '#10b981', color: 'white' },
       CUSTOMER_SERVICE: { backgroundColor: '#06b6d4', color: 'white' },
       WAREHOUSE: { backgroundColor: '#6366f1', color: 'white' },
@@ -168,7 +168,7 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading users...</p>
+        <p style={{ color: '#FBDB65' }}>Loading users...</p>
       </div>
     );
   }
@@ -447,9 +447,9 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
                                 display: 'block',
                                 width: '100%',
                                 padding: '8px 12px',
-                                background: user.role === role ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
+                                background: user.role === role ? 'rgba(255, 130, 0, 0.2)' : 'transparent',
                                 border: 'none',
-                                color: user.role === role ? '#fdba74' : '#e2e8f0',
+                                color: user.role === role ? '#FBDB65' : '#e2e8f0',
                                 cursor: 'pointer',
                                 textAlign: 'left',
                                 borderRadius: '4px',
@@ -458,7 +458,7 @@ export default function UsersListView({ onEdit, onNew }: UsersListViewProps) {
                               }}
                               onMouseEnter={(e) => {
                                 if (user.role !== role) {
-                                  e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                                  e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
                                 }
                               }}
                               onMouseLeave={(e) => {

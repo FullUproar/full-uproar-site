@@ -53,10 +53,10 @@ export default function AfterroarPage() {
           <div style={{
             display: 'inline-block',
             padding: '0.5rem 1rem',
-            background: 'rgba(249, 115, 22, 0.2)',
+            background: 'rgba(255, 130, 0, 0.2)',
             borderRadius: '50px',
-            border: '2px solid rgba(249, 115, 22, 0.4)',
-            color: '#f97316',
+            border: '2px solid rgba(255, 130, 0, 0.4)',
+            color: '#FF8200',
             fontWeight: 'bold',
             fontSize: '0.875rem',
             marginBottom: '2rem',
@@ -69,7 +69,7 @@ export default function AfterroarPage() {
           <h1 style={{
             fontSize: 'clamp(2.5rem, 8vw, 5rem)',
             fontWeight: 900,
-            background: 'linear-gradient(135deg, #f97316, #fbbf24, #a855f7)',
+            background: 'linear-gradient(135deg, #FF8200, #fbbf24, #a855f7)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
@@ -81,7 +81,7 @@ export default function AfterroarPage() {
 
           <p style={{
             fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-            color: '#fdba74',
+            color: '#FBDB65',
             marginBottom: '1rem',
             fontWeight: 700
           }}>
@@ -126,14 +126,14 @@ export default function AfterroarPage() {
           <div style={{
             background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9))',
             borderRadius: '1.5rem',
-            border: '3px solid rgba(249, 115, 22, 0.3)',
+            border: '3px solid rgba(255, 130, 0, 0.3)',
             padding: '2rem',
             position: 'relative'
           }}>
             <h3 style={{
               fontSize: '1.75rem',
               fontWeight: 900,
-              color: '#f97316',
+              color: '#FF8200',
               marginBottom: '0.5rem'
             }}>
               Afterroar
@@ -263,15 +263,15 @@ export default function AfterroarPage() {
         <div style={{
           maxWidth: '900px',
           margin: '0 auto 4rem',
-          background: 'rgba(249, 115, 22, 0.1)',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          background: 'rgba(255, 130, 0, 0.1)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
           borderRadius: '1.5rem',
           padding: '3rem 2rem'
         }}>
           <h2 style={{
             fontSize: '2rem',
             fontWeight: 900,
-            color: '#f97316',
+            color: '#FF8200',
             marginBottom: '2rem',
             textAlign: 'center'
           }}>
@@ -298,16 +298,16 @@ export default function AfterroarPage() {
                   width: '48px',
                   height: '48px',
                   borderRadius: '0.75rem',
-                  background: 'rgba(249, 115, 22, 0.2)',
+                  background: 'rgba(255, 130, 0, 0.2)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0
                 }}>
-                  <item.icon size={24} style={{ color: '#f97316' }} />
+                  <item.icon size={24} style={{ color: '#FF8200' }} />
                 </div>
                 <div>
-                  <h3 style={{ color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  <h3 style={{ color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     {item.title}
                   </h3>
                   <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6 }}>

@@ -186,12 +186,12 @@ export default function EndOfNightHighlights({
     }}>
       {/* Fun Memory Banner */}
       <div style={{
-        backgroundColor: '#8b5cf620',
+        backgroundColor: '#7D55C720',
         borderRadius: '12px',
         padding: '16px 20px',
         marginBottom: '24px',
         textAlign: 'center',
-        border: '1px solid #8b5cf6',
+        border: '1px solid #7D55C7',
       }}>
         <span style={{ fontSize: '24px', marginRight: '8px' }}>✨</span>
         <span style={{ color: '#c4b5fd', fontSize: '14px', fontStyle: 'italic' }}>
@@ -206,10 +206,10 @@ export default function EndOfNightHighlights({
         gap: '8px',
         marginBottom: '24px',
       }}>
-        <StatBox value={highlights.participantCount} label="Players" color="#f97316" />
-        <StatBox value={highlights.totalEvents} label="Events" color="#8b5cf6" />
+        <StatBox value={highlights.participantCount} label="Players" color="#FF8200" />
+        <StatBox value={highlights.totalEvents} label="Events" color="#7D55C7" />
         <StatBox value={highlights.totalBets} label="Bets" color="#10b981" />
-        <StatBox value={highlights.totalPoints} label="Total Pts" color="#fde68a" />
+        <StatBox value={highlights.totalPoints} label="Total Pts" color="#FBDB65" />
       </div>
 
       {/* Awards Section */}
@@ -221,7 +221,7 @@ export default function EndOfNightHighlights({
           marginBottom: '24px',
         }}>
           <h3 style={{
-            color: '#fde68a',
+            color: '#FBDB65',
             fontSize: '16px',
             marginBottom: '16px',
             textAlign: 'center',
@@ -250,7 +250,7 @@ export default function EndOfNightHighlights({
               >
                 <span style={{ fontSize: '28px' }}>{award.icon}</span>
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: '#f97316', fontWeight: 'bold', fontSize: '13px' }}>
+                  <div style={{ color: '#FF8200', fontWeight: 'bold', fontSize: '13px' }}>
                     {award.title}
                   </div>
                   <div style={{ color: '#e2e8f0', fontSize: '14px' }}>
@@ -274,7 +274,7 @@ export default function EndOfNightHighlights({
         marginBottom: '24px',
       }}>
         <h3 style={{
-          color: '#f97316',
+          color: '#FF8200',
           fontSize: '16px',
           marginBottom: '16px',
           textAlign: 'center',
@@ -293,7 +293,7 @@ export default function EndOfNightHighlights({
               marginBottom: '8px',
               backgroundColor: i === 0 ? 'rgba(253, 230, 138, 0.1)' : '#0a0a0a',
               borderRadius: '10px',
-              border: i === 0 ? '2px solid #fde68a' : '1px solid #2a2a2a',
+              border: i === 0 ? '2px solid #FBDB65' : '1px solid #2a2a2a',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -302,7 +302,7 @@ export default function EndOfNightHighlights({
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: i === 0 ? '#fde68a' : i === 1 ? '#9ca3af' : i === 2 ? '#cd7f32' : p.avatarColor || '#3a3a3a',
+                backgroundColor: i === 0 ? '#FBDB65' : i === 1 ? '#9ca3af' : i === 2 ? '#cd7f32' : p.avatarColor || '#3a3a3a',
                 color: i < 3 ? '#000' : '#fff',
                 display: 'flex',
                 alignItems: 'center',
@@ -316,11 +316,11 @@ export default function EndOfNightHighlights({
               {/* Name & Pronouns */}
               <div>
                 <div style={{
-                  color: i === 0 ? '#fde68a' : '#e2e8f0',
+                  color: i === 0 ? '#FBDB65' : '#e2e8f0',
                   fontWeight: i === 0 ? 'bold' : 'normal',
                 }}>
                   {p.displayName}
-                  {p.isHost && <span style={{ color: '#f97316', fontSize: '11px', marginLeft: '6px' }}>HOST</span>}
+                  {p.isHost && <span style={{ color: '#FF8200', fontSize: '11px', marginLeft: '6px' }}>HOST</span>}
                 </div>
                 {p.pronouns && (
                   <div style={{ color: '#6b7280', fontSize: '11px' }}>{p.pronouns}</div>
@@ -331,7 +331,7 @@ export default function EndOfNightHighlights({
             {/* Points */}
             <div style={{ textAlign: 'right' }}>
               <div style={{
-                color: '#fde68a',
+                color: '#FBDB65',
                 fontWeight: 'bold',
                 fontSize: '18px',
               }}>
@@ -351,7 +351,7 @@ export default function EndOfNightHighlights({
           padding: '16px',
           marginBottom: '24px',
         }}>
-          <h4 style={{ color: '#8b5cf6', fontSize: '14px', marginBottom: '12px' }}>
+          <h4 style={{ color: '#7D55C7', fontSize: '14px', marginBottom: '12px' }}>
             Event Breakdown
           </h4>
           <div style={{ display: 'flex', gap: '16px' }}>
@@ -368,7 +368,7 @@ export default function EndOfNightHighlights({
               <div style={{ color: '#6b7280', fontSize: '11px' }}>Skipped</div>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ color: '#fde68a', fontSize: '20px', fontWeight: 'bold' }}>
+              <div style={{ color: '#FBDB65', fontSize: '20px', fontWeight: 'bold' }}>
                 {Math.round((highlights.completedEvents / highlights.totalEvents) * 100)}%
               </div>
               <div style={{ color: '#6b7280', fontSize: '11px' }}>Completion</div>

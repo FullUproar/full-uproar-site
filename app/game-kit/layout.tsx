@@ -28,7 +28,7 @@ const styles = {
     padding: '48px',
     maxWidth: '400px',
     width: '100%',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
     textAlign: 'center' as const,
   },
@@ -42,7 +42,7 @@ const styles = {
   logo: {
     fontSize: '32px',
     fontWeight: 'bold' as const,
-    color: '#f97316',
+    color: '#FF8200',
   },
   subtitle: {
     color: '#9ca3af',
@@ -53,7 +53,7 @@ const styles = {
     display: 'block',
     fontSize: '12px',
     fontWeight: '600' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '8px',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
@@ -63,7 +63,7 @@ const styles = {
     width: '100%',
     padding: '16px 18px',
     background: 'rgba(15, 23, 42, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.15)',
+    border: '2px solid rgba(255, 130, 0, 0.15)',
     borderRadius: '10px',
     color: '#fff',
     fontSize: '16px',
@@ -77,7 +77,7 @@ const styles = {
   button: {
     width: '100%',
     padding: '14px 28px',
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: '#000',
     border: 'none',
     borderRadius: '10px',
@@ -86,7 +86,7 @@ const styles = {
     cursor: 'pointer',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
-    boxShadow: '0 4px 14px rgba(249, 115, 22, 0.4)',
+    boxShadow: '0 4px 14px rgba(255, 130, 0, 0.4)',
   },
   error: {
     color: '#ef4444',
@@ -165,7 +165,7 @@ function PasswordGate({ children }: { children: ReactNode }) {
     <div style={styles.container}>
       <form style={styles.form} onSubmit={handleSubmit}>
         <div style={styles.logoContainer}>
-          <Wand2 size={32} style={{ color: '#f97316' }} />
+          <Wand2 size={32} style={{ color: '#FF8200' }} />
           <div style={styles.logo}>Game Kit</div>
         </div>
         <div style={styles.subtitle}>Create Your Own Card Games</div>

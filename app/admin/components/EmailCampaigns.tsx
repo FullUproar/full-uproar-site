@@ -381,7 +381,7 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
                     style={{
                       padding: '1rem',
                       background: selectedTemplate?.id === template.id ? '#334155' : '#0f172a',
-                      border: selectedTemplate?.id === template.id ? '2px solid #f97316' : '2px solid transparent',
+                      border: selectedTemplate?.id === template.id ? '2px solid #FF8200' : '2px solid transparent',
                       borderRadius: '0.5rem',
                       cursor: 'pointer',
                       minWidth: '120px',
@@ -419,7 +419,7 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
               }}>
                 {/* Email Header */}
                 <div style={{
-                  background: '#f97316',
+                  background: '#FF8200',
                   padding: '2rem',
                   textAlign: 'center'
                 }}>
@@ -446,7 +446,7 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
                     <div dangerouslySetInnerHTML={{ __html: selectedTemplate.content }} />
                   ) : (
                     <>
-                      <h2 style={{ color: '#f97316', marginBottom: '1rem' }}>
+                      <h2 style={{ color: '#FF8200', marginBottom: '1rem' }}>
                         Your Subject Line Here
                       </h2>
                       <p style={{ marginBottom: '1rem' }}>
@@ -461,7 +461,7 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
                       }}>
                         <a href="#" style={{
                           display: 'inline-block',
-                          background: '#f97316',
+                          background: '#FF8200',
                           color: 'white',
                           padding: '1rem 2rem',
                           borderRadius: '50px',
@@ -485,8 +485,8 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
                 }}>
                   <p>© 2024 Full Uproar Games. All rights reserved.</p>
                   <p>
-                    <a href="#" style={{ color: '#f97316' }}>Unsubscribe</a> | 
-                    <a href="#" style={{ color: '#f97316', marginLeft: '0.5rem' }}>View in browser</a>
+                    <a href="#" style={{ color: '#FF8200' }}>Unsubscribe</a> | 
+                    <a href="#" style={{ color: '#FF8200', marginLeft: '0.5rem' }}>View in browser</a>
                   </p>
                 </div>
               </div>
@@ -544,7 +544,7 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
           onClick={() => setIsCreating(true)}
           style={{
             ...adminStyles.button,
-            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+            background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
@@ -575,13 +575,13 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
               padding: '1rem',
               background: 'transparent',
               border: 'none',
-              color: activeTab === tab.id ? '#f97316' : '#94a3b8',
+              color: activeTab === tab.id ? '#FF8200' : '#94a3b8',
               fontWeight: activeTab === tab.id ? 'bold' : 'normal',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              borderBottom: activeTab === tab.id ? '2px solid #f97316' : '2px solid transparent',
+              borderBottom: activeTab === tab.id ? '2px solid #FF8200' : '2px solid transparent',
               marginBottom: '-1px'
             }}
           >
@@ -652,7 +652,7 @@ export default function EmailCampaigns({ onNavigate }: { onNavigate: (view: any,
                       <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>
                         Conversions
                       </p>
-                      <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#8b5cf6' }}>
+                      <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#7D55C7' }}>
                         {campaign.metrics.converted}
                       </p>
                     </div>

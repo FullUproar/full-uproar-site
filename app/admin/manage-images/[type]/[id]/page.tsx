@@ -258,7 +258,7 @@ export default function ManageImagesPage({ params }: PageProps) {
       background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)' 
     },
     header: { 
-      background: '#f97316', 
+      background: '#FF8200', 
       color: 'white', 
       padding: '1.5rem',
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
@@ -297,8 +297,8 @@ export default function ManageImagesPage({ params }: PageProps) {
       cursor: 'move'
     },
     primaryImageCard: {
-      border: '3px solid #f97316',
-      boxShadow: '0 0 0 3px rgba(249, 115, 22, 0.1)'
+      border: '3px solid #FF8200',
+      boxShadow: '0 0 0 3px rgba(255, 130, 0, 0.1)'
     },
     imagePreview: {
       width: '100%',
@@ -322,7 +322,7 @@ export default function ManageImagesPage({ params }: PageProps) {
       transition: 'all 0.2s'
     },
     primaryButton: {
-      background: '#f97316',
+      background: '#FF8200',
       color: 'white'
     },
     secondaryButton: {
@@ -473,7 +473,7 @@ export default function ManageImagesPage({ params }: PageProps) {
                       <GripVertical size={16} color="#9ca3af" />
                       {image.isPrimary && (
                         <span style={{ 
-                          background: '#f97316', 
+                          background: '#FF8200', 
                           color: 'white', 
                           padding: '0.25rem 0.5rem', 
                           borderRadius: '0.25rem', 
@@ -516,7 +516,7 @@ export default function ManageImagesPage({ params }: PageProps) {
         {/* Instructions */}
         <div style={{
           background: '#fef3c7',
-          border: '1px solid #fde68a',
+          border: '1px solid #FBDB65',
           borderRadius: '0.5rem',
           padding: '1.5rem'
         }}>

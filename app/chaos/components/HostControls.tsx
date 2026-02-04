@@ -67,7 +67,7 @@ export default function HostControls({
             top: '-40px',
             right: 0,
             padding: '8px 12px',
-            backgroundColor: '#f97316',
+            backgroundColor: '#FF8200',
             color: '#000',
             border: 'none',
             borderRadius: '8px',
@@ -88,8 +88,8 @@ export default function HostControls({
               backgroundColor: '#1a1a1a',
               borderRadius: '16px',
               padding: '16px',
-              border: '2px solid #f97316',
-              boxShadow: '0 4px 20px rgba(249, 115, 22, 0.3)',
+              border: '2px solid #FF8200',
+              boxShadow: '0 4px 20px rgba(255, 130, 0, 0.3)',
               minWidth: '200px',
             }}
           >
@@ -223,7 +223,7 @@ export default function HostControls({
                   className="btn-chaos"
                   style={{
                     padding: '10px 16px',
-                    backgroundColor: '#8b5cf6',
+                    backgroundColor: '#7D55C7',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '8px',

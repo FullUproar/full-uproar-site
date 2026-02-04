@@ -18,12 +18,12 @@ type TokenType =
   | 'text';      // default text
 
 const tokenColors: Record<TokenType, string> = {
-  keyword: '#f97316',   // Orange - structure keywords
+  keyword: '#FF8200',   // Orange - structure keywords
   action: '#0ea5e9',    // Sky blue - actions
   string: '#10b981',    // Emerald - strings
-  number: '#8b5cf6',    // Purple - numbers
+  number: '#7D55C7',    // Purple - numbers
   comment: '#64748b',   // Slate - comments
-  section: '#fdba74',   // Light orange - section headers
+  section: '#FBDB65',   // Light orange - section headers
   operator: '#94a3b8',  // Gray - punctuation
   property: '#a78bfa',  // Light purple - properties
   text: '#e2e8f0',      // Light gray - default

@@ -37,7 +37,7 @@ const styles = {
   },
   card: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '24px',
     padding: '40px',
     maxWidth: '400px',
@@ -51,7 +51,7 @@ const styles = {
   title: {
     fontSize: '28px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '8px',
   },
   subtitle: {
@@ -62,7 +62,7 @@ const styles = {
     display: 'block',
     fontSize: '14px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '12px',
     textTransform: 'uppercase' as const,
     letterSpacing: '2px',
@@ -80,9 +80,9 @@ const styles = {
     fontSize: '28px',
     fontWeight: 'bold',
     background: 'rgba(15, 23, 42, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '12px',
-    color: '#f97316',
+    color: '#FF8200',
     outline: 'none',
     textTransform: 'uppercase' as const,
   },
@@ -99,9 +99,9 @@ const styles = {
     justifyContent: 'center',
     gap: '10px',
     transition: 'all 0.2s',
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: '#000',
-    boxShadow: '0 10px 40px rgba(249, 115, 22, 0.3)',
+    boxShadow: '0 10px 40px rgba(255, 130, 0, 0.3)',
   },
   buttonDisabled: {
     opacity: 0.5,
@@ -129,15 +129,15 @@ const styles = {
   dividerLine: {
     flex: 1,
     height: '1px',
-    background: 'rgba(249, 115, 22, 0.2)',
+    background: 'rgba(255, 130, 0, 0.2)',
   },
   createLink: {
     display: 'block',
     padding: '14px 24px',
     borderRadius: '12px',
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
-    color: '#fdba74',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
+    color: '#FBDB65',
     textDecoration: 'none',
     fontSize: '14px',
     fontWeight: '600',
@@ -266,7 +266,7 @@ export default function JoinGame() {
               className="gk-code-input"
               style={{
                 ...styles.codeInput,
-                borderColor: char ? '#f97316' : 'rgba(249, 115, 22, 0.3)',
+                borderColor: char ? '#FF8200' : 'rgba(255, 130, 0, 0.3)',
               }}
               autoCapitalize="characters"
               autoComplete="off"

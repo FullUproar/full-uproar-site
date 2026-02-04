@@ -72,13 +72,13 @@ const styles = {
     background: '#1f2937',
     borderRadius: '1rem',
     padding: '1.5rem',
-    border: '4px solid rgba(249, 115, 22, 0.2)',
+    border: '4px solid rgba(255, 130, 0, 0.2)',
     marginBottom: '2rem'
   },
   title: {
     fontSize: '2rem',
     fontWeight: 900,
-    color: '#f97316',
+    color: '#FF8200',
     marginBottom: '1.5rem',
     display: 'flex',
     alignItems: 'center',
@@ -101,7 +101,7 @@ const styles = {
     top: '50%',
     transform: 'translateY(-50%)',
     padding: '0.75rem',
-    background: '#f97316',
+    background: '#FF8200',
     borderRadius: '0.5rem',
     border: 'none',
     cursor: 'pointer'
@@ -273,7 +273,7 @@ export default function TrackOrderPage() {
         <h1 style={{
           fontSize: '2.5rem',
           fontWeight: 900,
-          color: '#f97316',
+          color: '#FF8200',
           textAlign: 'center',
           marginBottom: '2rem',
           textTransform: 'uppercase'
@@ -285,7 +285,7 @@ export default function TrackOrderPage() {
         {isLoaded && isSignedIn && (
           <div style={styles.card}>
             <h2 style={styles.title}>
-              <User style={{ width: 28, height: 28, color: '#f97316' }} />
+              <User style={{ width: 28, height: 28, color: '#FF8200' }} />
               Your Orders
             </h2>
 
@@ -294,7 +294,7 @@ export default function TrackOrderPage() {
                 <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>
                   <FuglyLogo size={60} />
                 </div>
-                <p style={{ color: '#f97316', fontWeight: 700, marginTop: '1rem' }}>Loading your orders...</p>
+                <p style={{ color: '#FF8200', fontWeight: 700, marginTop: '1rem' }}>Loading your orders...</p>
               </div>
             ) : userOrders.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem 0' }}>
@@ -306,7 +306,7 @@ export default function TrackOrderPage() {
                   style={{
                     display: 'inline-block',
                     padding: '0.75rem 1.5rem',
-                    background: '#f97316',
+                    background: '#FF8200',
                     color: '#111827',
                     fontWeight: 700,
                     borderRadius: '0.5rem',
@@ -330,7 +330,7 @@ export default function TrackOrderPage() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         {getStatusIcon(userOrder.status)}
                         <div style={{ textAlign: 'left' }}>
-                          <p style={{ fontWeight: 700, color: '#fde68a', margin: 0 }}>
+                          <p style={{ fontWeight: 700, color: '#FBDB65', margin: 0 }}>
                             Order #{userOrder.id.slice(-8).toUpperCase()}
                           </p>
                           <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>
@@ -379,7 +379,7 @@ export default function TrackOrderPage() {
                                   Qty: {item.quantity}
                                 </p>
                               </div>
-                              <p style={{ color: '#f97316', fontWeight: 700, margin: 0 }}>
+                              <p style={{ color: '#FF8200', fontWeight: 700, margin: 0 }}>
                                 ${((item.priceCents * item.quantity) / 100).toFixed(2)}
                               </p>
                             </div>
@@ -395,7 +395,7 @@ export default function TrackOrderPage() {
                             marginBottom: '1rem'
                           }}>
                             <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Tracking Number:</p>
-                            <p style={{ fontFamily: 'monospace', fontWeight: 700, color: '#f97316', margin: 0 }}>
+                            <p style={{ fontFamily: 'monospace', fontWeight: 700, color: '#FF8200', margin: 0 }}>
                               {userOrder.trackingNumber}
                             </p>
                           </div>
@@ -421,7 +421,7 @@ export default function TrackOrderPage() {
             fontSize: '1.75rem',
             fontWeight: 900,
             fontStyle: 'normal',
-            color: '#f97316',
+            color: '#FF8200',
             textAlign: 'center',
             textTransform: 'uppercase',
             marginBottom: '1.5rem'
@@ -431,7 +431,7 @@ export default function TrackOrderPage() {
 
           {!isSignedIn && (
             <p style={{ color: '#9ca3af', textAlign: 'center', marginBottom: '1.5rem' }}>
-              <Link href="/sign-in" style={{ color: '#f97316', fontWeight: 700, textDecoration: 'none' }}>
+              <Link href="/sign-in" style={{ color: '#FF8200', fontWeight: 700, textDecoration: 'none' }}>
                 Sign in
               </Link>
               {' '}to see all your orders automatically
@@ -468,7 +468,7 @@ export default function TrackOrderPage() {
                 disabled={loading}
                 style={{
                   padding: '0.875rem 1.25rem',
-                  background: loading ? '#4b5563' : '#f97316',
+                  background: loading ? '#4b5563' : '#FF8200',
                   border: 'none',
                   cursor: loading ? 'not-allowed' : 'pointer',
                   display: 'flex',
@@ -494,7 +494,7 @@ export default function TrackOrderPage() {
             <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>
               <FuglyLogo size={80} />
             </div>
-            <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f97316', marginTop: '1rem' }}>
+            <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#FF8200', marginTop: '1rem' }}>
               Searching the chaos realm...
             </p>
           </div>
@@ -507,7 +507,7 @@ export default function TrackOrderPage() {
             <div style={styles.card}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fde68a', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FBDB65', margin: 0 }}>
                     Order #{order.id}
                   </h3>
                   <p style={{ color: '#9ca3af', marginTop: '0.25rem' }}>
@@ -533,7 +533,7 @@ export default function TrackOrderPage() {
                   padding: '1rem'
                 }}>
                   <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.25rem' }}>Tracking Number:</p>
-                  <p style={{ fontFamily: 'monospace', fontWeight: 700, color: '#f97316', margin: 0 }}>
+                  <p style={{ fontFamily: 'monospace', fontWeight: 700, color: '#FF8200', margin: 0 }}>
                     {order.trackingNumber}
                   </p>
                 </div>
@@ -543,7 +543,7 @@ export default function TrackOrderPage() {
             {/* Status Timeline */}
             {order.statusHistory && order.statusHistory.length > 0 && (
               <div style={styles.card}>
-                <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', marginBottom: '1.5rem' }}>
+                <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FF8200', marginBottom: '1.5rem' }}>
                   Chaos Progress
                 </h4>
 
@@ -558,7 +558,7 @@ export default function TrackOrderPage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: index === 0 ? '#f97316' : '#374151'
+                          background: index === 0 ? '#FF8200' : '#374151'
                         }}>
                           {getStatusIcon(history.status)}
                         </div>
@@ -567,7 +567,7 @@ export default function TrackOrderPage() {
                         )}
                       </div>
                       <div style={{ flex: 1, paddingBottom: '2rem' }}>
-                        <p style={{ fontWeight: 700, color: '#fde68a', textTransform: 'capitalize', margin: 0 }}>
+                        <p style={{ fontWeight: 700, color: '#FBDB65', textTransform: 'capitalize', margin: 0 }}>
                           {getStatusText(history.status)}
                         </p>
                         {history.notes && (
@@ -587,7 +587,7 @@ export default function TrackOrderPage() {
 
             {/* Order Items */}
             <div style={styles.card}>
-              <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', marginBottom: '1rem' }}>
+              <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FF8200', marginBottom: '1rem' }}>
                 Order Contents
               </h4>
 
@@ -600,7 +600,7 @@ export default function TrackOrderPage() {
                     borderBottom: '1px solid #374151'
                   }}>
                     <div>
-                      <p style={{ fontWeight: 700, color: '#fde68a', margin: 0 }}>
+                      <p style={{ fontWeight: 700, color: '#FBDB65', margin: 0 }}>
                         {item.itemType === 'game' ? item.game?.title : item.merch?.name}
                       </p>
                       {item.merchSize && (
@@ -622,7 +622,7 @@ export default function TrackOrderPage() {
                 display: 'flex',
                 justifyContent: 'space-between'
               }}>
-                <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316' }}>Total Chaos</span>
+                <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FF8200' }}>Total Chaos</span>
                 <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff' }}>
                   ${(order.totalCents / 100).toFixed(2)}
                 </span>
@@ -631,14 +631,14 @@ export default function TrackOrderPage() {
 
             {/* Delivery Info */}
             <div style={styles.card}>
-              <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', marginBottom: '1rem' }}>
+              <h4 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FF8200', marginBottom: '1rem' }}>
                 Delivery Details
               </h4>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div>
                   <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Delivering to:</p>
-                  <p style={{ fontWeight: 700, color: '#fde68a', margin: 0 }}>{order.customerName}</p>
+                  <p style={{ fontWeight: 700, color: '#FBDB65', margin: 0 }}>{order.customerName}</p>
                 </div>
 
                 <div>

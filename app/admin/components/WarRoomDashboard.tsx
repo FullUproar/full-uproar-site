@@ -161,14 +161,14 @@ export default function WarRoomDashboard() {
   const goals = [
     { label: 'Monthly Revenue Goal', current: 12450, target: 20000, color: '#10b981' },
     { label: 'New Customers', current: 23, target: 50, color: '#3b82f6' },
-    { label: 'Waitlist Signups', current: 127, target: 200, color: '#f97316' },
-    { label: 'Game Nights Hosted', current: 8, target: 15, color: '#8b5cf6' },
+    { label: 'Waitlist Signups', current: 127, target: 200, color: '#FF8200' },
+    { label: 'Game Nights Hosted', current: 8, target: 15, color: '#7D55C7' },
   ];
 
   const recentActivity = [
     { type: 'order', text: 'New order #1234 - $89.99', time: '2 min ago', color: '#10b981' },
-    { type: 'signup', text: 'New waitlist signup', time: '5 min ago', color: '#f97316' },
-    { type: 'gamenight', text: 'Game night RSVP - 4 attendees', time: '12 min ago', color: '#8b5cf6' },
+    { type: 'signup', text: 'New waitlist signup', time: '5 min ago', color: '#FF8200' },
+    { type: 'gamenight', text: 'Game night RSVP - 4 attendees', time: '12 min ago', color: '#7D55C7' },
     { type: 'social', text: 'Instagram post - 42 likes', time: '1 hr ago', color: '#E4405F' },
     { type: 'order', text: 'New order #1233 - $124.99', time: '2 hrs ago', color: '#10b981' },
   ];
@@ -184,16 +184,16 @@ export default function WarRoomDashboard() {
       <div style={{
         marginBottom: '2rem',
         paddingBottom: '1.5rem',
-        borderBottom: '2px solid rgba(249, 115, 22, 0.3)'
+        borderBottom: '2px solid rgba(255, 130, 0, 0.3)'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{
               fontSize: '2.5rem',
               fontWeight: 900,
-              color: '#f97316',
+              color: '#FF8200',
               marginBottom: '0.5rem',
-              textShadow: '0 0 20px rgba(249, 115, 22, 0.5)'
+              textShadow: '0 0 20px rgba(255, 130, 0, 0.5)'
             }}>
               WAR ROOM
             </h1>
@@ -202,7 +202,7 @@ export default function WarRoomDashboard() {
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#fdba74' }}>
+            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FBDB65' }}>
               {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
             </div>
             <div style={{ fontSize: '0.875rem', color: '#64748b' }}>
@@ -241,7 +241,7 @@ export default function WarRoomDashboard() {
           change={metrics.visitors.change}
           subtitle={metrics.visitors.subtitle}
           icon={<Users size={32} />}
-          color="#f97316"
+          color="#FF8200"
         />
         <MetricCard
           title="Conversion Rate"
@@ -249,7 +249,7 @@ export default function WarRoomDashboard() {
           change={metrics.conversion.change}
           subtitle={metrics.conversion.subtitle}
           icon={<TrendingUp size={32} />}
-          color="#8b5cf6"
+          color="#7D55C7"
         />
       </div>
 
@@ -263,7 +263,7 @@ export default function WarRoomDashboard() {
         {/* Goals & Progress */}
         <div style={{
           background: 'rgba(30, 41, 59, 0.95)',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
           borderRadius: '12px',
           padding: '1.5rem'
         }}>
@@ -273,8 +273,8 @@ export default function WarRoomDashboard() {
             gap: '0.5rem',
             marginBottom: '1.5rem'
           }}>
-            <Trophy size={24} style={{ color: '#f97316' }} />
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f97316' }}>
+            <Trophy size={24} style={{ color: '#FF8200' }} />
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF8200' }}>
               Monthly Goals
             </h2>
           </div>
@@ -287,7 +287,7 @@ export default function WarRoomDashboard() {
         {/* Social Stats */}
         <div style={{
           background: 'rgba(30, 41, 59, 0.95)',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
           borderRadius: '12px',
           padding: '1.5rem'
         }}>
@@ -297,8 +297,8 @@ export default function WarRoomDashboard() {
             gap: '0.5rem',
             marginBottom: '1.5rem'
           }}>
-            <Share2 size={24} style={{ color: '#f97316' }} />
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f97316' }}>
+            <Share2 size={24} style={{ color: '#FF8200' }} />
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF8200' }}>
               Social Media
             </h2>
           </div>
@@ -328,7 +328,7 @@ export default function WarRoomDashboard() {
       {/* Recent Activity */}
       <div style={{
         background: 'rgba(30, 41, 59, 0.95)',
-        border: '2px solid rgba(249, 115, 22, 0.3)',
+        border: '2px solid rgba(255, 130, 0, 0.3)',
         borderRadius: '12px',
         padding: '1.5rem'
       }}>
@@ -338,8 +338,8 @@ export default function WarRoomDashboard() {
           gap: '0.5rem',
           marginBottom: '1.5rem'
         }}>
-          <Zap size={24} style={{ color: '#f97316' }} />
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f97316' }}>
+          <Zap size={24} style={{ color: '#FF8200' }} />
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FF8200' }}>
             Live Activity Feed
           </h2>
         </div>
@@ -412,7 +412,7 @@ export default function WarRoomDashboard() {
 
         <div style={{
           background: 'rgba(30, 41, 59, 0.95)',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
           borderRadius: '8px',
           padding: '1rem',
           textAlign: 'center'
@@ -420,7 +420,7 @@ export default function WarRoomDashboard() {
           <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>
             Email Open Rate
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f97316' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#FF8200' }}>
             32.1%
           </div>
         </div>
@@ -435,7 +435,7 @@ export default function WarRoomDashboard() {
           <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>
             Active Game Nights
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#8b5cf6' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#7D55C7' }}>
             8
           </div>
         </div>

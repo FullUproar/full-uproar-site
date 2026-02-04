@@ -60,8 +60,8 @@ const statusConfig = {
   shipped: { icon: Truck, color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' },
   delivered: { icon: CheckCircle, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
   cancelled: { icon: XCircle, color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  refunded: { icon: RotateCcw, color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
-  partially_refunded: { icon: RotateCcw, color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+  refunded: { icon: RotateCcw, color: '#FF8200', bg: 'rgba(255, 130, 0, 0.1)' },
+  partially_refunded: { icon: RotateCcw, color: '#FF8200', bg: 'rgba(255, 130, 0, 0.1)' },
   payment_failed: { icon: AlertCircle, color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' }
 };
 
@@ -215,9 +215,9 @@ export default function OrdersPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Total Orders</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.totalOrders}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.totalOrders}</p>
               </div>
-              <Package size={32} style={{ color: '#fdba74' }} />
+              <Package size={32} style={{ color: '#FBDB65' }} />
             </div>
           </div>
 
@@ -225,7 +225,7 @@ export default function OrdersPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Revenue</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>
                   ${(stats.totalRevenue / 100).toFixed(2)}
                 </p>
               </div>
@@ -237,7 +237,7 @@ export default function OrdersPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Pending</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.pendingOrders}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.pendingOrders}</p>
               </div>
               <Clock size={32} style={{ color: '#fbbf24' }} />
             </div>
@@ -247,7 +247,7 @@ export default function OrdersPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>Shipped Today</p>
-                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#fde68a' }}>{stats.shippedToday}</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#FBDB65' }}>{stats.shippedToday}</p>
               </div>
               <Truck size={32} style={{ color: '#a78bfa' }} />
             </div>
@@ -318,7 +318,7 @@ export default function OrdersPage() {
           {loading ? (
             <div style={{ textAlign: 'center', padding: '60px' }}>
               <RefreshCw size={32} style={{ 
-                color: '#fdba74', 
+                color: '#FBDB65', 
                 marginBottom: '16px',
                 animation: 'spin 1s linear infinite'
               }} />
@@ -367,7 +367,7 @@ export default function OrdersPage() {
                               <p style={{ 
                                 fontFamily: 'monospace', 
                                 fontSize: '13px',
-                                color: '#fde68a',
+                                color: '#FBDB65',
                                 fontWeight: '600'
                               }}>
                                 {order.id.slice(0, 8)}...
@@ -391,7 +391,7 @@ export default function OrdersPage() {
                           </td>
                           <td style={adminStyles.tableCell}>
                             <div>
-                              <p style={{ fontWeight: '600', color: '#fde68a' }}>
+                              <p style={{ fontWeight: '600', color: '#FBDB65' }}>
                                 ${(order.totalCents / 100).toFixed(2)}
                               </p>
                               {order.refundAmountCents > 0 && (
@@ -440,9 +440,9 @@ export default function OrdersPage() {
                           <tr>
                             <td colSpan={7} style={{ padding: 0 }}>
                               <div style={{
-                                background: 'rgba(249, 115, 22, 0.05)',
+                                background: 'rgba(255, 130, 0, 0.05)',
                                 padding: '24px',
-                                borderBottom: '2px solid rgba(249, 115, 22, 0.2)'
+                                borderBottom: '2px solid rgba(255, 130, 0, 0.2)'
                               }}>
                                 <div style={{ 
                                   display: 'grid', 
@@ -453,7 +453,7 @@ export default function OrdersPage() {
                                   {/* Order Items */}
                                   <div>
                                     <h4 style={{ 
-                                      color: '#fdba74', 
+                                      color: '#FBDB65', 
                                       marginBottom: '12px',
                                       fontWeight: 'bold',
                                       display: 'flex',
@@ -468,7 +468,7 @@ export default function OrdersPage() {
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         padding: '8px 0',
-                                        borderBottom: '1px solid rgba(249, 115, 22, 0.1)'
+                                        borderBottom: '1px solid rgba(255, 130, 0, 0.1)'
                                       }}>
                                         <div>
                                           <span style={{ color: '#e2e8f0' }}>
@@ -480,7 +480,7 @@ export default function OrdersPage() {
                                             </span>
                                           )}
                                         </div>
-                                        <div style={{ color: '#fde68a' }}>
+                                        <div style={{ color: '#FBDB65' }}>
                                           {item.quantity} × ${(item.priceCents / 100).toFixed(2)}
                                         </div>
                                       </div>
@@ -488,7 +488,7 @@ export default function OrdersPage() {
                                     <div style={{ 
                                       marginTop: '12px', 
                                       paddingTop: '12px', 
-                                      borderTop: '1px solid rgba(249, 115, 22, 0.2)' 
+                                      borderTop: '1px solid rgba(255, 130, 0, 0.2)' 
                                     }}>
                                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                                         <span style={{ color: '#94a3b8' }}>Subtotal:</span>
@@ -514,8 +514,8 @@ export default function OrdersPage() {
                                         fontWeight: 'bold',
                                         fontSize: '16px'
                                       }}>
-                                        <span style={{ color: '#fdba74' }}>Total:</span>
-                                        <span style={{ color: '#fde68a' }}>
+                                        <span style={{ color: '#FBDB65' }}>Total:</span>
+                                        <span style={{ color: '#FBDB65' }}>
                                           ${(order.totalCents / 100).toFixed(2)}
                                         </span>
                                       </div>
@@ -525,7 +525,7 @@ export default function OrdersPage() {
                                   {/* Order Info */}
                                   <div>
                                     <h4 style={{ 
-                                      color: '#fdba74', 
+                                      color: '#FBDB65', 
                                       marginBottom: '12px',
                                       fontWeight: 'bold',
                                       display: 'flex',
@@ -570,7 +570,7 @@ export default function OrdersPage() {
 
                                     {/* Quick Actions */}
                                     <div style={{ marginTop: '16px' }}>
-                                      <h5 style={{ color: '#fdba74', marginBottom: '8px', fontSize: '14px' }}>
+                                      <h5 style={{ color: '#FBDB65', marginBottom: '8px', fontSize: '14px' }}>
                                         Quick Actions
                                       </h5>
                                       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -644,7 +644,7 @@ export default function OrdersPage() {
                   alignItems: 'center',
                   marginTop: '24px',
                   padding: '16px',
-                  borderTop: '1px solid rgba(249, 115, 22, 0.2)'
+                  borderTop: '1px solid rgba(255, 130, 0, 0.2)'
                 }}>
                   <p style={{ color: '#94a3b8', fontSize: '14px' }}>
                     Page {currentPage} of {totalPages}

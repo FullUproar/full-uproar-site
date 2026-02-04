@@ -287,10 +287,10 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
           <div style={{ ...adminStyles.card, background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05))' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <Building size={24} style={{ color: '#8b5cf6' }} />
+              <Building size={24} style={{ color: '#7D55C7' }} />
               <span style={{ color: '#10b981', fontSize: '12px' }}>+2 this month</span>
             </div>
-            <h3 style={{ fontSize: '32px', fontWeight: 'bold', color: '#8b5cf6', margin: '10px 0' }}>
+            <h3 style={{ fontSize: '32px', fontWeight: 'bold', color: '#7D55C7', margin: '10px 0' }}>
               {stats.activeAccounts}
             </h3>
             <p style={{ color: '#94a3b8', fontSize: '14px' }}>Active Accounts</p>
@@ -348,7 +348,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
                           borderRadius: '50%', 
                           background: getTierColor(tier) 
                         }} />
-                        <span style={{ color: '#fde68a', textTransform: 'capitalize' }}>{tier}</span>
+                        <span style={{ color: '#FBDB65', textTransform: 'capitalize' }}>{tier}</span>
                       </div>
                       <span style={{ color: '#94a3b8' }}>{count} accounts</span>
                     </div>
@@ -377,21 +377,21 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <CheckCircle size={20} style={{ color: '#10b981' }} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: '#fde68a', fontSize: '14px' }}>GameStop order shipped</div>
+                  <div style={{ color: '#FBDB65', fontSize: '14px' }}>GameStop order shipped</div>
                   <div style={{ color: '#64748b', fontSize: '12px' }}>2 hours ago</div>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <Plus size={20} style={{ color: '#3b82f6' }} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: '#fde68a', fontSize: '14px' }}>New application: Target Corp</div>
+                  <div style={{ color: '#FBDB65', fontSize: '14px' }}>New application: Target Corp</div>
                   <div style={{ color: '#64748b', fontSize: '12px' }}>5 hours ago</div>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <DollarSign size={20} style={{ color: '#fbbf24' }} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: '#fde68a', fontSize: '14px' }}>Barnes & Noble payment received</div>
+                  <div style={{ color: '#FBDB65', fontSize: '14px' }}>Barnes & Noble payment received</div>
                   <div style={{ color: '#64748b', fontSize: '12px' }}>Yesterday</div>
                 </div>
               </div>
@@ -408,7 +408,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
         <h2 style={{ ...adminStyles.sectionTitle, margin: 0 }}>Wholesale Accounts</h2>
         <button 
           onClick={() => setShowApplicationModal(true)}
-          style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #f97316, #ea580c)' }}
+          style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #FF8200, #ea580c)' }}
         >
           <Plus size={16} style={{ marginRight: '8px' }} />
           Add Account
@@ -427,13 +427,13 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
               transition: 'all 0.3s'
             }}
             onClick={() => setSelectedAccount(account)}
-            onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
+            onMouseEnter={e => e.currentTarget.style.borderColor = '#FF8200'}
             onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
           >
             {/* Account Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
               <div>
-                <h3 style={{ color: '#fde68a', fontSize: '18px', marginBottom: '5px' }}>
+                <h3 style={{ color: '#FBDB65', fontSize: '18px', marginBottom: '5px' }}>
                   {account.companyName}
                 </h3>
                 <p style={{ color: '#94a3b8', fontSize: '14px' }}>{account.contactName}</p>
@@ -508,7 +508,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
               <button style={{ ...adminStyles.iconButton, color: '#3b82f6' }}>
                 <Eye size={16} />
               </button>
-              <button style={{ ...adminStyles.iconButton, color: '#8b5cf6' }}>
+              <button style={{ ...adminStyles.iconButton, color: '#7D55C7' }}>
                 <Edit size={16} />
               </button>
             </div>
@@ -538,10 +538,10 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
             width: '90%',
             maxHeight: '90vh',
             overflowY: 'auto',
-            border: '2px solid rgba(249, 115, 22, 0.3)'
+            border: '2px solid rgba(255, 130, 0, 0.3)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <h2 style={{ color: '#fde68a', fontSize: '24px' }}>
+              <h2 style={{ color: '#FBDB65', fontSize: '24px' }}>
                 {selectedAccount.companyName}
               </h2>
               <button 
@@ -584,7 +584,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
             {/* Account Details Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Contact Information</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Contact Information</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <User size={16} style={{ color: '#64748b' }} />
@@ -610,7 +610,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
               </div>
 
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Billing Information</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Billing Information</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <MapPin size={16} style={{ color: '#64748b' }} />
@@ -627,7 +627,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
               </div>
 
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Account Metrics</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Account Metrics</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div>
                     <div style={{ color: '#64748b', fontSize: '12px' }}>Member Since</div>
@@ -657,7 +657,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
               </div>
 
               <div>
-                <h3 style={{ color: '#fdba74', fontSize: '16px', marginBottom: '15px' }}>Documents</h3>
+                <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '15px' }}>Documents</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {selectedAccount.documents.map((doc, idx) => (
                     <div key={idx} style={{ 
@@ -695,7 +695,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
                 <CreditCard size={16} style={{ marginRight: '8px' }} />
                 Adjust Credit
               </button>
-              <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}>
+              <button style={{ ...adminStyles.button, background: 'linear-gradient(135deg, #7D55C7, #7c3aed)' }}>
                 <Award size={16} style={{ marginRight: '8px' }} />
                 Upgrade Tier
               </button>
@@ -719,7 +719,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
         {products.map(product => (
           <div key={product.id} style={adminStyles.card}>
             <div style={{ marginBottom: '15px' }}>
-              <h3 style={{ color: '#fde68a', fontSize: '16px', marginBottom: '5px' }}>
+              <h3 style={{ color: '#FBDB65', fontSize: '16px', marginBottom: '5px' }}>
                 {product.name}
               </h3>
               <p style={{ color: '#64748b', fontSize: '12px' }}>SKU: {product.sku}</p>
@@ -792,7 +792,7 @@ export default function B2BPortal({ onNavigate }: { onNavigate: (view: any, labe
             style={{
               ...adminStyles.button,
               background: activeTab === tab.id ? 
-                'linear-gradient(135deg, #f97316, #ea580c)' : 
+                'linear-gradient(135deg, #FF8200, #ea580c)' : 
                 'rgba(148, 163, 184, 0.1)',
               color: activeTab === tab.id ? '#fff' : '#94a3b8',
               display: 'flex',

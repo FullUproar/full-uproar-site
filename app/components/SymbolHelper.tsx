@@ -26,10 +26,10 @@ export default function SymbolHelper({ onInsert, style }: SymbolHelperProps) {
 
   const buttonStyle = {
     padding: '4px 8px',
-    background: 'rgba(249, 115, 22, 0.2)',
-    border: '1px solid rgba(249, 115, 22, 0.5)',
+    background: 'rgba(255, 130, 0, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.5)',
     borderRadius: '6px',
-    color: '#fdba74',
+    color: '#FBDB65',
     fontSize: '12px',
     cursor: 'pointer',
     transition: 'all 0.2s',
@@ -41,7 +41,7 @@ export default function SymbolHelper({ onInsert, style }: SymbolHelperProps) {
     left: '0',
     marginTop: '8px',
     background: 'rgba(30, 41, 59, 0.95)',
-    border: '2px solid rgba(249, 115, 22, 0.5)',
+    border: '2px solid rgba(255, 130, 0, 0.5)',
     borderRadius: '8px',
     padding: '12px',
     zIndex: 1000,
@@ -84,10 +84,10 @@ export default function SymbolHelper({ onInsert, style }: SymbolHelperProps) {
                 textAlign: 'left',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.3)';
+                e.currentTarget.style.background = 'rgba(255, 130, 0, 0.3)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+                e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)';
               }}
             >
               <span style={{ fontSize: '16px', marginRight: '8px' }}>{symbol}</span>

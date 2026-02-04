@@ -54,7 +54,7 @@ export default function ChaosLandingPage() {
         <h1 style={{
           fontSize: '28px',
           fontWeight: 'bold',
-          color: '#f97316',
+          color: '#FF8200',
           margin: 0,
           textTransform: 'uppercase',
           letterSpacing: '3px',
@@ -62,7 +62,7 @@ export default function ChaosLandingPage() {
           Chaos Agent
         </h1>
         <p style={{
-          color: '#fde68a',
+          color: '#FBDB65',
           marginTop: '8px',
           fontSize: '14px',
           fontStyle: 'italic',
@@ -107,7 +107,7 @@ export default function ChaosLandingPage() {
               backgroundColor: '#0a0a0a',
               border: '2px solid #3a3a3a',
               borderRadius: '12px',
-              color: '#fde68a',
+              color: '#FBDB65',
               outline: 'none',
               boxSizing: 'border-box',
               textTransform: 'uppercase',
@@ -132,7 +132,7 @@ export default function ChaosLandingPage() {
               width: '100%',
               padding: '16px',
               marginTop: '16px',
-              backgroundColor: roomCode.length === 6 ? '#f97316' : '#3a3a3a',
+              backgroundColor: roomCode.length === 6 ? '#FF8200' : '#3a3a3a',
               color: roomCode.length === 6 ? '#000' : '#666',
               border: 'none',
               borderRadius: '12px',
@@ -166,8 +166,8 @@ export default function ChaosLandingPage() {
           gap: '16px',
         }}>
           {[
-            { icon: '🎯', label: 'Secret Missions', color: '#f97316' },
-            { icon: '🎲', label: 'Random Events', color: '#8b5cf6' },
+            { icon: '🎯', label: 'Secret Missions', color: '#FF8200' },
+            { icon: '🎲', label: 'Random Events', color: '#7D55C7' },
             { icon: '💰', label: 'Betting', color: '#10b981' },
             { icon: '🎮', label: 'Mini Games', color: '#ec4899' },
           ].map((item) => (
@@ -202,11 +202,11 @@ export default function ChaosLandingPage() {
         <Link
           href="/chaos/test"
           style={{
-            color: '#8b5cf6',
+            color: '#7D55C7',
             fontSize: '11px',
             textDecoration: 'none',
             padding: '4px 12px',
-            backgroundColor: '#8b5cf620',
+            backgroundColor: '#7D55C720',
             borderRadius: '4px',
             display: 'flex',
             alignItems: 'center',

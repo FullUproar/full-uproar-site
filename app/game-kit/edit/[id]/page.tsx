@@ -107,11 +107,11 @@ const animationStyles = `
 }
 .card-editing {
   transform: scale(1.02);
-  box-shadow: 0 8px 40px rgba(249, 115, 22, 0.4) !important;
+  box-shadow: 0 8px 40px rgba(255, 130, 0, 0.4) !important;
 }
 .drag-over {
-  border-color: #f97316 !important;
-  background: rgba(249, 115, 22, 0.1) !important;
+  border-color: #FF8200 !important;
+  background: rgba(255, 130, 0, 0.1) !important;
 }
 .dragging {
   opacity: 0.5;
@@ -152,7 +152,7 @@ const styles = {
   title: {
     fontSize: '32px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '8px',
     display: 'flex',
     alignItems: 'center',
@@ -206,9 +206,9 @@ const styles = {
     gap: '10px',
   },
   tabActive: {
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: '#ffffff',
-    boxShadow: '0 4px 15px rgba(249, 115, 22, 0.4)',
+    boxShadow: '0 4px 15px rgba(255, 130, 0, 0.4)',
   },
   tabCount: {
     padding: '2px 10px',
@@ -361,7 +361,7 @@ const styles = {
   },
   sidebarCard: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '2px solid rgba(249, 115, 22, 0.2)',
+    border: '2px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '16px',
     padding: '24px',
     backdropFilter: 'blur(10px)',
@@ -371,7 +371,7 @@ const styles = {
     fontWeight: 'bold',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '16px',
     display: 'flex',
     alignItems: 'center',
@@ -382,7 +382,7 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '10px 0',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.1)',
   },
   statLabel: {
     color: '#94a3b8',
@@ -411,7 +411,7 @@ const styles = {
     width: '100%',
     padding: '16px',
     background: 'rgba(15, 23, 42, 0.6)',
-    border: '2px dashed rgba(249, 115, 22, 0.3)',
+    border: '2px dashed rgba(255, 130, 0, 0.3)',
     borderRadius: '12px',
     color: '#e2e8f0',
     fontSize: '14px',
@@ -466,7 +466,7 @@ const styles = {
     lineHeight: '1.6',
   },
   blankHighlight: {
-    background: 'linear-gradient(90deg, #f97316, #ea580c)',
+    background: 'linear-gradient(90deg, #FF8200, #ea580c)',
     padding: '2px 8px',
     borderRadius: '4px',
     margin: '0 2px',
@@ -940,7 +940,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
   if (loading || !game) {
     return (
       <div style={{ ...styles.container, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Loader2 size={48} style={{ color: '#fdba74', animation: 'spin 1s linear infinite' }} />
+        <Loader2 size={48} style={{ color: '#FBDB65', animation: 'spin 1s linear infinite' }} />
         <style>{animationStyles}</style>
       </div>
     );
@@ -965,7 +965,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
         <Link
           href="/game-kit"
           style={styles.backButton}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#fdba74'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#FBDB65'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
         >
           <ArrowLeft size={18} />
@@ -988,7 +988,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
               style={{
                 ...adminStyles.button,
                 background: 'transparent',
-                border: '2px solid rgba(249, 115, 22, 0.4)',
+                border: '2px solid rgba(255, 130, 0, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -1047,8 +1047,8 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
                       ...styles.tabCount,
                       background: isActive
                         ? 'rgba(255,255,255,0.2)'
-                        : 'rgba(249, 115, 22, 0.2)',
-                      color: isActive ? '#ffffff' : (count < min ? '#ef4444' : '#fdba74'),
+                        : 'rgba(255, 130, 0, 0.2)',
+                      color: isActive ? '#ffffff' : (count < min ? '#ef4444' : '#FBDB65'),
                     }}>
                       {count}
                     </span>
@@ -1147,7 +1147,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
                         width: `${prog}%`,
                         background: isGood
                           ? 'linear-gradient(90deg, #4ade80, #22c55e)'
-                          : 'linear-gradient(90deg, #f97316, #ea580c)',
+                          : 'linear-gradient(90deg, #FF8200, #ea580c)',
                       }} />
                     </div>
                   </div>
@@ -1156,7 +1156,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
 
               <div style={{ ...styles.statRow, borderBottom: 'none', marginTop: '12px' }}>
                 <span style={{ ...styles.statLabel, fontWeight: 'bold' }}>Total Cards</span>
-                <span style={{ ...styles.statValue, color: '#fdba74' }}>{cards.length}</span>
+                <span style={{ ...styles.statValue, color: '#FBDB65' }}>{cards.length}</span>
               </div>
             </div>
 
@@ -1177,8 +1177,8 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
                 placeholder={isBlack
                   ? "What's that smell?\n_ is never a good look.\nI can't believe they made _ into a movie."
                   : "A disappointing birthday party.\nMy browser history.\nAggressive hand gestures."}
-                onFocus={(e) => e.target.style.borderColor = 'rgba(249, 115, 22, 0.6)'}
-                onBlur={(e) => e.target.style.borderColor = 'rgba(249, 115, 22, 0.3)'}
+                onFocus={(e) => e.target.style.borderColor = 'rgba(255, 130, 0, 0.6)'}
+                onBlur={(e) => e.target.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
               />
               {importText.trim() && (
                 <button
@@ -1225,7 +1225,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
             ? 'linear-gradient(135deg, #22c55e, #16a34a)'
             : saveStatus === 'error'
             ? 'linear-gradient(135deg, #ef4444, #dc2626)'
-            : 'linear-gradient(135deg, #f97316, #ea580c)',
+            : 'linear-gradient(135deg, #FF8200, #ea580c)',
         }}>
           {saveStatus === 'saving' && <Loader2 size={18} style={{ animation: 'pulse 1s infinite' }} />}
           {saveStatus === 'saved' && <Check size={18} />}
@@ -1239,7 +1239,7 @@ export default function GameEditor({ params }: { params: Promise<{ id: string }>
         <div style={{
           ...styles.saveIndicator,
           background: 'rgba(30, 41, 59, 0.95)',
-          border: '2px solid rgba(249, 115, 22, 0.4)',
+          border: '2px solid rgba(255, 130, 0, 0.4)',
           cursor: 'pointer',
         }}
         onClick={saveCards}

@@ -17,8 +17,8 @@ export const forumColors = {
 
   // Borders (more visible - higher opacity)
   borderDefault: 'rgba(71, 85, 105, 0.5)',
-  borderHover: 'rgba(249, 115, 22, 0.5)',
-  borderAccent: 'rgba(249, 115, 22, 0.3)',
+  borderHover: 'rgba(255, 130, 0, 0.5)',
+  borderAccent: 'rgba(255, 130, 0, 0.3)',
   borderSubtle: 'rgba(71, 85, 105, 0.3)',
 
   // Text colors
@@ -28,10 +28,10 @@ export const forumColors = {
   textMuted: '#64748b',           // Very subtle text
 
   // Accent colors (used sparingly)
-  accentOrange: '#f97316',        // CTAs, important actions ONLY
+  accentOrange: '#FF8200',        // CTAs, important actions ONLY
   accentOrangeMuted: '#ea580c',
-  accentOrangeText: '#fdba74',    // Orange text when needed (sparingly)
-  accentOrangeGlow: 'rgba(249, 115, 22, 0.15)',
+  accentOrangeText: '#FBDB65',    // Orange text when needed (sparingly)
+  accentOrangeGlow: 'rgba(255, 130, 0, 0.15)',
 
   // Status colors
   pinned: '#eab308',
@@ -48,7 +48,7 @@ export const forumColors = {
   // Access level colors
   accessPublic: '#22c55e',
   accessMembers: '#3b82f6',
-  accessSubscribers: '#8b5cf6',
+  accessSubscribers: '#7D55C7',
   accessPrivate: '#ef4444',
 };
 
@@ -148,7 +148,7 @@ export const forumStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'rgba(249, 115, 22, 0.1)',
+    background: 'rgba(255, 130, 0, 0.1)',
     borderRadius: '10px',
   },
 

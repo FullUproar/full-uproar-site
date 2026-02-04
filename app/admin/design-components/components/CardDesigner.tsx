@@ -374,7 +374,7 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
         
         {/* Card Size Selector */}
         <div style={{ marginBottom: '1rem' }}>
-          <h4 style={{ color: '#fde68a', marginBottom: '0.5rem' }}>Card Size</h4>
+          <h4 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>Card Size</h4>
           <select
             value={cardDimensions.name}
             onChange={(e) => {
@@ -394,7 +394,7 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
 
         {/* Template Management */}
         <div style={{ marginBottom: '1rem' }}>
-          <h4 style={{ color: '#fde68a', marginBottom: '0.5rem' }}>Templates</h4>
+          <h4 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>Templates</h4>
           <button onClick={saveAsTemplate} style={{ ...adminStyles.button, width: '100%', marginBottom: '0.5rem' }}>
             Save as Template
           </button>
@@ -416,7 +416,7 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
         </div>
         
         <div style={{ marginBottom: '1rem' }}>
-          <h4 style={{ color: '#fde68a', marginBottom: '0.5rem' }}>Add Elements</h4>
+          <h4 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>Add Elements</h4>
           <button onClick={addText} style={{ ...adminStyles.button, width: '100%', marginBottom: '0.5rem' }}>
             Add Text
           </button>
@@ -437,7 +437,7 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
 
         {selectedObject && (
           <div style={{ marginBottom: '1rem' }}>
-            <h4 style={{ color: '#fde68a', marginBottom: '0.5rem' }}>Selected Object</h4>
+            <h4 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>Selected Object</h4>
             
             {(selectedObject.type === 'text' || selectedObject.type === 'textbox') && (
               <>
@@ -521,7 +521,7 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
         )}
 
         <div>
-          <h4 style={{ color: '#fde68a', marginBottom: '0.5rem' }}>Export</h4>
+          <h4 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>Export</h4>
           <button onClick={exportAsPNG} style={{ ...adminStyles.button, width: '100%', marginBottom: '0.5rem' }}>
             Export as PNG (300 DPI)
           </button>
@@ -535,7 +535,7 @@ export default function CardDesigner({ templateId, onSave }: CardDesignerProps) 
       <div style={adminStyles.card}>
         <h3 style={adminStyles.sectionTitle}>Card Design - {cardDimensions.name}</h3>
         <div style={{ 
-          border: '3px solid #f97316', 
+          border: '3px solid #FF8200', 
           borderRadius: '8px',
           display: 'inline-block',
           background: '#fff'

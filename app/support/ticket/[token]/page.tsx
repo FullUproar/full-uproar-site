@@ -37,7 +37,7 @@ const categoryLabels: Record<string, string> = {
 
 const statusColors: Record<string, { bg: string; text: string; label: string }> = {
   open: { bg: 'rgba(59, 130, 246, 0.2)', text: '#3b82f6', label: 'Open' },
-  in_progress: { bg: 'rgba(249, 115, 22, 0.2)', text: '#f97316', label: 'In Progress' },
+  in_progress: { bg: 'rgba(255, 130, 0, 0.2)', text: '#FF8200', label: 'In Progress' },
   waiting_on_customer: { bg: 'rgba(234, 179, 8, 0.2)', text: '#eab308', label: 'Awaiting Your Reply' },
   resolved: { bg: 'rgba(34, 197, 94, 0.2)', text: '#22c55e', label: 'Resolved' },
   closed: { bg: 'rgba(107, 114, 128, 0.2)', text: '#6b7280', label: 'Closed' },
@@ -133,7 +133,7 @@ export default function TicketViewPage() {
           alignItems: 'center',
           minHeight: '60vh',
         }}>
-          <div style={{ color: '#fdba74', fontSize: '18px' }}>Loading ticket...</div>
+          <div style={{ color: '#FBDB65', fontSize: '18px' }}>Loading ticket...</div>
         </div>
       </div>
     );
@@ -163,7 +163,7 @@ export default function TicketViewPage() {
               alignItems: 'center',
               gap: '0.5rem',
               padding: '0.75rem 1.5rem',
-              background: '#f97316',
+              background: '#FF8200',
               color: '#fff',
               borderRadius: '0.5rem',
               textDecoration: 'none',
@@ -189,7 +189,7 @@ export default function TicketViewPage() {
         {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-            <h1 style={{ color: '#f97316', fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
+            <h1 style={{ color: '#FF8200', fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
               {ticket.ticketNumber}
             </h1>
             <span style={{
@@ -232,7 +232,7 @@ export default function TicketViewPage() {
             alignItems: 'center',
             gap: '0.5rem',
           }}>
-            <MessageSquare size={20} style={{ color: '#f97316' }} />
+            <MessageSquare size={20} style={{ color: '#FF8200' }} />
             <span style={{ color: '#e2e8f0', fontWeight: 500 }}>Conversation</span>
           </div>
 
@@ -245,7 +245,7 @@ export default function TicketViewPage() {
                   style={{
                     padding: '1rem',
                     borderBottom: index < ticket.messages.length - 1 ? '1px solid #1f2937' : 'none',
-                    background: message.senderType === 'staff' ? 'rgba(249, 115, 22, 0.05)' : 'transparent',
+                    background: message.senderType === 'staff' ? 'rgba(255, 130, 0, 0.05)' : 'transparent',
                   }}
                 >
                   <div style={{
@@ -255,7 +255,7 @@ export default function TicketViewPage() {
                     marginBottom: '0.5rem',
                   }}>
                     <span style={{
-                      color: message.senderType === 'staff' ? '#f97316' : '#3b82f6',
+                      color: message.senderType === 'staff' ? '#FF8200' : '#3b82f6',
                       fontWeight: 500,
                       fontSize: '0.875rem',
                     }}>
@@ -334,7 +334,7 @@ export default function TicketViewPage() {
                   alignItems: 'center',
                   gap: '0.5rem',
                   padding: '0.75rem 1.5rem',
-                  background: submitting || !replyMessage.trim() ? '#374151' : '#f97316',
+                  background: submitting || !replyMessage.trim() ? '#374151' : '#FF8200',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '0.5rem',
@@ -369,7 +369,7 @@ export default function TicketViewPage() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.75rem 1.5rem',
-                background: '#f97316',
+                background: '#FF8200',
                 color: '#fff',
                 borderRadius: '0.5rem',
                 textDecoration: 'none',

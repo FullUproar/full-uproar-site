@@ -31,7 +31,7 @@ interface DesignComponent {
 const componentTypes = [
   { value: 'CARD_FACE', label: 'Card Face', icon: '🃏', color: '#3b82f6' },
   { value: 'BOX', label: 'Box', icon: '📦', color: '#10b981' },
-  { value: 'INSTRUCTIONS', label: 'Instructions', icon: '📄', color: '#8b5cf6' }
+  { value: 'INSTRUCTIONS', label: 'Instructions', icon: '📄', color: '#7D55C7' }
 ];
 
 const componentStatuses = [
@@ -218,7 +218,7 @@ export default function DesignComponentsPage() {
                 <span style={{ color: '#9ca3af', fontSize: '0.875rem' }}>
                   Overall Progress
                 </span>
-                <span style={{ color: '#fde68a', fontWeight: 'bold' }}>
+                <span style={{ color: '#FBDB65', fontWeight: 'bold' }}>
                   {progressPercent}% Complete
                 </span>
               </div>
@@ -232,7 +232,7 @@ export default function DesignComponentsPage() {
                 <div style={{
                   height: '100%',
                   width: `${progressPercent}%`,
-                  background: 'linear-gradient(90deg, #f97316, #fbbf24)',
+                  background: 'linear-gradient(90deg, #FF8200, #fbbf24)',
                   transition: 'width 0.5s',
                   display: 'flex',
                   alignItems: 'center',
@@ -309,7 +309,7 @@ export default function DesignComponentsPage() {
                 onClick={() => setViewMode('grid')}
                 style={{
                   ...adminStyles.button,
-                  background: viewMode === 'grid' ? '#f97316' : '#374151'
+                  background: viewMode === 'grid' ? '#FF8200' : '#374151'
                 }}
               >
                 <Grid style={{ width: '1rem', height: '1rem' }} />
@@ -318,7 +318,7 @@ export default function DesignComponentsPage() {
                 onClick={() => setViewMode('list')}
                 style={{
                   ...adminStyles.button,
-                  background: viewMode === 'list' ? '#f97316' : '#374151'
+                  background: viewMode === 'list' ? '#FF8200' : '#374151'
                 }}
               >
                 <List style={{ width: '1rem', height: '1rem' }} />
@@ -363,7 +363,7 @@ export default function DesignComponentsPage() {
                       }}
                       onClick={() => setSelectedComponent(component)}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#f97316';
+                        e.currentTarget.style.borderColor = '#FF8200';
                         e.currentTarget.style.transform = 'translateY(-2px)';
                       }}
                       onMouseLeave={(e) => {
@@ -402,7 +402,7 @@ export default function DesignComponentsPage() {
                       <h3 style={{
                         fontSize: '0.875rem',
                         fontWeight: 'bold',
-                        color: '#fde68a',
+                        color: '#FBDB65',
                         marginBottom: '0.5rem',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -558,7 +558,7 @@ export default function DesignComponentsPage() {
             padding: '2rem',
             maxWidth: '500px',
             width: '90%',
-            border: '3px solid #f97316'
+            border: '3px solid #FF8200'
           }}>
             <h2 style={{ ...adminStyles.sectionTitle, marginBottom: '1.5rem' }}>
               Bulk Create Components
@@ -661,7 +661,7 @@ export default function DesignComponentsPage() {
             width: '90%',
             maxHeight: '90vh',
             overflow: 'auto',
-            border: '3px solid #f97316'
+            border: '3px solid #FF8200'
           }}
           onClick={(e) => e.stopPropagation()}
           >
@@ -708,7 +708,7 @@ export default function DesignComponentsPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
                 <label style={adminStyles.label}>Type</label>
-                <p style={{ color: '#fde68a' }}>
+                <p style={{ color: '#FBDB65' }}>
                   {componentTypes.find(t => t.value === selectedComponent.type)?.label}
                 </p>
               </div>

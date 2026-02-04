@@ -240,7 +240,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading merchandise...</p>
+        <p style={{ color: '#FBDB65' }}>Loading merchandise...</p>
       </div>
     );
   }
@@ -370,7 +370,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
           }}>
             <thead>
               <tr style={{
-                borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+                borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
               }}>
                 <th style={{ ...adminStyles.tableHeader, width: '50px' }}>
                   <button
@@ -378,7 +378,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      color: '#fdba74',
+                      color: '#FBDB65',
                       cursor: 'pointer',
                       padding: '4px',
                     }}
@@ -399,13 +399,13 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                 <tr
                   key={item.id}
                   style={{
-                    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+                    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
                     transition: 'background 0.2s',
-                    background: selectedMerch.has(item.id) ? 'rgba(249, 115, 22, 0.1)' : 'transparent',
+                    background: selectedMerch.has(item.id) ? 'rgba(255, 130, 0, 0.1)' : 'transparent',
                   }}
                   onMouseEnter={(e) => {
                     if (!selectedMerch.has(item.id)) {
-                      e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                      e.currentTarget.style.background = 'rgba(255, 130, 0, 0.05)';
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -420,7 +420,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                       style={{
                         background: 'transparent',
                         border: 'none',
-                        color: '#fdba74',
+                        color: '#FBDB65',
                         cursor: 'pointer',
                         padding: '4px',
                       }}
@@ -439,19 +439,19 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                         style={{
                           objectFit: 'cover',
                           borderRadius: '8px',
-                          border: '2px solid rgba(249, 115, 22, 0.3)',
+                          border: '2px solid rgba(255, 130, 0, 0.3)',
                         }}
                       />
                     ) : (
                       <div style={{
                         width: '60px',
                         height: '60px',
-                        background: 'rgba(249, 115, 22, 0.1)',
+                        background: 'rgba(255, 130, 0, 0.1)',
                         borderRadius: '8px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        border: '2px solid rgba(249, 115, 22, 0.3)',
+                        border: '2px solid rgba(255, 130, 0, 0.3)',
                       }}>
                         <ShoppingBag size={24} style={{ color: '#94a3b8' }} />
                       </div>
@@ -459,7 +459,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                   </td>
                   <td style={adminStyles.tableCell}>
                     <div>
-                      <div style={{ fontWeight: 'bold', color: '#fde68a' }}>
+                      <div style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                         {item.name}
                       </div>
                       <div style={{ fontSize: '13px', color: '#94a3b8' }}>
@@ -471,7 +471,7 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
                     <span style={{
                       ...adminStyles.badge,
                       background: 'rgba(139, 92, 246, 0.2)',
-                      borderColor: '#8b5cf6',
+                      borderColor: '#7D55C7',
                       color: '#c4b5fd',
                     }}>
                       {getCategoryDisplay(item.category)}

@@ -114,7 +114,7 @@ export default function MerchPage() {
         }}>
           <div style={{
             background: 'rgba(31, 41, 55, 0.95)',
-            border: '4px solid #8b5cf6',
+            border: '4px solid #7D55C7',
             borderRadius: '1.5rem',
             padding: '3rem',
             maxWidth: '500px',
@@ -166,7 +166,7 @@ export default function MerchPage() {
                     outline: 'none',
                     transition: 'border-color 0.2s'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#8b5cf6'}
+                  onFocus={(e) => e.target.style.borderColor = '#7D55C7'}
                   onBlur={(e) => e.target.style.borderColor = '#6b7280'}
                 />
               </div>
@@ -186,7 +186,7 @@ export default function MerchPage() {
                 type="submit"
                 style={{
                   width: '100%',
-                  background: '#8b5cf6',
+                  background: '#7D55C7',
                   color: '#111827',
                   padding: '1rem 2rem',
                   fontSize: '1.125rem',
@@ -207,7 +207,7 @@ export default function MerchPage() {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.background = '#8b5cf6';
+                  e.currentTarget.style.background = '#7D55C7';
                 }}
               >
                 <Sparkles size={20} /> UNLOCK THE SWAG
@@ -342,7 +342,7 @@ export default function MerchPage() {
                   padding: '1.5rem',
                   boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.3s',
-                  border: '4px solid #8b5cf6',
+                  border: '4px solid #7D55C7',
                   transform: `rotate(${index % 2 === 0 ? '2' : '-2'}deg)`,
                   cursor: 'pointer',
                   position: 'relative',
@@ -457,7 +457,7 @@ export default function MerchPage() {
                   <Link
                     href={`/merch/${item.slug}`}
                     style={{
-                      background: '#8b5cf6',
+                      background: '#7D55C7',
                       color: '#111827',
                       padding: '0.75rem 1.5rem',
                       borderRadius: '50px',
@@ -476,7 +476,7 @@ export default function MerchPage() {
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.background = '#8b5cf6';
+                      e.currentTarget.style.background = '#7D55C7';
                     }}
                   >
                     <Package size={16} /> GET SWAG

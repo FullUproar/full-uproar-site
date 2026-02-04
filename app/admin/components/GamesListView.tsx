@@ -222,7 +222,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
   if (loading) {
     return (
       <div style={adminStyles.section}>
-        <p style={{ color: '#fdba74' }}>Loading games...</p>
+        <p style={{ color: '#FBDB65' }}>Loading games...</p>
       </div>
     );
   }
@@ -347,7 +347,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
           }}>
             <thead>
               <tr style={{
-                borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+                borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
               }}>
                 <th style={{ ...adminStyles.tableHeader, width: '50px' }}>
                   <button
@@ -355,7 +355,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      color: '#fdba74',
+                      color: '#FBDB65',
                       cursor: 'pointer',
                       padding: '4px',
                     }}
@@ -376,13 +376,13 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                 <tr
                   key={game.id}
                   style={{
-                    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+                    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
                     transition: 'background 0.2s',
-                    background: selectedGames.has(game.id) ? 'rgba(249, 115, 22, 0.1)' : 'transparent',
+                    background: selectedGames.has(game.id) ? 'rgba(255, 130, 0, 0.1)' : 'transparent',
                   }}
                   onMouseEnter={(e) => {
                     if (!selectedGames.has(game.id)) {
-                      e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)';
+                      e.currentTarget.style.background = 'rgba(255, 130, 0, 0.05)';
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -397,7 +397,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                       style={{
                         background: 'transparent',
                         border: 'none',
-                        color: '#fdba74',
+                        color: '#FBDB65',
                         cursor: 'pointer',
                         padding: '4px',
                       }}
@@ -418,19 +418,19 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                           style={{
                             objectFit: 'cover',
                             borderRadius: '8px',
-                            border: '2px solid rgba(249, 115, 22, 0.3)',
+                            border: '2px solid rgba(255, 130, 0, 0.3)',
                           }}
                         />
                       ) : (
                         <div style={{
                           width: '60px',
                           height: '60px',
-                          background: 'rgba(249, 115, 22, 0.1)',
+                          background: 'rgba(255, 130, 0, 0.1)',
                           borderRadius: '8px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          border: '2px solid rgba(249, 115, 22, 0.3)',
+                          border: '2px solid rgba(255, 130, 0, 0.3)',
                         }}>
                           <Package size={24} style={{ color: '#94a3b8' }} />
                         </div>
@@ -439,7 +439,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                   </td>
                   <td style={adminStyles.tableCell}>
                     <div>
-                      <div style={{ fontWeight: 'bold', color: '#fde68a' }}>
+                      <div style={{ fontWeight: 'bold', color: '#FBDB65' }}>
                         {game.title}
                       </div>
                       <div style={{ fontSize: '13px', color: '#94a3b8' }}>
@@ -458,9 +458,9 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                       {game.featured && (
                         <span style={{
                           ...adminStyles.badge,
-                          background: 'rgba(249, 115, 22, 0.2)',
-                          borderColor: '#f97316',
-                          color: '#fdba74',
+                          background: 'rgba(255, 130, 0, 0.2)',
+                          borderColor: '#FF8200',
+                          color: '#FBDB65',
                         }}>
                           Featured
                         </span>
@@ -489,7 +489,7 @@ export default function GamesListView({ onEdit, onNew }: GamesListViewProps) {
                         <span style={{
                           ...adminStyles.badge,
                           background: 'rgba(139, 92, 246, 0.2)',
-                          borderColor: '#8b5cf6',
+                          borderColor: '#7D55C7',
                           color: '#c4b5fd',
                         }}>
                           Pre-order

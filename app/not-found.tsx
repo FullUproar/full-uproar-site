@@ -21,10 +21,10 @@ export default function NotFound() {
         <div style={{
           fontSize: '10rem',
           fontWeight: 900,
-          color: '#f97316',
+          color: '#FF8200',
           marginBottom: '2rem',
           lineHeight: 1,
-          textShadow: '0 0 30px rgba(249, 115, 22, 0.5)',
+          textShadow: '0 0 30px rgba(255, 130, 0, 0.5)',
           animation: 'glitch 2s infinite'
         }}>
           404
@@ -33,7 +33,7 @@ export default function NotFound() {
         <Skull style={{
           width: '80px',
           height: '80px',
-          color: '#fdba74',
+          color: '#FBDB65',
           margin: '0 auto 2rem',
           animation: 'wobble 1s ease-in-out infinite'
         }} />
@@ -42,7 +42,7 @@ export default function NotFound() {
           fontSize: '2.5rem',
           fontWeight: 900,
           marginBottom: '1rem',
-          color: '#fdba74',
+          color: '#FBDB65',
           textTransform: 'uppercase'
         }}>
           Page Got Fuglied
@@ -50,7 +50,7 @@ export default function NotFound() {
         
         <p style={{
           fontSize: '1.25rem',
-          color: '#fde68a',
+          color: '#FBDB65',
           marginBottom: '3rem',
           fontWeight: 'bold'
         }}>
@@ -69,7 +69,7 @@ export default function NotFound() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
-            background: '#f97316',
+            background: '#FF8200',
             color: '#111827',
             padding: '1rem 2rem',
             borderRadius: '50px',
@@ -89,22 +89,22 @@ export default function NotFound() {
             alignItems: 'center',
             gap: '0.5rem',
             background: 'transparent',
-            color: '#f97316',
+            color: '#FF8200',
             padding: '1rem 2rem',
             borderRadius: '50px',
             fontWeight: 900,
             textDecoration: 'none',
-            border: '3px solid #f97316',
+            border: '3px solid #FF8200',
             transition: 'all 0.2s',
             fontSize: '1.1rem'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f97316';
+            e.currentTarget.style.background = '#FF8200';
             e.currentTarget.style.color = '#111827';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.color = '#f97316';
+            e.currentTarget.style.color = '#FF8200';
           }}>
             <Dices size={20} />
             BROWSE CHAOS
@@ -114,16 +114,16 @@ export default function NotFound() {
         <div style={{
           marginTop: '4rem',
           padding: '1.5rem',
-          background: 'rgba(249, 115, 22, 0.1)',
+          background: 'rgba(255, 130, 0, 0.1)',
           borderRadius: '1rem',
-          border: '2px solid rgba(249, 115, 22, 0.3)'
+          border: '2px solid rgba(255, 130, 0, 0.3)'
         }}>
           <p style={{
             color: '#94a3b8',
             fontSize: '0.9rem',
             margin: 0
           }}>
-            <strong style={{ color: '#fdba74' }}>Fun Fact:</strong> 404 errors are 
+            <strong style={{ color: '#FBDB65' }}>Fun Fact:</strong> 404 errors are 
             just pages that couldn't handle the Fugly lifestyle. Natural selection at work.
           </p>
         </div>
@@ -133,13 +133,13 @@ export default function NotFound() {
         @keyframes glitch {
           0%, 100% {
             text-shadow: 
-              0 0 30px rgba(249, 115, 22, 0.5),
+              0 0 30px rgba(255, 130, 0, 0.5),
               -2px 0 #ef4444,
               2px 0 #3b82f6;
           }
           50% {
             text-shadow: 
-              0 0 30px rgba(249, 115, 22, 0.8),
+              0 0 30px rgba(255, 130, 0, 0.8),
               2px 0 #ef4444,
               -2px 0 #3b82f6;
           }

@@ -90,7 +90,7 @@ export default function MigrationsView() {
       case 'completed':
         return <Check size={16} style={{ color: '#86efac' }} />;
       case 'running':
-        return <Loader2 size={16} style={{ color: '#fdba74', animation: 'spin 1s linear infinite' }} />;
+        return <Loader2 size={16} style={{ color: '#FBDB65', animation: 'spin 1s linear infinite' }} />;
       case 'failed':
         return <AlertCircle size={16} style={{ color: '#fca5a5' }} />;
       default:
@@ -103,7 +103,7 @@ export default function MigrationsView() {
       case 'completed':
         return '#10b981';
       case 'running':
-        return '#f97316';
+        return '#FF8200';
       case 'failed':
         return '#ef4444';
       default:
@@ -130,7 +130,7 @@ export default function MigrationsView() {
         alignItems: 'center',
       }}>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <Database size={20} style={{ color: '#fdba74' }} />
+          <Database size={20} style={{ color: '#FBDB65' }} />
           <span style={{ color: '#e2e8f0' }}>
             {migrations.filter(m => m.status === 'pending').length} pending migrations
           </span>
@@ -140,7 +140,7 @@ export default function MigrationsView() {
           onClick={toggleShowCompleted}
           style={adminStyles.outlineButton}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+            e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
@@ -213,7 +213,7 @@ export default function MigrationsView() {
                     <h3 style={{
                       fontSize: '16px',
                       fontWeight: 'bold',
-                      color: '#fde68a',
+                      color: '#FBDB65',
                       marginBottom: '4px',
                     }}>
                       {migration.name}
@@ -247,12 +247,12 @@ export default function MigrationsView() {
                 {expandedMigrations.includes(migration.id) && (
                   <div style={{
                     padding: '20px',
-                    borderTop: '2px solid rgba(249, 115, 22, 0.2)',
+                    borderTop: '2px solid rgba(255, 130, 0, 0.2)',
                     background: 'rgba(0, 0, 0, 0.2)',
                   }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       <div>
-                        <strong style={{ color: '#fdba74' }}>Migration ID:</strong>{' '}
+                        <strong style={{ color: '#FBDB65' }}>Migration ID:</strong>{' '}
                         <span style={{ fontFamily: 'monospace', color: '#94a3b8' }}>
                           {migration.id}
                         </span>
@@ -260,7 +260,7 @@ export default function MigrationsView() {
 
                       {migration.completedAt && (
                         <div>
-                          <strong style={{ color: '#fdba74' }}>Completed:</strong>{' '}
+                          <strong style={{ color: '#FBDB65' }}>Completed:</strong>{' '}
                           <span style={{ color: '#94a3b8' }}>
                             {new Date(migration.completedAt).toLocaleString()}
                           </span>

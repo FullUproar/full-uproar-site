@@ -285,7 +285,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       borderRadius: '16px',
       overflow: 'hidden',
       position: 'relative' as const,
-      border: '3px solid rgba(249, 115, 22, 0.2)',
+      border: '3px solid rgba(255, 130, 0, 0.2)',
       backdropFilter: 'blur(10px)'
     },
     mainImage: {
@@ -325,7 +325,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       border: '2px solid transparent'
     },
     thumbnailActive: {
-      border: '2px solid #f97316'
+      border: '2px solid #FF8200'
     },
     thumbnailImage: {
       width: '100%',
@@ -343,18 +343,18 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       borderRadius: '16px',
       padding: '24px',
       backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(249, 115, 22, 0.2)'
+      border: '1px solid rgba(255, 130, 0, 0.2)'
     },
     title: {
       fontSize: isMobile ? '28px' : '36px',
       fontWeight: '900',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '8px',
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
     },
     tagline: {
       fontSize: isMobile ? '16px' : '20px',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginBottom: '16px',
       fontWeight: '600'
     },
@@ -373,9 +373,9 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       marginLeft: 'auto'
     },
     gameBadge: {
-      background: 'rgba(249, 115, 22, 0.2)',
-      color: '#fdba74',
-      border: '1px solid rgba(249, 115, 22, 0.3)'
+      background: 'rgba(255, 130, 0, 0.2)',
+      color: '#FBDB65',
+      border: '1px solid rgba(255, 130, 0, 0.3)'
     },
     modBadge: {
       background: 'rgba(139, 92, 246, 0.2)',
@@ -384,7 +384,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     },
     buyBox: {
       background: 'rgba(30, 41, 59, 0.8)',
-      border: '3px solid #f97316',
+      border: '3px solid #FF8200',
       borderRadius: '16px',
       padding: isMobile ? '20px' : '24px',
       backdropFilter: 'blur(10px)',
@@ -393,7 +393,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     priceDisplay: {
       fontSize: isMobile ? '32px' : '42px',
       fontWeight: '900',
-      color: '#f97316',
+      color: '#FF8200',
       marginBottom: '8px',
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
     },
@@ -407,14 +407,14 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     },
     quantityLabel: {
       fontSize: '14px',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginBottom: '8px',
       fontWeight: '600'
     },
     quantitySelector: {
       display: 'flex',
       alignItems: 'center',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       width: 'fit-content',
       background: 'rgba(17, 24, 39, 0.5)'
@@ -423,7 +423,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       padding: '8px 12px',
       background: 'transparent',
       border: 'none',
-      color: '#f97316',
+      color: '#FF8200',
       cursor: 'pointer',
       fontSize: '18px',
       transition: 'background 0.2s'
@@ -432,9 +432,9 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       padding: '8px 24px',
       fontSize: '16px',
       fontWeight: 'bold',
-      color: '#fde68a',
-      borderLeft: '2px solid rgba(249, 115, 22, 0.3)',
-      borderRight: '2px solid rgba(249, 115, 22, 0.3)'
+      color: '#FBDB65',
+      borderLeft: '2px solid rgba(255, 130, 0, 0.3)',
+      borderRight: '2px solid rgba(255, 130, 0, 0.3)'
     },
     actionButtons: {
       display: 'flex',
@@ -468,9 +468,9 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       border: 'none',
       cursor: 'pointer',
       transition: 'all 0.2s',
-      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
       color: 'white',
-      boxShadow: '0 4px 20px rgba(249, 115, 22, 0.3)'
+      boxShadow: '0 4px 20px rgba(255, 130, 0, 0.3)'
     },
     // Tabs Section
     tabsContainer: {
@@ -478,11 +478,11 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       borderRadius: '16px',
       overflow: 'hidden',
       backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(249, 115, 22, 0.2)'
+      border: '1px solid rgba(255, 130, 0, 0.2)'
     },
     tabNavigation: {
       display: 'flex',
-      borderBottom: '2px solid rgba(249, 115, 22, 0.2)',
+      borderBottom: '2px solid rgba(255, 130, 0, 0.2)',
       overflowX: isMobile ? 'auto' as const : 'visible' as const
     },
     tabButton: {
@@ -499,8 +499,8 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       whiteSpace: isMobile ? 'nowrap' as const : 'normal' as const
     },
     tabButtonActive: {
-      color: '#fdba74',
-      background: 'rgba(249, 115, 22, 0.1)'
+      color: '#FBDB65',
+      background: 'rgba(255, 130, 0, 0.1)'
     },
     tabIndicator: {
       position: 'absolute' as const,
@@ -508,7 +508,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       left: 0,
       right: 0,
       height: '2px',
-      background: '#f97316'
+      background: '#FF8200'
     },
     tabContent: {
       padding: '32px'
@@ -523,7 +523,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       background: 'rgba(17, 24, 39, 0.5)',
       borderRadius: '12px',
       padding: '20px',
-      border: '1px solid rgba(249, 115, 22, 0.1)'
+      border: '1px solid rgba(255, 130, 0, 0.1)'
     },
     reviewHeader: {
       display: 'flex',
@@ -538,7 +538,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     },
     reviewName: {
       fontWeight: 'bold',
-      color: '#fdba74'
+      color: '#FBDB65'
     },
     verifiedBadge: {
       background: 'rgba(34, 197, 94, 0.2)',
@@ -551,7 +551,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
     reviewTitle: {
       fontSize: '18px',
       fontWeight: 'bold',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginBottom: '8px'
     },
     reviewComment: {
@@ -582,7 +582,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       case 'details':
         return (
           <div>
-            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fdba74', marginBottom: '16px' }}>
+            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '16px' }}>
               About This Game
             </h3>
             <p style={{ color: '#e2e8f0', fontSize: '16px', lineHeight: '1.8', marginBottom: '24px' }}>
@@ -591,32 +591,32 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
 
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? '16px' : '24px', marginBottom: '32px' }}>
               <div style={{ background: 'rgba(17, 24, 39, 0.5)', borderRadius: '12px', padding: '20px' }}>
-                <h4 style={{ fontSize: '18px', fontWeight: 'bold', color: '#fdba74', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h4 style={{ fontSize: '18px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Gamepad2 style={{ width: '20px', height: '20px' }} />
                   Game Details
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Players:</span>
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{formatPlayerCount(game.playerCount)}</span>
+                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>{formatPlayerCount(game.playerCount)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Play Time:</span>
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{formatPlayTime(game.playTime)}</span>
+                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>{formatPlayTime(game.playTime)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Age Rating:</span>
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{formatAgeRating(game.ageRating)}</span>
+                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>{formatAgeRating(game.ageRating)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#94a3b8' }}>Category:</span>
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>{game.category?.toUpperCase() || 'GAME'}</span>
+                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>{game.category?.toUpperCase() || 'GAME'}</span>
                   </div>
                 </div>
               </div>
 
               <div style={{ background: 'rgba(17, 24, 39, 0.5)', borderRadius: '12px', padding: '20px' }}>
-                <h4 style={{ fontSize: '18px', fontWeight: 'bold', color: '#fdba74', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h4 style={{ fontSize: '18px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Package style={{ width: '20px', height: '20px' }} />
                   What's in the Box
                 </h4>
@@ -637,12 +637,12 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
             </div>
 
             {game.bundleInfo && (
-              <div style={{ background: 'rgba(249, 115, 22, 0.1)', border: '1px solid rgba(249, 115, 22, 0.3)', borderRadius: '12px', padding: '20px' }}>
-                <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fdba74', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ background: 'rgba(255, 130, 0, 0.1)', border: '1px solid rgba(255, 130, 0, 0.3)', borderRadius: '12px', padding: '20px' }}>
+                <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Gift style={{ width: '24px', height: '24px' }} />
                   Bundle Contents
                 </h4>
-                <p style={{ color: '#fde68a', fontSize: '16px' }}>{game.bundleInfo}</p>
+                <p style={{ color: '#FBDB65', fontSize: '16px' }}>{game.bundleInfo}</p>
               </div>
             )}
           </div>
@@ -651,7 +651,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
       case 'howToPlay':
         return (
           <div>
-            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fdba74', marginBottom: '16px' }}>
+            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '16px' }}>
               How to Spread Chaos
             </h3>
             
@@ -675,11 +675,11 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   <div style={{ display: 'flex', gap: '16px' }}>
-                    <div style={{ background: '#f97316', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
+                    <div style={{ background: '#FF8200', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
                       1
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fdba74', marginBottom: '8px' }}>
+                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '8px' }}>
                         Gather Your Victims
                       </h4>
                       <p>Round up {formatPlayerCount(game.playerCount)} of your favorite chaos agents. Make sure they're ready for friendship-ending fun!</p>
@@ -687,11 +687,11 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                   </div>
 
                   <div style={{ display: 'flex', gap: '16px' }}>
-                    <div style={{ background: '#f97316', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
+                    <div style={{ background: '#FF8200', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
                       2
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fdba74', marginBottom: '8px' }}>
+                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '8px' }}>
                         Deal the Chaos
                       </h4>
                       <p>Shuffle the deck and deal out destruction. Each player gets their arsenal of mayhem.</p>
@@ -699,11 +699,11 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                   </div>
 
                   <div style={{ display: 'flex', gap: '16px' }}>
-                    <div style={{ background: '#f97316', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
+                    <div style={{ background: '#FF8200', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
                       3
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fdba74', marginBottom: '8px' }}>
+                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '8px' }}>
                         Unleash the Madness
                       </h4>
                       <p>Take turns playing cards and watch as alliances crumble and tables get flipped. Last one standing wins!</p>
@@ -711,11 +711,11 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                   </div>
 
                   <div style={{ display: 'flex', gap: '16px' }}>
-                    <div style={{ background: '#f97316', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
+                    <div style={{ background: '#FF8200', color: '#111827', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', flexShrink: 0 }}>
                       4
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fdba74', marginBottom: '8px' }}>
+                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '8px' }}>
                         Embrace the Chaos
                       </h4>
                       <p>Remember: it's not about winning, it's about making everyone else lose spectacularly!</p>
@@ -731,14 +731,14 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
         return (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fdba74' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>
                 Customer Reviews
               </h3>
               {user ? (
                 <button
                   onClick={() => setShowReviewForm(true)}
                   style={{
-                    background: '#f97316',
+                    background: '#FF8200',
                     color: '#111827',
                     padding: '12px 24px',
                     borderRadius: '8px',
@@ -756,22 +756,22 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                 <Link 
                   href="/sign-in"
                   style={{
-                    background: 'rgba(249, 115, 22, 0.2)',
-                    color: '#fdba74',
+                    background: 'rgba(255, 130, 0, 0.2)',
+                    color: '#FBDB65',
                     padding: '12px 24px',
                     borderRadius: '8px',
-                    border: '2px solid #f97316',
+                    border: '2px solid #FF8200',
                     fontWeight: 'bold',
                     textDecoration: 'none',
                     display: 'inline-block',
                     transition: 'all 0.2s'
                   }}
                   onMouseEnter={(e) => { 
-                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.3)';
+                    e.currentTarget.style.background = 'rgba(255, 130, 0, 0.3)';
                     e.currentTarget.style.transform = 'scale(1.05)';
                   }}
                   onMouseLeave={(e) => { 
-                    e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+                    e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)';
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
                 >
@@ -784,7 +784,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
             <div style={{ background: 'rgba(17, 24, 39, 0.5)', borderRadius: '12px', padding: '24px', marginBottom: '32px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '32px' }}>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '48px', fontWeight: '900', color: '#f97316' }}>
+                  <div style={{ fontSize: '48px', fontWeight: '900', color: '#FF8200' }}>
                     {reviewStats.averageRating.toFixed(1)}
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
@@ -794,8 +794,8 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                         style={{ 
                           width: '20px', 
                           height: '20px', 
-                          fill: i < Math.round(reviewStats.averageRating) ? '#f97316' : 'transparent',
-                          color: '#f97316' 
+                          fill: i < Math.round(reviewStats.averageRating) ? '#FF8200' : 'transparent',
+                          color: '#FF8200' 
                         }} 
                       />
                     ))}
@@ -810,13 +810,13 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                     
                     return (
                       <div key={rating} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                        <span style={{ color: '#fdba74', fontWeight: '600', width: '60px' }}>{rating} stars</span>
-                        <div style={{ flex: 1, height: '8px', background: 'rgba(249, 115, 22, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <span style={{ color: '#FBDB65', fontWeight: '600', width: '60px' }}>{rating} stars</span>
+                        <div style={{ flex: 1, height: '8px', background: 'rgba(255, 130, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
                           <div 
                             style={{ 
                               width: `${percentage}%`, 
                               height: '100%', 
-                              background: '#f97316',
+                              background: '#FF8200',
                               transition: 'width 0.3s'
                             }} 
                           />
@@ -853,8 +853,8 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                           style={{ 
                             width: '16px', 
                             height: '16px', 
-                            fill: i < review.rating ? '#f97316' : 'transparent',
-                            color: '#f97316' 
+                            fill: i < review.rating ? '#FF8200' : 'transparent',
+                            color: '#FF8200' 
                           }} 
                         />
                       ))}
@@ -945,7 +945,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                     </div>
                   )}
                   {game.isBestseller && (
-                    <div style={{ background: '#f97316', color: 'white', padding: '6px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: 'bold', transform: 'rotate(2deg)' }}>
+                    <div style={{ background: '#FF8200', color: 'white', padding: '6px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: 'bold', transform: 'rotate(2deg)' }}>
                       BESTSELLER
                     </div>
                   )}
@@ -996,13 +996,13 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                         style={{ 
                           width: '20px', 
                           height: '20px', 
-                          fill: i < Math.round(reviewStats.averageRating) ? '#f97316' : 'transparent',
-                          color: '#f97316' 
+                          fill: i < Math.round(reviewStats.averageRating) ? '#FF8200' : 'transparent',
+                          color: '#FF8200' 
                         }} 
                       />
                     ))}
                   </div>
-                  <span style={{ color: '#fdba74', fontSize: '14px', fontWeight: '600' }}>
+                  <span style={{ color: '#FBDB65', fontSize: '14px', fontWeight: '600' }}>
                     {reviewStats.averageRating.toFixed(1)} ({reviewStats.total} reviews)
                   </span>
                   
@@ -1034,13 +1034,13 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
 
                 <div style={{
                   ...styles.stockStatus,
-                  color: game.stock > 20 ? '#86efac' : game.stock > 0 ? '#fdba74' : '#f97316'
+                  color: game.stock > 20 ? '#86efac' : game.stock > 0 ? '#FBDB65' : '#FF8200'
                 }}>
                   {game.stock > 20 ? '✓ In Stock' : game.stock > 0 ? `Only ${game.stock} left!` : '✨ Coming Spring 2026'}
                 </div>
 
                 {todayViews > 50 && (
-                  <p style={{ color: '#fdba74', fontSize: '14px', marginBottom: '16px' }}>
+                  <p style={{ color: '#FBDB65', fontSize: '14px', marginBottom: '16px' }}>
                     🔥 {todayViews} people viewed this today
                   </p>
                 )}
@@ -1090,7 +1090,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                           cursor: 'not-allowed',
                           width: '100%',
                           background: 'linear-gradient(135deg, #1e293b, #0f172a)',
-                          border: '2px solid #f97316'
+                          border: '2px solid #FF8200'
                         }}
                       >
                         <Sparkles style={{ width: '20px', height: '20px' }} />
@@ -1130,18 +1130,18 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                   )}
                 </div>
 
-                <div style={{ marginTop: '24px', padding: '16px', background: 'rgba(249, 115, 22, 0.1)', borderRadius: '8px', border: '1px solid rgba(249, 115, 22, 0.2)' }}>
+                <div style={{ marginTop: '24px', padding: '16px', background: 'rgba(255, 130, 0, 0.1)', borderRadius: '8px', border: '1px solid rgba(255, 130, 0, 0.2)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                     <Truck style={{ width: '16px', height: '16px', color: '#86efac' }} />
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>FREE shipping on orders over $25</span>
+                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>FREE shipping on orders over $25</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Shield style={{ width: '16px', height: '16px', color: '#86efac' }} />
-                    <span style={{ color: '#fde68a', fontWeight: '600' }}>Secure checkout • Fugly approved</span>
+                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>Secure checkout • Fugly approved</span>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '16px', marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(249, 115, 22, 0.2)' }}>
+                <div style={{ display: 'flex', gap: '16px', marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255, 130, 0, 0.2)' }}>
                   <button 
                     onClick={handleShare}
                     style={{ 
@@ -1206,7 +1206,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
           {/* Similar Products */}
           {similarGames.length > 0 && (
             <div style={{ marginTop: '48px' }}>
-              <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#fdba74', marginBottom: '24px' }}>
+              <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#FBDB65', marginBottom: '24px' }}>
                 More Chaos You'll Love
               </h2>
               
@@ -1227,7 +1227,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-4px)';
-                      e.currentTarget.style.borderColor = '#f97316';
+                      e.currentTarget.style.borderColor = '#FF8200';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)';
@@ -1242,10 +1242,10 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                       />
                     </div>
                     <div style={{ padding: '16px' }}>
-                      <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#fde68a', marginBottom: '4px', lineHeight: '1.2' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '4px', lineHeight: '1.2' }}>
                         {similarGame.title}
                       </h3>
-                      <p style={{ fontSize: '20px', fontWeight: '900', color: '#f97316' }}>
+                      <p style={{ fontSize: '20px', fontWeight: '900', color: '#FF8200' }}>
                         ${(similarGame.priceCents / 100).toFixed(2)}
                       </p>
                     </div>

@@ -55,7 +55,7 @@ export default function ShopSpecialsPage() {
             <h1 style={{
               fontSize: '3rem',
               fontWeight: 900,
-              background: 'linear-gradient(45deg, #fbbf24, #f97316)',
+              background: 'linear-gradient(45deg, #fbbf24, #FF8200)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               color: 'transparent',
@@ -65,7 +65,7 @@ export default function ShopSpecialsPage() {
             </h1>
             <Sparkles style={{ width: '2.5rem', height: '2.5rem', color: '#fbbf24' }} />
           </div>
-          <p style={{ fontSize: '1.25rem', color: '#fdba74' }}>
+          <p style={{ fontSize: '1.25rem', color: '#FBDB65' }}>
             Bundles, featured items, and limited-time offers
           </p>
         </div>
@@ -78,26 +78,26 @@ export default function ShopSpecialsPage() {
             gap: '0.75rem',
             marginBottom: '2rem'
           }}>
-            <Gift style={{ width: '1.5rem', height: '1.5rem', color: '#f97316' }} />
-            <h2 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f97316' }}>
+            <Gift style={{ width: '1.5rem', height: '1.5rem', color: '#FF8200' }} />
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#FF8200' }}>
               Bundles & Combo Deals
             </h2>
           </div>
 
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '4rem', color: '#fdba74' }}>
+            <div style={{ textAlign: 'center', padding: '4rem', color: '#FBDB65' }}>
               Loading specials...
             </div>
           ) : games.filter(g => g.isBundle).length === 0 ? (
             <div style={{
               padding: '3rem',
-              background: 'rgba(249, 115, 22, 0.1)',
+              background: 'rgba(255, 130, 0, 0.1)',
               borderRadius: '1rem',
-              border: '2px dashed #f97316',
+              border: '2px dashed #FF8200',
               textAlign: 'center'
             }}>
-              <Package style={{ width: '3rem', height: '3rem', color: '#f97316', margin: '0 auto 1rem' }} />
-              <p style={{ fontSize: '1.25rem', color: '#fdba74', marginBottom: '0.5rem' }}>
+              <Package style={{ width: '3rem', height: '3rem', color: '#FF8200', margin: '0 auto 1rem' }} />
+              <p style={{ fontSize: '1.25rem', color: '#FBDB65', marginBottom: '0.5rem' }}>
                 No bundles available right now
               </p>
               <p style={{ color: '#94a3b8' }}>
@@ -120,7 +120,7 @@ export default function ShopSpecialsPage() {
                     background: 'linear-gradient(135deg, #1f2937, #111827)',
                     borderRadius: '1rem',
                     overflow: 'hidden',
-                    border: '3px solid #f97316',
+                    border: '3px solid #FF8200',
                     transition: 'all 0.3s',
                     position: 'relative'
                   }}>
@@ -128,7 +128,7 @@ export default function ShopSpecialsPage() {
                       position: 'absolute',
                       top: '1rem',
                       right: '1rem',
-                      background: 'linear-gradient(45deg, #f97316, #fbbf24)',
+                      background: 'linear-gradient(45deg, #FF8200, #fbbf24)',
                       color: '#000',
                       padding: '0.5rem 1rem',
                       borderRadius: '50px',
@@ -173,7 +173,7 @@ export default function ShopSpecialsPage() {
                       <div style={{
                         fontSize: '1.75rem',
                         fontWeight: 900,
-                        color: '#f97316'
+                        color: '#FF8200'
                       }}>
                         ${(game.priceCents / 100).toFixed(2)}
                       </div>
@@ -212,7 +212,7 @@ export default function ShopSpecialsPage() {
                 No featured items right now
               </p>
               <p style={{ color: '#94a3b8' }}>
-                Browse our <Link href="/shop/games" style={{ color: '#f97316' }}>full catalog</Link>!
+                Browse our <Link href="/shop/games" style={{ color: '#FF8200' }}>full catalog</Link>!
               </p>
             </div>
           ) : (
@@ -265,7 +265,7 @@ export default function ShopSpecialsPage() {
                       <div style={{
                         fontSize: '1.5rem',
                         fontWeight: 900,
-                        color: '#f97316'
+                        color: '#FF8200'
                       }}>
                         ${(game.priceCents / 100).toFixed(2)}
                       </div>
@@ -282,11 +282,11 @@ export default function ShopSpecialsPage() {
           marginTop: '4rem',
           textAlign: 'center',
           padding: '2rem',
-          background: 'rgba(249, 115, 22, 0.1)',
+          background: 'rgba(255, 130, 0, 0.1)',
           borderRadius: '1rem',
-          border: '1px solid rgba(249, 115, 22, 0.3)'
+          border: '1px solid rgba(255, 130, 0, 0.3)'
         }}>
-          <p style={{ color: '#fdba74', marginBottom: '1rem' }}>
+          <p style={{ color: '#FBDB65', marginBottom: '1rem' }}>
             Looking for something specific?
           </p>
           <Link
@@ -294,7 +294,7 @@ export default function ShopSpecialsPage() {
             style={{
               display: 'inline-block',
               padding: '1rem 2rem',
-              background: 'linear-gradient(45deg, #f97316, #fb923c)',
+              background: 'linear-gradient(45deg, #FF8200, #fb923c)',
               color: '#0a0a0a',
               borderRadius: '50px',
               fontWeight: 900,

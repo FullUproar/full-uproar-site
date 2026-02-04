@@ -315,7 +315,7 @@ export default function CheckoutFlow() {
     gap: '0.5rem',
     padding: '0.75rem 1.5rem',
     borderRadius: '50px',
-    background: isActive ? '#f97316' : isCompleted ? '#10b981' : '#374151',
+    background: isActive ? '#FF8200' : isCompleted ? '#10b981' : '#374151',
     color: isActive || isCompleted ? '#000' : '#9ca3af',
     fontWeight: 'bold',
     transition: 'all 0.3s'
@@ -335,13 +335,13 @@ export default function CheckoutFlow() {
     borderRadius: '16px',
     padding: '2rem',
     backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(249, 115, 22, 0.2)'
+    border: '1px solid rgba(255, 130, 0, 0.2)'
   };
 
   const titleStyle = {
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '1.5rem',
     display: 'flex',
     alignItems: 'center',
@@ -351,8 +351,8 @@ export default function CheckoutFlow() {
   const addressCardStyle = (isSelected: boolean) => ({
     padding: '1rem',
     borderRadius: '12px',
-    border: `2px solid ${isSelected ? '#f97316' : '#374151'}`,
-    background: isSelected ? 'rgba(249, 115, 22, 0.1)' : 'rgba(55, 65, 81, 0.3)',
+    border: `2px solid ${isSelected ? '#FF8200' : '#374151'}`,
+    background: isSelected ? 'rgba(255, 130, 0, 0.1)' : 'rgba(55, 65, 81, 0.3)',
     cursor: 'pointer',
     marginBottom: '1rem',
     transition: 'all 0.2s'
@@ -360,7 +360,7 @@ export default function CheckoutFlow() {
 
   const buttonStyle = {
     padding: '1rem 2rem',
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     borderRadius: '50px',
     fontWeight: 'bold',
@@ -415,7 +415,7 @@ export default function CheckoutFlow() {
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                         <div>
-                          <div style={{ fontWeight: 'bold', color: '#fdba74', marginBottom: '0.25rem' }}>
+                          <div style={{ fontWeight: 'bold', color: '#FBDB65', marginBottom: '0.25rem' }}>
                             {addr.nickname || 'Address'}
                             {addr.isDefault && (
                               <span style={{ 
@@ -464,8 +464,8 @@ export default function CheckoutFlow() {
                   style={{
                     ...buttonStyle,
                     background: 'transparent',
-                    border: '2px dashed #f97316',
-                    color: '#f97316',
+                    border: '2px dashed #FF8200',
+                    color: '#FF8200',
                     width: '100%',
                     justifyContent: 'center'
                   }}
@@ -645,7 +645,7 @@ export default function CheckoutFlow() {
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                          <div style={{ fontWeight: 'bold', color: '#fdba74', marginBottom: '0.25rem' }}>
+                          <div style={{ fontWeight: 'bold', color: '#FBDB65', marginBottom: '0.25rem' }}>
                             {method.nickname || `${method.brand?.toUpperCase()} ****${method.last4}`}
                             {method.isDefault && (
                               <span style={{ 
@@ -727,11 +727,11 @@ export default function CheckoutFlow() {
                       style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }}
                     />
                     <div style={{ flex: 1 }}>
-                      <div style={{ color: '#fdba74', fontWeight: 'bold' }}>{item.name}</div>
+                      <div style={{ color: '#FBDB65', fontWeight: 'bold' }}>{item.name}</div>
                       {item.size && <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Size: {item.size}</div>}
                       <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Qty: {item.quantity}</div>
                     </div>
-                    <div style={{ color: '#f97316', fontWeight: 'bold' }}>
+                    <div style={{ color: '#FF8200', fontWeight: 'bold' }}>
                       ${((item.priceCents * item.quantity) / 100).toFixed(2)}
                     </div>
                   </div>
@@ -748,7 +748,7 @@ export default function CheckoutFlow() {
                 }}>
                   {selectedAddressId && savedAddresses.find(a => a.id === selectedAddressId) ? (
                     <div>
-                      <div style={{ color: '#fdba74', fontWeight: 'bold' }}>
+                      <div style={{ color: '#FBDB65', fontWeight: 'bold' }}>
                         {savedAddresses.find(a => a.id === selectedAddressId)?.fullName}
                       </div>
                       <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
@@ -763,7 +763,7 @@ export default function CheckoutFlow() {
                     </div>
                   ) : (
                     <div>
-                      <div style={{ color: '#fdba74', fontWeight: 'bold' }}>{newAddress.fullName}</div>
+                      <div style={{ color: '#FBDB65', fontWeight: 'bold' }}>{newAddress.fullName}</div>
                       <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
                         {newAddress.street}{newAddress.apartment && `, ${newAddress.apartment}`}<br />
                         {newAddress.city}, {newAddress.state} {newAddress.zipCode}
@@ -781,7 +781,7 @@ export default function CheckoutFlow() {
                   ...buttonStyle, 
                   width: '100%', 
                   justifyContent: 'center',
-                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                  background: 'linear-gradient(135deg, #FF8200, #ea580c)',
                   fontSize: '1.25rem',
                   padding: '1.25rem'
                 }}
@@ -796,7 +796,7 @@ export default function CheckoutFlow() {
         {/* Order Summary Sidebar */}
         <div>
           <div style={sectionStyle}>
-            <h3 style={{ color: '#fdba74', fontWeight: 'bold', marginBottom: '1rem' }}>
+            <h3 style={{ color: '#FBDB65', fontWeight: 'bold', marginBottom: '1rem' }}>
               Order Summary
             </h3>
             
@@ -883,7 +883,7 @@ export default function CheckoutFlow() {
                       disabled={promoCodeValidating || !promoCode.trim()}
                       style={{
                         padding: '0.625rem 1rem',
-                        background: promoCodeValidating || !promoCode.trim() ? '#374151' : '#f97316',
+                        background: promoCodeValidating || !promoCode.trim() ? '#374151' : '#FF8200',
                         border: 'none',
                         borderRadius: '6px',
                         color: promoCodeValidating || !promoCode.trim() ? '#6b7280' : 'white',
@@ -938,15 +938,15 @@ export default function CheckoutFlow() {
             </div>
 
             <div style={{ 
-              borderTop: '2px solid #f97316', 
+              borderTop: '2px solid #FF8200', 
               paddingTop: '1rem',
               display: 'flex',
               justifyContent: 'space-between',
               fontSize: '1.25rem',
               fontWeight: 'bold'
             }}>
-              <span style={{ color: '#fdba74' }}>Total</span>
-              <span style={{ color: '#f97316' }}>${(total / 100).toFixed(2)}</span>
+              <span style={{ color: '#FBDB65' }}>Total</span>
+              <span style={{ color: '#FF8200' }}>${(total / 100).toFixed(2)}</span>
             </div>
 
             {shipping === 0 && (

@@ -27,7 +27,7 @@ interface DebugPanelProps {
 }
 
 const SAMPLE_NAMES = ['Alex', 'Jordan', 'Riley', 'Morgan', 'Casey', 'Quinn', 'Sage', 'Dakota'];
-const SAMPLE_COLORS = ['#f97316', '#8b5cf6', '#10b981', '#ec4899', '#06b6d4', '#f59e0b', '#ef4444', '#3b82f6'];
+const SAMPLE_COLORS = ['#FF8200', '#7D55C7', '#10b981', '#ec4899', '#06b6d4', '#f59e0b', '#ef4444', '#3b82f6'];
 const SAMPLE_PRONOUNS = ['he/him', 'she/her', 'they/them', ''];
 
 const SAMPLE_EVENTS = [
@@ -102,7 +102,7 @@ export default function DebugPanel({
       width: '320px',
       height: '100vh',
       backgroundColor: '#0a0a0a',
-      borderLeft: '2px solid #f97316',
+      borderLeft: '2px solid #FF8200',
       zIndex: 1000,
       display: 'flex',
       flexDirection: 'column',
@@ -118,7 +118,7 @@ export default function DebugPanel({
         alignItems: 'center',
       }}>
         <div>
-          <div style={{ color: '#f97316', fontWeight: 'bold', fontSize: '14px' }}>
+          <div style={{ color: '#FF8200', fontWeight: 'bold', fontSize: '14px' }}>
             🧪 Debug Panel
           </div>
           <div style={{ color: '#6b7280', fontSize: '11px' }}>
@@ -161,8 +161,8 @@ export default function DebugPanel({
               padding: '12px 8px',
               backgroundColor: activeSection === tab.id ? '#2a2a2a' : 'transparent',
               border: 'none',
-              borderBottom: activeSection === tab.id ? '2px solid #f97316' : '2px solid transparent',
-              color: activeSection === tab.id ? '#f97316' : '#6b7280',
+              borderBottom: activeSection === tab.id ? '2px solid #FF8200' : '2px solid transparent',
+              color: activeSection === tab.id ? '#FF8200' : '#6b7280',
               fontSize: '20px',
               cursor: 'pointer',
             }}
@@ -183,7 +183,7 @@ export default function DebugPanel({
               style={{
                 width: '100%',
                 padding: '12px',
-                backgroundColor: '#f97316',
+                backgroundColor: '#FF8200',
                 color: '#000',
                 border: 'none',
                 borderRadius: '8px',
@@ -215,7 +215,7 @@ export default function DebugPanel({
                   }} />
                   <span style={{ color: '#e2e8f0', flex: 1, fontSize: '14px' }}>
                     {p.displayName}
-                    {p.isHost && <span style={{ color: '#f97316' }}> 👑</span>}
+                    {p.isHost && <span style={{ color: '#FF8200' }}> 👑</span>}
                   </span>
                   {!p.isHost && (
                     <button
@@ -246,7 +246,7 @@ export default function DebugPanel({
                       backgroundColor: '#0a0a0a',
                       border: '1px solid #3a3a3a',
                       borderRadius: '4px',
-                      color: '#fde68a',
+                      color: '#FBDB65',
                       fontSize: '12px',
                     }}
                   />
@@ -292,7 +292,7 @@ export default function DebugPanel({
               style={{
                 width: '100%',
                 padding: '12px',
-                backgroundColor: '#8b5cf6',
+                backgroundColor: '#7D55C7',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -397,7 +397,7 @@ export default function DebugPanel({
               style={{
                 width: '100%',
                 padding: '10px',
-                backgroundColor: customEventTitle ? '#f97316' : '#3a3a3a',
+                backgroundColor: customEventTitle ? '#FF8200' : '#3a3a3a',
                 color: customEventTitle ? '#000' : '#666',
                 border: 'none',
                 borderRadius: '8px',
@@ -418,7 +418,7 @@ export default function DebugPanel({
               style={{
                 width: '100%',
                 padding: '12px',
-                backgroundColor: '#f97316',
+                backgroundColor: '#FF8200',
                 color: '#000',
                 border: 'none',
                 borderRadius: '8px',
@@ -451,7 +451,7 @@ export default function DebugPanel({
                 }}
               >
                 <div>{obj.title}</div>
-                <div style={{ color: '#fde68a', fontSize: '11px' }}>+{obj.reward} pts</div>
+                <div style={{ color: '#FBDB65', fontSize: '11px' }}>+{obj.reward} pts</div>
               </button>
             ))}
           </div>
@@ -512,9 +512,9 @@ export default function DebugPanel({
                 style={{
                   width: '100%',
                   padding: '12px',
-                  backgroundColor: currentScoringMode === mode.id ? '#f97316' : '#1a1a1a',
+                  backgroundColor: currentScoringMode === mode.id ? '#FF8200' : '#1a1a1a',
                   color: currentScoringMode === mode.id ? '#000' : '#e2e8f0',
-                  border: currentScoringMode === mode.id ? '2px solid #f97316' : '1px solid #2a2a2a',
+                  border: currentScoringMode === mode.id ? '2px solid #FF8200' : '1px solid #2a2a2a',
                   borderRadius: '8px',
                   textAlign: 'left',
                   cursor: 'pointer',

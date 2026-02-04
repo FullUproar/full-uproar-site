@@ -128,7 +128,7 @@ export default function SMSOptIn({ userId, email, context, onConsent }: SMSOptIn
       background: 'linear-gradient(135deg, #1e293b, #334155)',
       borderRadius: '15px',
       padding: '2rem',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       marginTop: '2rem'
     },
     
@@ -141,7 +141,7 @@ export default function SMSOptIn({ userId, email, context, onConsent }: SMSOptIn
     
     title: {
       fontSize: '1.5rem',
-      color: '#fde68a',
+      color: '#FBDB65',
       fontWeight: 'bold',
       margin: 0
     },
@@ -153,17 +153,17 @@ export default function SMSOptIn({ userId, email, context, onConsent }: SMSOptIn
     },
     
     benefits: {
-      background: 'rgba(249, 115, 22, 0.1)',
+      background: 'rgba(255, 130, 0, 0.1)',
       borderRadius: '10px',
       padding: '1rem',
       marginBottom: '1.5rem',
-      border: '1px solid rgba(249, 115, 22, 0.3)'
+      border: '1px solid rgba(255, 130, 0, 0.3)'
     },
     
     benefitsList: {
       margin: 0,
       paddingLeft: '1.5rem',
-      color: '#fdba74'
+      color: '#FBDB65'
     },
     
     inputGroup: {
@@ -199,7 +199,7 @@ export default function SMSOptIn({ userId, email, context, onConsent }: SMSOptIn
       width: '20px',
       height: '20px',
       marginTop: '2px',
-      accentColor: '#f97316',
+      accentColor: '#FF8200',
       cursor: 'pointer'
     },
     
@@ -213,7 +213,7 @@ export default function SMSOptIn({ userId, email, context, onConsent }: SMSOptIn
     button: {
       width: '100%',
       padding: '1rem',
-      background: 'linear-gradient(135deg, #f97316, #ea580c)',
+      background: 'linear-gradient(135deg, #FF8200, #ea580c)',
       color: 'white',
       border: 'none',
       borderRadius: '10px',
@@ -256,7 +256,7 @@ export default function SMSOptIn({ userId, email, context, onConsent }: SMSOptIn
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <MessageSquare size={28} color="#f97316" />
+        <MessageSquare size={28} color="#FF8200" />
         <h3 style={styles.title}>Get SMS Updates</h3>
       </div>
       
@@ -304,8 +304,8 @@ export default function SMSOptIn({ userId, email, context, onConsent }: SMSOptIn
               I agree to receive recurring automated marketing text messages (e.g. cart reminders) 
               at the phone number provided. Consent is not a condition to purchase. 
               Msg & data rates may apply. Reply STOP to unsubscribe. Reply HELP for help. 
-              View our <a href="/privacy" style={{ color: '#f97316' }}>Privacy Policy</a> and 
-              {' '}<a href="/terms" style={{ color: '#f97316' }}>Terms of Service</a>.
+              View our <a href="/privacy" style={{ color: '#FF8200' }}>Privacy Policy</a> and 
+              {' '}<a href="/terms" style={{ color: '#FF8200' }}>Terms of Service</a>.
             </label>
           </div>
           

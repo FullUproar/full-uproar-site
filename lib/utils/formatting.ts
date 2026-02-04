@@ -101,7 +101,7 @@ export function getOrderStatusColor(status: string): string {
   const colorMap: Record<string, string> = {
     pending: '#f59e0b',
     processing: '#3b82f6',
-    shipped: '#8b5cf6',
+    shipped: '#7D55C7',
     delivered: '#10b981',
     cancelled: '#ef4444'
   };

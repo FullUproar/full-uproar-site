@@ -73,7 +73,7 @@ export default function AboutPage() {
             </p>
             <p style={{
               fontSize: isMobile ? '1.25rem' : '1.5rem',
-              color: '#fdba74',
+              color: '#FBDB65',
               fontStyle: 'italic',
               fontWeight: 500
             }}>
@@ -154,7 +154,7 @@ export default function AboutPage() {
             </p>
             <p style={{
               fontSize: isMobile ? '1.125rem' : '1.25rem',
-              color: '#fdba74',
+              color: '#FBDB65',
               fontStyle: 'italic'
             }}>
               We're here to flip expectations, not tables (well… usually).
@@ -196,7 +196,7 @@ export default function AboutPage() {
             }}>
               <p style={{
                 fontSize: isMobile ? '1rem' : '1.125rem',
-                color: '#fdba74',
+                color: '#FBDB65',
                 margin: 0
               }}>
                 If you've ever felt the electric buzz after a night of ridiculous fun—that lingering echo we call the{' '}
@@ -268,7 +268,7 @@ export default function AboutPage() {
             </p>
             <p style={{
               fontSize: '1.125rem',
-              color: '#fdba74',
+              color: '#FBDB65',
               fontStyle: 'italic'
             }}>
               He doesn't wear pants. He does wear attitude.
@@ -282,7 +282,7 @@ export default function AboutPage() {
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(to bottom, #111827, #0f172a)',
-      color: '#fde68a'
+      color: '#FBDB65'
     }}>
       <Navigation />
 
@@ -398,7 +398,7 @@ export default function AboutPage() {
 
         {/* CTA */}
         <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-          <p style={{ color: '#fdba74', fontSize: '1rem', marginBottom: '1rem' }}>
+          <p style={{ color: '#FBDB65', fontSize: '1rem', marginBottom: '1rem' }}>
             Ready to experience the Afterroar™?
           </p>
           <a

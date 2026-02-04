@@ -29,7 +29,7 @@ const styles = {
   },
   templateCard: {
     background: 'rgba(30, 41, 59, 0.6)',
-    border: '2px solid rgba(249, 115, 22, 0.2)',
+    border: '2px solid rgba(255, 130, 0, 0.2)',
     borderRadius: '16px',
     padding: '24px',
     textAlign: 'center' as const,
@@ -76,7 +76,7 @@ const styles = {
   },
   modalContent: {
     background: 'linear-gradient(to bottom, #1e293b, #0f172a)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '16px',
     padding: '32px',
     maxWidth: '500px',
@@ -87,7 +87,7 @@ const styles = {
   },
   label: {
     display: 'block',
-    color: '#fdba74',
+    color: '#FBDB65',
     fontWeight: '600',
     marginBottom: '8px',
     fontSize: '14px',
@@ -96,7 +96,7 @@ const styles = {
     width: '100%',
     padding: '12px 16px',
     background: 'rgba(15, 23, 42, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
     color: '#e2e8f0',
     fontSize: '16px',
@@ -107,7 +107,7 @@ const styles = {
     width: '100%',
     padding: '12px 16px',
     background: 'rgba(15, 23, 42, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
     color: '#e2e8f0',
     fontSize: '16px',
@@ -125,9 +125,9 @@ const styles = {
   cancelButton: {
     padding: '12px 24px',
     background: 'transparent',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
-    color: '#fdba74',
+    color: '#FBDB65',
     fontWeight: 'bold',
     cursor: 'pointer',
   },
@@ -242,12 +242,12 @@ export default function NewGamePage() {
           <div
             style={{
               ...styles.templateCard,
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(255, 130, 0, 0.2) 100%)',
               borderColor: 'rgba(139, 92, 246, 0.4)',
             }}
             onClick={() => router.push('/game-kit/builder')}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#8b5cf6';
+              e.currentTarget.style.borderColor = '#7D55C7';
               e.currentTarget.style.transform = 'translateY(-4px)';
               e.currentTarget.style.boxShadow = '0 10px 40px rgba(139, 92, 246, 0.3)';
             }}
@@ -258,15 +258,15 @@ export default function NewGamePage() {
             }}
           >
             <div style={{ ...styles.templateIcon, display: 'flex', justifyContent: 'center', gap: '8px' }}>
-              <Wand2 size={40} style={{ color: '#8b5cf6' }} />
-              <Sparkles size={40} style={{ color: '#f97316' }} />
+              <Wand2 size={40} style={{ color: '#7D55C7' }} />
+              <Sparkles size={40} style={{ color: '#FF8200' }} />
             </div>
             <div style={{ ...styles.templateName, color: '#c4b5fd' }}>Blank Canvas</div>
             <div style={styles.templateDescription}>
               Build any card game from scratch using our visual block editor. Full creative control!
             </div>
             <div style={styles.templateCardTypes}>
-              <span style={{ ...styles.cardTypeBadge, background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', color: '#ffffff' }}>
+              <span style={{ ...styles.cardTypeBadge, background: 'linear-gradient(135deg, #7D55C7 0%, #FF8200 100%)', color: '#ffffff' }}>
                 Advanced
               </span>
             </div>
@@ -278,12 +278,12 @@ export default function NewGamePage() {
               style={styles.templateCard}
               onClick={() => handleTemplateSelect(template)}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#f97316';
+                e.currentTarget.style.borderColor = '#FF8200';
                 e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 10px 40px rgba(249, 115, 22, 0.2)';
+                e.currentTarget.style.boxShadow = '0 10px 40px rgba(255, 130, 0, 0.2)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.2)';
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = 'none';
               }}

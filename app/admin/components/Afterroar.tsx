@@ -13,7 +13,7 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
       icon: <Crown size={32} />,
       title: 'AFTERROAR+ Membership',
       description: 'Monthly subscription with exclusive perks, discounts, and early access to new releases',
-      color: '#f97316',
+      color: '#FF8200',
     },
     {
       icon: <Package size={32} />,
@@ -38,7 +38,7 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
   const tiers = [
     { name: 'Chaos Rookie', icon: <Star size={16} />, color: '#94a3b8' },
     { name: 'Chaos Player', icon: <Zap size={16} />, color: '#3b82f6' },
-    { name: 'Chaos Champion', icon: <Flame size={16} />, color: '#f97316' },
+    { name: 'Chaos Champion', icon: <Flame size={16} />, color: '#FF8200' },
     { name: 'Chaos Master', icon: <Shield size={16} />, color: '#a855f7' },
     { name: 'AFTERROAR+', icon: <Diamond size={16} />, color: '#fbbf24' },
   ];
@@ -54,9 +54,9 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
           width: '100px',
           height: '100px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #f97316, #ea580c)',
+          background: 'linear-gradient(135deg, #FF8200, #ea580c)',
           marginBottom: '1.5rem',
-          boxShadow: '0 20px 60px rgba(249, 115, 22, 0.4)',
+          boxShadow: '0 20px 60px rgba(255, 130, 0, 0.4)',
         }}>
           <Crown size={48} style={{ color: '#fff' }} />
         </div>
@@ -64,7 +64,7 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
         <h1 style={{
           fontSize: '3rem',
           fontWeight: 900,
-          background: 'linear-gradient(135deg, #f97316, #fbbf24)',
+          background: 'linear-gradient(135deg, #FF8200, #fbbf24)',
           backgroundClip: 'text',
           WebkitBackgroundClip: 'text',
           color: 'transparent',
@@ -78,9 +78,9 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
         <div style={{
           display: 'inline-block',
           padding: '0.75rem 2rem',
-          background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(168, 85, 247, 0.2))',
+          background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.2), rgba(168, 85, 247, 0.2))',
           borderRadius: '50px',
-          border: '2px solid rgba(249, 115, 22, 0.3)',
+          border: '2px solid rgba(255, 130, 0, 0.3)',
           marginBottom: '1.5rem',
         }}>
           <span style={{
@@ -172,7 +172,7 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
         <h2 style={{
           fontSize: '1.5rem',
           fontWeight: 'bold',
-          color: '#f97316',
+          color: '#FF8200',
           marginBottom: '1.5rem',
           display: 'flex',
           alignItems: 'center',
@@ -216,15 +216,15 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
       {/* Pricing Teaser */}
       <div style={{
         ...adminStyles.card,
-        background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(168, 85, 247, 0.1))',
-        border: '2px solid rgba(249, 115, 22, 0.3)',
+        background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.1), rgba(168, 85, 247, 0.1))',
+        border: '2px solid rgba(255, 130, 0, 0.3)',
         padding: '2rem',
         textAlign: 'center',
       }}>
         <h3 style={{
           fontSize: '1.25rem',
           fontWeight: 'bold',
-          color: '#fdba74',
+          color: '#FBDB65',
           marginBottom: '1rem',
         }}>
           AFTERROAR+ Membership
@@ -239,7 +239,7 @@ export default function Afterroar({ onNavigate }: { onNavigate: (view: any, labe
           <span style={{
             fontSize: '3rem',
             fontWeight: 900,
-            color: '#f97316',
+            color: '#FF8200',
           }}>
             $6.66
           </span>

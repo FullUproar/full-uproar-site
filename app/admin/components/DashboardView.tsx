@@ -74,7 +74,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       icon: <Gamepad2 size={24} />,
       view: { type: 'games-list' },
       count: stats.totalGames,
-      color: '#f97316',
+      color: '#FF8200',
       description: 'Manage game catalog'
     },
     {
@@ -82,7 +82,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       icon: <ShoppingBag size={24} />,
       view: { type: 'merch-list' },
       count: stats.totalMerch,
-      color: '#8b5cf6',
+      color: '#7D55C7',
       description: 'Manage merch & apparel'
     },
     {
@@ -106,7 +106,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       icon: <Box size={24} />,
       view: { type: 'fulfillment' },
       count: null,
-      color: '#f97316',
+      color: '#FF8200',
       description: 'Pick, pack & ship orders'
     },
     {
@@ -201,7 +201,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       }}>
         <div style={{ 
           display: 'flex', 
-          borderBottom: '2px solid rgba(249, 115, 22, 0.2)' 
+          borderBottom: '2px solid rgba(255, 130, 0, 0.2)' 
         }}>
           {tabs.map((tab) => (
             <button
@@ -211,19 +211,19 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                 padding: '16px 24px',
                 background: 'transparent',
                 border: 'none',
-                color: activeTab === tab.id ? '#fdba74' : '#94a3b8',
+                color: activeTab === tab.id ? '#FBDB65' : '#94a3b8',
                 fontWeight: activeTab === tab.id ? 'bold' : 'normal',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                borderBottom: activeTab === tab.id ? '2px solid #fdba74' : '2px solid transparent',
+                borderBottom: activeTab === tab.id ? '2px solid #FBDB65' : '2px solid transparent',
                 marginBottom: '-2px',
                 transition: 'all 0.2s',
               }}
               onMouseEnter={(e) => {
                 if (activeTab !== tab.id) {
-                  e.currentTarget.style.color = '#fde68a';
+                  e.currentTarget.style.color = '#FBDB65';
                 }
               }}
               onMouseLeave={(e) => {
@@ -279,16 +279,16 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                     <h3 style={{ 
                       fontSize: '28px', 
                       fontWeight: 'bold', 
-                      color: '#fde68a' 
+                      color: '#FBDB65' 
                     }}>
                       {stat.value}
                     </h3>
                   </div>
                   <div style={{
-                    background: 'rgba(249, 115, 22, 0.2)',
+                    background: 'rgba(255, 130, 0, 0.2)',
                     padding: '8px',
                     borderRadius: '8px',
-                    color: '#fdba74',
+                    color: '#FBDB65',
                   }}>
                     {stat.icon}
                   </div>
@@ -317,7 +317,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                   textAlign: 'center' as const,
                   position: 'relative' as const,
                   overflow: 'hidden' as const,
-                  border: '2px solid rgba(249, 115, 22, 0.3)',
+                  border: '2px solid rgba(255, 130, 0, 0.3)',
                   background: 'rgba(30, 41, 59, 0.8)',
                   cursor: 'pointer',
                 };
@@ -330,7 +330,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                   }
                 };
                 const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
-                  e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
                   e.currentTarget.style.boxShadow = 'none';
                   const icon = e.currentTarget.querySelector('.menu-icon');
                   if (icon) {
@@ -351,7 +351,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                   <h3 style={{ 
                     fontSize: '18px', 
                     fontWeight: 'bold', 
-                    color: '#fde68a',
+                    color: '#FBDB65',
                     margin: 0,
                   }}>
                     {item.title}
@@ -441,7 +441,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
               onClick={() => onNavigate({ type: 'inventory' }, 'Inventory')}
               style={adminStyles.outlineButton}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'transparent';
@@ -454,7 +454,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
               onClick={() => onNavigate({ type: 'printify' }, 'Printify Import')}
               style={adminStyles.outlineButton}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'transparent';
@@ -483,7 +483,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
               }}
               style={adminStyles.outlineButton}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
+                e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'transparent';

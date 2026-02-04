@@ -117,7 +117,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     },
     breadcrumb: {
       background: 'rgba(17, 24, 39, 0.9)',
-      borderBottom: '3px solid #f97316',
+      borderBottom: '3px solid #FF8200',
       padding: '12px 0',
       backdropFilter: 'blur(12px)'
     },
@@ -131,7 +131,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       fontSize: '14px'
     },
     breadcrumbLink: {
-      color: '#fde68a',
+      color: '#FBDB65',
       textDecoration: 'none',
       fontWeight: '600',
       transition: 'color 0.2s'
@@ -140,7 +140,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       color: '#666'
     },
     breadcrumbCurrent: {
-      color: '#fde68a',
+      color: '#FBDB65',
       fontWeight: '600'
     },
     mainSection: {
@@ -169,7 +169,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       borderRadius: '12px',
       overflow: 'hidden',
       position: 'relative' as const,
-      border: '3px solid rgba(249, 115, 22, 0.3)'
+      border: '3px solid rgba(255, 130, 0, 0.3)'
     },
     mainImage: {
       width: '100%',
@@ -195,7 +195,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       transform: 'rotate(-3deg)'
     },
     bestsellerBadge: {
-      background: '#f97316',
+      background: '#FF8200',
       color: 'white',
       padding: '6px 16px',
       borderRadius: '20px',
@@ -216,7 +216,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       transition: 'all 0.2s'
     },
     thumbnailActive: {
-      border: '3px solid #f97316'
+      border: '3px solid #FF8200'
     },
     thumbnailImage: {
       width: '100%',
@@ -230,12 +230,12 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     title: {
       fontSize: isMobile ? '24px' : '32px',
       fontWeight: 'bold',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '8px'
     },
     tagline: {
       fontSize: isMobile ? '16px' : '18px',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginBottom: '16px'
     },
     ratingContainer: {
@@ -249,7 +249,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       gap: '2px'
     },
     ratingText: {
-      color: '#fdba74',
+      color: '#FBDB65',
       fontSize: '14px',
       cursor: 'pointer',
       fontWeight: '600'
@@ -263,9 +263,9 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       marginBottom: '24px'
     },
     gameBadge: {
-      background: 'rgba(249, 115, 22, 0.2)',
-      color: '#fdba74',
-      border: '1px solid rgba(249, 115, 22, 0.3)'
+      background: 'rgba(255, 130, 0, 0.2)',
+      color: '#FBDB65',
+      border: '1px solid rgba(255, 130, 0, 0.3)'
     },
     modBadge: {
       background: 'rgba(139, 92, 246, 0.2)',
@@ -291,7 +291,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     price: {
       fontSize: isMobile ? '28px' : '36px',
       fontWeight: 'bold',
-      color: '#f97316'
+      color: '#FF8200'
     },
     originalPrice: {
       fontSize: '20px',
@@ -305,7 +305,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     },
     shipping: {
       fontSize: '14px',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginTop: '8px'
     },
     featuresGrid: {
@@ -321,13 +321,13 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       fontSize: '14px'
     },
     featureIcon: {
-      color: '#f97316'
+      color: '#FF8200'
     },
     featureLabel: {
       color: '#999'
     },
     featureValue: {
-      color: '#fde68a',
+      color: '#FBDB65',
       fontWeight: 'bold'
     },
     description: {
@@ -337,8 +337,8 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       marginBottom: '24px'
     },
     bundleInfo: {
-      background: 'rgba(249, 115, 22, 0.1)',
-      border: '1px solid rgba(249, 115, 22, 0.3)',
+      background: 'rgba(255, 130, 0, 0.1)',
+      border: '1px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '12px',
       padding: '20px',
       marginBottom: '24px'
@@ -346,20 +346,20 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     bundleTitle: {
       fontSize: '18px',
       fontWeight: 'bold',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '12px',
       display: 'flex',
       alignItems: 'center',
       gap: '8px'
     },
     bundleText: {
-      color: '#fde68a',
+      color: '#FBDB65',
       fontSize: '14px'
     },
     // Buy Box Styles
     buyBox: {
       background: '#1f2937',
-      border: '3px solid #f97316',
+      border: '3px solid #FF8200',
       borderRadius: '12px',
       padding: isMobile ? '20px' : '24px',
       position: isMobile ? 'relative' as const : 'sticky' as const,
@@ -370,7 +370,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     buyBoxPrice: {
       fontSize: isMobile ? '28px' : '32px',
       fontWeight: 'bold',
-      color: '#f97316',
+      color: '#FF8200',
       marginBottom: '20px'
     },
     deliveryInfo: {
@@ -399,7 +399,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       color: '#86efac'
     },
     lowStock: {
-      color: '#fdba74'
+      color: '#FBDB65'
     },
     outOfStock: {
       color: '#fca5a5'
@@ -415,7 +415,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     quantitySelector: {
       display: 'flex',
       alignItems: 'center',
-      border: '2px solid rgba(249, 115, 22, 0.3)',
+      border: '2px solid rgba(255, 130, 0, 0.3)',
       borderRadius: '8px',
       width: 'fit-content',
       background: 'rgba(17, 24, 39, 0.5)'
@@ -424,7 +424,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       padding: '8px 12px',
       background: 'transparent',
       border: 'none',
-      color: '#f97316',
+      color: '#FF8200',
       cursor: 'pointer',
       fontSize: '18px',
       transition: 'background 0.2s'
@@ -433,7 +433,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       padding: '8px 24px',
       fontSize: '16px',
       fontWeight: 'bold',
-      color: '#fde68a',
+      color: '#FBDB65',
       borderLeft: '2px solid #444',
       borderRight: '2px solid #444'
     },
@@ -475,7 +475,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
       border: 'none',
       cursor: 'pointer',
       transition: 'all 0.2s',
-      background: '#f97316',
+      background: '#FF8200',
       color: 'white'
     },
     securityInfo: {
@@ -516,7 +516,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     sectionTitle: {
       fontSize: isMobile ? '20px' : '24px',
       fontWeight: 'bold',
-      color: '#fdba74',
+      color: '#FBDB65',
       marginBottom: '24px'
     },
     similarGrid: {
@@ -545,7 +545,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     similarTitle: {
       fontSize: '14px',
       fontWeight: 'bold',
-      color: '#fde68a',
+      color: '#FBDB65',
       marginBottom: '4px',
       display: '-webkit-box',
       WebkitLineClamp: 2,
@@ -555,7 +555,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
     similarPrice: {
       fontSize: '18px',
       fontWeight: 'bold',
-      color: '#f97316'
+      color: '#FF8200'
     }
   };
 
@@ -610,7 +610,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
                       style={{
                         ...styles.thumbnail,
                         ...(selectedImage === index ? styles.thumbnailActive : {}),
-                        border: selectedImage === index ? '3px solid #f97316' : '3px solid transparent'
+                        border: selectedImage === index ? '3px solid #FF8200' : '3px solid transparent'
                       }}
                     >
                       <img
@@ -634,7 +634,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
               <div style={styles.ratingContainer}>
                 <div style={styles.stars}>
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} style={{ width: '18px', height: '18px', fill: '#f97316', color: '#f97316' }} />
+                    <Star key={i} style={{ width: '18px', height: '18px', fill: '#FF8200', color: '#FF8200' }} />
                   ))}
                 </div>
                 <span style={styles.ratingText}>4.8 out of 5 | 234 ratings</span>
@@ -691,7 +691,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
               </div>
 
               <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#fdba74', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#FBDB65', marginBottom: '12px' }}>
                   About This Game
                 </h3>
                 <p style={styles.description}>{game.description}</p>
@@ -831,11 +831,11 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
                 </div>
                 <div style={{ marginTop: '12px' }}>
                   <p style={{ color: '#e5e5e5', marginBottom: '4px' }}>Ships from</p>
-                  <p style={{ color: '#fdba74', fontWeight: 'bold' }}>Full Uproar Games</p>
+                  <p style={{ color: '#FBDB65', fontWeight: 'bold' }}>Full Uproar Games</p>
                 </div>
                 <div style={{ marginTop: '12px' }}>
                   <p style={{ color: '#e5e5e5', marginBottom: '4px' }}>Sold by</p>
-                  <p style={{ color: '#fdba74', fontWeight: 'bold' }}>Full Uproar Games</p>
+                  <p style={{ color: '#FBDB65', fontWeight: 'bold' }}>Full Uproar Games</p>
                 </div>
               </div>
 
@@ -868,7 +868,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
                   style={styles.similarCard}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.borderColor = '#f97316';
+                    e.currentTarget.style.borderColor = '#FF8200';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
@@ -884,7 +884,7 @@ export default function GameProductClean({ game, similarGames }: GameProductClea
                     <h3 style={styles.similarTitle}>{similarGame.title}</h3>
                     <div style={{ display: 'flex', gap: '2px', marginBottom: '4px' }}>
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} style={{ width: '12px', height: '12px', fill: '#f97316', color: '#f97316' }} />
+                        <Star key={i} style={{ width: '12px', height: '12px', fill: '#FF8200', color: '#FF8200' }} />
                       ))}
                     </div>
                     <p style={styles.similarPrice}>${(similarGame.priceCents / 100).toFixed(2)}</p>

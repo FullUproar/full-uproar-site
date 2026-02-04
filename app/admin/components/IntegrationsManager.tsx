@@ -175,14 +175,14 @@ export default function IntegrationsManager() {
 
   return (
     <div>
-      <h1 style={{ color: '#fdba74', fontSize: '28px', fontWeight: 'bold', marginBottom: '24px' }}>
+      <h1 style={{ color: '#FBDB65', fontSize: '28px', fontWeight: 'bold', marginBottom: '24px' }}>
         🔌 Integration Settings
       </h1>
 
       {/* Stripe Integration */}
       <div style={adminStyles.section}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ color: '#fdba74', fontSize: '20px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h2 style={{ color: '#FBDB65', fontSize: '20px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <CreditCard size={24} />
             Stripe Payment Processing
           </h2>
@@ -235,7 +235,7 @@ export default function IntegrationsManager() {
                 ⚠️ Stripe keys must be added to environment variables
               </p>
               <p style={{ color: '#94a3b8', margin: '8px 0', fontSize: '14px' }}>
-                Add these to your <code style={{ color: '#fdba74' }}>.env.local</code> file locally or Vercel dashboard:
+                Add these to your <code style={{ color: '#FBDB65' }}>.env.local</code> file locally or Vercel dashboard:
               </p>
               <div style={{
                 background: 'rgba(0, 0, 0, 0.5)',
@@ -283,15 +283,15 @@ export default function IntegrationsManager() {
         </div>
 
         {/* Quick Links */}
-        <div style={{ borderTop: '1px solid rgba(249, 115, 22, 0.2)', paddingTop: '16px' }}>
+        <div style={{ borderTop: '1px solid rgba(255, 130, 0, 0.2)', paddingTop: '16px' }}>
           <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '8px' }}>Quick Links:</p>
           <div style={{ display: 'flex', gap: '16px' }}>
             <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" 
-               style={{ color: '#fdba74', fontSize: '14px' }}>
+               style={{ color: '#FBDB65', fontSize: '14px' }}>
               Stripe Dashboard →
             </a>
             <a href="/test-stripe" target="_blank" 
-               style={{ color: '#fdba74', fontSize: '14px' }}>
+               style={{ color: '#FBDB65', fontSize: '14px' }}>
               Test Payment Page →
             </a>
           </div>
@@ -301,7 +301,7 @@ export default function IntegrationsManager() {
       {/* Printify Integration */}
       <div style={adminStyles.section}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ color: '#fdba74', fontSize: '20px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h2 style={{ color: '#FBDB65', fontSize: '20px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Package size={24} />
             Printify POD Integration
           </h2>
@@ -394,15 +394,15 @@ export default function IntegrationsManager() {
         </div>
 
         {/* Quick Links */}
-        <div style={{ borderTop: '1px solid rgba(249, 115, 22, 0.2)', paddingTop: '16px' }}>
+        <div style={{ borderTop: '1px solid rgba(255, 130, 0, 0.2)', paddingTop: '16px' }}>
           <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '8px' }}>Quick Links:</p>
           <div style={{ display: 'flex', gap: '16px' }}>
             <a href="https://printify.com" target="_blank" rel="noopener noreferrer" 
-               style={{ color: '#fdba74', fontSize: '14px' }}>
+               style={{ color: '#FBDB65', fontSize: '14px' }}>
               Printify Dashboard →
             </a>
             <a href="/admin/merch" target="_blank" 
-               style={{ color: '#fdba74', fontSize: '14px' }}>
+               style={{ color: '#FBDB65', fontSize: '14px' }}>
               Manage Merchandise →
             </a>
           </div>

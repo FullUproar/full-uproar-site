@@ -19,7 +19,7 @@ const styles = {
   },
   header: {
     background: 'rgba(30, 41, 59, 0.9)',
-    borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+    borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
     padding: '12px 24px',
     display: 'flex',
     justifyContent: 'space-between',
@@ -33,11 +33,11 @@ const styles = {
   logo: {
     fontSize: '20px',
     fontWeight: 'bold' as const,
-    color: '#f97316',
+    color: '#FF8200',
   },
   phaseIndicator: {
-    background: 'rgba(249, 115, 22, 0.2)',
-    color: '#fdba74',
+    background: 'rgba(255, 130, 0, 0.2)',
+    color: '#FBDB65',
     padding: '6px 12px',
     borderRadius: '6px',
     fontSize: '12px',
@@ -88,7 +88,7 @@ const styles = {
   sidebarTitle: {
     fontSize: '14px',
     fontWeight: '600' as const,
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '12px',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px',
@@ -104,8 +104,8 @@ const styles = {
     background: 'rgba(15, 23, 42, 0.5)',
   },
   playerRowActive: {
-    background: 'rgba(249, 115, 22, 0.1)',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
   },
   playerAvatar: {
     width: '32px',
@@ -120,7 +120,7 @@ const styles = {
     color: '#fff',
   },
   playerAvatarJudge: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
   },
   playerInfo: {
@@ -150,8 +150,8 @@ const styles = {
     color: '#eab308',
   },
   statusJudge: {
-    background: 'rgba(249, 115, 22, 0.2)',
-    color: '#f97316',
+    background: 'rgba(255, 130, 0, 0.2)',
+    color: '#FF8200',
   },
   // Submissions area
   submissionsArea: {
@@ -172,7 +172,7 @@ const styles = {
     alignItems: 'center',
   },
   winnerLabel: {
-    background: '#f97316',
+    background: '#FF8200',
     color: '#000',
     padding: '4px 12px',
     borderRadius: '4px',
@@ -183,7 +183,7 @@ const styles = {
   // Phase messages
   phaseMessage: {
     fontSize: '18px',
-    color: '#fdba74',
+    color: '#FBDB65',
     textAlign: 'center' as const,
     marginBottom: '16px',
   },
@@ -417,7 +417,7 @@ export function GameBoard({
                 <button
                   style={{
                     padding: '12px 24px',
-                    background: '#f97316',
+                    background: '#FF8200',
                     color: '#000',
                     border: 'none',
                     borderRadius: '8px',

@@ -21,7 +21,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '12px 16px',
-    borderBottom: '1px solid rgba(249, 115, 22, 0.1)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.1)',
     background: 'rgba(30, 41, 59, 0.4)',
   },
   toolbarLeft: {
@@ -35,15 +35,15 @@ const styles = {
     gap: '8px',
     fontSize: '14px',
     fontWeight: '600',
-    color: '#fdba74',
+    color: '#FBDB65',
   },
   badge: {
     fontSize: '10px',
     fontWeight: '600',
     padding: '2px 6px',
     borderRadius: '4px',
-    background: 'rgba(249, 115, 22, 0.2)',
-    color: '#f97316',
+    background: 'rgba(255, 130, 0, 0.2)',
+    color: '#FF8200',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
   },
@@ -58,9 +58,9 @@ const styles = {
     gap: '6px',
     padding: '8px 12px',
     borderRadius: '6px',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
-    background: 'rgba(249, 115, 22, 0.1)',
-    color: '#fdba74',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    color: '#FBDB65',
     fontSize: '13px',
     fontWeight: '500',
     cursor: 'pointer',
@@ -140,12 +140,12 @@ export default function CodeViewPanel({ code, gameName, onClose }: CodeViewPanel
             style={styles.button}
             onClick={handleCopy}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
-              e.currentTarget.style.borderColor = '#f97316';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)';
+              e.currentTarget.style.borderColor = '#FF8200';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-              e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
+              e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
             }}
           >
             {copied ? (
@@ -165,12 +165,12 @@ export default function CodeViewPanel({ code, gameName, onClose }: CodeViewPanel
             style={styles.button}
             onClick={handleDownload}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
-              e.currentTarget.style.borderColor = '#f97316';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.2)';
+              e.currentTarget.style.borderColor = '#FF8200';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-              e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
+              e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
             }}
           >
             <Download size={14} />

@@ -103,7 +103,7 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
       title: "Total Orders",
       value: metrics.orders?.count || 0,
       icon: <ShoppingCart size={24} />,
-      color: "#8b5cf6",
+      color: "#7D55C7",
     },
     {
       title: "Avg Order Value",
@@ -324,7 +324,7 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
               onClick={() => onNavigate({ type: 'campaigns-new' }, 'New Campaign')}
               style={{
                 ...adminStyles.button,
-                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -425,7 +425,7 @@ export default function PowerDashboard({ onNavigate }: { onNavigate: (view: any,
             alignItems: 'center',
             gap: '0.5rem'
           }}>
-            <Sparkles size={20} style={{ color: '#8b5cf6' }} />
+            <Sparkles size={20} style={{ color: '#7D55C7' }} />
             AI-Powered Insights
           </h3>
 

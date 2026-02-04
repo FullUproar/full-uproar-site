@@ -43,28 +43,28 @@ export default function Tooltip({ text, children, position = 'top' }: TooltipPro
       top: '100%',
       left: '50%',
       transform: 'translateX(-50%)',
-      borderColor: 'rgba(249, 115, 22, 0.95) transparent transparent transparent',
+      borderColor: 'rgba(255, 130, 0, 0.95) transparent transparent transparent',
       borderWidth: '6px 6px 0 6px'
     },
     bottom: {
       bottom: '100%',
       left: '50%',
       transform: 'translateX(-50%)',
-      borderColor: 'transparent transparent rgba(249, 115, 22, 0.95) transparent',
+      borderColor: 'transparent transparent rgba(255, 130, 0, 0.95) transparent',
       borderWidth: '0 6px 6px 6px'
     },
     left: {
       left: '100%',
       top: '50%',
       transform: 'translateY(-50%)',
-      borderColor: 'transparent transparent transparent rgba(249, 115, 22, 0.95)',
+      borderColor: 'transparent transparent transparent rgba(255, 130, 0, 0.95)',
       borderWidth: '6px 0 6px 6px'
     },
     right: {
       right: '100%',
       top: '50%',
       transform: 'translateY(-50%)',
-      borderColor: 'transparent rgba(249, 115, 22, 0.95) transparent transparent',
+      borderColor: 'transparent rgba(255, 130, 0, 0.95) transparent transparent',
       borderWidth: '6px 6px 6px 0'
     }
   };
@@ -72,7 +72,7 @@ export default function Tooltip({ text, children, position = 'top' }: TooltipPro
   const tooltipStyle: React.CSSProperties = {
     position: 'absolute',
     ...positionStyles[position],
-    background: 'rgba(249, 115, 22, 0.95)',
+    background: 'rgba(255, 130, 0, 0.95)',
     color: 'white',
     padding: '8px 12px',
     borderRadius: '8px',

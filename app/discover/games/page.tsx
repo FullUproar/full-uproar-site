@@ -11,7 +11,7 @@ const gameSeries = [
     name: "Fugly's Mayhem Machine",
     tagline: '4 Game Mods. Infinite Chaos.',
     description: 'Transform any game you own into pure mayhem with our collection of universal game mods. Each mod works with ANY game - board games, card games, video games, even sports!',
-    color: '#f97316',
+    color: '#FF8200',
     icon: '⚡',
     gameCount: 4,
     featured: true,
@@ -34,7 +34,7 @@ export default function DiscoverGamesPage() {
           fontSize: '0.875rem',
           color: '#94a3b8'
         }}>
-          <Link href="/discover" style={{ color: '#f97316', textDecoration: 'none' }}>
+          <Link href="/discover" style={{ color: '#FF8200', textDecoration: 'none' }}>
             Discover
           </Link>
           <span>/</span>
@@ -46,12 +46,12 @@ export default function DiscoverGamesPage() {
           <h1 style={{
             fontSize: 'clamp(2.5rem, 6vw, 4rem)',
             fontWeight: 900,
-            color: '#f97316',
+            color: '#FF8200',
             marginBottom: '1rem'
           }}>
             Our Games
           </h1>
-          <p style={{ fontSize: '1.25rem', color: '#fdba74', maxWidth: '600px', margin: '0 auto' }}>
+          <p style={{ fontSize: '1.25rem', color: '#FBDB65', maxWidth: '600px', margin: '0 auto' }}>
             Explore our game series, learn how they work, and find the perfect chaos for your game nights.
           </p>
         </div>
@@ -173,15 +173,15 @@ export default function DiscoverGamesPage() {
         <div style={{
           marginTop: '3rem',
           padding: '2rem',
-          background: 'rgba(249, 115, 22, 0.1)',
+          background: 'rgba(255, 130, 0, 0.1)',
           borderRadius: '1rem',
-          border: '2px dashed #f97316',
+          border: '2px dashed #FF8200',
           textAlign: 'center'
         }}>
-          <h3 style={{ color: '#f97316', marginBottom: '0.5rem' }}>
+          <h3 style={{ color: '#FF8200', marginBottom: '0.5rem' }}>
             More Series Coming Soon
           </h3>
-          <p style={{ color: '#fdba74' }}>
+          <p style={{ color: '#FBDB65' }}>
             We're always cooking up new ways to bring chaos to your game nights.
           </p>
         </div>

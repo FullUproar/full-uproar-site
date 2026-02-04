@@ -257,7 +257,7 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
             onClick={() => setShowPrintifyBrowser(true)}
             style={{
               ...adminStyles.button,
-              background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+              background: 'linear-gradient(135deg, #7D55C7 0%, #7c3aed 100%)',
             }}
           >
             <Package2 size={16} style={{ marginRight: '4px' }} />
@@ -451,7 +451,7 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
                     onClick={() => removeSize(size)}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                   >
-                    <X size={14} style={{ color: '#fdba74' }} />
+                    <X size={14} style={{ color: '#FBDB65' }} />
                   </button>
                 </div>
               ))}
@@ -494,7 +494,7 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
                     onClick={() => removeColor(color)}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                   >
-                    <X size={14} style={{ color: '#fdba74' }} />
+                    <X size={14} style={{ color: '#FBDB65' }} />
                   </button>
                 </div>
               ))}
@@ -594,7 +594,7 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
                     onClick={() => removeTag(tag)}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                   >
-                    <X size={14} style={{ color: '#fdba74' }} />
+                    <X size={14} style={{ color: '#FBDB65' }} />
                   </button>
                 </div>
               ))}
@@ -755,7 +755,7 @@ function PrintifyProductBrowser({ onClose, onSelectProduct }: {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        border: '2px solid rgba(249, 115, 22, 0.3)',
+        border: '2px solid rgba(255, 130, 0, 0.3)',
       }}>
         <div style={{
           display: 'flex',
@@ -763,7 +763,7 @@ function PrintifyProductBrowser({ onClose, onSelectProduct }: {
           alignItems: 'center',
           marginBottom: '24px',
         }}>
-          <h2 style={{ color: '#fdba74', fontSize: '24px', margin: 0 }}>
+          <h2 style={{ color: '#FBDB65', fontSize: '24px', margin: 0 }}>
             Import from Printify
           </h2>
           <button
@@ -818,16 +818,16 @@ function PrintifyProductBrowser({ onClose, onSelectProduct }: {
                     background: 'rgba(17, 24, 39, 0.5)',
                     borderRadius: '8px',
                     padding: '16px',
-                    border: '2px solid rgba(249, 115, 22, 0.2)',
+                    border: '2px solid rgba(255, 130, 0, 0.2)',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.2)';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -845,7 +845,7 @@ function PrintifyProductBrowser({ onClose, onSelectProduct }: {
                     />
                   )}
                   <h4 style={{
-                    color: '#fde68a',
+                    color: '#FBDB65',
                     fontSize: '14px',
                     margin: '0 0 8px 0',
                     overflow: 'hidden',

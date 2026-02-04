@@ -95,7 +95,7 @@ export default function ShipStationSetupPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
-            color: '#fdba74',
+            color: '#FBDB65',
             textDecoration: 'none',
             marginBottom: '1rem',
           }}
@@ -147,7 +147,7 @@ export default function ShipStationSetupPage() {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem' }}>
-          <RefreshCw size={32} style={{ color: '#f97316', animation: 'spin 1s linear infinite' }} />
+          <RefreshCw size={32} style={{ color: '#FF8200', animation: 'spin 1s linear infinite' }} />
           <p style={{ color: '#9ca3af', marginTop: '1rem' }}>Checking ShipStation status...</p>
         </div>
       ) : status ? (
@@ -187,11 +187,11 @@ export default function ShipStationSetupPage() {
               {!status.configured && status.envVarsNeeded && (
                 <div style={{
                   padding: '1rem',
-                  background: 'rgba(249, 115, 22, 0.1)',
+                  background: 'rgba(255, 130, 0, 0.1)',
                   borderRadius: '0.5rem',
-                  border: '1px solid rgba(249, 115, 22, 0.3)',
+                  border: '1px solid rgba(255, 130, 0, 0.3)',
                 }}>
-                  <p style={{ color: '#fdba74', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  <p style={{ color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     Required Environment Variables:
                   </p>
                   <code style={{
@@ -199,7 +199,7 @@ export default function ShipStationSetupPage() {
                     padding: '0.75rem',
                     background: '#1f2937',
                     borderRadius: '0.25rem',
-                    color: '#fde68a',
+                    color: '#FBDB65',
                     fontSize: '0.875rem',
                   }}>
                     {status.envVarsNeeded.join('\n')}
@@ -210,7 +210,7 @@ export default function ShipStationSetupPage() {
                       href="https://ss.shipstation.com/#/settings/api"
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ color: '#f97316' }}
+                      style={{ color: '#FF8200' }}
                     >
                       ShipStation Settings → API
                     </a>
@@ -225,11 +225,11 @@ export default function ShipStationSetupPage() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '1rem',
-                  background: status.webhookRegistered ? 'rgba(16, 185, 129, 0.1)' : 'rgba(249, 115, 22, 0.1)',
+                  background: status.webhookRegistered ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 130, 0, 0.1)',
                   borderRadius: '0.5rem',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Webhook size={24} style={{ color: status.webhookRegistered ? '#10b981' : '#f97316' }} />
+                    <Webhook size={24} style={{ color: status.webhookRegistered ? '#10b981' : '#FF8200' }} />
                     <div>
                       <p style={{ color: '#fff', fontWeight: 'bold' }}>Shipping Webhook</p>
                       <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>
@@ -244,7 +244,7 @@ export default function ShipStationSetupPage() {
                     disabled={actionLoading}
                     style={{
                       ...adminStyles.button,
-                      background: status.webhookRegistered ? '#ef4444' : '#f97316',
+                      background: status.webhookRegistered ? '#ef4444' : '#FF8200',
                       opacity: actionLoading ? 0.6 : 1,
                     }}
                   >
@@ -298,7 +298,7 @@ export default function ShipStationSetupPage() {
                       padding: '1rem',
                       background: '#1f2937',
                       borderRadius: '0.5rem',
-                      border: carrier.primary ? '2px solid #f97316' : '1px solid #374151',
+                      border: carrier.primary ? '2px solid #FF8200' : '1px solid #374151',
                     }}
                   >
                     <p style={{ color: '#fff', fontWeight: 'bold' }}>{carrier.name}</p>
@@ -308,8 +308,8 @@ export default function ShipStationSetupPage() {
                         display: 'inline-block',
                         marginTop: '0.5rem',
                         padding: '0.25rem 0.5rem',
-                        background: 'rgba(249, 115, 22, 0.2)',
-                        color: '#f97316',
+                        background: 'rgba(255, 130, 0, 0.2)',
+                        color: '#FF8200',
                         borderRadius: '0.25rem',
                         fontSize: '0.75rem',
                       }}>

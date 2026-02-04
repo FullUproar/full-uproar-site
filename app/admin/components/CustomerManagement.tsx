@@ -169,11 +169,11 @@ function CustomerDetail({ customer, onClose, onUpdate }: CustomerDetailProps) {
               padding: '1rem 1.5rem',
               background: activeTab === tab ? '#1e293b' : 'transparent',
               border: 'none',
-              color: activeTab === tab ? '#f97316' : '#94a3b8',
+              color: activeTab === tab ? '#FF8200' : '#94a3b8',
               fontWeight: activeTab === tab ? 'bold' : 'normal',
               textTransform: 'capitalize',
               cursor: 'pointer',
-              borderBottom: activeTab === tab ? '2px solid #f97316' : 'none'
+              borderBottom: activeTab === tab ? '2px solid #FF8200' : 'none'
             }}
           >
             {tab}
@@ -190,7 +190,7 @@ function CustomerDetail({ customer, onClose, onUpdate }: CustomerDetailProps) {
               <div style={{
                 display: 'inline-block',
                 padding: '0.5rem 1rem',
-                background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                background: 'linear-gradient(135deg, #7D55C7 0%, #6366f1 100%)',
                 borderRadius: '50px',
                 fontWeight: 'bold'
               }}>
@@ -398,7 +398,7 @@ export default function CustomerManagement({ onNavigate }: { onNavigate: (view: 
     switch(segment) {
       case 'Champions': return '#10b981';
       case 'Loyal': return '#3b82f6';
-      case 'Potential': return '#8b5cf6';
+      case 'Potential': return '#7D55C7';
       case 'New': return '#f59e0b';
       case 'At Risk': return '#ef4444';
       default: return '#94a3b8';

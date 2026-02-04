@@ -53,7 +53,7 @@ export default function ConfirmationModal({
         <div
           style={{
             background: 'rgba(30, 41, 59, 0.95)',
-            border: '2px solid rgba(249, 115, 22, 0.3)',
+            border: '2px solid rgba(255, 130, 0, 0.3)',
             borderRadius: '12px',
             padding: '32px',
             maxWidth: '480px',
@@ -79,8 +79,8 @@ export default function ConfirmationModal({
               transition: 'all 0.2s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(249, 115, 22, 0.1)';
-              e.currentTarget.style.color = '#fdba74';
+              e.currentTarget.style.background = 'rgba(255, 130, 0, 0.1)';
+              e.currentTarget.style.color = '#FBDB65';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent';
@@ -116,7 +116,7 @@ export default function ConfirmationModal({
           <h2 style={{
             fontSize: '24px',
             fontWeight: 'bold',
-            color: isDestructive ? '#ef4444' : '#fdba74',
+            color: isDestructive ? '#ef4444' : '#FBDB65',
             marginBottom: '16px',
             textAlign: 'center'
           }}>
@@ -157,7 +157,7 @@ export default function ConfirmationModal({
               disabled={loading}
               style={{
                 ...adminStyles.button,
-                background: isDestructive ? '#ef4444' : '#f97316',
+                background: isDestructive ? '#ef4444' : '#FF8200',
                 padding: '12px 24px',
                 minWidth: '120px',
                 opacity: loading ? 0.7 : 1,

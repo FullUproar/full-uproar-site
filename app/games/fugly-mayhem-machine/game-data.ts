@@ -40,7 +40,7 @@ export const FMM_SERIES = {
   name: "Fugly's Mayhem Machine",
   tagline: "4 Game Mods. Infinite Chaos.",
   description: "Transform any game you own into pure mayhem with our collection of universal game mods. Each mod works with ANY game - board games, card games, video games, even sports!",
-  color: '#f97316',
+  color: '#FF8200',
 };
 
 export const FMM_GAMES: FMMGame[] = [
@@ -166,7 +166,7 @@ export const FMM_GAMES: FMMGame[] = [
     name: 'Crime And Funishment',
     tagline: 'Break the rules. Face the consequences.',
     description: 'A punishment system that turns every rule violation into a hilarious penalty. Forgot to say "Uno"? That\'s 10 jumping jacks. Peeked at someone\'s cards? Compliment each player sincerely.',
-    color: '#8b5cf6',
+    color: '#7D55C7',
     icon: '⚖️',
     playerCount: '2-8 players',
     playTime: '+5-15 min to any game',
