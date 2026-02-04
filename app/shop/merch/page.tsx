@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import { Shirt, Tag, Filter, Package } from 'lucide-react';
+import { LoadingSection, SkeletonGrid } from '@/app/components/ui';
+import EmptyState from '@/app/components/ui/EmptyState';
 
 interface MerchItem {
   id: number;
@@ -123,27 +125,15 @@ export default function ShopMerchPage() {
 
         {/* Merch Grid */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <div style={{ fontSize: '1.5rem', color: '#a855f7' }}>Loading swag...</div>
-          </div>
+          <SkeletonGrid count={4} columns={4} />
         ) : merch.length === 0 ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '4rem',
-            background: 'rgba(168, 85, 247, 0.1)',
-            borderRadius: '1rem',
-            border: '3px dashed #a855f7'
-          }}>
-            <Shirt style={{ width: '3rem', height: '3rem', color: '#a855f7', margin: '0 auto 1rem' }} />
-            <p style={{ fontSize: '1.5rem', color: '#a855f7', fontWeight: 'bold' }}>
-              {filter === 'all' ? 'No swag yet!' : `No ${filter} swag yet!`}
-            </p>
-            <p style={{ fontSize: '1rem', color: '#c4b5fd', marginTop: '0.5rem' }}>
-              {filter === 'all'
-                ? "Fugly is still designing chaos-inducing apparel..."
-                : `Fugly is working on some ${filter.toLowerCase()} chaos...`}
-            </p>
-          </div>
+          <EmptyState
+            variant="products"
+            title={filter === 'all' ? 'No swag yet!' : `No ${filter} yet!`}
+            message="Fugly is still designing chaos-inducing apparel. Check back soon!"
+            actionLabel="Browse Games"
+            actionHref="/shop/games"
+          />
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             {merch.map((item, index) => (
