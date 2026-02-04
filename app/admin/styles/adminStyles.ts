@@ -1,3 +1,15 @@
+/**
+ * Admin Panel Styles
+ *
+ * Centralized styles for the admin dashboard.
+ * Uses brand colors from @/lib/colors for consistency.
+ *
+ * Color reference:
+ * - Primary Orange: #FF8200 (Pantone 151 C)
+ * - Cream Yellow: #FBDB65 (Pantone 120 C) - for titles/headings
+ * - rgba(255, 130, 0, alpha) - for transparent orange
+ */
+
 export const adminStyles = {
   container: {
     minHeight: '100vh',
@@ -14,7 +26,7 @@ export const adminStyles = {
   title: {
     fontSize: '36px',
     fontWeight: '900',
-    color: '#fdba74',
+    color: '#FBDB65', // Pantone 120 C - Cream Yellow
     marginBottom: '8px',
   },
   subtitle: {
@@ -25,11 +37,11 @@ export const adminStyles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '8px',
-    color: '#fdba74',
+    color: '#FBDB65',
     textDecoration: 'none',
     marginBottom: '20px',
     padding: '8px 16px',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
     transition: 'all 0.2s',
     background: 'transparent',
@@ -37,7 +49,7 @@ export const adminStyles = {
   },
   section: {
     background: 'rgba(30, 41, 59, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '12px',
     padding: '32px',
     backdropFilter: 'blur(10px)',
@@ -46,7 +58,7 @@ export const adminStyles = {
   sectionTitle: {
     fontSize: '20px',
     fontWeight: 'bold',
-    color: '#fdba74',
+    color: '#FBDB65',
     marginBottom: '20px',
   },
   grid: {
@@ -61,29 +73,29 @@ export const adminStyles = {
   tableContainer: {
     overflowX: 'auto' as const,
     borderRadius: '8px',
-    border: '1px solid rgba(249, 115, 22, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.2)',
     position: 'relative' as const,
   },
   tableHeader: {
     padding: '16px',
     textAlign: 'left' as const,
     fontWeight: '600',
-    color: '#fdba74',
+    color: '#FBDB65',
     fontSize: '14px',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
-    background: 'rgba(249, 115, 22, 0.1)',
-    borderBottom: '2px solid rgba(249, 115, 22, 0.3)',
+    background: 'rgba(255, 130, 0, 0.1)',
+    borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
   },
   tableHeaderCell: {
     padding: '12px',
     textAlign: 'left' as const,
     fontWeight: '600',
-    color: '#fdba74',
+    color: '#FBDB65',
     fontSize: '14px',
   },
   tableRow: {
-    borderBottom: '1px solid rgba(249, 115, 22, 0.2)',
+    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
     transition: 'background 0.2s',
   },
   tableCell: {
@@ -93,7 +105,7 @@ export const adminStyles = {
   },
   button: {
     padding: '8px 16px',
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: 'white',
     border: 'none',
     borderRadius: '8px',
@@ -104,7 +116,7 @@ export const adminStyles = {
   },
   primaryButton: {
     padding: '10px 20px',
-    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
     color: 'white',
     border: 'none',
     borderRadius: '8px',
@@ -116,8 +128,8 @@ export const adminStyles = {
   secondaryButton: {
     padding: '8px 16px',
     background: 'rgba(30, 41, 59, 0.8)',
-    color: '#fdba74',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    color: '#FBDB65',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
     fontWeight: 'bold',
     cursor: 'pointer',
@@ -127,8 +139,8 @@ export const adminStyles = {
   outlineButton: {
     padding: '8px 16px',
     background: 'transparent',
-    color: '#fdba74',
-    border: '2px solid rgba(249, 115, 22, 0.5)',
+    color: '#FBDB65',
+    border: '2px solid rgba(255, 130, 0, 0.5)',
     borderRadius: '8px',
     fontWeight: 'bold',
     cursor: 'pointer',
@@ -149,7 +161,7 @@ export const adminStyles = {
   input: {
     padding: '12px',
     borderRadius: '8px',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     background: 'rgba(17, 24, 39, 0.8)',
     color: '#f3f4f6',
     fontSize: '16px',
@@ -171,7 +183,7 @@ export const adminStyles = {
   },
   card: {
     background: 'rgba(30, 41, 59, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '12px',
     padding: '24px',
     backdropFilter: 'blur(10px)',
@@ -179,11 +191,11 @@ export const adminStyles = {
   },
   badge: {
     padding: '4px 12px',
-    background: 'rgba(249, 115, 22, 0.2)',
-    border: '1px solid rgba(249, 115, 22, 0.5)',
+    background: 'rgba(255, 130, 0, 0.2)',
+    border: '1px solid rgba(255, 130, 0, 0.5)',
     borderRadius: '16px',
     fontSize: '12px',
-    color: '#fde68a',
+    color: '#FBDB65',
     fontWeight: '600',
   },
   formGroup: {
@@ -198,7 +210,7 @@ export const adminStyles = {
   textarea: {
     padding: '12px',
     borderRadius: '8px',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     background: 'rgba(17, 24, 39, 0.8)',
     color: '#f3f4f6',
     fontSize: '16px',
@@ -211,7 +223,7 @@ export const adminStyles = {
   select: {
     padding: '12px',
     borderRadius: '8px',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     background: 'rgba(17, 24, 39, 0.8)',
     color: '#f3f4f6',
     fontSize: '16px',
@@ -236,9 +248,9 @@ export const adminStyles = {
   iconButton: {
     padding: '8px',
     background: 'transparent',
-    border: '1px solid rgba(249, 115, 22, 0.3)',
+    border: '1px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '6px',
-    color: '#fdba74',
+    color: '#FBDB65',
     cursor: 'pointer',
     transition: 'all 0.2s',
     display: 'inline-flex',
@@ -251,7 +263,7 @@ export const adminStyles = {
     gap: '12px',
     padding: '12px 16px',
     background: 'rgba(17, 24, 39, 0.8)',
-    border: '2px solid rgba(249, 115, 22, 0.3)',
+    border: '2px solid rgba(255, 130, 0, 0.3)',
     borderRadius: '8px',
   },
   searchInput: {
@@ -262,7 +274,7 @@ export const adminStyles = {
     fontSize: '16px',
     outline: 'none',
   },
-  // Hover effects
+  // Hover effects - use brand orange rgba(255, 130, 0, alpha)
   hoverEffects: {
     button: {
       onMouseEnter: (e: any) => e.currentTarget.style.transform = 'scale(1.05)',
@@ -270,16 +282,16 @@ export const adminStyles = {
     },
     card: {
       onMouseEnter: (e: any) => {
-        e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.5)';
-        e.currentTarget.style.boxShadow = '0 4px 20px rgba(249, 115, 22, 0.2)';
+        e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
+        e.currentTarget.style.boxShadow = '0 4px 20px rgba(255, 130, 0, 0.2)';
       },
       onMouseLeave: (e: any) => {
-        e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.3)';
+        e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
         e.currentTarget.style.boxShadow = 'none';
       },
     },
     row: {
-      onMouseEnter: (e: any) => e.currentTarget.style.background = 'rgba(249, 115, 22, 0.05)',
+      onMouseEnter: (e: any) => e.currentTarget.style.background = 'rgba(255, 130, 0, 0.05)',
       onMouseLeave: (e: any) => e.currentTarget.style.background = 'transparent',
     },
   },
