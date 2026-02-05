@@ -628,15 +628,16 @@ export default function PackagingConfigPage() {
                       {pkg.name}
                     </div>
 
-                    {/* Barcode image using barcodeapi.org */}
+                    {/* Barcode image using barcode.tec-it.com (more reliable) */}
                     <img
-                      src={`https://barcodeapi.org/api/128/${upc}`}
+                      src={`https://barcode.tec-it.com/barcode.ashx?data=${upc}&code=Code128&dpi=96&dataseparator=`}
                       alt={`Barcode for ${pkg.sku}`}
                       style={{
                         width: '100%',
-                        maxWidth: '200px',
-                        height: 'auto',
+                        maxWidth: '220px',
+                        height: '60px',
                         marginBottom: '8px',
+                        objectFit: 'contain',
                       }}
                     />
 
