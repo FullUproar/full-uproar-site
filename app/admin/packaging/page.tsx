@@ -97,6 +97,8 @@ export default function PackagingConfigPage() {
   const [error, setError] = useState<string | null>(null);
   const [copiedUPC, setCopiedUPC] = useState<string | null>(null);
   const [showPrintView, setShowPrintView] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [loadedCount, setLoadedCount] = useState(0);
 
   const fetchPackagingTypes = async () => {
     try {
@@ -189,12 +191,25 @@ export default function PackagingConfigPage() {
     setTimeout(() => setCopiedUPC(null), 2000);
   };
 
+  // Track image loading
+  const activePackaging = packagingTypes.filter(p => p.isActive);
+  const totalImages = activePackaging.length;
+
   const printBarcodes = () => {
     setShowPrintView(true);
-    // Wait for render, then print
-    setTimeout(() => {
-      window.print();
-    }, 500);
+    setLoadedCount(0);
+    // If no images, mark as loaded immediately
+    setImagesLoaded(totalImages === 0);
+  };
+
+  const handleImageLoad = () => {
+    setLoadedCount(prev => {
+      const newCount = prev + 1;
+      if (newCount >= totalImages) {
+        setImagesLoaded(true);
+      }
+      return newCount;
+    });
   };
 
   if (loading) {
@@ -553,7 +568,7 @@ export default function PackagingConfigPage() {
       {/* Print View Overlay */}
       {showPrintView && (
         <div
-          className="print-overlay"
+          id="print-overlay"
           style={{
             position: 'fixed',
             inset: 0,
@@ -563,21 +578,33 @@ export default function PackagingConfigPage() {
             padding: '20px',
           }}
         >
-          <div className="no-print" style={{ marginBottom: '20px', display: 'flex', gap: '12px' }}>
+          <div className="no-print" style={{ marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center' }}>
             <button
               onClick={() => window.print()}
+              disabled={!imagesLoaded}
               style={{
                 padding: '10px 20px',
-                background: '#f97316',
+                background: imagesLoaded ? '#f97316' : '#ccc',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
-                cursor: 'pointer',
+                cursor: imagesLoaded ? 'pointer' : 'not-allowed',
                 fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
-              <Printer size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-              Print / Save PDF
+              {!imagesLoaded ? (
+                <>
+                  <Loader2 size={16} style={{ marginRight: '8px', animation: 'spin 1s linear infinite' }} />
+                  Loading ({loadedCount}/{totalImages})...
+                </>
+              ) : (
+                <>
+                  <Printer size={16} style={{ marginRight: '8px' }} />
+                  Print / Save PDF
+                </>
+              )}
             </button>
             <button
               onClick={() => setShowPrintView(false)}
@@ -592,9 +619,14 @@ export default function PackagingConfigPage() {
             >
               Close
             </button>
+            {!imagesLoaded && (
+              <span style={{ color: '#666', fontSize: '14px' }}>
+                Please wait for barcodes to load...
+              </span>
+            )}
           </div>
 
-          <div className="print-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div id="print-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h1 style={{ fontSize: '24px', marginBottom: '8px', color: '#000' }}>
               Full Uproar - Packaging Barcodes
             </h1>
@@ -607,7 +639,7 @@ export default function PackagingConfigPage() {
               gridTemplateColumns: 'repeat(2, 1fr)',
               gap: '20px',
             }}>
-              {packagingTypes.filter(p => p.isActive).map((pkg) => {
+              {activePackaging.map((pkg) => {
                 const upc = generateUPCFromSKU(pkg.sku);
                 return (
                   <div
@@ -632,6 +664,8 @@ export default function PackagingConfigPage() {
                     <img
                       src={`https://barcode.tec-it.com/barcode.ashx?data=${upc}&code=Code128&dpi=96&dataseparator=`}
                       alt={`Barcode for ${pkg.sku}`}
+                      onLoad={handleImageLoad}
+                      onError={handleImageLoad}
                       style={{
                         width: '100%',
                         maxWidth: '220px',
@@ -672,25 +706,37 @@ export default function PackagingConfigPage() {
         }
 
         @media print {
-          body * {
-            visibility: hidden;
-          }
-          .print-overlay,
-          .print-overlay * {
-            visibility: visible;
-          }
-          .print-overlay {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
+          /* Hide everything by default */
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
             background: white !important;
           }
+
+          body > *:not(#print-overlay) {
+            display: none !important;
+          }
+
+          #print-overlay {
+            position: static !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+          }
+
           .no-print {
             display: none !important;
           }
-          .print-content {
+
+          #print-content {
             max-width: 100% !important;
+            padding: 20px !important;
+          }
+
+          /* Prevent page breaks inside cards */
+          #print-content > div > div {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
           }
         }
       `}</style>
