@@ -57,6 +57,8 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
     fit: '',
     isLimitedEdition: false,
     releaseDate: null as Date | null,
+    sku: '',
+    barcode: '',
   });
 
   const [saving, setSaving] = useState(false);
@@ -72,25 +74,27 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
       let parsedTags = [];
       let parsedSizes = [];
       let parsedColors = [];
-      
+
       try {
         if (merch.tags) parsedTags = JSON.parse(merch.tags);
       } catch (e) {}
-      
+
       try {
         if (merch.sizes) parsedSizes = JSON.parse(merch.sizes);
       } catch (e) {}
-      
+
       try {
         if (merch.colors) parsedColors = JSON.parse(merch.colors);
       } catch (e) {}
-      
+
       setFormData({
         ...merch,
         tags: parsedTags,
         sizes: parsedSizes,
         colors: parsedColors,
         releaseDate: merch.releaseDate ? new Date(merch.releaseDate) : null,
+        sku: merch.sku || '',
+        barcode: merch.barcode || '',
       });
     }
   }, [merch]);
@@ -193,6 +197,8 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
       fit: 'Regular',
       isLimitedEdition: false,
       releaseDate: null,
+      sku: 'FU-TS-TEST-' + timestamp,
+      barcode: '',
     });
   };
 
@@ -635,6 +641,30 @@ export default function MerchEditForm({ merch, onSave, onCancel }: MerchEditForm
                 onChange={(e) => setFormData({ ...formData, dimensions: e.target.value })}
                 style={adminStyles.input}
                 placeholder='e.g., 10" x 8" x 0.5"'
+              />
+            </div>
+          </div>
+
+          <div style={adminStyles.formRow}>
+            <div style={adminStyles.formGroup}>
+              <label style={adminStyles.label}>SKU</label>
+              <input
+                type="text"
+                value={formData.sku}
+                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                style={adminStyles.input}
+                placeholder="e.g., FU-TS-001"
+              />
+            </div>
+
+            <div style={adminStyles.formGroup}>
+              <label style={adminStyles.label}>Barcode / UPC</label>
+              <input
+                type="text"
+                value={formData.barcode}
+                onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
+                style={adminStyles.input}
+                placeholder="e.g., 012345678901"
               />
             </div>
           </div>

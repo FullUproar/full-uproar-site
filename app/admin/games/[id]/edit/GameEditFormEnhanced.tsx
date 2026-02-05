@@ -53,6 +53,10 @@ interface Game {
   stock: number;
   tags: string | null;
 
+  // Fulfillment
+  sku: string | null;
+  barcode: string | null;
+
   // Game details
   components: string | null;
   howToPlay: string | null;
@@ -255,7 +259,9 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
         priceCents: parseInt(formData.priceCents.toString()),
         stock: parseInt(formData.stock.toString()),
         releaseYear: formData.releaseYear ? parseInt(formData.releaseYear.toString()) : null,
-        weightOz: formData.weightOz ? parseInt(formData.weightOz.toString()) : null
+        weightOz: formData.weightOz ? parseInt(formData.weightOz.toString()) : null,
+        sku: formData.sku || null,
+        barcode: formData.barcode || null
       };
 
       const url = isNew ? '/api/admin/games' : `/api/admin/games/${game.id}`;
@@ -759,6 +765,34 @@ export default function GameEditFormEnhanced({ game, isNew = false }: GameEditFo
               min="1"
             />
             <span style={styles.helpText}>Product weight in ounces for shipping (16 oz = 1 lb)</span>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>SKU</label>
+            <input
+              type="text"
+              value={formData.sku || ''}
+              onChange={(e) => setFormData({ ...formData, sku: e.target.value || null })}
+              style={styles.input}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
+              placeholder="e.g., FUG-001"
+            />
+            <span style={styles.helpText}>Internal product code for fulfillment</span>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Barcode / UPC</label>
+            <input
+              type="text"
+              value={formData.barcode || ''}
+              onChange={(e) => setFormData({ ...formData, barcode: e.target.value || null })}
+              style={styles.input}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF8200'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)'}
+              placeholder="e.g., 123456789012"
+            />
+            <span style={styles.helpText}>UPC/EAN barcode for scanner during fulfillment</span>
           </div>
         </div>
       </div>
