@@ -83,44 +83,60 @@ function setCache(data: Omit<LogoCache, 'timestamp'>): void {
   }
 }
 
+// Helper to get initial URLs from cache (runs synchronously on client)
+function getInitialUrls(useThumb: boolean): { default: string | null; hover: string | null } {
+  if (typeof window === 'undefined') return { default: null, hover: null };
+
+  const cached = getCache();
+  if (!cached) return { default: null, hover: null };
+
+  const defaultOptions = useThumb
+    ? [cached.thumbnail2Url, cached.thumbnail3Url].filter(Boolean)
+    : [cached.fugly2Url, cached.fugly3Url].filter(Boolean);
+
+  const hoverUrl = useThumb ? cached.thumbnail1Url : cached.fugly1Url;
+
+  if (defaultOptions.length > 0) {
+    const randomDefault = defaultOptions[Math.floor(Math.random() * defaultOptions.length)];
+    return { default: randomDefault || null, hover: hoverUrl };
+  }
+
+  return { default: null, hover: null };
+}
+
 export default function FuglyLogo({
   size = 40,
   fallbackText = 'FU',
   style = {},
   onClick
 }: FuglyLogoProps) {
+  // Use thumbnail for small sizes, full image for large
+  const useThumb = size <= 100;
+
+  // Track if we've mounted (for hydration)
+  const [mounted, setMounted] = useState(false);
+
+  // Initialize from cache SYNCHRONOUSLY to avoid flash (after mount)
   const [logoUrls, setLogoUrls] = useState<{
     default: string | null;
     hover: string | null;
   }>({ default: null, hover: null });
+
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
   const fetchedRef = useRef(false);
 
-  // Use thumbnail for small sizes, full image for large
-  const useThumb = size <= 100;
-
-  // Initialize from cache immediately
+  // On mount: load from cache immediately, then fetch fresh data
   useEffect(() => {
-    const cached = getCache();
-    if (cached) {
-      // Pick random default logo (fugly2 or fugly3)
-      const defaultOptions = useThumb
-        ? [cached.thumbnail2Url, cached.thumbnail3Url].filter(Boolean)
-        : [cached.fugly2Url, cached.fugly3Url].filter(Boolean);
+    setMounted(true);
 
-      const hoverUrl = useThumb ? cached.thumbnail1Url : cached.fugly1Url;
-
-      if (defaultOptions.length > 0) {
-        const randomDefault = defaultOptions[Math.floor(Math.random() * defaultOptions.length)];
-        setLogoUrls({
-          default: randomDefault || null,
-          hover: hoverUrl,
-        });
-      }
+    // Load from cache immediately
+    const cachedUrls = getInitialUrls(useThumb);
+    if (cachedUrls.default) {
+      setLogoUrls(cachedUrls);
     }
 
-    // Fetch fresh data in background (but only once per mount)
+    // Fetch fresh data in background
     if (!fetchedRef.current) {
       fetchedRef.current = true;
       fetchArtwork();
@@ -212,6 +228,13 @@ export default function FuglyLogo({
     cursor: onClick ? 'pointer' : 'default',
     ...style
   };
+
+  // Before mount, show empty placeholder (same size, no flash)
+  if (!mounted) {
+    return (
+      <div style={{ ...containerStyle, background: 'transparent' }} data-fugly-logo />
+    );
+  }
 
   // Show fallback if no URL or image failed to load
   if (!currentUrl || imageError) {

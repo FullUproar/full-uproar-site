@@ -80,12 +80,16 @@ export default function FooterLogo({
   size = 80,
   style = {}
 }: FooterLogoProps) {
+  const [mounted, setMounted] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const fetchedRef = useRef(false);
 
-  // Initialize from cache immediately
+  // On mount: load from cache immediately, then fetch fresh data
   useEffect(() => {
+    setMounted(true);
+
+    // Load from cache immediately
     const cached = getCache();
     if (cached && cached.imageUrl) {
       setLogoUrl(cached.imageUrl);
@@ -127,22 +131,32 @@ export default function FooterLogo({
     }
   }
 
+  const containerStyle: React.CSSProperties = {
+    width: `${size}px`,
+    height: `${size}px`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    ...style
+  };
+
+  // Before mount, show empty placeholder (no flash)
+  if (!mounted) {
+    return <div style={{ ...containerStyle, background: 'transparent' }} />;
+  }
+
   // If no logo URL or image failed, show fallback
   if (!logoUrl || imageError) {
     return (
       <div
         style={{
-          width: `${size}px`,
-          height: `${size}px`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          ...containerStyle,
           background: '#FF8200',
           borderRadius: '50%',
           fontSize: `${size * 0.3}px`,
           fontWeight: 900,
           color: '#111827',
-          ...style
         }}
       >
         FU
@@ -151,15 +165,7 @@ export default function FooterLogo({
   }
 
   return (
-    <div style={{
-      width: `${size}px`,
-      height: `${size}px`,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-      ...style
-    }}>
+    <div style={containerStyle}>
       <Image
         src={logoUrl}
         alt="Full Uproar Logo"
