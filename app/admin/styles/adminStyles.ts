@@ -1,71 +1,74 @@
 /**
- * Admin Panel Styles
+ * Admin Panel Styles - Mobile-First Responsive
  *
- * Centralized styles for the admin dashboard.
- * Uses brand colors from @/lib/colors for consistency.
- *
- * Color reference:
- * - Primary Orange: #FF8200 (Pantone 151 C)
- * - Cream Yellow: #FBDB65 (Pantone 120 C) - for titles/headings
- * - rgba(255, 130, 0, alpha) - for transparent orange
+ * Design principles:
+ * - Mobile-first: Base styles work on phones
+ * - Touch-friendly: Min 44px touch targets
+ * - Sober palette: Gray/white text, orange for actions only
+ * - Dark theme: #0a0a0a base
  */
 
 export const adminStyles = {
+  // Layout
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom right, #111827, #1f2937)',
-    padding: '40px 20px',
+    background: '#0a0a0a',
+    padding: '16px',
   },
   content: {
     maxWidth: '1200px',
     margin: '0 auto',
   },
   header: {
-    marginBottom: '40px',
-  },
-  title: {
-    fontSize: '36px',
-    fontWeight: '900',
-    color: '#FBDB65', // Pantone 120 C - Cream Yellow
-    marginBottom: '8px',
-  },
-  subtitle: {
-    color: '#94a3b8',
-    fontSize: '16px',
-  },
-  backButton: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    color: '#FBDB65',
-    textDecoration: 'none',
-    marginBottom: '20px',
-    padding: '8px 16px',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    borderRadius: '8px',
-    transition: 'all 0.2s',
-    background: 'transparent',
-    cursor: 'pointer',
-  },
-  section: {
-    background: 'rgba(30, 41, 59, 0.8)',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    borderRadius: '12px',
-    padding: '32px',
-    backdropFilter: 'blur(10px)',
     marginBottom: '24px',
   },
-  sectionTitle: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    color: '#FBDB65',
-    marginBottom: '20px',
+  title: {
+    fontSize: '24px',
+    fontWeight: '700',
+    color: '#e2e8f0',
+    marginBottom: '4px',
   },
+  subtitle: {
+    color: '#64748b',
+    fontSize: '14px',
+  },
+
+  // Sections
+  section: {
+    background: '#111',
+    border: '1px solid #222',
+    borderRadius: '8px',
+    padding: '16px',
+    marginBottom: '16px',
+  },
+  sectionTitle: {
+    fontSize: '16px',
+    fontWeight: '600',
+    color: '#e2e8f0',
+    marginBottom: '16px',
+  },
+
+  // Cards
+  card: {
+    background: '#111',
+    border: '1px solid #222',
+    borderRadius: '8px',
+    padding: '16px',
+  },
+
+  // Grid - single column on mobile, auto-fit on desktop
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '20px',
+    gridTemplateColumns: '1fr',
+    gap: '12px',
   },
+  gridResponsive: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '16px',
+  },
+
+  // Tables
   table: {
     width: '100%',
     borderCollapse: 'collapse' as const,
@@ -73,169 +76,190 @@ export const adminStyles = {
   tableContainer: {
     overflowX: 'auto' as const,
     borderRadius: '8px',
-    border: '1px solid rgba(255, 130, 0, 0.2)',
-    position: 'relative' as const,
+    border: '1px solid #222',
   },
   tableHeader: {
-    padding: '16px',
+    padding: '12px',
     textAlign: 'left' as const,
     fontWeight: '600',
-    color: '#FBDB65',
-    fontSize: '14px',
+    color: '#94a3b8',
+    fontSize: '12px',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
-    background: 'rgba(255, 130, 0, 0.1)',
-    borderBottom: '2px solid rgba(255, 130, 0, 0.3)',
+    background: '#111',
+    borderBottom: '1px solid #222',
   },
   tableHeaderCell: {
     padding: '12px',
     textAlign: 'left' as const,
     fontWeight: '600',
-    color: '#FBDB65',
-    fontSize: '14px',
+    color: '#94a3b8',
+    fontSize: '12px',
   },
   tableRow: {
-    borderBottom: '1px solid rgba(255, 130, 0, 0.2)',
-    transition: 'background 0.2s',
+    borderBottom: '1px solid #1a1a1a',
   },
   tableCell: {
     padding: '12px',
     color: '#e2e8f0',
     fontSize: '14px',
   },
+
+  // Buttons - touch-friendly 44px+ height
   button: {
-    padding: '8px 16px',
-    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
+    padding: '12px 16px',
+    minHeight: '44px',
+    background: '#f97316',
     color: 'white',
     border: 'none',
-    borderRadius: '8px',
-    fontWeight: 'bold',
+    borderRadius: '6px',
+    fontWeight: '600',
     cursor: 'pointer',
-    transition: 'transform 0.2s',
     fontSize: '14px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
   },
   primaryButton: {
-    padding: '10px 20px',
-    background: 'linear-gradient(135deg, #FF8200 0%, #ea580c 100%)',
+    padding: '12px 20px',
+    minHeight: '44px',
+    background: '#f97316',
     color: 'white',
     border: 'none',
-    borderRadius: '8px',
-    fontWeight: 'bold',
+    borderRadius: '6px',
+    fontWeight: '600',
     cursor: 'pointer',
-    transition: 'transform 0.2s',
     fontSize: '14px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
   },
   secondaryButton: {
-    padding: '8px 16px',
-    background: 'rgba(30, 41, 59, 0.8)',
-    color: '#FBDB65',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    borderRadius: '8px',
-    fontWeight: 'bold',
+    padding: '12px 16px',
+    minHeight: '44px',
+    background: 'transparent',
+    color: '#e2e8f0',
+    border: '1px solid #333',
+    borderRadius: '6px',
+    fontWeight: '600',
     cursor: 'pointer',
-    transition: 'all 0.2s',
     fontSize: '14px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
   },
   outlineButton: {
-    padding: '8px 16px',
+    padding: '12px 16px',
+    minHeight: '44px',
     background: 'transparent',
-    color: '#FBDB65',
-    border: '2px solid rgba(255, 130, 0, 0.5)',
-    borderRadius: '8px',
-    fontWeight: 'bold',
+    color: '#f97316',
+    border: '1px solid #f97316',
+    borderRadius: '6px',
+    fontWeight: '600',
     cursor: 'pointer',
-    transition: 'all 0.2s',
     fontSize: '14px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
   },
   dangerButton: {
-    padding: '8px 16px',
-    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+    padding: '12px 16px',
+    minHeight: '44px',
+    background: '#dc2626',
     color: 'white',
     border: 'none',
-    borderRadius: '8px',
-    fontWeight: 'bold',
+    borderRadius: '6px',
+    fontWeight: '600',
     cursor: 'pointer',
-    transition: 'transform 0.2s',
     fontSize: '14px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
   },
+  iconButton: {
+    padding: '10px',
+    minWidth: '44px',
+    minHeight: '44px',
+    background: 'transparent',
+    border: '1px solid #333',
+    borderRadius: '6px',
+    color: '#94a3b8',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  // Form elements - touch-friendly
   input: {
     padding: '12px',
-    borderRadius: '8px',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    background: 'rgba(17, 24, 39, 0.8)',
-    color: '#f3f4f6',
-    fontSize: '16px',
-    transition: 'all 0.2s',
+    minHeight: '44px',
+    borderRadius: '6px',
+    border: '1px solid #333',
+    background: '#0a0a0a',
+    color: '#e2e8f0',
+    fontSize: '16px', // Prevents iOS zoom
     width: '100%',
+    boxSizing: 'border-box' as const,
+  },
+  textarea: {
+    padding: '12px',
+    borderRadius: '6px',
+    border: '1px solid #333',
+    background: '#0a0a0a',
+    color: '#e2e8f0',
+    fontSize: '16px',
+    width: '100%',
+    resize: 'vertical' as const,
+    fontFamily: 'inherit',
+    boxSizing: 'border-box' as const,
+    minHeight: '100px',
+  },
+  select: {
+    padding: '12px',
+    minHeight: '44px',
+    borderRadius: '6px',
+    border: '1px solid #333',
+    background: '#0a0a0a',
+    color: '#e2e8f0',
+    fontSize: '16px',
+    width: '100%',
+    cursor: 'pointer',
     boxSizing: 'border-box' as const,
   },
   label: {
     fontSize: '14px',
-    fontWeight: '600',
-    color: '#e2e8f0',
-    marginBottom: '8px',
+    fontWeight: '500',
+    color: '#94a3b8',
+    marginBottom: '6px',
     display: 'block',
   },
   fieldGroup: {
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: '8px',
-  },
-  card: {
-    background: 'rgba(30, 41, 59, 0.8)',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    borderRadius: '12px',
-    padding: '24px',
-    backdropFilter: 'blur(10px)',
-    transition: 'all 0.2s',
-  },
-  badge: {
-    padding: '4px 12px',
-    background: 'rgba(255, 130, 0, 0.2)',
-    border: '1px solid rgba(255, 130, 0, 0.5)',
-    borderRadius: '16px',
-    fontSize: '12px',
-    color: '#FBDB65',
-    fontWeight: '600',
+    gap: '6px',
+    marginBottom: '16px',
   },
   formGroup: {
-    marginBottom: '20px',
+    marginBottom: '16px',
   },
   formRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '20px',
-    marginBottom: '24px',
+    gridTemplateColumns: '1fr',
+    gap: '16px',
+    marginBottom: '16px',
   },
-  textarea: {
-    padding: '12px',
-    borderRadius: '8px',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    background: 'rgba(17, 24, 39, 0.8)',
-    color: '#f3f4f6',
-    fontSize: '16px',
-    transition: 'all 0.2s',
-    width: '100%',
-    resize: 'vertical' as const,
-    fontFamily: 'inherit',
-    boxSizing: 'border-box' as const,
-  },
-  select: {
-    padding: '12px',
-    borderRadius: '8px',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    background: 'rgba(17, 24, 39, 0.8)',
-    color: '#f3f4f6',
-    fontSize: '16px',
-    transition: 'all 0.2s',
-    width: '100%',
-    cursor: 'pointer',
-    boxSizing: 'border-box' as const,
-  },
+
+  // Checkbox - larger touch target
   checkbox: {
-    marginRight: '8px',
-    width: '18px',
-    height: '18px',
+    marginRight: '10px',
+    width: '20px',
+    height: '20px',
     cursor: 'pointer',
   },
   checkboxLabel: {
@@ -244,27 +268,30 @@ export const adminStyles = {
     color: '#e2e8f0',
     fontSize: '14px',
     cursor: 'pointer',
+    minHeight: '44px',
   },
-  iconButton: {
-    padding: '8px',
-    background: 'transparent',
-    border: '1px solid rgba(255, 130, 0, 0.3)',
-    borderRadius: '6px',
-    color: '#FBDB65',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+
+  // Badge
+  badge: {
+    padding: '4px 8px',
+    background: 'rgba(249, 115, 22, 0.15)',
+    border: '1px solid rgba(249, 115, 22, 0.3)',
+    borderRadius: '4px',
+    fontSize: '12px',
+    color: '#f97316',
+    fontWeight: '500',
   },
+
+  // Search
   searchBar: {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    padding: '12px 16px',
-    background: 'rgba(17, 24, 39, 0.8)',
-    border: '2px solid rgba(255, 130, 0, 0.3)',
-    borderRadius: '8px',
+    padding: '12px',
+    background: '#0a0a0a',
+    border: '1px solid #333',
+    borderRadius: '6px',
+    minHeight: '44px',
   },
   searchInput: {
     flex: 1,
@@ -274,25 +301,63 @@ export const adminStyles = {
     fontSize: '16px',
     outline: 'none',
   },
-  // Hover effects - use brand orange rgba(255, 130, 0, alpha)
+
+  // Back button
+  backButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    color: '#94a3b8',
+    textDecoration: 'none',
+    marginBottom: '16px',
+    padding: '12px 16px',
+    minHeight: '44px',
+    border: '1px solid #333',
+    borderRadius: '6px',
+    background: 'transparent',
+    cursor: 'pointer',
+    fontSize: '14px',
+  },
+
+  // Hover effects (for desktop)
   hoverEffects: {
     button: {
-      onMouseEnter: (e: any) => e.currentTarget.style.transform = 'scale(1.05)',
-      onMouseLeave: (e: any) => e.currentTarget.style.transform = 'scale(1)',
+      onMouseEnter: (e: any) => {
+        e.currentTarget.style.opacity = '0.9';
+      },
+      onMouseLeave: (e: any) => {
+        e.currentTarget.style.opacity = '1';
+      },
     },
     card: {
       onMouseEnter: (e: any) => {
-        e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.5)';
-        e.currentTarget.style.boxShadow = '0 4px 20px rgba(255, 130, 0, 0.2)';
+        e.currentTarget.style.borderColor = '#333';
       },
       onMouseLeave: (e: any) => {
-        e.currentTarget.style.borderColor = 'rgba(255, 130, 0, 0.3)';
-        e.currentTarget.style.boxShadow = 'none';
+        e.currentTarget.style.borderColor = '#222';
       },
     },
     row: {
-      onMouseEnter: (e: any) => e.currentTarget.style.background = 'rgba(255, 130, 0, 0.05)',
-      onMouseLeave: (e: any) => e.currentTarget.style.background = 'transparent',
+      onMouseEnter: (e: any) => {
+        e.currentTarget.style.background = '#1a1a1a';
+      },
+      onMouseLeave: (e: any) => {
+        e.currentTarget.style.background = 'transparent';
+      },
     },
   },
 };
+
+// CSS for responsive overrides (inject in layout or component)
+export const adminResponsiveCSS = `
+  @media (min-width: 640px) {
+    .admin-container { padding: 24px; }
+    .admin-title { font-size: 28px; }
+    .admin-section { padding: 24px; }
+    .admin-form-row { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .admin-container { padding: 32px; }
+    .admin-title { font-size: 32px; }
+  }
+`;

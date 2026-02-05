@@ -14,17 +14,14 @@ import {
   AlertCircle,
   Undo2,
 } from 'lucide-react';
-import { adminStyles } from '../../styles/adminStyles';
 
 /**
- * Fulfillment Page
- * ================
+ * Fulfillment Page - Mobile-First
+ * ================================
  * Barcode scanner-based order fulfillment workflow.
+ * Optimized for Android phones with Bluetooth scanners.
  *
- * ⚠️ AI MAINTAINER NOTE:
- * This page is designed for bluetooth barcode scanners.
  * The scanner acts like a keyboard - it types the barcode then presses Enter.
- * The hidden input field captures these scans.
  */
 
 interface OrderItem {
@@ -156,7 +153,7 @@ export default function FulfillPage() {
     return () => clearInterval(interval);
   }, [showCompleteModal]);
 
-  // Handle barcode scan (from input)
+  // Handle barcode scan
   const handleScan = async (barcode: string) => {
     if (!barcode.trim()) return;
 
@@ -169,8 +166,6 @@ export default function FulfillPage() {
 
       const result = await res.json();
       setLastScanResult(result);
-
-      // Refresh data
       fetchData();
 
       // Play sound feedback
@@ -245,8 +240,6 @@ export default function FulfillPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId, status: 'completed' }),
       });
-
-      // Redirect to shipping label or order page
       router.push(`/admin/orders/${orderId}`);
     } catch (err) {
       console.error('Failed to complete fulfillment');
@@ -257,22 +250,20 @@ export default function FulfillPage() {
 
   if (loading) {
     return (
-      <div style={{ ...adminStyles.container, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <Loader2 size={48} style={{ color: '#FF8200', animation: 'spin 1s linear infinite' }} />
+      <div style={styles.loadingContainer}>
+        <Loader2 size={40} style={{ color: '#f97316', animation: 'spin 1s linear infinite' }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div style={adminStyles.container}>
-        <div style={{ ...adminStyles.card, textAlign: 'center', padding: '3rem' }}>
-          <AlertCircle size={48} style={{ color: '#ef4444', marginBottom: '1rem' }} />
-          <h2 style={{ color: '#ef4444' }}>{error || 'Order not found'}</h2>
-          <button
-            onClick={() => router.push('/admin')}
-            style={{ ...adminStyles.button, marginTop: '1rem' }}
-          >
+      <div style={styles.container}>
+        <div style={{ ...styles.card, textAlign: 'center', padding: '2rem' }}>
+          <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '1rem' }} />
+          <h2 style={{ color: '#ef4444', marginBottom: '1rem' }}>{error || 'Order not found'}</h2>
+          <button onClick={() => router.push('/admin')} style={styles.button}>
             Back to Admin
           </button>
         </div>
@@ -281,182 +272,141 @@ export default function FulfillPage() {
   }
 
   return (
-    <div style={adminStyles.container}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-        <button
-          onClick={() => router.push('/admin')}
-          style={adminStyles.backButton}
-        >
+    <div style={styles.container}>
+      {/* Header - compact on mobile */}
+      <div style={styles.header}>
+        <button onClick={() => router.push('/admin')} style={styles.backButton}>
           <ArrowLeft size={20} />
-          Back
         </button>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ ...adminStyles.title, margin: 0 }}>
-            <Package size={28} style={{ marginRight: '0.5rem', verticalAlign: 'middle' }} />
-            Fulfill Order
-          </h1>
-          <p style={{ color: '#94a3b8', margin: '0.25rem 0 0 0' }}>
-            {data.order.customerName} • {data.order.id.slice(0, 8)}...
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={styles.title}>Fulfill Order</h1>
+          <p style={styles.subtitle}>
+            {data.order.customerName} • #{data.order.id.slice(0, 8)}
           </p>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div style={{ ...adminStyles.card, marginBottom: '1.5rem', padding: '1rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-          <span style={{ color: '#FBDB65', fontWeight: 600 }}>
-            Progress: {data.progress.scanned}/{data.progress.total} items
+      <div style={styles.progressCard}>
+        <div style={styles.progressHeader}>
+          <span style={{ color: '#e2e8f0', fontWeight: 600 }}>
+            {data.progress.scanned}/{data.progress.total} items
           </span>
-          <span style={{ color: data.progress.isComplete ? '#10b981' : '#FF8200', fontWeight: 700 }}>
+          <span style={{
+            color: data.progress.isComplete ? '#10b981' : '#f97316',
+            fontWeight: 700,
+            fontSize: '18px',
+          }}>
             {data.progress.percentage}%
           </span>
         </div>
-        <div style={{
-          height: '12px',
-          background: 'rgba(255, 130, 0, 0.2)',
-          borderRadius: '6px',
-          overflow: 'hidden',
-        }}>
+        <div style={styles.progressBar}>
           <div style={{
-            height: '100%',
+            ...styles.progressFill,
             width: `${data.progress.percentage}%`,
-            background: data.progress.isComplete
-              ? 'linear-gradient(90deg, #10b981, #34d399)'
-              : 'linear-gradient(90deg, #FF8200, #fb923c)',
-            transition: 'width 0.3s ease',
-            borderRadius: '6px',
+            background: data.progress.isComplete ? '#10b981' : '#f97316',
           }} />
         </div>
       </div>
 
-      {/* Scanner Input (hidden but captures keyboard) */}
-      <div style={{ ...adminStyles.card, marginBottom: '1.5rem', padding: '1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Scan size={32} style={{ color: '#FF8200' }} />
-          <div style={{ flex: 1 }}>
-            <label style={{ ...adminStyles.label, marginBottom: '0.5rem', display: 'block' }}>
-              Scan Barcode
-            </label>
-            <input
-              ref={scanInputRef}
-              type="text"
-              value={scanInput}
-              onChange={(e) => setScanInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleScan(scanInput);
-                }
-              }}
-              placeholder="Click here and scan..."
-              style={{
-                ...adminStyles.input,
-                fontSize: '1.25rem',
-                padding: '0.75rem 1rem',
-              }}
-              autoComplete="off"
-            />
-          </div>
+      {/* Scanner Input - large and prominent */}
+      <div style={styles.scanCard}>
+        <div style={styles.scanHeader}>
+          <Scan size={24} style={{ color: '#f97316' }} />
+          <span style={{ color: '#e2e8f0', fontWeight: 600 }}>Scan Barcode</span>
         </div>
+        <input
+          ref={scanInputRef}
+          type="text"
+          value={scanInput}
+          onChange={(e) => setScanInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleScan(scanInput);
+          }}
+          placeholder="Tap here, then scan..."
+          style={styles.scanInput}
+          autoComplete="off"
+          autoCapitalize="off"
+          autoCorrect="off"
+        />
 
         {/* Last Scan Result */}
         {lastScanResult && (
           <div style={{
-            marginTop: '1rem',
-            padding: '1rem',
-            borderRadius: '8px',
-            background: lastScanResult.success ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-            border: `2px solid ${lastScanResult.success ? '#10b981' : '#ef4444'}`,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
+            ...styles.scanResult,
+            background: lastScanResult.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+            borderColor: lastScanResult.success ? '#10b981' : '#ef4444',
           }}>
             {lastScanResult.success ? (
-              <CheckCircle2 size={24} style={{ color: '#10b981' }} />
+              <CheckCircle2 size={20} style={{ color: '#10b981', flexShrink: 0 }} />
             ) : (
-              <XCircle size={24} style={{ color: '#ef4444' }} />
+              <XCircle size={20} style={{ color: '#ef4444', flexShrink: 0 }} />
             )}
-            <span style={{ color: lastScanResult.success ? '#10b981' : '#ef4444', fontWeight: 600 }}>
+            <span style={{
+              color: lastScanResult.success ? '#10b981' : '#ef4444',
+              fontWeight: 500,
+            }}>
               {lastScanResult.message}
             </span>
           </div>
         )}
       </div>
 
-      {/* Item Checklist */}
-      <div style={{ ...adminStyles.card, marginBottom: '1.5rem' }}>
-        <h3 style={{ ...{ fontSize: '1.125rem', fontWeight: 700, color: '#FBDB65' }, marginBottom: '1rem' }}>
-          Items to Pack
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      {/* Item Checklist - simplified for mobile */}
+      <div style={styles.card}>
+        <h3 style={styles.cardTitle}>Items to Pack</h3>
+        <div style={styles.itemList}>
           {data.checklist.map((item) => (
             <div
               key={item.id}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                padding: '1rem',
-                background: item.isComplete ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 130, 0, 0.05)',
-                borderRadius: '8px',
-                border: `2px solid ${item.isComplete ? '#10b981' : 'rgba(255, 130, 0, 0.2)'}`,
+                ...styles.itemRow,
+                background: item.isComplete ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                borderColor: item.isComplete ? '#10b981' : '#222',
               }}
             >
-              {/* Status Icon */}
+              {/* Status */}
               <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                background: item.isComplete ? '#10b981' : 'rgba(255, 130, 0, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                ...styles.itemStatus,
+                background: item.isComplete ? '#10b981' : '#1a1a1a',
               }}>
                 {item.isComplete ? (
-                  <CheckCircle2 size={24} style={{ color: '#fff' }} />
+                  <CheckCircle2 size={18} style={{ color: '#fff' }} />
                 ) : (
-                  <span style={{ color: '#FF8200', fontWeight: 700 }}>
+                  <span style={{ color: '#f97316', fontWeight: 700, fontSize: '12px' }}>
                     {item.scannedQuantity}/{item.quantity}
                   </span>
                 )}
               </div>
 
-              {/* Item Image */}
-              {item.imageUrl && (
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  style={{
-                    width: '50px',
-                    height: '50px',
-                    objectFit: 'cover',
-                    borderRadius: '6px',
-                    opacity: item.isComplete ? 0.7 : 1,
-                  }}
-                />
-              )}
-
-              {/* Item Details */}
-              <div style={{ flex: 1 }}>
+              {/* Item Info */}
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
                   fontWeight: 600,
-                  color: item.isComplete ? '#10b981' : '#FBDB65',
+                  color: item.isComplete ? '#10b981' : '#e2e8f0',
                   textDecoration: item.isComplete ? 'line-through' : 'none',
+                  fontSize: '14px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
                 }}>
                   {item.name}
-                  {item.size && <span style={{ color: '#94a3b8' }}> ({item.size})</span>}
+                  {item.size && <span style={{ color: '#64748b' }}> ({item.size})</span>}
                 </div>
-                <div style={{ fontSize: '0.875rem', color: '#64748b' }}>
-                  {item.sku && <span>SKU: {item.sku}</span>}
-                  {item.barcode && <span style={{ marginLeft: '1rem' }}>Barcode: {item.barcode}</span>}
-                </div>
+                {item.sku && (
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>
+                    {item.sku}
+                  </div>
+                )}
               </div>
 
               {/* Quantity */}
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: item.isComplete ? '#10b981' : '#FF8200' }}>
-                  ×{item.quantity}
-                </div>
+              <div style={{
+                fontSize: '20px',
+                fontWeight: 700,
+                color: item.isComplete ? '#10b981' : '#f97316',
+              }}>
+                ×{item.quantity}
               </div>
             </div>
           ))}
@@ -464,34 +414,25 @@ export default function FulfillPage() {
       </div>
 
       {/* Packaging Selection */}
-      <div style={{ ...adminStyles.card, marginBottom: '1.5rem' }}>
-        <h3 style={{ ...{ fontSize: '1.125rem', fontWeight: 700, color: '#FBDB65' }, marginBottom: '1rem' }}>
-          <Box size={20} style={{ marginRight: '0.5rem', verticalAlign: 'middle' }} />
+      <div style={styles.card}>
+        <h3 style={styles.cardTitle}>
+          <Box size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
           Select Packaging
         </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+        <div style={styles.packagingGrid}>
           {packagingTypes.map((pkg) => (
             <button
               key={pkg.id}
               onClick={() => handlePackagingChange(pkg.id)}
               style={{
-                padding: '1rem',
-                borderRadius: '8px',
-                border: `2px solid ${selectedPackaging === pkg.id ? '#FF8200' : 'rgba(255, 130, 0, 0.2)'}`,
-                background: selectedPackaging === pkg.id ? 'rgba(255, 130, 0, 0.1)' : 'transparent',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.2s',
+                ...styles.packagingButton,
+                borderColor: selectedPackaging === pkg.id ? '#f97316' : '#333',
+                background: selectedPackaging === pkg.id ? 'rgba(249, 115, 22, 0.15)' : 'transparent',
               }}
             >
-              <div style={{ fontWeight: 700, color: '#FBDB65', marginBottom: '0.25rem' }}>
-                {pkg.sku}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
-                {pkg.name}
-              </div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>
-                {pkg.length}" × {pkg.width}" × {pkg.height}" • {pkg.material}
+              <div style={{ fontWeight: 700, color: '#e2e8f0' }}>{pkg.sku}</div>
+              <div style={{ fontSize: '12px', color: '#64748b' }}>
+                {pkg.length}×{pkg.width}×{pkg.height}"
               </div>
             </button>
           ))}
@@ -500,104 +441,318 @@ export default function FulfillPage() {
 
       {/* Complete Button */}
       {data.progress.isComplete && (
-        <div style={{ ...adminStyles.card, padding: '1.5rem', textAlign: 'center' }}>
-          <CheckCircle2 size={48} style={{ color: '#10b981', marginBottom: '1rem' }} />
-          <h3 style={{ color: '#10b981', marginBottom: '1rem' }}>All Items Scanned!</h3>
+        <div style={{ ...styles.card, textAlign: 'center', padding: '24px' }}>
+          <CheckCircle2 size={40} style={{ color: '#10b981', marginBottom: '12px' }} />
+          <h3 style={{ color: '#10b981', marginBottom: '12px' }}>All Items Scanned!</h3>
           <button
             onClick={() => setShowCompleteModal(true)}
             disabled={!selectedPackaging}
             style={{
-              ...adminStyles.primaryButton,
-              padding: '1rem 2rem',
-              fontSize: '1.125rem',
+              ...styles.primaryButton,
+              width: '100%',
               opacity: selectedPackaging ? 1 : 0.5,
-              cursor: selectedPackaging ? 'pointer' : 'not-allowed',
             }}
           >
-            <Printer size={20} style={{ marginRight: '0.5rem' }} />
+            <Printer size={20} />
             Complete & Print Label
           </button>
           {!selectedPackaging && (
-            <p style={{ color: '#f59e0b', marginTop: '0.5rem', fontSize: '0.875rem' }}>
-              Please select packaging first
+            <p style={{ color: '#f59e0b', marginTop: '8px', fontSize: '13px' }}>
+              Select packaging first
             </p>
           )}
         </div>
       )}
 
-      {/* Completion Modal */}
+      {/* Completion Modal - full screen on mobile */}
       {showCompleteModal && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0, 0, 0, 0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-        }}>
-          <div style={{
-            ...adminStyles.card,
-            maxWidth: '500px',
-            width: '90%',
-            padding: '2rem',
-            textAlign: 'center',
-          }}>
-            <CheckCircle2 size={64} style={{ color: '#10b981', marginBottom: '1rem' }} />
-            <h2 style={{ color: '#FBDB65', marginBottom: '0.5rem' }}>Order Ready!</h2>
-            <p style={{ color: '#94a3b8', marginBottom: '1.5rem' }}>
-              All items have been scanned and verified.
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            <CheckCircle2 size={56} style={{ color: '#10b981', marginBottom: '16px' }} />
+            <h2 style={{ color: '#e2e8f0', marginBottom: '8px' }}>Order Ready!</h2>
+            <p style={{ color: '#64748b', marginBottom: '20px' }}>
+              All items verified.
             </p>
 
-            <div style={{
-              background: 'rgba(255, 130, 0, 0.1)',
-              padding: '1rem',
-              borderRadius: '8px',
-              marginBottom: '1.5rem',
-            }}>
-              <div style={{ color: '#FBDB65', fontWeight: 600 }}>
-                Packaging: {packagingTypes.find(p => p.id === selectedPackaging)?.sku}
+            <div style={styles.modalPackaging}>
+              <div style={{ color: '#e2e8f0', fontWeight: 600 }}>
+                {packagingTypes.find(p => p.id === selectedPackaging)?.sku}
               </div>
-              <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
+              <div style={{ color: '#64748b', fontSize: '13px' }}>
                 {packagingTypes.find(p => p.id === selectedPackaging)?.name}
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-              <button
-                onClick={() => setShowCompleteModal(false)}
-                style={adminStyles.outlineButton}
-              >
-                <Undo2 size={18} style={{ marginRight: '0.5rem' }} />
+            <div style={styles.modalButtons}>
+              <button onClick={() => setShowCompleteModal(false)} style={styles.secondaryButton}>
+                <Undo2 size={18} />
                 Go Back
               </button>
               <button
                 onClick={completeFulfillment}
                 disabled={completing}
                 style={{
-                  ...adminStyles.primaryButton,
+                  ...styles.primaryButton,
+                  flex: 1,
                   opacity: completing ? 0.5 : 1,
                 }}
               >
                 {completing ? (
-                  <Loader2 size={18} style={{ marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} />
+                  <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
                 ) : (
-                  <Printer size={18} style={{ marginRight: '0.5rem' }} />
+                  <Printer size={18} />
                 )}
-                Complete & Print Label
+                Print Label
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* CSS Animation */}
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
+
+// Mobile-first styles
+const styles: Record<string, React.CSSProperties> = {
+  container: {
+    minHeight: '100vh',
+    background: '#0a0a0a',
+    padding: '16px',
+    paddingBottom: '100px', // Extra space for scrolling
+  },
+  loadingContainer: {
+    minHeight: '100vh',
+    background: '#0a0a0a',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  // Header
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '16px',
+  },
+  backButton: {
+    background: 'transparent',
+    border: '1px solid #333',
+    borderRadius: '8px',
+    color: '#94a3b8',
+    padding: '10px',
+    minWidth: '44px',
+    minHeight: '44px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+  },
+  title: {
+    fontSize: '20px',
+    fontWeight: '700',
+    color: '#e2e8f0',
+    margin: 0,
+  },
+  subtitle: {
+    fontSize: '13px',
+    color: '#64748b',
+    margin: 0,
+  },
+
+  // Progress
+  progressCard: {
+    background: '#111',
+    border: '1px solid #222',
+    borderRadius: '8px',
+    padding: '12px 16px',
+    marginBottom: '16px',
+  },
+  progressHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '8px',
+  },
+  progressBar: {
+    height: '8px',
+    background: '#1a1a1a',
+    borderRadius: '4px',
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: '4px',
+    transition: 'width 0.3s ease',
+  },
+
+  // Scan
+  scanCard: {
+    background: '#111',
+    border: '2px solid #f97316',
+    borderRadius: '12px',
+    padding: '16px',
+    marginBottom: '16px',
+  },
+  scanHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginBottom: '12px',
+  },
+  scanInput: {
+    width: '100%',
+    padding: '16px',
+    fontSize: '18px',
+    background: '#0a0a0a',
+    border: '1px solid #333',
+    borderRadius: '8px',
+    color: '#e2e8f0',
+    boxSizing: 'border-box',
+  },
+  scanResult: {
+    marginTop: '12px',
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+
+  // Cards
+  card: {
+    background: '#111',
+    border: '1px solid #222',
+    borderRadius: '8px',
+    padding: '16px',
+    marginBottom: '16px',
+  },
+  cardTitle: {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#94a3b8',
+    marginBottom: '12px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+  },
+
+  // Items
+  itemList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  },
+  itemRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid #222',
+  },
+  itemStatus: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+
+  // Packaging
+  packagingGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '8px',
+  },
+  packagingButton: {
+    padding: '12px',
+    borderRadius: '8px',
+    border: '2px solid #333',
+    background: 'transparent',
+    cursor: 'pointer',
+    textAlign: 'center',
+    minHeight: '60px',
+  },
+
+  // Buttons
+  button: {
+    padding: '12px 20px',
+    minHeight: '44px',
+    background: '#f97316',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    fontSize: '14px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+  },
+  primaryButton: {
+    padding: '14px 24px',
+    minHeight: '48px',
+    background: '#f97316',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    fontSize: '16px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+  },
+  secondaryButton: {
+    padding: '14px 20px',
+    minHeight: '48px',
+    background: 'transparent',
+    color: '#94a3b8',
+    border: '1px solid #333',
+    borderRadius: '8px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    fontSize: '14px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+  },
+
+  // Modal
+  modal: {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(0, 0, 0, 0.9)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '16px',
+    zIndex: 1000,
+  },
+  modalContent: {
+    background: '#111',
+    border: '1px solid #222',
+    borderRadius: '12px',
+    padding: '24px',
+    width: '100%',
+    maxWidth: '400px',
+    textAlign: 'center',
+  },
+  modalPackaging: {
+    background: '#1a1a1a',
+    padding: '12px',
+    borderRadius: '8px',
+    marginBottom: '20px',
+  },
+  modalButtons: {
+    display: 'flex',
+    gap: '12px',
+  },
+};
