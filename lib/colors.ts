@@ -1,29 +1,34 @@
 /**
  * Full Uproar Brand Colors
+ * ========================
+ * SINGLE SOURCE OF TRUTH for all brand colors.
+ * Official Pantone colors matched to sRGB hex equivalents.
  *
- * Central color definitions for consistent branding across the site.
- * Official Pantone colors with sRGB hex equivalents.
+ * ⚠️ AI MAINTAINER INSTRUCTIONS:
+ * ------------------------------
+ * 1. ALWAYS import from this file - NEVER hardcode hex values
+ * 2. If you see these WRONG values anywhere, they are LEGACY/TAILWIND defaults:
  *
- * ⚠️ AI MAINTAINER NOTES:
- * -----------------------
- * ALWAYS import colors from this file instead of hardcoding hex values.
- * If you see any of the "WRONG" colors below in the codebase, replace them.
+ *    WRONG (Tailwind)     CORRECT (Pantone)     USE
+ *    ----------------     -----------------     ---
+ *    #f97316              #FF8200               colors.primary
+ *    #fb923c              #FF8200               colors.primary
+ *    #fdba74              #FBDB65               colors.creamYellow
+ *    #fde68a              #FBDB65               colors.creamYellow
+ *    #8b5cf6              #7D55C7               colors.purple
  *
- * WRONG → CORRECT:
- * - #FF8200 → #FF8200 (Tailwind orange-500 vs our Pantone 151 C)
- * - #fb923c → #FF8200 (Tailwind orange-400)
- * - #ea580c → #FF8200 for primary use (only use for hover/dark states)
- * - #FBDB65 → #FBDB65 for headline text (Tailwind yellow-200 vs Pantone 120 C)
- * - #FBDB65 → #FBDB65 for headline text (orange-300 vs cream yellow)
- * - #7D55C7 → #7D55C7 for purple accents (Tailwind vs Pantone 266 C)
+ * 3. For rgba colors, use colorsRgba.* or hexToRgba()
+ *    - WRONG: rgba(249, 115, 22, 0.5)  [Tailwind orange]
+ *    - RIGHT: rgba(255, 130, 0, 0.5)   [Our orange] or colorsRgba.primaryGlow
  *
- * Usage pattern:
+ * Usage:
  * ```typescript
- * import { colors } from '@/lib/colors';
- * // or
- * import colors from '@/lib/colors';
+ * import { colors, colorsRgba, hexToRgba } from '@/lib/colors';
+ * // or from design system:
+ * import { colors } from '@/lib/design-system';
  *
  * style={{ color: colors.primary, background: colors.bgDark }}
+ * style={{ boxShadow: `0 0 20px ${colorsRgba.primaryGlow}` }}
  * ```
  */
 

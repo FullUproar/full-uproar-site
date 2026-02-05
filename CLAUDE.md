@@ -2,7 +2,7 @@
 
 ## 🎮 Project Overview
 
-Full Uproar is a gaming company's e-commerce platform built with Next.js 15, featuring a complete online store for board games, merchandise, digital content, and community features. The site has a distinctive "fugly" aesthetic with bold orange (#f97316) branding and dark theme.
+Full Uproar is a gaming company's e-commerce platform built with Next.js 15, featuring a complete online store for board games, merchandise, digital content, and community features. The site has a distinctive "fugly" aesthetic with bold orange branding and dark theme.
 
 ### Key Business Features
 - **Product Sales**: Board games, merchandise (apparel, accessories), digital downloads
@@ -12,7 +12,7 @@ Full Uproar is a gaming company's e-commerce platform built with Next.js 15, fea
 
 ### Technical Stack
 - **Frontend**: Next.js 15.2.3 with App Router, React 19, TypeScript
-- **Styling**: Inline styles with consistent dark theme (#0a0a0a background)
+- **Styling**: Inline styles with centralized design system (NO Tailwind)
 - **Database**: PostgreSQL via Prisma ORM (hosted on Prisma Data Platform)
 - **Authentication**: Clerk (email/password + OAuth providers)
 - **Payments**: Stripe (test mode ready, supports live mode)
@@ -20,68 +20,180 @@ Full Uproar is a gaming company's e-commerce platform built with Next.js 15, fea
 - **Deployment**: Vercel (automatic deploys from GitHub)
 - **State Management**: Zustand for cart, toast notifications
 
-## 🚀 Current Implementation Status
+---
 
-### ✅ Completed Features
+## 🤖 AI MAINTAINER INSTRUCTIONS
 
-1. **E-Commerce Core**
-   - Full shopping cart with persistent storage (Zustand + localStorage)
-   - Stripe checkout integration (payment intents API)
-   - Order management system with status tracking
-   - Inventory tracking with stock management
-   - Product variants (sizes, colors) for merchandise
-   - Digital product support with download links
+**CRITICAL**: This site is primarily built and maintained by AI. Follow these patterns exactly.
 
-2. **Admin Panel** (/admin)
-   - Dashboard with revenue stats and quick actions
-   - Product management (games, merchandise)
-   - Order processing with status updates
-   - Analytics dashboard with charts (page views, conversions, funnel)
-   - Bulk operations (bulk delete with confirmation modal)
-   - Test mode toggle for safe development
-   - Returns/refunds management
-   - Customer support ticket system
+### Brand Colors - USE THESE EXACT VALUES
 
-3. **User Features**
-   - Product browsing with search and filters
-   - Shopping cart with real-time updates
-   - Guest checkout support
-   - Order history and tracking
-   - Mobile-responsive design
-   - Toast notifications for user feedback
+```typescript
+// ✅ CORRECT - Pantone-matched brand colors
+primary:      '#FF8200'  // Pantone 151 C - Main orange
+headline:     '#FBDB65'  // Pantone 120 C - Yellow for headlines
+purple:       '#7D55C7'  // Pantone 266 C - Purple accent
+background:   '#0a0a0a'  // Near black
+surface:      '#1a1a2e'  // Card backgrounds
+text:         '#e2e8f0'  // Body text (light gray)
 
-4. **Security**
-   - Input sanitization (XSS protection)
-   - Rate limiting on sensitive endpoints
-   - Permission-based access control
-   - Secure webhook handling
-   - Environment variable protection
+// ❌ WRONG - Never use these Tailwind defaults
+'#f97316'   // Tailwind orange-500 - NOT our orange
+'#fdba74'   // Tailwind orange-300 - NOT our yellow
+'#8b5cf6'   // Tailwind violet-500 - NOT our purple
+'#fde68a'   // Tailwind yellow-200 - legacy, use #FBDB65
+```
 
-## 📁 Documentation
+### Design System Location
 
-- **[README.md](./README.md)** - Project setup and deployment
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System design and structure
-- **[STYLE_GUIDE.md](./STYLE_GUIDE.md)** - UI/UX design patterns and brand colors
+All design tokens are centralized:
+```
+lib/
+├── colors.ts                    # Brand colors (SINGLE SOURCE OF TRUTH)
+├── design-system/
+│   ├── index.ts                 # Central export for all tokens
+│   ├── typography.ts            # Font sizes, weights, line heights
+│   ├── spacing.ts               # Margins, padding, gaps
+│   ├── breakpoints.ts           # Responsive breakpoints + useBreakpoint()
+│   └── buttons.ts               # Button sizes and variants
+└── utils/
+    └── formatting.ts            # Enum formatters (ALWAYS USE THESE)
+```
+
+### Using the Design System
+
+```typescript
+// ✅ CORRECT - Import from centralized design system
+import { colors, typography, spacing, buttonSizes } from '@/lib/design-system';
+import { formatAgeRating, formatPlayerCount, formatPlayTime, formatCategory } from '@/lib/utils/formatting';
+
+// Use in styles
+<div style={{
+  background: colors.surface,
+  color: colors.text,
+  padding: spacing.lg,
+  ...typography.body,
+}}>
+
+// ❌ WRONG - Hardcoded values
+<div style={{
+  background: '#1a1a2e',
+  color: '#e2e8f0',
+  padding: '1.5rem',
+  fontSize: '1rem',
+}}>
+```
+
+### Enum Formatting - NEVER Display Raw Values
+
+```typescript
+// ✅ CORRECT - Use centralized formatters
+import { formatAgeRating, formatPlayerCount, formatPlayTime, formatCategory } from '@/lib/utils/formatting';
+
+<span>{formatAgeRating(game.ageRating)}</span>      // "14+" not "FOURTEEN_PLUS"
+<span>{formatPlayerCount(game.playerCount)}</span>  // "2-4 Players" not "TWO_TO_FOUR"
+<span>{formatPlayTime(game.playTime)}</span>        // "30-60 min" not "THIRTY_TO_SIXTY"
+<span>{formatCategory(game.category)}</span>        // "Strategy" not "STRATEGY"
+
+// ❌ WRONG - Raw enum values
+<span>{game.ageRating}</span>  // Shows "FOURTEEN_PLUS" - ugly!
+```
+
+### Shared UI Components
+
+Located at `app/components/ui/`:
+
+```typescript
+// Empty states - use for empty lists, no results, etc.
+import { EmptyState } from '@/app/components/ui';
+<EmptyState variant="cart" />      // Empty shopping cart
+<EmptyState variant="orders" />    // No orders
+<EmptyState variant="products" />  // No products found
+<EmptyState variant="search" />    // No search results
+<EmptyState variant="games" />     // No games available
+
+// Loading states - use for async content
+import { Spinner, SkeletonGrid, LoadingSection, ProductCardSkeleton } from '@/app/components/ui';
+<SkeletonGrid count={8} columns={4} />  // Grid of loading cards
+<LoadingSection message="Loading games..." />
+<Spinner size="large" />
+```
+
+### Prisma Enum Values (Schema Truth)
+
+```typescript
+// PlayerCount enum
+'SINGLE' | 'TWO' | 'TWO_TO_FOUR' | 'TWO_TO_SIX' | 'TWO_TO_EIGHT' | 'THREE_TO_SIX' | 'FOUR_TO_EIGHT' | 'VARIES'
+
+// PlayTime enum
+'UNDER_FIFTEEN' | 'FIFTEEN_TO_THIRTY' | 'THIRTY_TO_SIXTY' | 'ONE_TO_TWO_HOURS' | 'TWO_PLUS_HOURS' | 'VARIES'
+
+// AgeRating enum
+'EVERYONE' | 'EIGHT_PLUS' | 'TEN_PLUS' | 'TWELVE_PLUS' | 'FOURTEEN_PLUS' | 'SIXTEEN_PLUS' | 'EIGHTEEN_PLUS' | 'ADULTS_ONLY'
+
+// Category enum
+'PARTY' | 'FAMILY' | 'STRATEGY' | 'COOPERATIVE' | 'COMPETITIVE' | 'CARD' | 'DRINKING' | 'ICEBREAKER' | 'OTHER'
+
+// ⚠️ NOTE: Use 'VARIES' not 'VARIABLE' - this was a common mistake
+```
+
+### Admin Styles Pattern
+
+For admin pages, use the adminStyles object pattern:
+```typescript
+// Located at: app/admin/styles/adminStyles.ts
+import { adminStyles } from '../styles/adminStyles';
+
+<div style={adminStyles.card}>
+  <h2 style={adminStyles.cardTitle}>Title</h2>
+  <button style={adminStyles.buttonPrimary}>Action</button>
+</div>
+```
+
+---
 
 ## 🎨 Brand Identity
 
-### Colors
-- **Primary**: `#f97316` (Vibrant Orange)
-- **Accent**: `#fdba74` (Light Orange/Peach)
-- **Background**: `#0a0a0a` (Near Black)
-- **Text Primary**: `#fde68a` (Pale Yellow)
-- **Text Secondary**: `#e2e8f0` (Light Gray)
-- **Purple Accent**: `#8b5cf6` (Special items/categories)
+### Official Pantone Colors
+| Color | Pantone | Hex | Usage |
+|-------|---------|-----|-------|
+| Orange | 151 C | `#FF8200` | Primary brand, buttons, accents |
+| Yellow | 120 C | `#FBDB65` | Headlines, highlighted text |
+| Purple | 266 C | `#7D55C7` | Special categories, secondary accent |
+| Black | - | `#0a0a0a` | Background |
+| Surface | - | `#1a1a2e` | Cards, elevated surfaces |
 
 ### Design Philosophy
 "Fugly" aesthetic - Bold, unapologetic, high-contrast design that's impossible to ignore. Think 90s gaming meets modern functionality.
 
-## 🔧 Key Implementation Details
+---
+
+## 📁 Project Structure
+
+### Key Directories
+```
+app/
+├── admin/              # Admin dashboard (protected)
+│   └── styles/         # adminStyles.ts pattern
+├── components/
+│   ├── ui/             # Shared UI components (EmptyState, LoadingState)
+│   └── ...             # Feature-specific components
+├── shop/               # E-commerce pages
+├── api/                # API routes
+└── ...
+
+lib/
+├── colors.ts           # Brand colors (SINGLE SOURCE OF TRUTH)
+├── design-system/      # Typography, spacing, breakpoints, buttons
+├── utils/
+│   └── formatting.ts   # Enum formatters
+└── ...
+```
 
 ### Database Schema (Prisma)
 ```
 - User (Clerk managed + custom fields)
-- Game (products with stock tracking)
+- Game (products with stock tracking, images relation)
 - Merchandise (with variants)
 - Order (comprehensive order management)
 - OrderItem (line items with pricing)
@@ -104,10 +216,102 @@ Full Uproar is a gaming company's e-commerce platform built with Next.js 15, fea
   /analytics/    - Event tracking
 ```
 
-### State Management
-- **Cart**: Zustand store with localStorage persistence
-- **Toasts**: Global toast system for notifications
-- **Analytics**: Client-side event tracking with batching
+---
+
+## 🚀 Implementation Status
+
+### ✅ Completed Features
+
+1. **E-Commerce Core**
+   - Full shopping cart with persistent storage (Zustand + localStorage)
+   - Stripe checkout integration (payment intents API)
+   - Order management system with status tracking
+   - Inventory tracking with stock management
+   - Product variants (sizes, colors) for merchandise
+   - Digital product support with download links
+
+2. **Admin Panel** (/admin)
+   - Dashboard with revenue stats and quick actions
+   - Product management (games, merchandise)
+   - Order processing with status updates
+   - Analytics dashboard with charts
+   - Bulk operations (bulk delete with confirmation modal)
+   - Test mode toggle for safe development
+
+3. **Design System**
+   - Centralized color tokens (lib/colors.ts)
+   - Typography scale (lib/design-system/typography.ts)
+   - Spacing system (lib/design-system/spacing.ts)
+   - Responsive breakpoints with useBreakpoint() hook
+   - Shared UI components (EmptyState, LoadingState, Skeletons)
+
+4. **Security**
+   - Input sanitization (XSS protection)
+   - Rate limiting on sensitive endpoints
+   - Permission-based access control
+   - Secure webhook handling
+
+---
+
+## 🖼️ IMAGE LOADING BEST PRACTICES
+
+### Use Next.js Image Component
+```typescript
+// ✅ CORRECT - Use Next.js Image for optimization
+import Image from 'next/image';
+<Image
+  src={imageUrl}
+  alt="Description"
+  width={300}
+  height={200}
+  priority={isAboveTheFold}  // Priority for above-the-fold images
+  unoptimized={isExternalUrl} // External URLs need unoptimized
+/>
+
+// ❌ WRONG - Raw img tags bypass all optimization
+<img src={imageUrl} alt="Description" />
+```
+
+### Cache API Data That Doesn't Change Often
+```typescript
+// In components, cache artwork/logo URLs in localStorage
+const CACHE_KEY = 'my-cache-key';
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+// In API routes, add cache headers
+return NextResponse.json(data, {
+  headers: {
+    'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+  },
+});
+```
+
+### Image Size Guidelines
+- **Logos/icons**: < 50KB, use thumbnails for sizes ≤ 100px
+- **Product images**: < 200KB, use WebP format
+- **Hero images**: < 500KB, provide multiple sizes
+- **NEVER** commit images > 1MB to public/ folder
+
+### Current Issues to Fix (72 instances of raw `<img>`)
+Files needing Next.js Image migration:
+- ProductImageGallery.tsx (3 instances)
+- ArtworkDisplay.tsx (2 instances)
+- GameProductTabbed.tsx (6+ instances)
+- MerchProductStyled.tsx (3 instances)
+- shop pages (multiple)
+
+---
+
+## 🔧 IMPORTANT BUILD PRACTICES
+
+### ALWAYS Build Locally First
+**CRITICAL**: Before pushing any code changes to GitHub/Vercel, you MUST:
+1. Run `npm run build` locally first
+2. Fix all TypeScript/build errors locally
+3. Only push to GitHub after successful local build
+4. The Vercel deployment turnaround time is too long for debugging
+
+---
 
 ## 🚦 Environment Variables
 
@@ -126,16 +330,7 @@ STRIPE_WEBHOOK_SECRET    - For webhook verification
 DISCORD_WEBHOOK_URL      - Order notifications
 ```
 
-## 🔧 IMPORTANT BUILD PRACTICES
-
-### ALWAYS Build Locally First
-**CRITICAL**: Before pushing any code changes to GitHub/Vercel, you MUST:
-1. Run `npm run build` locally first
-2. Fix all TypeScript/build errors locally
-3. Only push to GitHub after successful local build
-4. The Vercel deployment turnaround time is too long for debugging
-
-This saves significant time and prevents broken deployments.
+---
 
 ## 📋 Common Tasks
 
@@ -151,51 +346,19 @@ This saves significant time and prevents broken deployments.
 3. Add tracking info when shipped
 4. System tracks all status changes
 
-### Bulk Cleanup (Test Data)
-1. Go to Games/Merch list in admin
-2. Select items with checkboxes
-3. Click "Delete (X)" button
-4. Confirm in modal
-
 ### Testing Payments
-1. Create Stripe account (free)
-2. Add test keys to `.env`
-3. Use test card: 4242 4242 4242 4242
-4. Check `/admin/test-stripe` for testing tools
+1. Add test keys to `.env`
+2. Use test card: 4242 4242 4242 4242
+3. Check `/admin/test-stripe` for testing tools
 
-## 🐛 Known Issues & Considerations
-
-1. **Analytics Provider** - Wrapped in layout.tsx but be careful with hydration
-2. **Test Mode** - Always shows in dev, check production carefully
-3. **Image Optimization** - Using Next.js Image where possible
-4. **Cart Persistence** - LocalStorage based, cleared on logout
-
-## 🔄 Next Steps / Roadmap
-
-1. **Printify Integration** - POD merchandise automation
-2. **Digital Downloads** - Automated delivery system
-3. **Forum System** - Community features
-4. **Email Notifications** - Order confirmations, shipping updates
-5. **Advanced Analytics** - User cohorts, retention metrics
-6. **Subscription Products** - Recurring billing support
-
-## 💡 Tips for Claude AI
-
-When working on this project:
-1. **Always check existing patterns** - The codebase is consistent
-2. **Use inline styles** - No Tailwind classes, follow adminStyles pattern
-3. **Test in admin** - Most features have admin UI for testing
-4. **Check permissions** - Use requirePermission() for protected routes
-5. **Add to cart works** - Look for toast notifications in top-right
-6. **Analytics tracks everything** - Check browser console in dev mode
+---
 
 ## 🔗 Quick Links
 
 - **Live Site**: https://fulluproar.com
 - **Admin Panel**: https://fulluproar.com/admin
 - **GitHub**: https://github.com/FullUproar/full-uproar-site
-- **Test Stripe**: https://fulluproar.com/test-stripe
 
 ---
 
-Last Updated: December 2025
+Last Updated: February 2025

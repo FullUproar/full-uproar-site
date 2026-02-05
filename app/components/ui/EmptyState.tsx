@@ -10,9 +10,43 @@ import { buttonStyles } from '@/lib/design-system/buttons';
 
 /**
  * EmptyState Component
+ * ====================
+ * Shared component for displaying empty states consistently.
  *
- * Consistent empty state UI across the application.
- * Use when there's no data to display (empty cart, no orders, no results, etc.)
+ * ⚠️ AI MAINTAINER INSTRUCTIONS:
+ * ------------------------------
+ * Use this component whenever displaying "no data" states.
+ * NEVER create inline empty states - use this component instead.
+ *
+ * Available variants:
+ * - cart     : Empty shopping cart (links to /shop/games)
+ * - orders   : No orders yet (links to /shop)
+ * - products : No products found (links to /shop)
+ * - search   : No search results (no action button)
+ * - games    : No games available (links to /)
+ * - generic  : Generic empty state (no action button)
+ *
+ * Usage:
+ * ```typescript
+ * import { EmptyState } from '@/app/components/ui';
+ *
+ * // Basic usage with preset variant
+ * <EmptyState variant="cart" />
+ *
+ * // Custom title/message
+ * <EmptyState
+ *   variant="search"
+ *   title="No matches"
+ *   message="Try a different search term"
+ * />
+ *
+ * // Custom action
+ * <EmptyState
+ *   variant="products"
+ *   actionLabel="Clear filters"
+ *   onAction={() => clearFilters()}
+ * />
+ * ```
  */
 
 type EmptyStateVariant = 'cart' | 'orders' | 'products' | 'search' | 'games' | 'generic';

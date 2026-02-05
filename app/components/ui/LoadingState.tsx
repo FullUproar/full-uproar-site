@@ -7,9 +7,43 @@ import { spacing } from '@/lib/design-system/spacing';
 
 /**
  * LoadingState Components
+ * =======================
+ * Shared components for displaying loading states consistently.
  *
- * Consistent loading UI across the application.
- * Includes spinner, skeleton loaders, and full-page loading states.
+ * ⚠️ AI MAINTAINER INSTRUCTIONS:
+ * ------------------------------
+ * Use these components for ALL loading states. NEVER create inline loading UI.
+ *
+ * Available components:
+ * - Spinner              : Animated spinner (small/medium/large)
+ * - SkeletonCard         : Placeholder for cards/images
+ * - SkeletonText         : Placeholder for text lines
+ * - ProductCardSkeleton  : Full product card skeleton
+ * - SkeletonGrid         : Grid of ProductCardSkeletons
+ * - LoadingPage          : Full-page loading state
+ * - LoadingSection       : Section-level loading state
+ *
+ * Usage:
+ * ```typescript
+ * import {
+ *   Spinner,
+ *   SkeletonGrid,
+ *   LoadingSection,
+ *   ProductCardSkeleton
+ * } from '@/app/components/ui';
+ *
+ * // Grid of skeleton cards (for product listings)
+ * <SkeletonGrid count={8} columns={4} />
+ *
+ * // Section loading with message
+ * <LoadingSection message="Loading games..." height="400px" />
+ *
+ * // Simple spinner
+ * <Spinner size="large" />
+ *
+ * // Full page loading
+ * <LoadingPage message="Loading your cart..." />
+ * ```
  */
 
 // Spinner component

@@ -1,13 +1,29 @@
 /**
  * Full Uproar Design System
+ * =========================
+ * CENTRAL EXPORT for all design tokens.
  *
- * Centralized exports for all design tokens.
- * Import from this file for easy access to all design system values.
+ * ⚠️ AI MAINTAINER INSTRUCTIONS:
+ * ------------------------------
+ * This is the PREFERRED import for design system values.
+ * Import everything you need from here in a single line:
  *
- * Usage:
  * ```typescript
- * import { colors, typography, spacing, breakpoints, buttonStyles } from '@/lib/design-system';
+ * import { colors, typography, spacing, buttonSizes } from '@/lib/design-system';
  * ```
+ *
+ * Available exports:
+ * - colors, colorsRgba, hexToRgba  — Brand colors (lib/colors.ts)
+ * - typography                      — Font sizes, weights (./typography.ts)
+ * - spacing, componentSpacing       — Margins, padding, gaps (./spacing.ts)
+ * - breakpoints, useBreakpoint      — Responsive utilities (./breakpoints.ts)
+ * - buttonSizes, buttonVariants     — Button styles (./buttons.ts)
+ *
+ * DO NOT:
+ * - Hardcode hex values (use colors.*)
+ * - Hardcode font sizes (use typography.*)
+ * - Hardcode spacing values (use spacing.*)
+ * - Use Tailwind classes (this site uses inline styles only)
  */
 
 // Re-export colors from existing file

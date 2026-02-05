@@ -143,7 +143,28 @@ export function formatPercentage(value: number, decimals: number = 0): string {
 
 // ============================================================
 // GAME ENUM FORMATTERS
-// Centralized formatters for consistent display across the site
+// ============================================================
+//
+// ⚠️ AI MAINTAINER INSTRUCTIONS:
+// ------------------------------
+// ALWAYS use these formatters when displaying Prisma enum values.
+// NEVER display raw enum values like "FOURTEEN_PLUS" to users.
+//
+// Usage:
+// ```typescript
+// import { formatAgeRating, formatPlayerCount, formatPlayTime, formatCategory } from '@/lib/utils/formatting';
+//
+// // ✅ CORRECT
+// <span>{formatAgeRating(game.ageRating)}</span>      // Shows "14+"
+// <span>{formatPlayerCount(game.playerCount)}</span>  // Shows "2-4 Players"
+// <span>{formatPlayTime(game.playTime)}</span>        // Shows "30-60 min"
+//
+// // ❌ WRONG - Never do this
+// <span>{game.ageRating}</span>  // Shows "FOURTEEN_PLUS" - ugly!
+// ```
+//
+// NOTE: Schema uses 'VARIES' not 'VARIABLE'. If you see 'VARIABLE' anywhere,
+// it's a bug that needs to be fixed.
 // ============================================================
 
 /**
