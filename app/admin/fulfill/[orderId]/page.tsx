@@ -13,8 +13,11 @@ import {
   Printer,
   AlertCircle,
   Undo2,
-  MoveRight,
-  Trash2,
+  Truck,
+  DollarSign,
+  Download,
+  ExternalLink,
+  RefreshCw,
 } from 'lucide-react';
 
 /**
@@ -91,6 +94,21 @@ interface FulfillmentData {
   };
 }
 
+interface ShippingRate {
+  carrier: string;
+  serviceName: string;
+  serviceCode: string;
+  shipmentCost: number;
+  otherCost: number;
+}
+
+interface ShippingLabel {
+  trackingNumber: string;
+  labelUrl: string; // base64 PDF
+  cost: number;
+  shipmentId: number;
+}
+
 export default function FulfillPage() {
   const params = useParams();
   const router = useRouter();
@@ -105,6 +123,15 @@ export default function FulfillPage() {
   const [selectedPackaging, setSelectedPackaging] = useState<number | null>(null);
   const [completing, setCompleting] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
+
+  // Shipping label state
+  const [showShippingModal, setShowShippingModal] = useState(false);
+  const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
+  const [loadingRates, setLoadingRates] = useState(false);
+  const [selectedRate, setSelectedRate] = useState<ShippingRate | null>(null);
+  const [generatingLabel, setGeneratingLabel] = useState(false);
+  const [shippingLabel, setShippingLabel] = useState<ShippingLabel | null>(null);
+  const [shippingError, setShippingError] = useState<string | null>(null);
 
   const scanInputRef = useRef<HTMLInputElement>(null);
 
@@ -167,7 +194,7 @@ export default function FulfillPage() {
   // Keep focus on scan input
   useEffect(() => {
     const focusInput = () => {
-      if (scanInputRef.current && !showCompleteModal) {
+      if (scanInputRef.current && !showCompleteModal && !showShippingModal) {
         scanInputRef.current.focus();
       }
     };
@@ -175,7 +202,7 @@ export default function FulfillPage() {
     focusInput();
     const interval = setInterval(focusInput, 1000);
     return () => clearInterval(interval);
-  }, [showCompleteModal]);
+  }, [showCompleteModal, showShippingModal]);
 
   // Handle barcode scan
   const handleScan = async (barcode: string) => {
@@ -260,8 +287,146 @@ export default function FulfillPage() {
     }
   };
 
-  // Complete fulfillment
-  const completeFulfillment = async () => {
+  // Parse shipping address for rate calculation
+  const parseAddress = (addressString: string) => {
+    const parts = addressString.split(',').map(s => s.trim());
+    if (parts.length >= 4) {
+      const stateZip = parts[2].split(' ').filter(Boolean);
+      return {
+        street1: parts[0],
+        city: parts[1],
+        state: stateZip[0] || '',
+        postalCode: stateZip.slice(1).join(' ') || '',
+        country: parts[3] || 'US',
+      };
+    }
+    return { street1: addressString, city: '', state: '', postalCode: '', country: 'US' };
+  };
+
+  // Calculate total package weight (rough estimate)
+  const calculateWeight = () => {
+    // Base weight from packaging
+    const packagingWeight = data?.packages?.reduce((sum, pkg) => {
+      return sum + (pkg.packagingType.material === 'Cardboard' ? 0.5 : 0.25);
+    }, 0) || 0.5;
+    // Add item weights (estimate 1 lb per item)
+    const itemWeight = data?.progress.total || 1;
+    return packagingWeight + itemWeight;
+  };
+
+  // Fetch shipping rates
+  const fetchShippingRates = async () => {
+    if (!data) return;
+
+    setLoadingRates(true);
+    setShippingError(null);
+    setShippingRates([]);
+    setSelectedRate(null);
+
+    try {
+      const address = parseAddress(data.order.shippingAddress);
+      const weight = calculateWeight();
+
+      // Get dimensions from the largest package
+      const largestPkg = data.packages?.reduce((largest, pkg) => {
+        const vol = pkg.packagingType.length * pkg.packagingType.width * pkg.packagingType.height;
+        const largestVol = largest ? largest.packagingType.length * largest.packagingType.width * largest.packagingType.height : 0;
+        return vol > largestVol ? pkg : largest;
+      }, null as PackageData | null);
+
+      const res = await fetch('/api/admin/shipping/rates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          weight,
+          dimensions: largestPkg ? {
+            length: largestPkg.packagingType.length,
+            width: largestPkg.packagingType.width,
+            height: largestPkg.packagingType.height,
+          } : undefined,
+          toAddress: address,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (result.success && result.rates?.length > 0) {
+        setShippingRates(result.rates);
+        // Auto-select cheapest rate
+        setSelectedRate(result.rates[0]);
+      } else {
+        setShippingError(result.error || 'No shipping rates available. ShipStation may not be configured.');
+      }
+    } catch (err) {
+      setShippingError('Failed to fetch shipping rates');
+    } finally {
+      setLoadingRates(false);
+    }
+  };
+
+  // Generate shipping label
+  const generateLabel = async () => {
+    if (!selectedRate || !data) return;
+
+    setGeneratingLabel(true);
+    setShippingError(null);
+
+    try {
+      const weight = calculateWeight();
+      const largestPkg = data.packages?.[0];
+
+      const res = await fetch('/api/admin/shipping/labels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId,
+          carrierCode: selectedRate.carrier,
+          serviceCode: selectedRate.serviceCode,
+          packageCode: 'package', // Default package type
+          weight,
+          dimensions: largestPkg ? {
+            length: largestPkg.packagingType.length,
+            width: largestPkg.packagingType.width,
+            height: largestPkg.packagingType.height,
+          } : undefined,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (result.success && result.label) {
+        setShippingLabel(result.label);
+
+        // Mark fulfillment as completed
+        await fetch('/api/admin/fulfillment', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId, status: 'completed' }),
+        });
+      } else {
+        setShippingError(result.error || 'Failed to generate label');
+      }
+    } catch (err) {
+      setShippingError('Failed to generate shipping label');
+    } finally {
+      setGeneratingLabel(false);
+    }
+  };
+
+  // Print/download label
+  const printLabel = () => {
+    if (!shippingLabel?.labelUrl) return;
+
+    // labelUrl is base64 encoded PDF
+    const linkSource = `data:application/pdf;base64,${shippingLabel.labelUrl}`;
+    const downloadLink = document.createElement('a');
+    downloadLink.href = linkSource;
+    downloadLink.download = `label-${orderId.slice(0, 8)}-${shippingLabel.trackingNumber}.pdf`;
+    downloadLink.click();
+  };
+
+  // Open shipping modal when clicking complete
+  const handleCompleteClick = () => {
     if (!data?.packages || data.packages.length === 0) {
       alert('Please scan packaging to create at least one box before completing');
       return;
@@ -272,6 +437,14 @@ export default function FulfillPage() {
       return;
     }
 
+    // Open shipping modal and fetch rates
+    setShowShippingModal(true);
+    setShippingLabel(null);
+    fetchShippingRates();
+  };
+
+  // Complete without label (skip shipping)
+  const completeWithoutLabel = async () => {
     setCompleting(true);
     try {
       await fetch('/api/admin/fulfillment', {
@@ -576,7 +749,7 @@ export default function FulfillPage() {
       {data.progress.isComplete && data.packages && data.packages.length > 0 &&
        (!data.unassignedScans || data.unassignedScans.length === 0) && (
         <button
-          onClick={completeFulfillment}
+          onClick={handleCompleteClick}
           disabled={completing}
           style={{
             width: '100%',
@@ -602,8 +775,8 @@ export default function FulfillPage() {
             </>
           ) : (
             <>
-              <Printer size={28} />
-              COMPLETE & PRINT LABEL
+              <Truck size={28} />
+              COMPLETE & SHIP
             </>
           )}
         </button>
@@ -634,47 +807,189 @@ export default function FulfillPage() {
         </div>
       )}
 
-      {/* Completion Modal - full screen on mobile */}
-      {showCompleteModal && (
+      {/* Shipping Modal - full screen on mobile */}
+      {showShippingModal && (
         <div style={styles.modal}>
-          <div style={styles.modalContent}>
-            <CheckCircle2 size={56} style={{ color: '#10b981', marginBottom: '16px' }} />
-            <h2 style={{ color: '#e2e8f0', marginBottom: '8px' }}>Order Ready!</h2>
-            <p style={{ color: '#64748b', marginBottom: '20px' }}>
-              All items verified.
-            </p>
-
-            <div style={styles.modalPackaging}>
-              <div style={{ color: '#e2e8f0', fontWeight: 600 }}>
-                {packagingTypes.find(p => p.id === selectedPackaging)?.sku}
-              </div>
-              <div style={{ color: '#64748b', fontSize: '13px' }}>
-                {packagingTypes.find(p => p.id === selectedPackaging)?.name}
-              </div>
+          <div style={{ ...styles.modalContent, maxWidth: '500px', maxHeight: '90vh', overflow: 'auto' }}>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+              <h2 style={{ color: '#e2e8f0', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Truck size={24} style={{ color: '#f97316' }} />
+                {shippingLabel ? 'Label Ready!' : 'Create Shipping Label'}
+              </h2>
+              {!shippingLabel && (
+                <button
+                  onClick={() => setShowShippingModal(false)}
+                  style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: '8px' }}
+                >
+                  ✕
+                </button>
+              )}
             </div>
 
-            <div style={styles.modalButtons}>
-              <button onClick={() => setShowCompleteModal(false)} style={styles.secondaryButton}>
-                <Undo2 size={18} />
-                Go Back
-              </button>
-              <button
-                onClick={completeFulfillment}
-                disabled={completing}
-                style={{
-                  ...styles.primaryButton,
-                  flex: 1,
-                  opacity: completing ? 0.5 : 1,
-                }}
-              >
-                {completing ? (
-                  <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-                ) : (
-                  <Printer size={18} />
-                )}
-                Print Label
-              </button>
+            {/* Shipping Address */}
+            <div style={{ background: '#1a1a1a', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>
+              <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '4px' }}>SHIP TO</div>
+              <div style={{ color: '#e2e8f0', fontWeight: 600 }}>{data.order.customerName}</div>
+              <div style={{ color: '#94a3b8', fontSize: '14px' }}>{data.order.shippingAddress}</div>
             </div>
+
+            {/* Label Generated - Show success state */}
+            {shippingLabel && (
+              <div style={{ textAlign: 'center' }}>
+                <CheckCircle2 size={64} style={{ color: '#10b981', marginBottom: '16px' }} />
+
+                <div style={{ background: '#0f2419', border: '1px solid #10b981', borderRadius: '8px', padding: '16px', marginBottom: '16px' }}>
+                  <div style={{ color: '#10b981', fontWeight: 700, fontSize: '18px', marginBottom: '8px' }}>
+                    Tracking Number
+                  </div>
+                  <div style={{ color: '#e2e8f0', fontFamily: 'monospace', fontSize: '16px', wordBreak: 'break-all' }}>
+                    {shippingLabel.trackingNumber}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <button
+                    onClick={printLabel}
+                    style={{
+                      ...styles.primaryButton,
+                      width: '100%',
+                      background: '#10b981',
+                      padding: '16px',
+                      fontSize: '18px',
+                    }}
+                  >
+                    <Download size={20} />
+                    Download Label PDF
+                  </button>
+
+                  <button
+                    onClick={() => router.push(`/admin/orders/${orderId}`)}
+                    style={{ ...styles.secondaryButton, width: '100%' }}
+                  >
+                    <CheckCircle2 size={18} />
+                    Done - View Order
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Loading Rates */}
+            {!shippingLabel && loadingRates && (
+              <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                <Loader2 size={40} style={{ color: '#f97316', animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
+                <div style={{ color: '#94a3b8' }}>Fetching shipping rates...</div>
+              </div>
+            )}
+
+            {/* Error State */}
+            {!shippingLabel && shippingError && !loadingRates && (
+              <div style={{ textAlign: 'center', padding: '20px' }}>
+                <AlertCircle size={40} style={{ color: '#f59e0b', marginBottom: '12px' }} />
+                <div style={{ color: '#f59e0b', marginBottom: '16px' }}>{shippingError}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <button onClick={fetchShippingRates} style={styles.secondaryButton}>
+                    <RefreshCw size={16} />
+                    Try Again
+                  </button>
+                  <button
+                    onClick={completeWithoutLabel}
+                    disabled={completing}
+                    style={{ ...styles.secondaryButton, color: '#64748b' }}
+                  >
+                    {completing ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : null}
+                    Complete Without Label
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Rate Selection */}
+            {!shippingLabel && !loadingRates && shippingRates.length > 0 && (
+              <>
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '8px', textTransform: 'uppercase' }}>
+                    Select Shipping Service
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '250px', overflow: 'auto' }}>
+                    {shippingRates.map((rate, idx) => (
+                      <button
+                        key={`${rate.carrier}-${rate.serviceCode}-${idx}`}
+                        onClick={() => setSelectedRate(rate)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '12px 16px',
+                          background: selectedRate?.serviceCode === rate.serviceCode && selectedRate?.carrier === rate.carrier
+                            ? 'rgba(249, 115, 22, 0.15)'
+                            : '#1a1a1a',
+                          border: selectedRate?.serviceCode === rate.serviceCode && selectedRate?.carrier === rate.carrier
+                            ? '2px solid #f97316'
+                            : '1px solid #333',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                        }}
+                      >
+                        <div>
+                          <div style={{ color: '#e2e8f0', fontWeight: 600, fontSize: '14px' }}>
+                            {rate.serviceName}
+                          </div>
+                          <div style={{ color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>
+                            {rate.carrier}
+                          </div>
+                        </div>
+                        <div style={{ color: '#10b981', fontWeight: 700, fontSize: '16px' }}>
+                          ${(rate.shipmentCost + (rate.otherCost || 0)).toFixed(2)}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Generate Label Button */}
+                <button
+                  onClick={generateLabel}
+                  disabled={!selectedRate || generatingLabel}
+                  style={{
+                    ...styles.primaryButton,
+                    width: '100%',
+                    padding: '16px',
+                    fontSize: '16px',
+                    opacity: (!selectedRate || generatingLabel) ? 0.5 : 1,
+                    cursor: (!selectedRate || generatingLabel) ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {generatingLabel ? (
+                    <>
+                      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
+                      Generating Label...
+                    </>
+                  ) : (
+                    <>
+                      <Printer size={20} />
+                      Generate Label {selectedRate ? `($${(selectedRate.shipmentCost + (selectedRate.otherCost || 0)).toFixed(2)})` : ''}
+                    </>
+                  )}
+                </button>
+
+                {/* Skip option */}
+                <button
+                  onClick={completeWithoutLabel}
+                  disabled={completing}
+                  style={{
+                    ...styles.secondaryButton,
+                    width: '100%',
+                    marginTop: '12px',
+                    color: '#64748b',
+                    fontSize: '13px',
+                  }}
+                >
+                  Skip - Complete Without Label
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
