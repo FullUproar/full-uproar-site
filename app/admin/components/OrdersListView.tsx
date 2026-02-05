@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Package, Eye, Search, Calendar, DollarSign } from 'lucide-react';
+import Link from 'next/link';
+import { Package, Eye, Search, Calendar, DollarSign, PackageCheck } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
 interface Order {
@@ -242,13 +243,32 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
                     </span>
                   </td>
                   <td style={adminStyles.tableCell}>
-                    <button
-                      onClick={() => onViewDetails(order)}
-                      style={adminStyles.iconButton}
-                      title="View details"
-                    >
-                      <Eye size={16} />
-                    </button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() => onViewDetails(order)}
+                        style={adminStyles.iconButton}
+                        title="View details"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      {(order.status === 'processing' || order.status === 'pending') && (
+                        <Link
+                          href={`/admin/fulfill/${order.id}`}
+                          style={{
+                            ...adminStyles.iconButton,
+                            background: 'rgba(16, 185, 129, 0.2)',
+                            borderColor: '#10b981',
+                            textDecoration: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                          title="Fulfill order"
+                        >
+                          <PackageCheck size={16} style={{ color: '#10b981' }} />
+                        </Link>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

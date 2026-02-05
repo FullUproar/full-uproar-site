@@ -29,6 +29,8 @@ model Merch {
   featured         Boolean      @default(false)
   createdAt        DateTime     @default(now()) @db.Timestamp(6)
   tags             String?
+  sku              String?      @unique // Internal SKU for inventory
+  barcode          String?      @unique // UPC/EAN barcode for scanning
   printifyId       String?
   blueprintId      Int?
   printProviderId  Int?
@@ -77,6 +79,8 @@ model Game {
   slug                String            @unique
   tags                String?
   category            String?           @default("GAME") @db.VarChar(10)
+  sku                 String?           @unique // Internal SKU for inventory
+  barcode             String?           @unique // UPC/EAN barcode for scanning
   howToPlay           String?
   components          String?
   videoUrl            String?           @db.VarChar(255)
@@ -214,6 +218,9 @@ model Order {
   tickets               SupportTicket[]
   orderNotes            OrderNote[]
   reviews               Review[]
+  fulfillment           Fulfillment?
+  packagingTypeId       Int?
+  packagingType         PackagingType?       @relation("OrderPackaging", fields: [packagingTypeId], references: [id])
 
   @@index([userId])
   @@index([status])
@@ -306,6 +313,7 @@ model OrderItem {
   merch       Merch?       @relation(fields: [merchId], references: [id])
   order       Order        @relation(fields: [orderId], references: [id])
   returnItems ReturnItem[]
+  scans       FulfillmentScan[]
 }
 
 model OrderStatusHistory {
@@ -2221,4 +2229,85 @@ model SessionPlayer {
   @@unique([sessionId, nickname]) // No duplicate nicknames in same session
   @@index([sessionId])
   @@index([clerkId])
+}
+
+// ============================================
+// FULFILLMENT & PACKAGING
+// ============================================
+
+// Packaging types for shipping orders
+model PackagingType {
+  id          Int      @id @default(autoincrement())
+  sku         String   @unique // e.g., "FMM01", "FMM02"
+  name        String // e.g., "Small Game Box"
+  length      Decimal  @db.Decimal(6, 2) // inches
+  width       Decimal  @db.Decimal(6, 2)
+  height      Decimal  @db.Decimal(6, 2)
+  material    String   @default("Cardboard") // Cardboard, Padded Mailer, etc.
+  weightOz    Decimal? @db.Decimal(6, 2) // Empty box weight
+  maxWeightOz Decimal? @db.Decimal(8, 2) // Max contents weight
+  costCents   Int? // Cost per unit
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  notes       String?
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  orders       Order[]       @relation("OrderPackaging")
+  fulfillments Fulfillment[]
+
+  @@index([isActive])
+}
+
+// Fulfillment tracking for orders
+model Fulfillment {
+  id        String   @id @default(cuid())
+  orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Status
+  status    String   @default("pending") // pending, in_progress, completed, cancelled
+  startedAt DateTime?
+  completedAt DateTime?
+
+  // Packaging selection
+  packagingTypeId Int?
+  packagingType   PackagingType? @relation(fields: [packagingTypeId], references: [id])
+
+  // Who's fulfilling
+  fulfilledById   String?
+  fulfilledByName String?
+
+  // Notes
+  notes     String?
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
+
+  scans FulfillmentScan[]
+
+  @@index([status])
+  @@index([orderId])
+}
+
+// Individual barcode scans during fulfillment
+model FulfillmentScan {
+  id            Int         @id @default(autoincrement())
+  fulfillmentId String
+  fulfillment   Fulfillment @relation(fields: [fulfillmentId], references: [id], onDelete: Cascade)
+
+  // What was scanned
+  barcode     String
+  orderItemId Int? // Matched order item
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
+
+  // Result
+  matched   Boolean  @default(false) // Did it match an expected item?
+  quantity  Int      @default(1) // How many of this item scanned
+  errorMsg  String? // If not matched, why
+
+  scannedAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([fulfillmentId])
+  @@index([barcode])
 }

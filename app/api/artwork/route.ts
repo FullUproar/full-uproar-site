@@ -5,12 +5,31 @@ import { prisma } from '@/lib/prisma';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
+/**
+ * GET /api/artwork
+ *
+ * Returns all artwork entries. Used by FuglyLogo and FooterLogo components.
+ *
+ * ⚠️ AI MAINTAINER NOTE:
+ * This endpoint is called by logo components on every page.
+ * The cache headers ensure the response is cached at the CDN edge for 5 minutes,
+ * and the client-side components also cache URLs in localStorage for 1 hour.
+ * This eliminates the API call on subsequent page navigations.
+ */
 export async function GET() {
   try {
     const artwork = await prisma.artwork.findMany({
       orderBy: { createdAt: 'desc' }
     });
-    return NextResponse.json(artwork);
+
+    // Add cache headers for better performance
+    // s-maxage=300: Cache at CDN edge for 5 minutes
+    // stale-while-revalidate=600: Serve stale content for up to 10 min while refreshing
+    return NextResponse.json(artwork, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
   } catch (error) {
     console.error('Error fetching artwork:', error);
     return NextResponse.json({ error: 'Failed to fetch artwork' }, { status: 500 });

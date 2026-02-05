@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, Upload, ArrowLeft, Loader2, X } from 'lucide-react';
+import { Save, Upload, ArrowLeft, Loader2, X, RefreshCw } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 
 interface ArtworkEditFormProps {
@@ -23,6 +23,8 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
   });
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
+  const [useWebP, setUseWebP] = useState(true); // Default to WebP for smaller files
   const [message, setMessage] = useState({ type: '', text: '' });
   const [previewUrl, setPreviewUrl] = useState('');
 
@@ -59,7 +61,9 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
     formData.append('file', file);
 
     try {
-      const response = await fetch('/api/upload', {
+      // Add webp query param if enabled
+      const uploadUrl = useWebP ? '/api/upload?webp=true' : '/api/upload';
+      const response = await fetch(uploadUrl, {
         method: 'POST',
         body: formData,
       });
@@ -150,6 +154,41 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
     'Other'
   ];
 
+  // Regenerate image sizes for existing artwork
+  const handleRegenerate = async () => {
+    if (!artwork?.id) return;
+
+    setRegenerating(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const response = await fetch(`/api/admin/artwork/optimize?id=${artwork.id}&webp=${useWebP}`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Optimization failed');
+      }
+
+      const data = await response.json();
+
+      if (data.errors > 0) {
+        setMessage({ type: 'error', text: `Optimization had errors: ${data.errorDetails?.[0]?.error}` });
+      } else {
+        setMessage({ type: 'success', text: `Image optimized! Format: ${useWebP ? 'WebP' : 'auto'}` });
+        // Refresh to show updated images
+        setTimeout(() => {
+          onSave();
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Regenerate error:', error);
+      setMessage({ type: 'error', text: 'Failed to regenerate image sizes' });
+    } finally {
+      setRegenerating(false);
+    }
+  };
+
   return (
     <div style={{ padding: '2rem', maxWidth: '100%', overflow: 'hidden' }}>
       <button
@@ -230,7 +269,7 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
             )}
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <label 
+              <label
                 style={{
                   ...adminStyles.button,
                   cursor: uploading ? 'not-allowed' : 'pointer',
@@ -258,6 +297,52 @@ export default function ArtworkEditForm({ artwork, onBack, onSave }: ArtworkEdit
                     {previewUrl ? 'Change Image' : 'Upload Image'}
                   </>
                 )}
+              </label>
+
+              {/* Regenerate button for existing artwork */}
+              {artwork && previewUrl && (
+                <button
+                  type="button"
+                  onClick={handleRegenerate}
+                  disabled={regenerating}
+                  style={{
+                    ...adminStyles.outlineButton,
+                    cursor: regenerating ? 'not-allowed' : 'pointer',
+                    opacity: regenerating ? 0.5 : 1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  {regenerating ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      Optimizing...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw size={18} />
+                      Regenerate Sizes
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+
+            {/* WebP Option */}
+            <div style={{ marginTop: '0.75rem' }}>
+              <label style={{
+                ...adminStyles.checkboxLabel,
+                fontSize: '0.875rem',
+                color: '#94a3b8'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={useWebP}
+                  onChange={(e) => setUseWebP(e.target.checked)}
+                  style={adminStyles.checkbox}
+                />
+                Convert to WebP format (recommended - ~30% smaller files)
               </label>
             </div>
             
