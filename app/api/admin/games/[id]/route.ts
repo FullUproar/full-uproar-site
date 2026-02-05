@@ -63,8 +63,10 @@ export async function PATCH(
     // Remove fields that shouldn't be updated directly
     const { id: _, createdAt, updatedAt, orderItems, images, inventory, reviews, ...updateData } = body;
 
-    // Convert launchDate string to DateTime if provided
-    if (updateData.launchDate) {
+    // Convert launchDate string to DateTime if provided, null if empty
+    if (updateData.launchDate === '' || updateData.launchDate === null) {
+      updateData.launchDate = null;
+    } else if (updateData.launchDate) {
       updateData.launchDate = new Date(updateData.launchDate);
     }
 
