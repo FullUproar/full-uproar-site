@@ -23,11 +23,11 @@ export default function AdminLayout({
     themeColor.content = '#0a0a0a';
     document.head.appendChild(themeColor);
 
-    // Add apple mobile web app meta tags
-    const appleMobile = document.createElement('meta');
-    appleMobile.name = 'apple-mobile-web-app-capable';
-    appleMobile.content = 'yes';
-    document.head.appendChild(appleMobile);
+    // Add mobile web app meta tags
+    const mobileCapable = document.createElement('meta');
+    mobileCapable.name = 'mobile-web-app-capable';
+    mobileCapable.content = 'yes';
+    document.head.appendChild(mobileCapable);
 
     const appleStatus = document.createElement('meta');
     appleStatus.name = 'apple-mobile-web-app-status-bar-style';
@@ -37,7 +37,7 @@ export default function AdminLayout({
     return () => {
       manifestLink.remove();
       themeColor.remove();
-      appleMobile.remove();
+      mobileCapable.remove();
       appleStatus.remove();
     };
   }, []);
