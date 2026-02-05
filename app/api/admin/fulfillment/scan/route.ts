@@ -98,27 +98,76 @@ export async function POST(request: NextRequest) {
       });
 
       if (packagingType) {
-        // It's a packaging scan - select this packaging for the order
+        // It's a packaging scan - create a new package for multi-box support
+        // Get current package count for this fulfillment
+        const existingPackages = await prisma.fulfillmentPackage.count({
+          where: { fulfillmentId: fulfillment.id },
+        });
+
+        const newBoxNumber = existingPackages + 1;
+
+        // Create new package
+        const newPackage = await prisma.fulfillmentPackage.create({
+          data: {
+            fulfillmentId: fulfillment.id,
+            packagingTypeId: packagingType.id,
+            boxNumber: newBoxNumber,
+          },
+        });
+
+        // Find all unassigned scans (items scanned since last packaging scan)
+        const unassignedScans = await prisma.fulfillmentScan.findMany({
+          where: {
+            fulfillmentId: fulfillment.id,
+            packageId: null,
+            matched: true,
+          },
+          include: {
+            orderItem: {
+              include: {
+                game: { select: { title: true } },
+                merch: { select: { name: true } },
+              },
+            },
+          },
+        });
+
+        // Assign all unassigned scans to this package
+        if (unassignedScans.length > 0) {
+          await prisma.fulfillmentScan.updateMany({
+            where: {
+              id: { in: unassignedScans.map(s => s.id) },
+            },
+            data: { packageId: newPackage.id },
+          });
+        }
+
+        // Also update the fulfillment's default packaging (for single-box orders)
         await prisma.fulfillment.update({
           where: { id: fulfillment.id },
           data: { packagingTypeId: packagingType.id },
         });
 
-        // Also update the order's packaging
-        await prisma.order.update({
-          where: { id: orderId },
-          data: { packagingTypeId: packagingType.id },
-        });
+        // Build list of items in this box
+        const itemsInBox = unassignedScans.map(s => ({
+          name: s.orderItem?.game?.title || s.orderItem?.merch?.name || 'Unknown item',
+          quantity: s.quantity,
+        }));
 
         return NextResponse.json({
           success: true,
           isPackaging: true,
-          packagingType: {
-            id: packagingType.id,
-            sku: packagingType.sku,
-            name: packagingType.name,
+          package: {
+            id: newPackage.id,
+            boxNumber: newBoxNumber,
+            packagingType: {
+              id: packagingType.id,
+              sku: packagingType.sku,
+              name: packagingType.name,
+            },
+            itemsAssigned: itemsInBox,
           },
-          message: `📦 Packaging: ${packagingType.sku}`,
+          message: `📦 Box ${newBoxNumber}: ${packagingType.sku} (${unassignedScans.length} item${unassignedScans.length !== 1 ? 's' : ''})`,
         });
       }
 
@@ -221,6 +270,89 @@ export async function POST(request: NextRequest) {
     console.error('Error processing scan:', error);
     return NextResponse.json(
       { error: 'Failed to process scan' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PATCH /api/admin/fulfillment/scan
+ *
+ * Reassign a scan to a different package (for fixing mistakes).
+ * Body: { scanId, packageId } - packageId can be null to unassign
+ */
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { scanId, packageId } = body;
+
+    if (!scanId) {
+      return NextResponse.json(
+        { error: 'Scan ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Verify the scan exists
+    const scan = await prisma.fulfillmentScan.findUnique({
+      where: { id: scanId },
+      include: {
+        orderItem: {
+          include: {
+            game: { select: { title: true } },
+            merch: { select: { name: true } },
+          },
+        },
+      },
+    });
+
+    if (!scan) {
+      return NextResponse.json(
+        { error: 'Scan not found' },
+        { status: 404 }
+      );
+    }
+
+    // If packageId is provided, verify it exists and belongs to same fulfillment
+    if (packageId !== null && packageId !== undefined) {
+      const pkg = await prisma.fulfillmentPackage.findUnique({
+        where: { id: packageId },
+      });
+
+      if (!pkg) {
+        return NextResponse.json(
+          { error: 'Package not found' },
+          { status: 404 }
+        );
+      }
+
+      if (pkg.fulfillmentId !== scan.fulfillmentId) {
+        return NextResponse.json(
+          { error: 'Package belongs to a different fulfillment' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Update the scan's package assignment
+    const updatedScan = await prisma.fulfillmentScan.update({
+      where: { id: scanId },
+      data: { packageId: packageId ?? null },
+    });
+
+    const itemName = scan.orderItem?.game?.title || scan.orderItem?.merch?.name || 'Item';
+
+    return NextResponse.json({
+      success: true,
+      scan: updatedScan,
+      message: packageId
+        ? `Moved ${itemName} to box ${packageId}`
+        : `Unassigned ${itemName} from box`,
+    });
+  } catch (error) {
+    console.error('Error reassigning scan:', error);
+    return NextResponse.json(
+      { error: 'Failed to reassign scan' },
       { status: 500 }
     );
   }

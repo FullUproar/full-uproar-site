@@ -51,8 +51,33 @@ export async function GET(request: NextRequest) {
           include: {
             scans: {
               orderBy: { scannedAt: 'desc' },
+              include: {
+                orderItem: {
+                  include: {
+                    game: { select: { title: true } },
+                    merch: { select: { name: true } },
+                  },
+                },
+              },
             },
             packagingType: true,
+            packages: {
+              include: {
+                packagingType: true,
+                scans: {
+                  where: { matched: true },
+                  include: {
+                    orderItem: {
+                      include: {
+                        game: { select: { title: true } },
+                        merch: { select: { name: true } },
+                      },
+                    },
+                  },
+                },
+              },
+              orderBy: { boxNumber: 'asc' },
+            },
           },
         },
         packagingType: true,
@@ -94,6 +119,27 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    // Build packages data for multi-box support
+    const packages = order.fulfillment?.packages?.map(pkg => ({
+      id: pkg.id,
+      boxNumber: pkg.boxNumber,
+      packagingType: pkg.packagingType,
+      items: pkg.scans.map(s => ({
+        scanId: s.id,
+        name: s.orderItem?.game?.title || s.orderItem?.merch?.name || 'Unknown',
+        quantity: s.quantity,
+      })),
+    })) || [];
+
+    // Find unassigned scans (items not yet in a box)
+    const unassignedScans = order.fulfillment?.scans
+      .filter(s => s.matched && !s.packageId)
+      .map(s => ({
+        scanId: s.id,
+        name: s.orderItem?.game?.title || s.orderItem?.merch?.name || 'Unknown',
+        quantity: s.quantity,
+      })) || [];
+
     return NextResponse.json({
       order: {
         id: order.id,
@@ -106,6 +152,8 @@ export async function GET(request: NextRequest) {
       fulfillment: order.fulfillment,
       packagingType: order.packagingType || order.fulfillment?.packagingType,
       checklist,
+      packages,
+      unassignedScans,
       progress: {
         total: totalItems,
         scanned: scannedItems,

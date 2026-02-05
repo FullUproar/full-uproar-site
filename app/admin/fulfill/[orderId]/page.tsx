@@ -13,6 +13,8 @@ import {
   Printer,
   AlertCircle,
   Undo2,
+  MoveRight,
+  Trash2,
 } from 'lucide-react';
 
 /**
@@ -47,6 +49,26 @@ interface PackagingType {
   material: string;
 }
 
+interface FulfillmentPackage {
+  id: number;
+  boxNumber: number;
+  packagingType: PackagingType;
+  items: { name: string; quantity: number; scanId: number }[];
+}
+
+interface ScanItem {
+  scanId: number;
+  name: string;
+  quantity: number;
+}
+
+interface PackageData {
+  id: number;
+  boxNumber: number;
+  packagingType: PackagingType;
+  items: ScanItem[];
+}
+
 interface FulfillmentData {
   order: {
     id: string;
@@ -59,6 +81,8 @@ interface FulfillmentData {
   fulfillment: any;
   packagingType: PackagingType | null;
   checklist: OrderItem[];
+  packages: PackageData[];
+  unassignedScans: ScanItem[];
   progress: {
     total: number;
     scanned: number;
@@ -172,8 +196,14 @@ export default function FulfillPage() {
         playSound('success');
 
         // If it was a packaging scan, update the selected packaging
-        if (result.isPackaging && result.packagingType) {
-          setSelectedPackaging(result.packagingType.id);
+        if (result.isPackaging) {
+          // For multi-box: result.package contains the new package info
+          if (result.package?.packagingType) {
+            setSelectedPackaging(result.package.packagingType.id);
+          } else if (result.packagingType) {
+            // Legacy single-box response
+            setSelectedPackaging(result.packagingType.id);
+          }
         }
       } else {
         playSound('error');
@@ -232,8 +262,13 @@ export default function FulfillPage() {
 
   // Complete fulfillment
   const completeFulfillment = async () => {
-    if (!selectedPackaging) {
-      alert('Please select packaging before completing');
+    if (!data?.packages || data.packages.length === 0) {
+      alert('Please scan packaging to create at least one box before completing');
+      return;
+    }
+
+    if (data.unassignedScans && data.unassignedScans.length > 0) {
+      alert('Some items are not assigned to a box. Scan packaging to assign them.');
       return;
     }
 
@@ -417,37 +452,113 @@ export default function FulfillPage() {
         </div>
       </div>
 
-      {/* Packaging Status */}
-      <div style={{
-        ...styles.card,
-        borderColor: selectedPackaging ? '#10b981' : '#333',
-        background: selectedPackaging ? 'rgba(16, 185, 129, 0.05)' : '#111',
-      }}>
-        <h3 style={styles.cardTitle}>
-          <Box size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-          Packaging
-        </h3>
-        {selectedPackaging ? (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '12px',
-            background: 'rgba(16, 185, 129, 0.1)',
-            borderRadius: '8px',
-            border: '1px solid #10b981',
-          }}>
-            <CheckCircle2 size={24} style={{ color: '#10b981' }} />
-            <div>
-              <div style={{ fontWeight: 700, color: '#10b981', fontSize: '18px' }}>
-                {packagingTypes.find(p => p.id === selectedPackaging)?.sku || 'Selected'}
+      {/* Unassigned Items - items scanned but not yet in a box */}
+      {data.unassignedScans && data.unassignedScans.length > 0 && (
+        <div style={{
+          ...styles.card,
+          borderColor: '#f59e0b',
+          background: 'rgba(245, 158, 11, 0.05)',
+        }}>
+          <h3 style={{ ...styles.cardTitle, color: '#f59e0b' }}>
+            <Package size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Unassigned Items ({data.unassignedScans.length})
+          </h3>
+          <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '12px' }}>
+            Scan a packaging barcode to assign these items to a box
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {data.unassignedScans.map((item) => (
+              <div key={item.scanId} style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 12px',
+                background: '#1a1a1a',
+                borderRadius: '6px',
+                fontSize: '14px',
+              }}>
+                <span style={{ color: '#e2e8f0', flex: 1 }}>{item.name}</span>
+                <span style={{ color: '#f59e0b', fontWeight: 600 }}>×{item.quantity}</span>
               </div>
-              <div style={{ fontSize: '13px', color: '#64748b' }}>
-                {packagingTypes.find(p => p.id === selectedPackaging)?.name}
-              </div>
-            </div>
+            ))}
           </div>
-        ) : (
+        </div>
+      )}
+
+      {/* Boxes - Multi-box shipment display */}
+      {data.packages && data.packages.length > 0 && (
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <Box size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Boxes ({data.packages.length})
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {data.packages.map((pkg) => (
+              <div key={pkg.id} style={{
+                padding: '12px',
+                background: '#1a1a1a',
+                borderRadius: '8px',
+                border: '1px solid #333',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '8px',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{
+                      background: '#10b981',
+                      color: 'white',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontWeight: 700,
+                      fontSize: '12px',
+                    }}>
+                      BOX {pkg.boxNumber}
+                    </span>
+                    <span style={{ color: '#e2e8f0', fontWeight: 600 }}>
+                      {pkg.packagingType.sku}
+                    </span>
+                  </div>
+                  <span style={{ color: '#64748b', fontSize: '12px' }}>
+                    {pkg.items.length} item{pkg.items.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {pkg.items.map((item) => (
+                    <div key={item.scanId} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '6px 10px',
+                      background: '#0a0a0a',
+                      borderRadius: '4px',
+                      fontSize: '13px',
+                    }}>
+                      <CheckCircle2 size={14} style={{ color: '#10b981', flexShrink: 0 }} />
+                      <span style={{ color: '#94a3b8', flex: 1 }}>{item.name}</span>
+                      <span style={{ color: '#64748b' }}>×{item.quantity}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Packaging Status - show when no boxes yet */}
+      {(!data.packages || data.packages.length === 0) && (
+        <div style={{
+          ...styles.card,
+          borderColor: selectedPackaging ? '#10b981' : '#333',
+          background: selectedPackaging ? 'rgba(16, 185, 129, 0.05)' : '#111',
+        }}>
+          <h3 style={styles.cardTitle}>
+            <Box size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Packaging
+          </h3>
           <div style={{
             padding: '16px',
             background: '#1a1a1a',
@@ -456,13 +567,14 @@ export default function FulfillPage() {
             border: '2px dashed #333',
           }}>
             <Scan size={24} style={{ color: '#f97316', marginBottom: '8px' }} />
-            <div style={{ color: '#94a3b8', fontSize: '14px' }}>Scan packaging barcode</div>
+            <div style={{ color: '#94a3b8', fontSize: '14px' }}>Scan packaging barcode to close a box</div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* BIG Complete Button - always visible when ready */}
-      {data.progress.isComplete && selectedPackaging && (
+      {/* BIG Complete Button - visible when all items scanned AND all items in boxes */}
+      {data.progress.isComplete && data.packages && data.packages.length > 0 &&
+       (!data.unassignedScans || data.unassignedScans.length === 0) && (
         <button
           onClick={completeFulfillment}
           disabled={completing}
@@ -498,7 +610,8 @@ export default function FulfillPage() {
       )}
 
       {/* Status message when not ready */}
-      {(!data.progress.isComplete || !selectedPackaging) && (
+      {(!data.progress.isComplete || !data.packages || data.packages.length === 0 ||
+        (data.unassignedScans && data.unassignedScans.length > 0)) && (
         <div style={{
           ...styles.card,
           textAlign: 'center',
@@ -509,9 +622,13 @@ export default function FulfillPage() {
             <p style={{ color: '#f97316', margin: 0, fontSize: '15px' }}>
               Scan {data.progress.total - data.progress.scanned} more item{data.progress.total - data.progress.scanned !== 1 ? 's' : ''}
             </p>
+          ) : data.unassignedScans && data.unassignedScans.length > 0 ? (
+            <p style={{ color: '#f59e0b', margin: 0, fontSize: '15px' }}>
+              Scan packaging to assign {data.unassignedScans.length} item{data.unassignedScans.length !== 1 ? 's' : ''} to a box
+            </p>
           ) : (
             <p style={{ color: '#f59e0b', margin: 0, fontSize: '15px' }}>
-              Scan packaging to complete
+              Scan packaging to create a box
             </p>
           )}
         </div>

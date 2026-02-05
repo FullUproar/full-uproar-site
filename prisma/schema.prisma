@@ -2255,6 +2255,7 @@ model PackagingType {
 
   orders       Order[]       @relation("OrderPackaging")
   fulfillments Fulfillment[]
+  packages     FulfillmentPackage[]
 
   @@index([isActive])
 }
@@ -2284,10 +2285,34 @@ model Fulfillment {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @updatedAt
 
-  scans FulfillmentScan[]
+  scans    FulfillmentScan[]
+  packages FulfillmentPackage[]
 
   @@index([status])
   @@index([orderId])
+}
+
+// Package/box within a multi-box shipment
+model FulfillmentPackage {
+  id            Int           @id @default(autoincrement())
+  fulfillmentId String
+  fulfillment   Fulfillment   @relation(fields: [fulfillmentId], references: [id], onDelete: Cascade)
+
+  // Box number in the shipment (1, 2, 3...)
+  boxNumber     Int
+
+  // Packaging type used for this box
+  packagingTypeId Int
+  packagingType   PackagingType @relation(fields: [packagingTypeId], references: [id])
+
+  // Timestamps
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  // Scans assigned to this package
+  scans FulfillmentScan[]
+
+  @@unique([fulfillmentId, boxNumber])
+  @@index([fulfillmentId])
 }
 
 // Individual barcode scans during fulfillment
@@ -2295,6 +2320,10 @@ model FulfillmentScan {
   id            Int         @id @default(autoincrement())
   fulfillmentId String
   fulfillment   Fulfillment @relation(fields: [fulfillmentId], references: [id], onDelete: Cascade)
+
+  // Which package/box this scan belongs to (null = unassigned)
+  packageId Int?
+  package   FulfillmentPackage? @relation(fields: [packageId], references: [id])
 
   // What was scanned
   barcode     String
@@ -2310,4 +2339,5 @@ model FulfillmentScan {
 
   @@index([fulfillmentId])
   @@index([barcode])
+  @@index([packageId])
 }
