@@ -86,6 +86,42 @@ export async function POST(request: NextRequest) {
     }
 
     if (!matchedItem) {
+      // Check if it's a packaging barcode (by SKU)
+      const packagingType = await prisma.packagingType.findFirst({
+        where: {
+          OR: [
+            { sku: { equals: normalizedBarcode, mode: 'insensitive' } },
+            { sku: { equals: barcode.trim(), mode: 'insensitive' } },
+          ],
+          isActive: true,
+        },
+      });
+
+      if (packagingType) {
+        // It's a packaging scan - select this packaging for the order
+        await prisma.fulfillment.update({
+          where: { id: fulfillment.id },
+          data: { packagingTypeId: packagingType.id },
+        });
+
+        // Also update the order's packaging
+        await prisma.order.update({
+          where: { id: orderId },
+          data: { packagingTypeId: packagingType.id },
+        });
+
+        return NextResponse.json({
+          success: true,
+          isPackaging: true,
+          packagingType: {
+            id: packagingType.id,
+            sku: packagingType.sku,
+            name: packagingType.name,
+          },
+          message: `📦 Packaging: ${packagingType.sku}`,
+        });
+      }
+
       // Barcode not recognized for this order
       const scan = await prisma.fulfillmentScan.create({
         data: {

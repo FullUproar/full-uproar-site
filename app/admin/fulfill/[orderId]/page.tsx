@@ -166,17 +166,21 @@ export default function FulfillPage() {
 
       const result = await res.json();
       setLastScanResult(result);
-      fetchData();
 
       // Play sound feedback
       if (result.success) {
         playSound('success');
-        if (result.orderComplete) {
-          setShowCompleteModal(true);
+
+        // If it was a packaging scan, update the selected packaging
+        if (result.isPackaging && result.packagingType) {
+          setSelectedPackaging(result.packagingType.id);
         }
       } else {
         playSound('error');
       }
+
+      // Refresh data after scan
+      fetchData();
     } catch (err) {
       setLastScanResult({ success: false, message: 'Scan failed' });
       playSound('error');
@@ -413,52 +417,101 @@ export default function FulfillPage() {
         </div>
       </div>
 
-      {/* Packaging Selection */}
-      <div style={styles.card}>
+      {/* Packaging Status */}
+      <div style={{
+        ...styles.card,
+        borderColor: selectedPackaging ? '#10b981' : '#333',
+        background: selectedPackaging ? 'rgba(16, 185, 129, 0.05)' : '#111',
+      }}>
         <h3 style={styles.cardTitle}>
           <Box size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-          Select Packaging
+          Packaging
         </h3>
-        <div style={styles.packagingGrid}>
-          {packagingTypes.map((pkg) => (
-            <button
-              key={pkg.id}
-              onClick={() => handlePackagingChange(pkg.id)}
-              style={{
-                ...styles.packagingButton,
-                borderColor: selectedPackaging === pkg.id ? '#f97316' : '#333',
-                background: selectedPackaging === pkg.id ? 'rgba(249, 115, 22, 0.15)' : 'transparent',
-              }}
-            >
-              <div style={{ fontWeight: 700, color: '#e2e8f0' }}>{pkg.sku}</div>
-              <div style={{ fontSize: '12px', color: '#64748b' }}>
-                {pkg.length}×{pkg.width}×{pkg.height}"
+        {selectedPackaging ? (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '12px',
+            background: 'rgba(16, 185, 129, 0.1)',
+            borderRadius: '8px',
+            border: '1px solid #10b981',
+          }}>
+            <CheckCircle2 size={24} style={{ color: '#10b981' }} />
+            <div>
+              <div style={{ fontWeight: 700, color: '#10b981', fontSize: '18px' }}>
+                {packagingTypes.find(p => p.id === selectedPackaging)?.sku || 'Selected'}
               </div>
-            </button>
-          ))}
-        </div>
+              <div style={{ fontSize: '13px', color: '#64748b' }}>
+                {packagingTypes.find(p => p.id === selectedPackaging)?.name}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{
+            padding: '16px',
+            background: '#1a1a1a',
+            borderRadius: '8px',
+            textAlign: 'center',
+            border: '2px dashed #333',
+          }}>
+            <Scan size={24} style={{ color: '#f97316', marginBottom: '8px' }} />
+            <div style={{ color: '#94a3b8', fontSize: '14px' }}>Scan packaging barcode</div>
+          </div>
+        )}
       </div>
 
-      {/* Complete Button */}
-      {data.progress.isComplete && (
-        <div style={{ ...styles.card, textAlign: 'center', padding: '24px' }}>
-          <CheckCircle2 size={40} style={{ color: '#10b981', marginBottom: '12px' }} />
-          <h3 style={{ color: '#10b981', marginBottom: '12px' }}>All Items Scanned!</h3>
-          <button
-            onClick={() => setShowCompleteModal(true)}
-            disabled={!selectedPackaging}
-            style={{
-              ...styles.primaryButton,
-              width: '100%',
-              opacity: selectedPackaging ? 1 : 0.5,
-            }}
-          >
-            <Printer size={20} />
-            Complete & Print Label
-          </button>
-          {!selectedPackaging && (
-            <p style={{ color: '#f59e0b', marginTop: '8px', fontSize: '13px' }}>
-              Select packaging first
+      {/* BIG Complete Button - always visible when ready */}
+      {data.progress.isComplete && selectedPackaging && (
+        <button
+          onClick={completeFulfillment}
+          disabled={completing}
+          style={{
+            width: '100%',
+            padding: '24px',
+            fontSize: '20px',
+            fontWeight: 700,
+            background: completing ? '#333' : '#10b981',
+            color: 'white',
+            border: 'none',
+            borderRadius: '12px',
+            cursor: completing ? 'wait' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            marginBottom: '16px',
+          }}
+        >
+          {completing ? (
+            <>
+              <Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Printer size={28} />
+              COMPLETE & PRINT LABEL
+            </>
+          )}
+        </button>
+      )}
+
+      {/* Status message when not ready */}
+      {(!data.progress.isComplete || !selectedPackaging) && (
+        <div style={{
+          ...styles.card,
+          textAlign: 'center',
+          padding: '20px',
+          background: '#1a1a1a',
+        }}>
+          {!data.progress.isComplete ? (
+            <p style={{ color: '#f97316', margin: 0, fontSize: '15px' }}>
+              Scan {data.progress.total - data.progress.scanned} more item{data.progress.total - data.progress.scanned !== 1 ? 's' : ''}
+            </p>
+          ) : (
+            <p style={{ color: '#f59e0b', margin: 0, fontSize: '15px' }}>
+              Scan packaging to complete
             </p>
           )}
         </div>
