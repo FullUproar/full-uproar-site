@@ -2,6 +2,39 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 /**
+ * Generate a valid 12-digit UPC-A barcode from a SKU
+ * Uses a hash of the SKU to generate a consistent UPC
+ */
+function generateUPCFromSKU(sku: string): string {
+  if (!sku) return '';
+
+  // Create a hash from the SKU
+  let hash = 0;
+  for (let i = 0; i < sku.length; i++) {
+    hash = ((hash << 5) - hash + sku.charCodeAt(i)) | 0;
+  }
+
+  // Convert to positive and get 11 digits
+  const absHash = Math.abs(hash);
+  const baseNumber = String(absHash).padStart(11, '0').slice(-11);
+
+  // Calculate UPC-A check digit
+  let oddSum = 0;
+  let evenSum = 0;
+  for (let i = 0; i < 11; i++) {
+    const digit = parseInt(baseNumber[i]);
+    if (i % 2 === 0) {
+      oddSum += digit;
+    } else {
+      evenSum += digit;
+    }
+  }
+  const checkDigit = (10 - ((oddSum * 3 + evenSum) % 10)) % 10;
+
+  return baseNumber + checkDigit;
+}
+
+/**
  * POST /api/admin/fulfillment/scan
  *
  * Process a barcode scan during fulfillment.
@@ -86,16 +119,27 @@ export async function POST(request: NextRequest) {
     }
 
     if (!matchedItem) {
-      // Check if it's a packaging barcode (by SKU)
-      const packagingType = await prisma.packagingType.findFirst({
-        where: {
-          OR: [
-            { sku: { equals: normalizedBarcode, mode: 'insensitive' } },
-            { sku: { equals: barcode.trim(), mode: 'insensitive' } },
-          ],
-          isActive: true,
-        },
+      // Check if it's a packaging barcode (by SKU or generated UPC)
+      // Fetch all active packaging types and check both SKU and UPC
+      const allPackagingTypes = await prisma.packagingType.findMany({
+        where: { isActive: true },
       });
+
+      let packagingType = null;
+      for (const pkg of allPackagingTypes) {
+        const pkgSku = pkg.sku?.trim().toUpperCase();
+        const pkgUpc = pkg.sku ? generateUPCFromSKU(pkg.sku) : '';
+
+        // Match by SKU or generated UPC
+        if (
+          pkgSku === normalizedBarcode ||
+          pkgUpc === normalizedBarcode ||
+          pkgUpc === barcode.trim()
+        ) {
+          packagingType = pkg;
+          break;
+        }
+      }
 
       if (packagingType) {
         // It's a packaging scan - create a new package for multi-box support
