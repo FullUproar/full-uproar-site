@@ -30,7 +30,10 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching game:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch game' },
+      {
+        error: 'Failed to fetch game',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }
@@ -74,7 +77,10 @@ export async function PATCH(
   } catch (error) {
     console.error('Error updating game:', error);
     return NextResponse.json(
-      { error: 'Failed to update game' },
+      {
+        error: 'Failed to update game',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }
