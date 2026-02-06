@@ -112,9 +112,7 @@ export class PrintifyClient {
   }
 
   async getProducts(limit = 50, page = 1) {
-    console.log(`Fetching products from shop ${this.shopId}, page ${page}, limit ${limit}`);
     const result = await this.request(`/shops/${this.shopId}/products.json?limit=${limit}&page=${page}`);
-    console.log('Printify products response:', result);
     return result;
   }
 

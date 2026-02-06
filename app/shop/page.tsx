@@ -220,12 +220,12 @@ function ShopContent() {
           <h1 style={{
             fontSize: '4rem',
             fontWeight: 900,
-            color: activeTab === 'games' ? '#FF8200' : '#a855f7',
+            color: activeTab === 'games' ? '#FF8200' : '#7D55C7',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             textShadow: activeTab === 'games'
               ? '0 0 20px rgba(255, 117, 0, 0.5)'
-              : '0 0 20px rgba(168, 85, 247, 0.5)',
+              : '0 0 20px rgba(125, 85, 199, 0.5)',
             transition: 'all 0.3s',
             marginBottom: '0.5rem'
           }}>
@@ -281,9 +281,9 @@ function ShopContent() {
                 gap: '0.75rem',
                 padding: '1rem 2.5rem',
                 background: activeTab === 'merch'
-                  ? 'linear-gradient(135deg, #a855f7, #7c3aed)'
+                  ? 'linear-gradient(135deg, #7D55C7, #7c3aed)'
                   : 'rgba(31, 41, 55, 0.8)',
-                border: `3px solid ${activeTab === 'merch' ? '#a855f7' : '#374151'}`,
+                border: `3px solid ${activeTab === 'merch' ? '#7D55C7' : '#374151'}`,
                 borderRadius: '50px',
                 color: activeTab === 'merch' ? '#111827' : '#9ca3af',
                 fontWeight: 900,
@@ -293,7 +293,7 @@ function ShopContent() {
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
                 boxShadow: activeTab === 'merch'
-                  ? '0 10px 30px rgba(168, 85, 247, 0.4)'
+                  ? '0 10px 30px rgba(125, 85, 199, 0.4)'
                   : 'none'
               }}
             >
@@ -346,7 +346,7 @@ function ShopContent() {
                   transition: 'all 0.2s'
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = activeTab === 'games' ? '#FF8200' : '#a855f7';
+                  e.target.style.borderColor = activeTab === 'games' ? '#FF8200' : '#7D55C7';
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = activeTab === 'games' ? '#374151' : '#4c1d95';
@@ -747,7 +747,7 @@ function ShopContent() {
           <>
             <p style={{
               fontSize: '1.25rem',
-              color: '#c4b5fd',
+              color: 'rgba(125, 85, 199, 0.4)',
               textAlign: 'center',
               marginBottom: '2rem',
               fontWeight: 'bold'
@@ -766,9 +766,9 @@ function ShopContent() {
               <button
                 onClick={() => handleCategoryChange('all')}
                 style={{
-                  background: merchFilter === 'all' ? '#a855f7' : 'transparent',
-                  color: merchFilter === 'all' ? '#111827' : '#c4b5fd',
-                  border: `2px solid ${merchFilter === 'all' ? '#a855f7' : '#c4b5fd'}`,
+                  background: merchFilter === 'all' ? '#7D55C7' : 'transparent',
+                  color: merchFilter === 'all' ? '#111827' : 'rgba(125, 85, 199, 0.4)',
+                  border: `2px solid ${merchFilter === 'all' ? '#7D55C7' : 'rgba(125, 85, 199, 0.4)'}`,
                   padding: '0.625rem 1.5rem',
                   borderRadius: '50px',
                   fontWeight: 'bold',
@@ -786,9 +786,9 @@ function ShopContent() {
                   key={category}
                   onClick={() => handleCategoryChange(category)}
                   style={{
-                    background: merchFilter === category ? '#a855f7' : 'transparent',
-                    color: merchFilter === category ? '#111827' : '#c4b5fd',
-                    border: `2px solid ${merchFilter === category ? '#a855f7' : '#c4b5fd'}`,
+                    background: merchFilter === category ? '#7D55C7' : 'transparent',
+                    color: merchFilter === category ? '#111827' : 'rgba(125, 85, 199, 0.4)',
+                    border: `2px solid ${merchFilter === category ? '#7D55C7' : 'rgba(125, 85, 199, 0.4)'}`,
                     padding: '0.625rem 1.5rem',
                     borderRadius: '50px',
                     fontWeight: 'bold',
@@ -807,23 +807,23 @@ function ShopContent() {
             {/* Merch Grid */}
             {merchLoading ? (
               <div style={{ textAlign: 'center', padding: '4rem' }}>
-                <div style={{ fontSize: '1.5rem', color: '#a855f7' }}>Loading swag...</div>
+                <div style={{ fontSize: '1.5rem', color: '#7D55C7' }}>Loading swag...</div>
               </div>
             ) : filteredMerch.length === 0 ? (
               <div style={{
                 textAlign: 'center',
                 padding: '4rem',
-                background: 'rgba(168, 85, 247, 0.1)',
+                background: 'rgba(125, 85, 199, 0.1)',
                 borderRadius: '1rem',
-                border: '3px dashed #a855f7'
+                border: '3px dashed #7D55C7'
               }}>
                 {searchQuery ? (
                   <>
-                    <Search size={48} style={{ color: '#a855f7', marginBottom: '1rem' }} />
-                    <p style={{ fontSize: '1.5rem', color: '#a855f7', fontWeight: 'bold' }}>
+                    <Search size={48} style={{ color: '#7D55C7', marginBottom: '1rem' }} />
+                    <p style={{ fontSize: '1.5rem', color: '#7D55C7', fontWeight: 'bold' }}>
                       No results for "{searchQuery}"
                     </p>
-                    <p style={{ fontSize: '1rem', color: '#c4b5fd', marginTop: '0.5rem' }}>
+                    <p style={{ fontSize: '1rem', color: 'rgba(125, 85, 199, 0.4)', marginTop: '0.5rem' }}>
                       Try a different search term or browse all merch
                     </p>
                     <button
@@ -832,9 +832,9 @@ function ShopContent() {
                         marginTop: '1rem',
                         padding: '0.5rem 1.5rem',
                         background: 'transparent',
-                        border: '2px solid #a855f7',
+                        border: '2px solid #7D55C7',
                         borderRadius: '50px',
-                        color: '#a855f7',
+                        color: '#7D55C7',
                         fontWeight: 'bold',
                         cursor: 'pointer'
                       }}
@@ -844,10 +844,10 @@ function ShopContent() {
                   </>
                 ) : (
                   <>
-                    <p style={{ fontSize: '1.5rem', color: '#a855f7', fontWeight: 'bold' }}>
+                    <p style={{ fontSize: '1.5rem', color: '#7D55C7', fontWeight: 'bold' }}>
                       No swag found in this category!
                     </p>
-                    <p style={{ fontSize: '1rem', color: '#c4b5fd', marginTop: '0.5rem' }}>
+                    <p style={{ fontSize: '1rem', color: 'rgba(125, 85, 199, 0.4)', marginTop: '0.5rem' }}>
                       Fugly is still designing chaos-inducing apparel...
                     </p>
                   </>
@@ -908,14 +908,14 @@ function ShopContent() {
                         fontSize: '1.25rem',
                         fontWeight: 900,
                         marginBottom: '0.5rem',
-                        color: '#c4b5fd',
+                        color: 'rgba(125, 85, 199, 0.4)',
                         textTransform: 'uppercase'
                       }}>
                         {item.name}
                       </h3>
 
                       <p style={{
-                        color: '#ddd6fe',
+                        color: 'rgba(125, 85, 199, 0.2)',
                         fontWeight: 'bold',
                         marginBottom: '0.75rem',
                         fontSize: '0.875rem',
@@ -927,8 +927,8 @@ function ShopContent() {
 
                     <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.75rem', marginBottom: '0.75rem', fontWeight: 600, flexWrap: 'wrap' }}>
                       <span style={{
-                        background: 'rgba(139, 92, 246, 0.2)',
-                        color: '#c4b5fd',
+                        background: 'rgba(125, 85, 199, 0.2)',
+                        color: 'rgba(125, 85, 199, 0.4)',
                         padding: '0.25rem 0.5rem',
                         borderRadius: '0.25rem'
                       }}>
@@ -936,8 +936,8 @@ function ShopContent() {
                       </span>
                       {item.sizes && (
                         <span style={{
-                          background: 'rgba(139, 92, 246, 0.2)',
-                          color: '#c4b5fd',
+                          background: 'rgba(125, 85, 199, 0.2)',
+                          color: 'rgba(125, 85, 199, 0.4)',
                           padding: '0.25rem 0.5rem',
                           borderRadius: '0.25rem'
                         }}>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 /**
  * GET /api/admin/packaging
@@ -10,6 +11,9 @@ import { prisma } from '@/lib/prisma';
  * - active: If "true", only return active packaging types
  */
 export async function GET(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const { searchParams } = new URL(request.url);
     const activeOnly = searchParams.get('active') === 'true';
@@ -35,6 +39,9 @@ export async function GET(request: NextRequest) {
  * Create a new packaging type.
  */
 export async function POST(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const body = await request.json();
     const {
@@ -94,6 +101,9 @@ export async function POST(request: NextRequest) {
  * Update a packaging type.
  */
 export async function PUT(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -161,6 +171,9 @@ export async function PUT(request: NextRequest) {
  * Delete a packaging type.
  */
 export async function DELETE(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

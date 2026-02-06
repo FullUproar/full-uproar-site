@@ -46,7 +46,7 @@ interface GameNight {
 const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: string }> = {
   CHILL: { icon: Coffee, color: '#60a5fa', label: 'Chill', bg: 'rgba(96, 165, 250, 0.15)' },
   COMPETITIVE: { icon: Flame, color: '#FF8200', label: 'Competitive', bg: 'rgba(255, 130, 0, 0.15)' },
-  CHAOS: { icon: Zap, color: '#a855f7', label: 'Chaos', bg: 'rgba(168, 85, 247, 0.15)' },
+  CHAOS: { icon: Zap, color: '#7D55C7', label: 'Chaos', bg: 'rgba(125, 85, 199, 0.15)' },
   PARTY: { icon: PartyPopper, color: '#ec4899', label: 'Party', bg: 'rgba(236, 72, 153, 0.15)' },
   COZY: { icon: Heart, color: '#f472b6', label: 'Cozy', bg: 'rgba(244, 114, 182, 0.15)' },
 };
@@ -1152,9 +1152,9 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
           maxWidth: '480px',
           background: 'linear-gradient(145deg, #1a1f2e 0%, #0f1219 100%)',
           borderRadius: '1.5rem',
-          border: '3px solid #a855f7',
+          border: '3px solid #7D55C7',
           padding: '2rem',
-          boxShadow: '0 25px 80px rgba(168, 85, 247, 0.25), 0 0 60px rgba(168, 85, 247, 0.1)',
+          boxShadow: '0 25px 80px rgba(125, 85, 199, 0.25), 0 0 60px rgba(125, 85, 199, 0.1)',
           textAlign: 'center',
         }}
       >
@@ -1181,22 +1181,22 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
             width: '80px',
             height: '80px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.3))',
+            background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.2), rgba(125, 85, 199, 0.3))',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 1.5rem',
-            border: '2px solid #a855f7',
+            border: '2px solid #7D55C7',
           }}
         >
-          <Crown size={40} style={{ color: '#a855f7' }} />
+          <Crown size={40} style={{ color: '#7D55C7' }} />
         </div>
 
         <h2
           style={{
             fontSize: '1.75rem',
             fontWeight: 900,
-            background: 'linear-gradient(135deg, #a855f7, #7D55C7)',
+            background: 'linear-gradient(135deg, #7D55C7, #7D55C7)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
@@ -1220,15 +1220,15 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
         {/* Features list */}
         <div
           style={{
-            background: 'rgba(168, 85, 247, 0.1)',
-            border: '1px solid rgba(168, 85, 247, 0.3)',
+            background: 'rgba(125, 85, 199, 0.1)',
+            border: '1px solid rgba(125, 85, 199, 0.3)',
             borderRadius: '1rem',
             padding: '1.25rem',
             marginBottom: '1.5rem',
             textAlign: 'left',
           }}
         >
-          <div style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#a855f7', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#7D55C7', marginBottom: '0.75rem' }}>
             What you get with Afterroar+:
           </div>
           {[
@@ -1268,7 +1268,7 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
               style={{
                 width: '100%',
                 padding: '0.875rem',
-                background: 'linear-gradient(135deg, #a855f7, #7D55C7)',
+                background: 'linear-gradient(135deg, #7D55C7, #7D55C7)',
                 border: 'none',
                 borderRadius: '0.75rem',
                 color: '#fff',
@@ -1279,7 +1279,7 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '0.5rem',
-                boxShadow: '0 10px 30px rgba(168, 85, 247, 0.3)',
+                boxShadow: '0 10px 30px rgba(125, 85, 199, 0.3)',
               }}
             >
               <Crown size={18} />

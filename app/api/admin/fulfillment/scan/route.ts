@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 /**
  * Generate a valid 12-digit UPC-A barcode from a SKU
@@ -43,6 +44,9 @@ function generateUPCFromSKU(sku: string): string {
  * We match it against expected items in the order.
  */
 export async function POST(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const body = await request.json();
     const { orderId, barcode, quantity = 1 } = body;
@@ -326,6 +330,9 @@ export async function POST(request: NextRequest) {
  * Body: { scanId, packageId } - packageId can be null to unassign
  */
 export async function PATCH(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const body = await request.json();
     const { scanId, packageId } = body;
@@ -408,6 +415,9 @@ export async function PATCH(request: NextRequest) {
  * Remove a scan (undo).
  */
 export async function DELETE(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const { searchParams } = new URL(request.url);
     const scanId = searchParams.get('id');

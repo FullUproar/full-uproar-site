@@ -545,15 +545,6 @@ export const selectLowStockProducts = (state: AdminState) => {
 // SUBSCRIPTIONS
 // ============================================================================
 
-// Log state changes in development
-if (process.env.NODE_ENV === 'development') {
-  useAdminStore.subscribe(
-    (state) => state,
-    (state, previousState) => {
-      console.log('[AdminStore] State changed', { state, previousState });
-    }
-  );
-}
 
 // Persist theme changes
 useAdminStore.subscribe(

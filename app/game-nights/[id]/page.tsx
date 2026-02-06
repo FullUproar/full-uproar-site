@@ -154,7 +154,7 @@ interface ChatMessage {
 const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: string }> = {
   CHILL: { icon: Coffee, color: '#60a5fa', label: 'Chill', bg: 'rgba(96, 165, 250, 0.15)' },
   COMPETITIVE: { icon: Flame, color: '#FF8200', label: 'Competitive', bg: 'rgba(255, 130, 0, 0.15)' },
-  CHAOS: { icon: Zap, color: '#a855f7', label: 'Chaos', bg: 'rgba(168, 85, 247, 0.15)' },
+  CHAOS: { icon: Zap, color: '#7D55C7', label: 'Chaos', bg: 'rgba(125, 85, 199, 0.15)' },
   PARTY: { icon: PartyPopper, color: '#ec4899', label: 'Party', bg: 'rgba(236, 72, 153, 0.15)' },
   COZY: { icon: Heart, color: '#f472b6', label: 'Cozy', bg: 'rgba(244, 114, 182, 0.15)' },
 };
@@ -700,7 +700,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>
-                <Gamepad2 size={24} style={{ color: '#a855f7' }} />
+                <Gamepad2 size={24} style={{ color: '#7D55C7' }} />
                 Game Lineup
               </h2>
               {gameNight.isHost && (
@@ -711,10 +711,10 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                     alignItems: 'center',
                     gap: '0.25rem',
                     padding: '0.5rem 1rem',
-                    background: 'rgba(168, 85, 247, 0.2)',
-                    border: '2px solid #a855f7',
+                    background: 'rgba(125, 85, 199, 0.2)',
+                    border: '2px solid #7D55C7',
                     borderRadius: '0.5rem',
-                    color: '#a855f7',
+                    color: '#7D55C7',
                     fontWeight: 'bold',
                     fontSize: '0.875rem',
                     cursor: 'pointer',
@@ -744,7 +744,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                         gap: '0.5rem',
                         padding: '0.75rem 1.25rem',
                         marginTop: '1rem',
-                        background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+                        background: 'linear-gradient(135deg, #7D55C7, #7c3aed)',
                         border: 'none',
                         borderRadius: '0.75rem',
                         color: '#fff',
@@ -840,16 +840,16 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
         {gameNight.isHost && (
           <div style={{
             marginTop: '1.5rem',
-            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(139, 92, 246, 0.05))',
+            background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.1), rgba(125, 85, 199, 0.05))',
             borderRadius: '1rem',
-            border: '2px solid rgba(168, 85, 247, 0.3)',
+            border: '2px solid rgba(125, 85, 199, 0.3)',
             padding: '1.5rem',
           }}>
             <h2 style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              color: '#a855f7',
+              color: '#7D55C7',
               fontSize: '1.25rem',
               fontWeight: 'bold',
               margin: '0 0 1rem',
@@ -873,10 +873,10 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                   alignItems: 'center',
                   gap: '0.5rem',
                   padding: '0.75rem 1.25rem',
-                  background: 'rgba(168, 85, 247, 0.2)',
-                  border: '2px solid #a855f7',
+                  background: 'rgba(125, 85, 199, 0.2)',
+                  border: '2px solid #7D55C7',
                   borderRadius: '0.75rem',
-                  color: '#a855f7',
+                  color: '#7D55C7',
                   fontWeight: 'bold',
                   cursor: aiLoading ? 'wait' : 'pointer',
                 }}
@@ -960,7 +960,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                 borderRadius: '0.75rem',
               }}>
                 {aiLoading ? (
-                  <div style={{ textAlign: 'center', color: '#a855f7' }}>
+                  <div style={{ textAlign: 'center', color: '#7D55C7' }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
                     <p style={{ marginTop: '0.5rem' }}>The Chaos Coordinator is thinking...</p>
                   </div>
@@ -975,9 +975,9 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                       </h3>
                       <span style={{
                         padding: '0.25rem 0.5rem',
-                        background: aiSuggestions.source === 'ai' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(107, 114, 128, 0.2)',
+                        background: aiSuggestions.source === 'ai' ? 'rgba(125, 85, 199, 0.2)' : 'rgba(107, 114, 128, 0.2)',
                         borderRadius: '0.25rem',
-                        color: aiSuggestions.source === 'ai' ? '#a855f7' : '#6b7280',
+                        color: aiSuggestions.source === 'ai' ? '#7D55C7' : '#6b7280',
                         fontSize: '0.75rem',
                       }}>
                         {aiSuggestions.source === 'ai' ? '✨ AI Generated' : '📋 Preset'}
@@ -1011,10 +1011,10 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                               onClick={() => {/* TODO: Add game to lineup */}}
                               style={{
                                 padding: '0.5rem 1rem',
-                                background: 'rgba(168, 85, 247, 0.2)',
-                                border: '1px solid #a855f7',
+                                background: 'rgba(125, 85, 199, 0.2)',
+                                border: '1px solid #7D55C7',
                                 borderRadius: '0.5rem',
-                                color: '#a855f7',
+                                color: '#7D55C7',
                                 fontWeight: 'bold',
                                 fontSize: '0.875rem',
                                 cursor: 'pointer',
@@ -1042,10 +1042,10 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                           style={{
                             marginTop: '1rem',
                             padding: '0.5rem 1rem',
-                            background: 'rgba(168, 85, 247, 0.2)',
-                            border: '1px solid #a855f7',
+                            background: 'rgba(125, 85, 199, 0.2)',
+                            border: '1px solid #7D55C7',
                             borderRadius: '0.5rem',
-                            color: '#a855f7',
+                            color: '#7D55C7',
                             fontWeight: 'bold',
                             cursor: 'pointer',
                           }}
@@ -1110,7 +1110,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
         {gameNight.status === 'IN_PROGRESS' && gameNight.isHost && (
           <div style={{
             marginTop: '1.5rem',
-            background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.15), rgba(139, 92, 246, 0.15))',
+            background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.15), rgba(125, 85, 199, 0.15))',
             borderRadius: '1rem',
             border: '2px solid #FF8200',
             padding: '1.5rem',
@@ -1256,7 +1256,7 @@ export default function GameNightDetailPage({ params }: { params: Promise<{ id: 
                       padding: '1rem',
                       background: 'rgba(255, 255, 255, 0.05)',
                       borderRadius: '0.5rem',
-                      borderLeft: `4px solid ${moment.type === 'QUOTE' ? '#fbbf24' : moment.type === 'CHAOS' ? '#ef4444' : '#a855f7'}`,
+                      borderLeft: `4px solid ${moment.type === 'QUOTE' ? '#fbbf24' : moment.type === 'CHAOS' ? '#ef4444' : '#7D55C7'}`,
                     }}
                   >
                     <p style={{ color: '#fff', margin: 0 }}>{moment.content}</p>
@@ -1908,9 +1908,9 @@ function GameLineupItem({
 
       {/* Chaos Level */}
       {game.chaosLevel && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.125rem', color: '#a855f7' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.125rem', color: '#7D55C7' }}>
           {[...Array(Math.min(game.chaosLevel, 5))].map((_, i) => (
-            <Zap key={i} size={12} fill="#a855f7" />
+            <Zap key={i} size={12} fill="#7D55C7" />
           ))}
         </div>
       )}
@@ -1924,7 +1924,7 @@ const snackCategories = [
   { key: 'drinks', label: 'Drinks', icon: Wine, color: '#3b82f6', emoji: '🥤' },
   { key: 'desserts', label: 'Desserts', icon: Cookie, color: '#ec4899', emoji: '🍪' },
   { key: 'main', label: 'Main Dishes', icon: Soup, color: '#10b981', emoji: '🍕' },
-  { key: 'other', label: 'Other', icon: UtensilsCrossed, color: '#a855f7', emoji: '🎁' },
+  { key: 'other', label: 'Other', icon: UtensilsCrossed, color: '#7D55C7', emoji: '🎁' },
 ];
 
 // Snack Roster Display Component
@@ -2782,7 +2782,7 @@ function AddGameModal({
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
           <h3 style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Gamepad2 size={24} style={{ color: '#a855f7' }} />
+            <Gamepad2 size={24} style={{ color: '#7D55C7' }} />
             Add Game
           </h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer' }}>
@@ -2817,7 +2817,7 @@ function AddGameModal({
           style={{
             width: '100%',
             padding: '0.75rem',
-            background: gameName.trim() && !adding ? 'linear-gradient(135deg, #a855f7, #7c3aed)' : '#374151',
+            background: gameName.trim() && !adding ? 'linear-gradient(135deg, #7D55C7, #7c3aed)' : '#374151',
             border: 'none',
             borderRadius: '0.5rem',
             color: '#fff',

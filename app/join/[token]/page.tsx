@@ -58,7 +58,7 @@ interface InviteData {
 const vibeConfig: Record<string, { icon: any; color: string; label: string; bg: string; emoji: string }> = {
   CHILL: { icon: Coffee, color: '#60a5fa', label: 'Chill', bg: 'rgba(96, 165, 250, 0.15)', emoji: '😌' },
   COMPETITIVE: { icon: Flame, color: '#FF8200', label: 'Competitive', bg: 'rgba(255, 130, 0, 0.15)', emoji: '🔥' },
-  CHAOS: { icon: Zap, color: '#a855f7', label: 'Chaos', bg: 'rgba(168, 85, 247, 0.15)', emoji: '⚡' },
+  CHAOS: { icon: Zap, color: '#7D55C7', label: 'Chaos', bg: 'rgba(125, 85, 199, 0.15)', emoji: '⚡' },
   PARTY: { icon: PartyPopper, color: '#ec4899', label: 'Party', bg: 'rgba(236, 72, 153, 0.15)', emoji: '🎉' },
   COZY: { icon: Heart, color: '#f472b6', label: 'Cozy', bg: 'rgba(244, 114, 182, 0.15)', emoji: '🧡' },
 };

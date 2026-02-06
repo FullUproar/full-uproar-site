@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Package, ArrowRight, Menu, X, Heart, Share2, Play, Zap, Skull, Pause } from 'lucide-react';
+import Image from 'next/image';
 import { useUser } from '@clerk/nextjs';
 import { useCartStore } from '@/lib/cartStore';
 import { formatAgeRating } from '@/lib/utils/formatting';
@@ -301,7 +302,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
               >
                 <div className="w-full h-32 bg-gray-700 rounded-lg mb-4 flex items-center justify-center text-orange-500 text-4xl font-bold">
                   {game.imageUrl ? (
-                    <img src={game.imageUrl} alt={game.title} className="w-full h-full object-cover rounded-lg" />
+                    <Image src={game.imageUrl} alt={game.title} width={300} height={128} unoptimized className="w-full h-full object-cover rounded-lg" />
                   ) : (
                     'GAME'
                   )}
@@ -355,7 +356,7 @@ export default function FullUproarHome({ games, comics, news }: FullUproarHomePr
                 <div className="bg-gray-700 rounded-2xl p-12 mb-6 text-center">
                   <div className="w-full h-64 bg-gray-600 rounded-lg mb-4 flex items-center justify-center text-orange-500 text-4xl font-bold">
                     {comics[currentComic]?.imageUrl ? (
-                      <img src={comics[currentComic].imageUrl} alt={comics[currentComic].title} className="w-full h-full object-cover rounded-lg" />
+                      <Image src={comics[currentComic].imageUrl} alt={comics[currentComic].title} width={800} height={256} unoptimized className="w-full h-full object-cover rounded-lg" />
                     ) : (
                       'COMIC STRIP'
                     )}

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 /**
  * GET /api/admin/fulfillment
@@ -10,6 +11,9 @@ import { prisma } from '@/lib/prisma';
  * - orderId: The order ID to get fulfillment for
  */
 export async function GET(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const { searchParams } = new URL(request.url);
     const orderId = searchParams.get('orderId');
@@ -176,6 +180,9 @@ export async function GET(request: NextRequest) {
  * Start fulfillment for an order.
  */
 export async function POST(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const body = await request.json();
     const { orderId, userId, userName } = body;
@@ -247,6 +254,9 @@ export async function POST(request: NextRequest) {
  * Update fulfillment (complete, set packaging, etc.)
  */
 export async function PUT(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const body = await request.json();
     const { orderId, packagingTypeId, status, notes } = body;

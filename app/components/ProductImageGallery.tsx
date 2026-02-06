@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
 interface ProductImage {
@@ -80,9 +81,13 @@ export default function ProductImageGallery({ images, primaryImageUrl, productNa
         }}
         onClick={() => setShowModal(true)}
         >
-          <img
+          <Image
             src={currentImage.imageUrl}
             alt={currentImage.alt || productName}
+            width={800}
+            height={600}
+            priority
+            unoptimized
             style={{
               width: '100%',
               height: '100%',
@@ -202,9 +207,12 @@ export default function ProductImageGallery({ images, primaryImageUrl, productNa
                   transition: 'all 0.3s'
                 }}
               >
-                <img
+                <Image
                   src={image.imageUrl}
                   alt={image.alt || `${productName} ${index + 1}`}
+                  width={80}
+                  height={80}
+                  unoptimized
                   style={{
                     width: '100%',
                     height: '100%',
@@ -235,9 +243,12 @@ export default function ProductImageGallery({ images, primaryImageUrl, productNa
           }}
           onClick={() => setShowModal(false)}
         >
-          <img
+          <Image
             src={currentImage.imageUrl}
             alt={currentImage.alt || productName}
+            width={1200}
+            height={900}
+            unoptimized
             style={{
               maxWidth: '90vw',
               maxHeight: '90vh',

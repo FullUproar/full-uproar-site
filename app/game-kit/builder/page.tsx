@@ -622,7 +622,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Give Cards',
     icon: <ArrowRightLeft size={16} />,
-    color: '#a855f7',
+    color: '#7D55C7',
     description: 'Give cards to another player',
     category: 'Transfer',
     defaultProperties: { count: 1 },
@@ -632,7 +632,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Take Cards',
     icon: <ArrowRightLeft size={16} />,
-    color: '#a855f7',
+    color: '#7D55C7',
     description: 'Take cards from another player',
     category: 'Transfer',
     defaultProperties: { count: 1 },
@@ -642,7 +642,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Transfer Cards',
     icon: <ArrowRightLeft size={16} />,
-    color: '#a855f7',
+    color: '#7D55C7',
     description: 'Move cards between players',
     category: 'Transfer',
   },
@@ -1186,7 +1186,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Swap Hands',
     icon: <ArrowRightLeft size={16} />,
-    color: '#a855f7',
+    color: '#7D55C7',
     description: 'Exchange entire hand with another player',
     category: 'Transfer',
   },
@@ -1195,7 +1195,7 @@ const blockTemplates: BlockTemplate[] = [
     kind: 'action',
     name: 'Shuffle All Hands',
     icon: <Shuffle size={16} />,
-    color: '#a855f7',
+    color: '#7D55C7',
     description: 'Collect and redistribute all hands',
     category: 'Transfer',
   },
@@ -2803,15 +2803,15 @@ export default function GameBuilder() {
             <div style={{ maxWidth: '900px', margin: '0 auto' }}>
               {/* Quick Add Section */}
               <div style={{
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(255, 130, 0, 0.1) 100%)',
-                border: '1px solid rgba(139, 92, 246, 0.3)',
+                background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.1) 0%, rgba(255, 130, 0, 0.1) 100%)',
+                border: '1px solid rgba(125, 85, 199, 0.3)',
                 borderRadius: '12px',
                 padding: '20px',
                 marginBottom: '24px',
               }} className="gk-quick-add-section">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
                   <Sparkles size={18} style={{ color: '#a78bfa' }} />
-                  <span style={{ fontWeight: 'bold', color: '#c4b5fd', fontSize: '16px' }}>Quick Add Presets</span>
+                  <span style={{ fontWeight: 'bold', color: 'rgba(125, 85, 199, 0.4)', fontSize: '16px' }}>Quick Add Presets</span>
                 </div>
 
                 {/* Card Presets */}
@@ -2840,7 +2840,7 @@ export default function GameBuilder() {
                           gap: '6px',
                           padding: '8px 12px',
                           background: 'rgba(30, 41, 59, 0.6)',
-                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          border: '1px solid rgba(125, 85, 199, 0.3)',
                           borderRadius: '8px',
                           color: '#e2e8f0',
                           fontSize: '13px',
@@ -2849,10 +2849,10 @@ export default function GameBuilder() {
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.borderColor = '#7D55C7';
-                          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                          e.currentTarget.style.background = 'rgba(125, 85, 199, 0.2)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.borderColor = 'rgba(125, 85, 199, 0.3)';
                           e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
                         }}
                         title={preset.description}
@@ -2890,7 +2890,7 @@ export default function GameBuilder() {
                           gap: '6px',
                           padding: '8px 12px',
                           background: 'rgba(30, 41, 59, 0.6)',
-                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          border: '1px solid rgba(125, 85, 199, 0.3)',
                           borderRadius: '8px',
                           color: '#e2e8f0',
                           fontSize: '13px',
@@ -2899,10 +2899,10 @@ export default function GameBuilder() {
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.borderColor = '#7D55C7';
-                          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                          e.currentTarget.style.background = 'rgba(125, 85, 199, 0.2)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.borderColor = 'rgba(125, 85, 199, 0.3)';
                           e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
                         }}
                         title={preset.description}
@@ -2940,7 +2940,7 @@ export default function GameBuilder() {
                           gap: '6px',
                           padding: '8px 12px',
                           background: 'rgba(30, 41, 59, 0.6)',
-                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          border: '1px solid rgba(125, 85, 199, 0.3)',
                           borderRadius: '8px',
                           color: '#e2e8f0',
                           fontSize: '13px',
@@ -2949,10 +2949,10 @@ export default function GameBuilder() {
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.borderColor = '#7D55C7';
-                          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                          e.currentTarget.style.background = 'rgba(125, 85, 199, 0.2)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.borderColor = 'rgba(125, 85, 199, 0.3)';
                           e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
                         }}
                         title={preset.description}
@@ -3000,7 +3000,7 @@ export default function GameBuilder() {
                           alignItems: 'center',
                           gap: '6px',
                           padding: '8px 12px',
-                          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
+                          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(125, 85, 199, 0.2) 100%)',
                           border: '1px solid rgba(59, 130, 246, 0.4)',
                           borderRadius: '8px',
                           color: '#e2e8f0',
@@ -3010,11 +3010,11 @@ export default function GameBuilder() {
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.borderColor = '#3b82f6';
-                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%)';
+                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(125, 85, 199, 0.3) 100%)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)';
+                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(125, 85, 199, 0.2) 100%)';
                         }}
                         title={preset.description}
                       >
@@ -3163,7 +3163,7 @@ export default function GameBuilder() {
                       <div
                         style={{
                           ...styles.componentItemPreview,
-                          background: 'rgba(139, 92, 246, 0.2)',
+                          background: 'rgba(125, 85, 199, 0.2)',
                           border: '2px dashed #7D55C7',
                           fontSize: '18px',
                         }}
@@ -3469,7 +3469,7 @@ export default function GameBuilder() {
                     marginLeft: '-4px',
                     marginRight: '-4px',
                     borderRadius: '4px',
-                    background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                    background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.15) 0%, rgba(125, 85, 199, 0.15) 100%)',
                     color: '#FBDB65',
                   }}
                   onClick={() => toggleCategory('_recent')}

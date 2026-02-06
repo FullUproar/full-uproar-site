@@ -94,7 +94,7 @@ export default function MerchPage() {
       <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #111827, #1f2937, #6b21a8)' }}>
         <Navigation />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-          <div style={{ fontSize: '1.5rem', color: '#a855f7' }}>Loading...</div>
+          <div style={{ fontSize: '1.5rem', color: '#7D55C7' }}>Loading...</div>
         </div>
       </div>
     );
@@ -120,15 +120,15 @@ export default function MerchPage() {
             maxWidth: '500px',
             width: '100%',
             textAlign: 'center',
-            boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.25)'
+            boxShadow: '0 25px 50px -12px rgba(125, 85, 199, 0.25)'
           }}>
             <div style={{ marginBottom: '1.5rem' }}>
-              <Lock size={64} style={{ color: '#a855f7', margin: '0 auto' }} />
+              <Lock size={64} style={{ color: '#7D55C7', margin: '0 auto' }} />
             </div>
             <h1 style={{
               fontSize: '2.5rem',
               fontWeight: 900,
-              color: '#a855f7',
+              color: '#7D55C7',
               marginBottom: '0.5rem',
               textTransform: 'uppercase',
               letterSpacing: '0.05em'
@@ -137,7 +137,7 @@ export default function MerchPage() {
             </h1>
             <p style={{
               fontSize: '1.125rem',
-              color: '#c4b5fd',
+              color: 'rgba(125, 85, 199, 0.4)',
               marginBottom: '2rem',
               fontWeight: 500
             }}>
@@ -235,19 +235,19 @@ export default function MerchPage() {
         <h1 style={{
           fontSize: '4rem',
           fontWeight: 900,
-          color: '#a855f7',
+          color: '#7D55C7',
           textAlign: 'center',
           marginBottom: '1rem',
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
-          textShadow: '0 0 20px rgba(168, 85, 247, 0.5)'
+          textShadow: '0 0 20px rgba(125, 85, 199, 0.5)'
         }}>
           FUGLY'S SWAG SHOP
         </h1>
         
         <p style={{
           fontSize: '1.5rem',
-          color: '#c4b5fd',
+          color: 'rgba(125, 85, 199, 0.4)',
           textAlign: 'center',
           marginBottom: '3rem',
           fontWeight: 'bold'
@@ -266,9 +266,9 @@ export default function MerchPage() {
           <button
             onClick={() => setFilter('all')}
             style={{
-              background: filter === 'all' ? '#a855f7' : 'transparent',
-              color: filter === 'all' ? '#111827' : '#c4b5fd',
-              border: `2px solid ${filter === 'all' ? '#a855f7' : '#c4b5fd'}`,
+              background: filter === 'all' ? '#7D55C7' : 'transparent',
+              color: filter === 'all' ? '#111827' : 'rgba(125, 85, 199, 0.4)',
+              border: `2px solid ${filter === 'all' ? '#7D55C7' : 'rgba(125, 85, 199, 0.4)'}`,
               padding: '0.75rem 2rem',
               borderRadius: '50px',
               fontWeight: 'bold',
@@ -287,9 +287,9 @@ export default function MerchPage() {
               key={category}
               onClick={() => setFilter(category)}
               style={{
-                background: filter === category ? '#a855f7' : 'transparent',
-                color: filter === category ? '#111827' : '#c4b5fd',
-                border: `2px solid ${filter === category ? '#a855f7' : '#c4b5fd'}`,
+                background: filter === category ? '#7D55C7' : 'transparent',
+                color: filter === category ? '#111827' : 'rgba(125, 85, 199, 0.4)',
+                border: `2px solid ${filter === category ? '#7D55C7' : 'rgba(125, 85, 199, 0.4)'}`,
                 padding: '0.75rem 2rem',
                 borderRadius: '50px',
                 fontWeight: 'bold',
@@ -308,7 +308,7 @@ export default function MerchPage() {
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <div style={{ fontSize: '2rem', color: '#a855f7', animation: 'pulse 2s infinite' }}>
+            <div style={{ fontSize: '2rem', color: '#7D55C7', animation: 'pulse 2s infinite' }}>
               Loading swag...
             </div>
           </div>
@@ -316,14 +316,14 @@ export default function MerchPage() {
           <div style={{ 
             textAlign: 'center', 
             padding: '6rem 2rem',
-            background: 'rgba(168, 85, 247, 0.1)',
+            background: 'rgba(125, 85, 199, 0.1)',
             borderRadius: '2rem',
-            border: '4px dashed #a855f7'
+            border: '4px dashed #7D55C7'
           }}>
-            <p style={{ fontSize: '2rem', color: '#a855f7', fontWeight: 'bold' }}>
+            <p style={{ fontSize: '2rem', color: '#7D55C7', fontWeight: 'bold' }}>
               No swag found in this category!
             </p>
-            <p style={{ fontSize: '1.25rem', color: '#c4b5fd', marginTop: '1rem' }}>
+            <p style={{ fontSize: '1.25rem', color: 'rgba(125, 85, 199, 0.4)', marginTop: '1rem' }}>
               Fugly is still designing chaos-inducing apparel...
             </p>
           </div>
@@ -402,7 +402,7 @@ export default function MerchPage() {
                     fontSize: '1.5rem', 
                     fontWeight: 900, 
                     marginBottom: '0.5rem', 
-                    color: '#c4b5fd',
+                    color: 'rgba(125, 85, 199, 0.4)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em'
                   }}>
@@ -410,7 +410,7 @@ export default function MerchPage() {
                   </h3>
                   
                   <p style={{ 
-                    color: '#ddd6fe', 
+                    color: 'rgba(125, 85, 199, 0.2)', 
                     fontWeight: 'bold',
                     marginBottom: '1rem',
                     minHeight: '3rem'
@@ -421,8 +421,8 @@ export default function MerchPage() {
                 
                 <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 600, flexWrap: 'wrap' }}>
                   <span style={{ 
-                    background: 'rgba(139, 92, 246, 0.2)', 
-                    color: '#c4b5fd', 
+                    background: 'rgba(125, 85, 199, 0.2)', 
+                    color: 'rgba(125, 85, 199, 0.4)', 
                     padding: '0.25rem 0.5rem', 
                     borderRadius: '0.25rem'
                   }}>
@@ -430,8 +430,8 @@ export default function MerchPage() {
                   </span>
                   {item.sizes && (
                     <span style={{ 
-                      background: 'rgba(139, 92, 246, 0.2)', 
-                      color: '#c4b5fd', 
+                      background: 'rgba(125, 85, 199, 0.2)', 
+                      color: 'rgba(125, 85, 199, 0.4)', 
                       padding: '0.25rem 0.5rem', 
                       borderRadius: '0.25rem'
                     }}>

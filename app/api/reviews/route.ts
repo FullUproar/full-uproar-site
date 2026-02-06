@@ -82,6 +82,8 @@ export async function GET(request: NextRequest) {
         acc[item.rating] = item._count;
         return acc;
       }, {} as Record<number, number>)
+    }, {
+      headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' },
     });
   } catch (error) {
     console.error('Error fetching reviews:', error);

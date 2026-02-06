@@ -7,7 +7,9 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     });
     
-    return NextResponse.json(comics);
+    return NextResponse.json(comics, {
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
+    });
   } catch (error) {
     console.error('Error fetching comics:', error);
     return NextResponse.json({ error: 'Failed to fetch comics' }, { status: 500 });

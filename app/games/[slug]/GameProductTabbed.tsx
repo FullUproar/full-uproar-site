@@ -11,50 +11,11 @@ import {
 import { useCartStore } from '@/lib/cartStore';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
 import Tooltip from '@/app/components/Tooltip';
 import ReviewForm from '@/app/components/ReviewForm';
-// Helper functions to format enum values for display
-const formatPlayerCount = (playerCount: string | null | undefined): string => {
-  const mapping: Record<string, string> = {
-    'SINGLE': '1 Player',
-    'TWO': '2 Players',
-    'TWO_PLUS': '2+ Players',
-    'TWO_TO_FOUR': '2-4 Players',
-    'TWO_TO_SIX': '2-6 Players',
-    'THREE_TO_FIVE': '3-5 Players',
-    'THREE_TO_SIX': '3-6 Players',
-    'FOUR_TO_EIGHT': '4-8 Players',
-    'PARTY': '6+ Players',
-    'CUSTOM': 'Custom',
-    'VARIES': 'Varies'
-  };
-  return mapping[playerCount || ''] || 'Unknown';
-};
-
-const formatPlayTime = (playTime: string | null | undefined): string => {
-  const mapping: Record<string, string> = {
-    'QUICK': 'Under 30 min',
-    'SHORT': '30-60 min',
-    'MEDIUM': '60-90 min',
-    'LONG': '90-120 min',
-    'EXTENDED': '2+ hours',
-    'VARIES': 'Varies'
-  };
-  return mapping[playTime || ''] || 'Unknown';
-};
-
-const formatAgeRating = (ageRating: string | null | undefined): string => {
-  const mapping: Record<string, string> = {
-    'ALL_AGES': 'All Ages',
-    'ELEVEN_PLUS': '11+',
-    'FOURTEEN_PLUS': '14+',
-    'SIXTEEN_PLUS': '16+',
-    'EIGHTEEN_PLUS': '18+',
-    'TWENTYONE_PLUS': '21+'
-  };
-  return mapping[ageRating || ''] || 'Unknown';
-};
+import { formatPlayerCount, formatPlayTime, formatAgeRating } from '@/lib/utils/formatting';
 
 interface GameImage {
   id: number;
@@ -233,7 +194,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
         productId: game.id,
         metadata: { quantity }
       })
-    });
+    }).catch(() => {});
   };
 
   const handleBuyNow = () => {
@@ -622,7 +583,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                 </h4>
                 <div style={{ color: '#e2e8f0', lineHeight: '1.8' }}>
                   {game.components ? (
-                    <div dangerouslySetInnerHTML={{ __html: game.components.replace(/\n/g, '<br>') }} />
+                    <div style={{ whiteSpace: 'pre-line' }}>{game.components}</div>
                   ) : (
                     <ul style={{ listStyle: 'none', padding: 0 }}>
                       <li>• 200+ Chaos Cards</li>
@@ -671,7 +632,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
 
             <div style={{ color: '#e2e8f0', fontSize: '16px', lineHeight: '1.8' }}>
               {game.howToPlay ? (
-                <div dangerouslySetInnerHTML={{ __html: game.howToPlay.replace(/\n/g, '<br>') }} />
+                <div style={{ whiteSpace: 'pre-line' }}>{game.howToPlay}</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   <div style={{ display: 'flex', gap: '16px' }}>
@@ -924,9 +885,13 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
             {/* Image Gallery */}
             <div style={styles.imageSection}>
               <div style={styles.mainImageContainer}>
-                <img
+                <Image
                   src={allImages[selectedImage]?.imageUrl || '/placeholder-game.jpg'}
                   alt={allImages[selectedImage]?.alt || game.title}
+                  width={600}
+                  height={500}
+                  priority
+                  unoptimized
                   style={styles.mainImage}
                 />
                 
@@ -968,9 +933,12 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                         ...(selectedImage === index ? styles.thumbnailActive : {})
                       }}
                     >
-                      <img
+                      <Image
                         src={img.imageUrl}
                         alt={img.alt || `${game.title} ${index + 1}`}
+                        width={80}
+                        height={80}
+                        unoptimized
                         style={styles.thumbnailImage}
                       />
                     </button>

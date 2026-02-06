@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import sharp from 'sharp';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 /**
  * POST /api/admin/artwork/optimize
@@ -133,6 +134,9 @@ function needsOptimization(artwork: any): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -250,6 +254,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.authorized) return adminCheck.response;
+
   // GET to check status / what needs optimization
   try {
     const allArtwork = await prisma.artwork.findMany({

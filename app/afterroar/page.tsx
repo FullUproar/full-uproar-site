@@ -69,7 +69,7 @@ export default function AfterroarPage() {
           <h1 style={{
             fontSize: 'clamp(2.5rem, 8vw, 5rem)',
             fontWeight: 900,
-            background: 'linear-gradient(135deg, #FF8200, #fbbf24, #a855f7)',
+            background: 'linear-gradient(135deg, #FF8200, #fbbf24, #7D55C7)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
@@ -101,8 +101,8 @@ export default function AfterroarPage() {
           <div style={{
             display: 'inline-block',
             padding: '1rem 1.5rem',
-            background: 'rgba(168, 85, 247, 0.15)',
-            border: '2px solid rgba(168, 85, 247, 0.3)',
+            background: 'rgba(125, 85, 199, 0.15)',
+            border: '2px solid rgba(125, 85, 199, 0.3)',
             borderRadius: '0.75rem',
             color: '#c084fc',
             fontSize: '1.125rem',
@@ -177,18 +177,18 @@ export default function AfterroarPage() {
 
           {/* Physical Tier */}
           <div style={{
-            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.1))',
+            background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.2), rgba(125, 85, 199, 0.1))',
             borderRadius: '1.5rem',
-            border: '3px solid #a855f7',
+            border: '3px solid #7D55C7',
             padding: '2rem',
             position: 'relative',
-            boxShadow: '0 20px 60px rgba(168, 85, 247, 0.3)'
+            boxShadow: '0 20px 60px rgba(125, 85, 199, 0.3)'
           }}>
             <div style={{
               position: 'absolute',
               top: '-12px',
               right: '20px',
-              background: '#a855f7',
+              background: '#7D55C7',
               color: '#fff',
               padding: '0.375rem 0.875rem',
               borderRadius: '50px',
@@ -208,7 +208,7 @@ export default function AfterroarPage() {
             }}>
               Afterroar+
             </h3>
-            <p style={{ color: '#c4b5fd', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+            <p style={{ color: 'rgba(125, 85, 199, 0.4)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
               Everything above + monthly box
             </p>
 
@@ -220,20 +220,20 @@ export default function AfterroarPage() {
               }}>
                 $19-25
               </span>
-              <span style={{ color: '#c4b5fd', fontSize: '1rem' }}>/month</span>
+              <span style={{ color: 'rgba(125, 85, 199, 0.4)', fontSize: '1rem' }}>/month</span>
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{
                 padding: '1rem',
-                background: 'rgba(168, 85, 247, 0.2)',
+                background: 'rgba(125, 85, 199, 0.2)',
                 borderRadius: '0.75rem',
                 marginBottom: '1rem',
-                border: '2px solid rgba(168, 85, 247, 0.3)'
+                border: '2px solid rgba(125, 85, 199, 0.3)'
               }}>
                 <Package size={24} style={{ color: '#c084fc', marginBottom: '0.5rem' }} />
                 <p style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Monthly Box</p>
-                <p style={{ color: '#c4b5fd', fontSize: '0.875rem' }}>
+                <p style={{ color: 'rgba(125, 85, 199, 0.4)', fontSize: '0.875rem' }}>
                   Curated games, accessories, exclusive content, and surprises
                 </p>
               </div>
@@ -251,7 +251,7 @@ export default function AfterroarPage() {
                   gap: '0.75rem',
                   marginBottom: '0.75rem'
                 }}>
-                  <Check size={20} style={{ color: '#a855f7', flexShrink: 0, marginTop: '0.125rem' }} />
+                  <Check size={20} style={{ color: '#7D55C7', flexShrink: 0, marginTop: '0.125rem' }} />
                   <span style={{ color: '#fff', fontSize: '0.95rem' }}>{feature}</span>
                 </div>
               ))}
@@ -326,9 +326,9 @@ export default function AfterroarPage() {
           textAlign: 'center',
           background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9))',
           borderRadius: '1.5rem',
-          border: '3px solid #a855f7',
+          border: '3px solid #7D55C7',
           padding: '3rem 2rem',
-          boxShadow: '0 20px 60px rgba(168, 85, 247, 0.2)'
+          boxShadow: '0 20px 60px rgba(125, 85, 199, 0.2)'
         }}>
           <h2 style={{
             fontSize: '2rem',
@@ -365,7 +365,7 @@ export default function AfterroarPage() {
                   marginBottom: '1rem',
                   outline: 'none'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#a855f7'}
+                onFocus={(e) => e.target.style.borderColor = '#7D55C7'}
                 onBlur={(e) => e.target.style.borderColor = '#374151'}
               />
               <button
@@ -373,14 +373,14 @@ export default function AfterroarPage() {
                 style={{
                   width: '100%',
                   padding: '1rem 2rem',
-                  background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+                  background: 'linear-gradient(135deg, #7D55C7, #7c3aed)',
                   border: 'none',
                   borderRadius: '0.75rem',
                   color: '#fff',
                   fontWeight: 900,
                   fontSize: '1.125rem',
                   cursor: 'pointer',
-                  boxShadow: '0 10px 40px rgba(168, 85, 247, 0.4)',
+                  boxShadow: '0 10px 40px rgba(125, 85, 199, 0.4)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -389,11 +389,11 @@ export default function AfterroarPage() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(168, 85, 247, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(125, 85, 199, 0.5)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(168, 85, 247, 0.4)';
+                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(125, 85, 199, 0.4)';
                 }}
               >
                 Join Waitlist

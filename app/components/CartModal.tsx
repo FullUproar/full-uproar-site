@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment } from 'react';
+import Image from 'next/image';
 import { X, ShoppingCart, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import { useRouter } from 'next/navigation';
@@ -63,9 +64,12 @@ export default function CartModal() {
                     {/* Image */}
                     <div className="w-20 h-20 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
                       {item.imageUrl ? (
-                        <img 
-                          src={item.imageUrl} 
+                        <Image
+                          src={item.imageUrl}
                           alt={item.name}
+                          width={80}
+                          height={80}
+                          unoptimized
                           className="w-full h-full object-cover"
                         />
                       ) : (

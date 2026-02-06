@@ -154,7 +154,6 @@ export default function WebhookTestPage() {
         });
       }
 
-      console.log('Diagnostic data:', data);
       window.open('/api/webhooks/clerk-diagnostic', '_blank');
     } catch (error) {
       console.error('Error checking diagnostics:', error);
@@ -182,11 +181,6 @@ export default function WebhookTestPage() {
           title: 'Sync Complete',
           description: `Created ${data.summary.created} users, Updated ${data.summary.updated} roles`,
         });
-
-        // Show details if any users were created
-        if (data.details.created.length > 0) {
-          console.log('Created users:', data.details.created);
-        }
 
         fetchWebhookInfo(); // Refresh the list
       } else {

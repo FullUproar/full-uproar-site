@@ -63,13 +63,13 @@ export default function ShopMerchPage() {
           <h1 style={{
             fontSize: '3rem',
             fontWeight: 900,
-            color: '#a855f7',
+            color: '#7D55C7',
             textTransform: 'uppercase',
             marginBottom: '0.5rem'
           }}>
             Merch & Apparel
           </h1>
-          <p style={{ fontSize: '1.25rem', color: '#c4b5fd' }}>
+          <p style={{ fontSize: '1.25rem', color: 'rgba(125, 85, 199, 0.4)' }}>
             Wear your chaos with pride (and questionable fashion sense)
           </p>
         </div>
@@ -85,9 +85,9 @@ export default function ShopMerchPage() {
           <button
             onClick={() => setFilter('all')}
             style={{
-              background: filter === 'all' ? '#a855f7' : 'transparent',
-              color: filter === 'all' ? '#111827' : '#c4b5fd',
-              border: `2px solid ${filter === 'all' ? '#a855f7' : '#c4b5fd'}`,
+              background: filter === 'all' ? '#7D55C7' : 'transparent',
+              color: filter === 'all' ? '#111827' : 'rgba(125, 85, 199, 0.4)',
+              border: `2px solid ${filter === 'all' ? '#7D55C7' : 'rgba(125, 85, 199, 0.4)'}`,
               padding: '0.625rem 1.5rem',
               borderRadius: '50px',
               fontWeight: 'bold',
@@ -105,9 +105,9 @@ export default function ShopMerchPage() {
               key={category}
               onClick={() => setFilter(category)}
               style={{
-                background: filter === category ? '#a855f7' : 'transparent',
-                color: filter === category ? '#111827' : '#c4b5fd',
-                border: `2px solid ${filter === category ? '#a855f7' : '#c4b5fd'}`,
+                background: filter === category ? '#7D55C7' : 'transparent',
+                color: filter === category ? '#111827' : 'rgba(125, 85, 199, 0.4)',
+                border: `2px solid ${filter === category ? '#7D55C7' : 'rgba(125, 85, 199, 0.4)'}`,
                 padding: '0.625rem 1.5rem',
                 borderRadius: '50px',
                 fontWeight: 'bold',
@@ -189,14 +189,14 @@ export default function ShopMerchPage() {
                     fontSize: '1.25rem',
                     fontWeight: 900,
                     marginBottom: '0.5rem',
-                    color: '#c4b5fd',
+                    color: 'rgba(125, 85, 199, 0.4)',
                     textTransform: 'uppercase'
                   }}>
                     {item.name}
                   </h3>
 
                   <p style={{
-                    color: '#ddd6fe',
+                    color: 'rgba(125, 85, 199, 0.2)',
                     fontWeight: 'bold',
                     marginBottom: '0.75rem',
                     fontSize: '0.875rem',
@@ -208,8 +208,8 @@ export default function ShopMerchPage() {
 
                 <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.75rem', marginBottom: '0.75rem', fontWeight: 600, flexWrap: 'wrap' }}>
                   <span style={{
-                    background: 'rgba(139, 92, 246, 0.2)',
-                    color: '#c4b5fd',
+                    background: 'rgba(125, 85, 199, 0.2)',
+                    color: 'rgba(125, 85, 199, 0.4)',
                     padding: '0.25rem 0.5rem',
                     borderRadius: '0.25rem'
                   }}>
@@ -217,8 +217,8 @@ export default function ShopMerchPage() {
                   </span>
                   {item.sizes && (
                     <span style={{
-                      background: 'rgba(139, 92, 246, 0.2)',
-                      color: '#c4b5fd',
+                      background: 'rgba(125, 85, 199, 0.2)',
+                      color: 'rgba(125, 85, 199, 0.4)',
                       padding: '0.25rem 0.5rem',
                       borderRadius: '0.25rem'
                     }}>

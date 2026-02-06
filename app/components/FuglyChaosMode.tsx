@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import ArtworkDisplay from './ArtworkDisplay';
 
 interface ChaosCharacter {
@@ -239,9 +240,12 @@ export default function FuglyChaosMode() {
           }}
         >
           {char.artworkIndex !== undefined && debugArtwork[char.artworkIndex] && (
-            <img 
+            <Image
               src={debugArtwork[char.artworkIndex].imageUrl || debugArtwork[char.artworkIndex].largeUrl}
               alt="Fugly"
+              width={200}
+              height={200}
+              unoptimized
               style={{
                 width: '100%',
                 height: '100%',

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { getImageForSize } from '@/lib/imageUtils';
 
 interface Artwork {
@@ -97,9 +98,12 @@ export default function ArtworkDisplay({
     const imageUrl = getImageForSize(art, size);
     return (
       <div className={className} style={style}>
-        <img 
-          src={imageUrl} 
-          alt={art.name} 
+        <Image
+          src={imageUrl}
+          alt={art.name}
+          width={800}
+          height={600}
+          unoptimized
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           title={art.description || art.name}
         />
@@ -114,9 +118,12 @@ export default function ArtworkDisplay({
         const imageUrl = getImageForSize(art, size);
         return (
           <div key={art.id}>
-            <img 
-              src={imageUrl} 
-              alt={art.name} 
+            <Image
+              src={imageUrl}
+              alt={art.name}
+              width={120}
+              height={120}
+              unoptimized
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               title={art.description || art.name}
             />

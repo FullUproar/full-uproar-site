@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
 import { stripHtmlTags } from '@/lib/utils/formatting';
 
@@ -525,9 +526,13 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
           <div style={styles.imageSection}>
             <div style={styles.mainImageContainer}>
               {allImages[selectedImage] && (
-                <img 
+                <Image
                   src={allImages[selectedImage].imageUrl}
                   alt={allImages[selectedImage].alt || merch.name}
+                  width={600}
+                  height={600}
+                  priority
+                  unoptimized
                   style={styles.mainImage}
                 />
               )}
@@ -562,9 +567,12 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                       ...(selectedImage === index ? styles.thumbnailActive : {})
                     }}
                   >
-                    <img 
+                    <Image
                       src={img.imageUrl}
                       alt={img.alt || `${merch.name} ${index + 1}`}
+                      width={80}
+                      height={80}
+                      unoptimized
                       style={styles.thumbnailImage}
                     />
                   </div>
@@ -886,9 +894,12 @@ export default function MerchProductStyled({ merch, similarMerch }: MerchProduct
                   style={{ textDecoration: 'none' }}
                 >
                   <div style={styles.similarCard}>
-                    <img 
+                    <Image
                       src={item.imageUrl || '/placeholder-merch.jpg'}
                       alt={item.name}
+                      width={300}
+                      height={300}
+                      unoptimized
                       style={styles.similarImage}
                     />
                     <div style={styles.similarInfo}>

@@ -54,8 +54,11 @@ export default function MerchListView({ onEdit, onNew }: MerchListViewProps) {
     try {
       const url = showArchived ? '/api/admin/merch?showArchived=true' : '/api/admin/merch';
       const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch merch: ${response.status}`);
+      }
       const data = await response.json();
-      
+
       // Ensure we have an array
       if (Array.isArray(data)) {
         // Parse sizes and colors if they're strings

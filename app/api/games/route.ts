@@ -33,7 +33,9 @@ export async function GET(request: NextRequest) {
     });
     
     // Ensure we always return an array
-    return NextResponse.json(games || []);
+    return NextResponse.json(games || [], {
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
+    });
   } catch (error) {
     console.error('Error fetching games:', error);
     // Return more detailed error in development

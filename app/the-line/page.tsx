@@ -62,7 +62,7 @@ export default function TheLinePage() {
           transform: 'translateX(-50%)',
           width: '80vw',
           height: '60vh',
-          background: 'radial-gradient(ellipse at center, rgba(168, 85, 247, 0.15) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at center, rgba(125, 85, 199, 0.15) 0%, transparent 60%)',
           filter: 'blur(60px)',
         }} />
       </div>
@@ -115,14 +115,14 @@ export default function TheLinePage() {
               <div style={{
                 width: isMobile ? '180px' : '220px',
                 height: isMobile ? '180px' : '220px',
-                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(255, 130, 0, 0.2))',
+                background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.2), rgba(255, 130, 0, 0.2))',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '3px solid rgba(168, 85, 247, 0.3)',
+                border: '3px solid rgba(125, 85, 199, 0.3)',
               }}>
-                <Heart size={isMobile ? 64 : 80} color="#a855f7" />
+                <Heart size={isMobile ? 64 : 80} color="#7D55C7" />
               </div>
             )}
           </div>
@@ -137,7 +137,7 @@ export default function TheLinePage() {
           </h1>
           <p style={{
             fontSize: '1.25rem',
-            color: '#a855f7',
+            color: '#7D55C7',
             fontWeight: 600,
           }}>
             Where we draw the line
@@ -189,7 +189,7 @@ export default function TheLinePage() {
             <p style={{
               fontSize: '1.25rem',
               fontWeight: 700,
-              color: '#a855f7',
+              color: '#7D55C7',
               marginBottom: '1.5rem',
             }}>
               Chaos should lift the room, not hollow it out.
@@ -245,7 +245,7 @@ export default function TheLinePage() {
             </p>
 
             <p style={{ marginBottom: '1.5rem' }}>
-              It means jokes should be <strong style={{ color: '#FF8200' }}>playful, not personal</strong>. <strong style={{ color: '#a855f7' }}>Bold, not bitter</strong>. <strong style={{ color: '#FBDB65' }}>Clever, not cruel</strong>.
+              It means jokes should be <strong style={{ color: '#FF8200' }}>playful, not personal</strong>. <strong style={{ color: '#7D55C7' }}>Bold, not bitter</strong>. <strong style={{ color: '#FBDB65' }}>Clever, not cruel</strong>.
             </p>
           </div>
         </section>
@@ -345,11 +345,11 @@ export default function TheLinePage() {
             <p style={{
               fontSize: '1.25rem',
               fontWeight: 700,
-              color: '#a855f7',
+              color: '#7D55C7',
               fontStyle: 'italic',
               marginBottom: '1.5rem',
               paddingLeft: '1rem',
-              borderLeft: '4px solid #a855f7',
+              borderLeft: '4px solid #7D55C7',
             }}>
               Would I still say this if the person on the card were sitting right here?
             </p>
@@ -362,8 +362,8 @@ export default function TheLinePage() {
 
         {/* Need Support Section */}
         <section style={{
-          background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(139, 92, 246, 0.05))',
-          border: '2px solid rgba(168, 85, 247, 0.3)',
+          background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.1), rgba(125, 85, 199, 0.05))',
+          border: '2px solid rgba(125, 85, 199, 0.3)',
           borderRadius: '1rem',
           padding: isMobile ? '1.5rem' : '2.5rem',
           marginBottom: '2rem',
@@ -371,7 +371,7 @@ export default function TheLinePage() {
           <h2 style={{
             fontSize: '1.5rem',
             fontWeight: 900,
-            color: '#c4b5fd',
+            color: 'rgba(125, 85, 199, 0.4)',
             marginBottom: '1rem',
             display: 'flex',
             alignItems: 'center',
@@ -430,8 +430,8 @@ export default function TheLinePage() {
                   border: '1px solid transparent',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#a855f7';
-                  e.currentTarget.style.background = 'rgba(168, 85, 247, 0.1)';
+                  e.currentTarget.style.borderColor = '#7D55C7';
+                  e.currentTarget.style.background = 'rgba(125, 85, 199, 0.1)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = 'transparent';

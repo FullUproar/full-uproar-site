@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface FuglyPointingProps {
   size?: number;
@@ -58,9 +59,12 @@ export default function FuglyPointing({
         ...style
       }}
     >
-      <img 
-        src={currentUrl} 
+      <Image
+        src={currentUrl}
         alt={isHovered ? "Fugly flipping the bird" : "Fugly pointing"}
+        width={size}
+        height={size}
+        unoptimized
         style={{
           width: `${size}px`,
           height: 'auto',
