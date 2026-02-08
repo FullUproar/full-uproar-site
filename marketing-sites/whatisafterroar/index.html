@@ -14,17 +14,18 @@
 <style>
 :root {
   --orange: #FF8200;
-  --orange-glow: rgba(255, 130, 0, 0.15);
-  --orange-dim: rgba(255, 130, 0, 0.08);
   --yellow: #FBDB65;
+  --yellow-dim: rgba(251, 219, 101, 0.12);
   --purple: #7D55C7;
-  --bg: #0a0a0a;
-  --surface: #111111;
-  --surface-light: #1a1a1a;
+  --purple-dim: rgba(125, 85, 199, 0.1);
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-light: #1c2333;
   --text: #e2e8f0;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
   --white: #ffffff;
+  --warm-white: #faf5eb;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,7 +42,7 @@ body {
 }
 
 ::selection {
-  background: rgba(255, 130, 0, 0.3);
+  background: rgba(125, 85, 199, 0.3);
   color: var(--white);
 }
 
@@ -52,8 +53,8 @@ body {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 130, 0, 0.04), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(125, 85, 199, 0.03), transparent);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(125, 85, 199, 0.05), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(251, 219, 101, 0.03), transparent);
 }
 
 /* ====== HERO SECTION ====== */
@@ -81,7 +82,7 @@ body {
 }
 
 .hero-wordmark span {
-  color: var(--orange);
+  color: var(--yellow);
 }
 
 .hero-phonetic {
@@ -121,7 +122,7 @@ body {
   transition: color 0.3s;
 }
 
-.scroll-cue:hover { color: var(--orange); }
+.scroll-cue:hover { color: var(--yellow); }
 
 .scroll-cue svg {
   width: 20px;
@@ -151,7 +152,7 @@ body {
   position: absolute;
   top: -1px; left: 40px; right: 40px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--orange), transparent);
+  background: linear-gradient(90deg, transparent, var(--purple), transparent);
 }
 
 .dict-word {
@@ -162,7 +163,7 @@ body {
   margin-bottom: 0.25rem;
 }
 
-.dict-word span { color: var(--orange); }
+.dict-word span { color: var(--yellow); }
 
 .dict-pronunciation {
   font-family: 'Crimson Text', serif;
@@ -196,7 +197,7 @@ body {
 }
 
 .dict-number {
-  color: var(--orange);
+  color: var(--purple);
   font-weight: 700;
   margin-right: 0.5rem;
 }
@@ -207,7 +208,7 @@ body {
   font-size: 1.1rem;
   color: var(--text-muted);
   padding-left: 1.5rem;
-  border-left: 2px solid rgba(255, 130, 0, 0.3);
+  border-left: 2px solid rgba(125, 85, 199, 0.3);
   margin: 1rem 0 1.75rem;
   line-height: 1.6;
 }
@@ -242,7 +243,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--orange);
+  color: var(--yellow);
   margin-bottom: 2rem;
 }
 
@@ -270,7 +271,7 @@ body {
   display: block;
   width: 40px;
   height: 2px;
-  background: rgba(255, 130, 0, 0.3);
+  background: rgba(125, 85, 199, 0.3);
   margin: 0 auto 1.5rem;
 }
 
@@ -284,106 +285,91 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* ====== THE PROBLEM / FRICTION SECTION ====== */
-.friction-section {
+/* ====== DUAL CTA SECTION ====== */
+.cta-section {
   position: relative;
   z-index: 1;
   max-width: 900px;
   margin: 0 auto;
-  padding: 80px 24px 100px;
-}
-
-.friction-section .section-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--purple);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.friction-section h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--white);
-  text-align: center;
-  margin-bottom: 1rem;
-  line-height: 1.3;
-}
-
-.friction-section .section-sub {
-  font-size: 1.05rem;
-  color: var(--text-muted);
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto 3.5rem;
-  line-height: 1.6;
-}
-
-.friction-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  padding: 80px 24px 120px;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-.friction-item {
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
-  padding: 2rem;
-  transition: border-color 0.3s, transform 0.3s;
+.cta-card {
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
 }
 
-.friction-item:hover {
-  border-color: rgba(125, 85, 199, 0.2);
-  transform: translateY(-2px);
+.cta-primary {
+  background: linear-gradient(135deg, rgba(125, 85, 199, 0.1), rgba(251, 219, 101, 0.06));
+  border: 1px solid rgba(125, 85, 199, 0.25);
 }
 
-.friction-icon {
-  font-size: 1.75rem;
+.cta-primary h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--white);
   margin-bottom: 0.75rem;
 }
 
-.friction-item h3 {
+.cta-primary p {
   font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto 1.75rem;
+  line-height: 1.6;
+}
+
+.cta-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: var(--orange);
+  border-radius: 10px;
+  color: var(--bg);
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.cta-link-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(255, 130, 0, 0.25);
+}
+
+.cta-link-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cta-secondary {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cta-secondary h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
   color: var(--white);
   margin-bottom: 0.5rem;
 }
 
-.friction-item p {
-  font-size: 0.9rem;
+.cta-secondary h2 span { color: var(--yellow); }
+
+.cta-secondary p {
+  font-size: 0.95rem;
   color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto 1.5rem;
   line-height: 1.6;
-}
-
-/* ====== AFTERROAR+ TEASE ====== */
-.plus-section {
-  position: relative;
-  z-index: 1;
-  padding: 100px 24px;
-  text-align: center;
-}
-
-.plus-card {
-  max-width: 700px;
-  margin: 0 auto;
-  background: linear-gradient(135deg, rgba(255, 130, 0, 0.06), rgba(125, 85, 199, 0.06));
-  border: 1px solid rgba(255, 130, 0, 0.15);
-  border-radius: 20px;
-  padding: 3.5rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.plus-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--orange), var(--purple));
 }
 
 .plus-badge {
@@ -392,86 +378,15 @@ body {
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--orange);
-  background: rgba(255, 130, 0, 0.1);
-  border: 1px solid rgba(255, 130, 0, 0.2);
+  color: var(--purple);
+  background: var(--purple-dim);
+  border: 1px solid rgba(125, 85, 199, 0.25);
   border-radius: 100px;
   padding: 0.4rem 1.25rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1rem;
 }
 
-.plus-card h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--white);
-  margin-bottom: 0.5rem;
-}
-
-.plus-card h2 span { color: var(--orange); }
-
-.plus-card .plus-sub {
-  font-size: 1.05rem;
-  color: var(--text-muted);
-  max-width: 520px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.6;
-}
-
-.plus-features {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-  text-align: left;
-  margin-bottom: 2.5rem;
-}
-
-.plus-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 0.9rem;
-  color: var(--text);
-}
-
-.plus-feature-icon {
-  color: var(--orange);
-  font-size: 1.1rem;
-  flex-shrink: 0;
-  margin-top: 0.1rem;
-}
-
-.plus-coming {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  font-style: italic;
-}
-
-/* ====== EMAIL CAPTURE ====== */
-.capture-section {
-  position: relative;
-  z-index: 1;
-  padding: 80px 24px 120px;
-  text-align: center;
-}
-
-.capture-section h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--white);
-  margin-bottom: 0.75rem;
-}
-
-.capture-section .capture-sub {
-  font-size: 1rem;
-  color: var(--text-muted);
-  margin-bottom: 2.5rem;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
+/* ====== EMAIL CAPTURE (inside CTA card) ====== */
 .capture-form {
   display: flex;
   gap: 0.75rem;
@@ -494,7 +409,7 @@ body {
 }
 
 .capture-form input[type="email"]:focus {
-  border-color: var(--orange);
+  border-color: var(--purple);
 }
 
 .capture-form input[type="email"]::placeholder {
@@ -520,7 +435,7 @@ body {
 
 .capture-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(255, 130, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 130, 0, 0.25);
 }
 
 .capture-btn:disabled {
@@ -588,14 +503,14 @@ body {
 .footer-brand-icon {
   width: 28px;
   height: 28px;
-  background: var(--orange);
+  background: var(--purple);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
   font-size: 0.85rem;
-  color: var(--bg);
+  color: var(--white);
 }
 
 .footer-brand-text {
@@ -605,7 +520,7 @@ body {
 }
 
 .footer-brand-text a {
-  color: var(--orange);
+  color: var(--yellow);
   text-decoration: none;
   transition: opacity 0.3s;
 }
@@ -626,7 +541,7 @@ body {
 }
 
 .footer-legal a:hover {
-  color: var(--orange);
+  color: var(--yellow);
 }
 
 /* ====== ANIMATIONS ====== */
@@ -659,10 +574,7 @@ body {
   .dictionary-card { padding: 2.5rem; }
   .dict-word { font-size: 2.2rem; }
   .feeling-quote { font-size: 1.4rem; padding: 0 1rem; }
-  .friction-grid { gap: 1rem; }
-  .friction-item { padding: 1.5rem; }
-  .plus-card { padding: 2.5rem; }
-  .plus-card h2 { font-size: 1.8rem; }
+  .cta-card { padding: 2rem; }
 }
 
 /* ====== RESPONSIVE — MOBILE ====== */
@@ -682,18 +594,10 @@ body {
   .feeling-section { padding: 60px 20px 80px; }
   .feeling-quote { font-size: 1.2rem; padding: 0; }
 
-  .friction-section { padding: 60px 20px 80px; }
-  .friction-section h2 { font-size: 1.7rem; }
-  .friction-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .friction-item { padding: 1.5rem; }
-
-  .plus-section { padding: 60px 20px 80px; }
-  .plus-card { padding: 2rem 1.5rem; border-radius: 14px; }
-  .plus-card h2 { font-size: 1.6rem; }
-  .plus-features { grid-template-columns: 1fr; gap: 1rem; }
-
-  .capture-section { padding: 60px 20px 80px; }
-  .capture-section h2 { font-size: 1.5rem; }
+  .cta-section { padding: 60px 20px 80px; }
+  .cta-card { padding: 1.75rem 1.5rem; border-radius: 14px; }
+  .cta-primary h2 { font-size: 1.5rem; }
+  .cta-secondary h2 { font-size: 1.35rem; }
   .capture-form { flex-direction: column; }
   .capture-form input[type="email"] { font-size: 16px; /* prevent iOS zoom */ }
   .capture-btn { justify-content: center; }
@@ -706,9 +610,9 @@ body {
   .dictionary-card { padding: 1.5rem 1.25rem; }
   .dict-word { font-size: 1.5rem; }
   .feeling-quote { font-size: 1.05rem; }
-  .friction-section h2 { font-size: 1.4rem; }
-  .plus-card { padding: 1.5rem 1.25rem; }
-  .plus-card h2 { font-size: 1.35rem; }
+  .cta-card { padding: 1.5rem 1.25rem; }
+  .cta-primary h2 { font-size: 1.3rem; }
+  .cta-secondary h2 { font-size: 1.2rem; }
 }
 </style>
 </head>
@@ -779,99 +683,54 @@ body {
   </div>
 </section>
 
-<!-- ====== THE FRICTION THAT KILLS IT ====== -->
-<section class="friction-section reveal">
-  <div class="section-label">But Most Game Nights Never Get There</div>
-  <h2>The friction that kills the afterroar.</h2>
-  <p class="section-sub">
-    Great game nights don't fail because of bad games. They fail because of everything around them.
-  </p>
-  <div class="friction-grid">
-    <div class="friction-item">
-      <div class="friction-icon">&#128197;</div>
-      <h3>The planning nightmare</h3>
-      <p>Thirty texts to pick a date. Two cancellations. One person who "might" show up. The night almost doesn't happen.</p>
-    </div>
-    <div class="friction-item">
-      <div class="friction-icon">&#129300;</div>
-      <h3>The wrong game</h3>
-      <p>Someone picks a 3-hour strategy game for a group that wanted something quick and chaotic. The vibe dies before it starts.</p>
-    </div>
-    <div class="friction-item">
-      <div class="friction-icon">&#128214;</div>
-      <h3>The rules debate</h3>
-      <p>Twenty minutes reading a rulebook. Arguments over edge cases. Half the group is on their phone before the first round.</p>
-    </div>
-    <div class="friction-item">
-      <div class="friction-icon">&#128564;</div>
-      <h3>The fizzle-out</h3>
-      <p>One round ends and nobody knows what to play next. The energy drops. People start checking the time. Another "fine" night.</p>
-    </div>
+<!-- ====== DUAL CTA SECTION ====== -->
+<section class="cta-section reveal" id="signup">
+  <!-- CTA 1: Visit the store -->
+  <div class="cta-card cta-primary">
+    <h2>Ready for the afterroar?</h2>
+    <p>We make games designed to create it. Chaotic, hilarious, impossible-to-forget games that turn any night into a story.</p>
+    <a href="https://fulluproar.com/shop" class="cta-link-btn">
+      Browse Our Games
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 5l7 7-7 7M5 12h15"/>
+      </svg>
+    </a>
   </div>
-</section>
 
-<!-- ====== AFTERROAR+ TEASE ====== -->
-<section class="plus-section reveal">
-  <div class="plus-card">
+  <!-- CTA 2: Email for Afterroar+ -->
+  <div class="cta-card cta-secondary">
     <div class="plus-badge">Coming Soon</div>
     <h2>After<span>roar</span>+</h2>
-    <p class="plus-sub">
-      A subscription built to protect the afterroar. We handle the friction so you can focus on the night.
-    </p>
-    <div class="plus-features">
-      <div class="plus-feature">
-        <span class="plus-feature-icon">&#9670;</span>
-        <span>Smart game matching for your group size, vibe, and experience level</span>
-      </div>
-      <div class="plus-feature">
-        <span class="plus-feature-icon">&#9670;</span>
-        <span>Curated game night kits shipped to your door</span>
-      </div>
-      <div class="plus-feature">
-        <span class="plus-feature-icon">&#9670;</span>
-        <span>Quick-start digital guides that replace the rulebook</span>
-      </div>
-      <div class="plus-feature">
-        <span class="plus-feature-icon">&#9670;</span>
-        <span>Exclusive games, expansions, and early access drops</span>
-      </div>
+    <p>A subscription built to protect the afterroar &mdash; curated game kits, quick-start guides, and exclusive drops delivered to your door.</p>
+
+    <div id="capture-form-container">
+      <form class="capture-form" id="email-form" onsubmit="handleSubmit(event)">
+        <input
+          type="email"
+          id="email-input"
+          placeholder="your@email.com"
+          required
+          autocomplete="email"
+        />
+        <button type="submit" class="capture-btn" id="submit-btn">
+          Notify Me
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 5l7 7-7 7M5 12h15"/>
+          </svg>
+        </button>
+      </form>
+      <p class="capture-note">No spam. Unsubscribe anytime.</p>
     </div>
-    <p class="plus-coming">Details dropping soon. Get on the list to hear first.</p>
+
+    <div id="capture-success" class="capture-success" style="display: none;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+      <span>You're on the list. The afterroar is coming.</span>
+    </div>
+
+    <p id="capture-error" class="capture-error" style="display: none;"></p>
   </div>
-</section>
-
-<!-- ====== EMAIL CAPTURE ====== -->
-<section class="capture-section reveal" id="signup">
-  <h2>Get the afterroar. Not the spam.</h2>
-  <p class="capture-sub">Be the first to know when Afterroar+ launches, plus early access to new games and exclusive drops.</p>
-
-  <div id="capture-form-container">
-    <form class="capture-form" id="email-form" onsubmit="handleSubmit(event)">
-      <input
-        type="email"
-        id="email-input"
-        placeholder="your@email.com"
-        required
-        autocomplete="email"
-      />
-      <button type="submit" class="capture-btn" id="submit-btn">
-        Notify Me
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M13 5l7 7-7 7M5 12h15"/>
-        </svg>
-      </button>
-    </form>
-    <p class="capture-note">No spam. Unsubscribe anytime. We're building, not blasting.</p>
-  </div>
-
-  <div id="capture-success" class="capture-success" style="display: none;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 6L9 17l-5-5"/>
-    </svg>
-    <span>You're on the list. The afterroar is coming.</span>
-  </div>
-
-  <p id="capture-error" class="capture-error" style="display: none;"></p>
 </section>
 
 <!-- ====== FOOTER ====== -->
