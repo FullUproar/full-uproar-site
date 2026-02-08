@@ -139,23 +139,23 @@ export default function EmailCapture({
   if (variant === 'inline') {
     return (
       <div>
-        <p style={{ color: '#FF8200', fontWeight: 700, marginBottom: '0.75rem', fontSize: '0.95rem' }}>
-          {h}
-        </p>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.5rem', maxWidth: '400px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ color: '#FF8200', fontWeight: 700, fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
+            {h}
+          </span>
           <input
             type="email"
             value={email}
             onChange={(e) => { setEmail(e.target.value); setStatus('idle'); }}
             placeholder="your@email.com"
             style={{
-              flex: 1,
-              padding: '0.625rem 0.75rem',
+              width: '200px',
+              padding: '0.5rem 0.75rem',
               background: '#1f2937',
               border: status === 'error' ? '1px solid #ef4444' : '1px solid #374151',
               borderRadius: '6px',
               color: '#e2e8f0',
-              fontSize: '0.875rem',
+              fontSize: '0.8rem',
               outline: 'none',
             }}
           />
@@ -163,27 +163,26 @@ export default function EmailCapture({
             type="submit"
             disabled={status === 'loading'}
             style={{
-              padding: '0.625rem 1rem',
+              padding: '0.5rem 0.875rem',
               background: '#FF8200',
               border: 'none',
               borderRadius: '6px',
               color: '#0a0a0a',
               fontWeight: 700,
-              fontSize: '0.875rem',
+              fontSize: '0.8rem',
               cursor: status === 'loading' ? 'wait' : 'pointer',
               whiteSpace: 'nowrap',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem',
+              gap: '0.3rem',
             }}
           >
             {cta} <Zap size={14} />
           </button>
         </form>
         {status === 'error' && (
-          <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.4rem' }}>{errorMsg}</p>
+          <p style={{ color: '#ef4444', fontSize: '0.7rem', marginTop: '0.3rem' }}>{errorMsg}</p>
         )}
-        <p style={{ color: '#6b7280', fontSize: '0.75rem', marginTop: '0.5rem' }}>No spam. Just chaos.</p>
       </div>
     );
   }
