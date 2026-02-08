@@ -1,23 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Navigation from '../components/Navigation';
-import { Check, Sparkles, Package, Zap, Users, Calendar, Trophy, Heart, ArrowRight } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
+import { colors } from '@/lib/colors';
 
 export default function AfterroarPage() {
-  const [isMobile, setIsMobile] = useState(false);
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatus('loading');
+    setErrorMsg('');
 
     try {
       const response = await fetch('/api/afterroar/waitlist', {
@@ -29,394 +25,211 @@ export default function AfterroarPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSubmitted(true);
+        setStatus('success');
       } else {
-        alert(data.error || 'Failed to join waitlist. Please try again.');
+        setErrorMsg(data.error || 'Something went wrong.');
+        setStatus('error');
       }
-    } catch (error) {
-      console.error('Error joining waitlist:', error);
-      alert('Failed to join waitlist. Please try again.');
+    } catch {
+      setErrorMsg('Failed to connect. Please try again.');
+      setStatus('error');
     }
   };
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)',
+      background: '#0d1117',
       position: 'relative'
     }}>
       <Navigation />
 
-      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '6rem 1rem 3rem' }}>
-        {/* Hero */}
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+      <div style={{
+        maxWidth: '640px',
+        margin: '0 auto',
+        padding: '8rem 1.5rem 4rem',
+        textAlign: 'center'
+      }}>
+        {/* Word */}
+        <h1 style={{
+          fontSize: 'clamp(3rem, 10vw, 5rem)',
+          fontWeight: 900,
+          color: '#ffffff',
+          lineHeight: 1.1,
+          marginBottom: '0.5rem',
+          letterSpacing: '-0.02em'
+        }}>
+          After<span style={{ color: colors.creamYellow }}>roar</span>
+        </h1>
+
+        <p style={{
+          fontSize: '1.1rem',
+          color: '#94a3b8',
+          fontStyle: 'italic',
+          marginBottom: '2.5rem'
+        }}>
+          /&#8201;af&middot;ter&middot;roar&#8201;/ &mdash; <em>noun</em>
+        </p>
+
+        {/* Definition */}
+        <p style={{
+          fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
+          color: '#e2e8f0',
+          lineHeight: 1.7,
+          marginBottom: '3rem'
+        }}>
+          The emotional afterglow of a night well played&mdash;the laughter, chaos, connection,
+          and shared experience that makes you want to do it again. We coined a word for it.
+          Then we built a subscription around it.
+        </p>
+
+        {/* Link to full story */}
+        <a
+          href="https://whatisafterroar.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            color: colors.creamYellow,
+            fontSize: '0.95rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+            marginBottom: '3.5rem',
+            letterSpacing: '0.02em'
+          }}
+        >
+          See the full story at whatisafterroar.com <ArrowRight size={16} />
+        </a>
+
+        {/* Waitlist card */}
+        <div style={{
+          background: '#161b22',
+          border: '1px solid rgba(125, 85, 199, 0.25)',
+          borderRadius: '16px',
+          padding: 'clamp(1.5rem, 4vw, 2.5rem)',
+        }}>
           <div style={{
             display: 'inline-block',
-            padding: '0.5rem 1rem',
-            background: 'rgba(255, 130, 0, 0.2)',
-            borderRadius: '50px',
-            border: '2px solid rgba(255, 130, 0, 0.4)',
-            color: '#FF8200',
-            fontWeight: 'bold',
-            fontSize: '0.875rem',
-            marginBottom: '2rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em'
+            fontSize: '0.65rem',
+            fontWeight: 700,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase' as const,
+            color: colors.purple,
+            background: 'rgba(125, 85, 199, 0.1)',
+            border: '1px solid rgba(125, 85, 199, 0.25)',
+            borderRadius: '100px',
+            padding: '0.3rem 1rem',
+            marginBottom: '1rem'
           }}>
             Coming Soon
           </div>
 
-          <h1 style={{
-            fontSize: 'clamp(2.5rem, 8vw, 5rem)',
+          <h2 style={{
+            fontSize: 'clamp(1.3rem, 3vw, 1.6rem)',
             fontWeight: 900,
-            background: 'linear-gradient(135deg, #FF8200, #fbbf24, #7D55C7)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-            marginBottom: '1.5rem',
-            lineHeight: 1.1
+            color: '#ffffff',
+            marginBottom: '0.5rem'
           }}>
-            Afterroar
-          </h1>
+            Afterroar+ Subscription
+          </h2>
 
           <p style={{
-            fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-            color: '#FBDB65',
-            marginBottom: '1rem',
-            fontWeight: 700
-          }}>
-            Traditions Worth Keeping
-          </p>
-
-          <p style={{
-            fontSize: '1.25rem',
+            fontSize: '0.95rem',
             color: '#94a3b8',
-            maxWidth: '42rem',
-            margin: '0 auto 3rem',
-            lineHeight: 1.7
+            lineHeight: 1.6,
+            marginBottom: '1.5rem'
           }}>
-            Turn your game nights into rituals. The echo, the memory, what sticks after the table is cleared.
+            Something is coming that protects the afterroar. Details soon.
           </p>
 
-          <div style={{
-            display: 'inline-block',
-            padding: '1rem 1.5rem',
-            background: 'rgba(125, 85, 199, 0.15)',
-            border: '2px solid rgba(125, 85, 199, 0.3)',
-            borderRadius: '0.75rem',
-            color: '#c084fc',
-            fontSize: '1.125rem',
-            fontWeight: 'bold'
-          }}>
-            <Sparkles size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.75rem' }} />
-            Free is for events. Paid is for traditions.
-          </div>
-        </div>
-
-        {/* Tier Comparison */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
-          gap: '2rem',
-          marginBottom: '4rem',
-          maxWidth: '900px',
-          margin: '0 auto 4rem'
-        }}>
-          {/* Digital Tier */}
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9))',
-            borderRadius: '1.5rem',
-            border: '3px solid rgba(255, 130, 0, 0.3)',
-            padding: '2rem',
-            position: 'relative'
-          }}>
-            <h3 style={{
-              fontSize: '1.75rem',
-              fontWeight: 900,
-              color: '#FF8200',
-              marginBottom: '0.5rem'
-            }}>
-              Afterroar
-            </h3>
-            <p style={{ color: '#94a3b8', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-              Digital tools for recurring traditions
-            </p>
-
-            <div style={{ marginBottom: '2rem' }}>
-              <span style={{
-                fontSize: '3rem',
-                fontWeight: 900,
-                color: '#fff'
-              }}>
-                $9-12
-              </span>
-              <span style={{ color: '#94a3b8', fontSize: '1rem' }}>/month</span>
-            </div>
-
-            <div style={{ marginBottom: '1.5rem' }}>
-              {[
-                'Recurring game nights (Rituals)',
-                'Advanced planning tools',
-                'Campaign tracking (RPGs)',
-                'Game night history & stats',
-                'Verification badge',
-                'Member-only community perks'
-              ].map((feature, i) => (
-                <div key={i} style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '0.75rem',
-                  marginBottom: '0.75rem'
-                }}>
-                  <Check size={20} style={{ color: '#10b981', flexShrink: 0, marginTop: '0.125rem' }} />
-                  <span style={{ color: '#e2e8f0', fontSize: '0.95rem' }}>{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Physical Tier */}
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.2), rgba(125, 85, 199, 0.1))',
-            borderRadius: '1.5rem',
-            border: '3px solid #7D55C7',
-            padding: '2rem',
-            position: 'relative',
-            boxShadow: '0 20px 60px rgba(125, 85, 199, 0.3)'
-          }}>
+          {status === 'success' ? (
             <div style={{
-              position: 'absolute',
-              top: '-12px',
-              right: '20px',
-              background: '#7D55C7',
-              color: '#fff',
-              padding: '0.375rem 0.875rem',
-              borderRadius: '50px',
-              fontSize: '0.75rem',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              padding: '0.75rem',
+              background: 'rgba(34, 197, 94, 0.1)',
+              border: '1px solid rgba(34, 197, 94, 0.3)',
+              borderRadius: '8px'
             }}>
-              Most Popular
-            </div>
-
-            <h3 style={{
-              fontSize: '1.75rem',
-              fontWeight: 900,
-              color: '#c084fc',
-              marginBottom: '0.5rem'
-            }}>
-              Afterroar+
-            </h3>
-            <p style={{ color: 'rgba(125, 85, 199, 0.4)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-              Everything above + monthly box
-            </p>
-
-            <div style={{ marginBottom: '2rem' }}>
-              <span style={{
-                fontSize: '3rem',
-                fontWeight: 900,
-                color: '#fff'
-              }}>
-                $19-25
+              <Check size={18} style={{ color: '#22c55e' }} />
+              <span style={{ color: '#22c55e', fontWeight: 600, fontSize: '0.95rem' }}>
+                You&apos;re on the list.
               </span>
-              <span style={{ color: 'rgba(125, 85, 199, 0.4)', fontSize: '1rem' }}>/month</span>
             </div>
-
-            <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{
-                padding: '1rem',
-                background: 'rgba(125, 85, 199, 0.2)',
-                borderRadius: '0.75rem',
-                marginBottom: '1rem',
-                border: '2px solid rgba(125, 85, 199, 0.3)'
-              }}>
-                <Package size={24} style={{ color: '#c084fc', marginBottom: '0.5rem' }} />
-                <p style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Monthly Box</p>
-                <p style={{ color: 'rgba(125, 85, 199, 0.4)', fontSize: '0.875rem' }}>
-                  Curated games, accessories, exclusive content, and surprises
-                </p>
-              </div>
-
-              {[
-                'All Afterroar digital features',
-                'Exclusive comics & expanded universe',
-                'Early access to new games',
-                'Member-only merch discounts',
-                'Priority support'
-              ].map((feature, i) => (
-                <div key={i} style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '0.75rem',
-                  marginBottom: '0.75rem'
-                }}>
-                  <Check size={20} style={{ color: '#7D55C7', flexShrink: 0, marginTop: '0.125rem' }} />
-                  <span style={{ color: '#fff', fontSize: '0.95rem' }}>{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Value Props */}
-        <div style={{
-          maxWidth: '900px',
-          margin: '0 auto 4rem',
-          background: 'rgba(255, 130, 0, 0.1)',
-          border: '2px solid rgba(255, 130, 0, 0.3)',
-          borderRadius: '1.5rem',
-          padding: '3rem 2rem'
-        }}>
-          <h2 style={{
-            fontSize: '2rem',
-            fontWeight: 900,
-            color: '#FF8200',
-            marginBottom: '2rem',
-            textAlign: 'center'
-          }}>
-            What Makes It Worth It?
-          </h2>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
-            gap: '2rem'
-          }}>
-            {[
-              { icon: Calendar, title: 'Rituals, Not Just Events', desc: 'Recurring game nights that become traditions your group looks forward to' },
-              { icon: Trophy, title: 'Campaigns & Series', desc: 'Track ongoing RPG campaigns and weekly game series with persistent history' },
-              { icon: Users, title: 'Build Your Table', desc: 'Tools designed for groups that stick together, not one-off meetups' },
-              { icon: Heart, title: 'What Sticks', desc: 'Stats, memories, inside jokes—the stuff that turns game night into legacy' }
-            ].map((item, i) => (
-              <div key={i} style={{
-                display: 'flex',
-                gap: '1rem',
-                alignItems: 'flex-start'
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '0.75rem',
-                  background: 'rgba(255, 130, 0, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <item.icon size={24} style={{ color: '#FF8200' }} />
-                </div>
-                <div>
-                  <h3 style={{ color: '#FBDB65', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    {item.title}
-                  </h3>
-                  <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6 }}>
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Waitlist CTA */}
-        <div style={{
-          maxWidth: '600px',
-          margin: '0 auto',
-          textAlign: 'center',
-          background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9))',
-          borderRadius: '1.5rem',
-          border: '3px solid #7D55C7',
-          padding: '3rem 2rem',
-          boxShadow: '0 20px 60px rgba(125, 85, 199, 0.2)'
-        }}>
-          <h2 style={{
-            fontSize: '2rem',
-            fontWeight: 900,
-            color: '#c084fc',
-            marginBottom: '1rem'
-          }}>
-            Join the Waitlist
-          </h2>
-          <p style={{
-            color: '#94a3b8',
-            marginBottom: '2rem',
-            fontSize: '1.125rem'
-          }}>
-            Be the first to know when Afterroar launches. Founding members get special perks.
-          </p>
-
-          {!submitted ? (
-            <form onSubmit={handleWaitlist} style={{ maxWidth: '400px', margin: '0 auto' }}>
+          ) : (
+            <form onSubmit={handleWaitlist} style={{
+              display: 'flex',
+              gap: '0.5rem',
+              maxWidth: '400px',
+              margin: '0 auto'
+            }}>
               <input
                 type="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setStatus('idle'); }}
                 required
                 style={{
-                  width: '100%',
-                  padding: '1rem 1.25rem',
-                  background: 'rgba(0, 0, 0, 0.3)',
-                  border: '2px solid #374151',
-                  borderRadius: '0.75rem',
-                  color: '#fff',
-                  fontSize: '1rem',
-                  marginBottom: '1rem',
+                  flex: 1,
+                  padding: '0.7rem 1rem',
+                  background: '#1c2333',
+                  border: status === 'error' ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px',
+                  color: '#ffffff',
+                  fontSize: '0.9rem',
                   outline: 'none'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#7D55C7'}
-                onBlur={(e) => e.target.style.borderColor = '#374151'}
               />
               <button
                 type="submit"
+                disabled={status === 'loading'}
                 style={{
-                  width: '100%',
-                  padding: '1rem 2rem',
-                  background: 'linear-gradient(135deg, #7D55C7, #7c3aed)',
+                  padding: '0.7rem 1.25rem',
+                  background: colors.primary,
                   border: 'none',
-                  borderRadius: '0.75rem',
-                  color: '#fff',
-                  fontWeight: 900,
-                  fontSize: '1.125rem',
-                  cursor: 'pointer',
-                  boxShadow: '0 10px 40px rgba(125, 85, 199, 0.4)',
+                  borderRadius: '8px',
+                  color: '#0a0a0a',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  cursor: status === 'loading' ? 'wait' : 'pointer',
+                  whiteSpace: 'nowrap' as const,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.75rem',
-                  transition: 'all 0.3s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(125, 85, 199, 0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(125, 85, 199, 0.4)';
+                  gap: '0.4rem',
+                  opacity: status === 'loading' ? 0.7 : 1
                 }}
               >
-                Join Waitlist
-                <ArrowRight size={20} />
+                {status === 'loading' ? 'Joining...' : 'Join Waitlist'}
               </button>
             </form>
-          ) : (
-            <div style={{
-              padding: '2rem',
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '2px solid rgba(16, 185, 129, 0.3)',
-              borderRadius: '0.75rem'
-            }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</div>
-              <p style={{ color: '#10b981', fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                You're on the list!
-              </p>
-              <p style={{ color: '#94a3b8' }}>
-                We'll let you know when Afterroar launches. Check your email for confirmation.
-              </p>
-            </div>
           )}
+
+          {status === 'error' && (
+            <p style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.5rem' }}>{errorMsg}</p>
+          )}
+
+          <p style={{
+            fontSize: '0.7rem',
+            color: '#64748b',
+            marginTop: '0.75rem'
+          }}>
+            No spam. Unsubscribe anytime.
+          </p>
         </div>
+
+        {/* Trademark footer */}
+        <p style={{
+          fontSize: '0.7rem',
+          color: '#64748b',
+          marginTop: '3rem',
+          lineHeight: 1.5
+        }}>
+          Afterroar&trade; is a trademark of Full Uproar Games. &copy; 2025 All rights reserved.
+        </p>
       </div>
     </div>
   );
