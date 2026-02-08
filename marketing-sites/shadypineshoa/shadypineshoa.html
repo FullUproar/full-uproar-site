@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shady Pines HOA — Official Community Website</title>
+<meta name="description" content="The OFFICIAL website of the Shady Pines Homeowners Association. Maintained by the Board of Directors. All other sites are unauthorized.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2C5F2D;
+  --forest-dark: #1A3C1B;
+  --forest-light: #3A7D3E;
+  --gold: #B8860B;
+  --gold-light: #DAA520;
+  --gold-pale: #FFF8DC;
+  --cream: #FAF8F0;
+  --cream-dark: #EDE8D8;
+  --white: #FFFFFF;
+  --black: #1A1A1A;
+  --gray: #666;
+  --gray-light: #999;
+  --red-alert: #8B0000;
+  --beige-approved: #C8B88A;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--cream);
+  color: var(--black);
+  font-family: 'Lato', 'Helvetica Neue', sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ====== OFFICIAL NOTICE BANNER ====== */
+.official-banner {
+  background: var(--red-alert);
+  color: var(--white);
+  text-align: center;
+  padding: 12px 20px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.official-banner a {
+  color: var(--gold-pale);
+  text-decoration: underline;
+}
+
+/* ====== HEADER ====== */
+.site-header {
+  background: var(--forest-dark);
+  padding: 0;
+  border-bottom: 4px solid var(--gold);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px 20px;
+  gap: 24px;
+}
+
+.header-crest {
+  width: 80px;
+  height: 80px;
+  border: 3px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--forest);
+  position: relative;
+}
+
+.header-crest::after {
+  content: '🌲';
+  font-size: 2rem;
+}
+
+.header-text {
+  text-align: left;
+}
+
+.header-text h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: 1px;
+}
+
+.header-text .header-sub {
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 0.85rem;
+  color: var(--gold-light);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.header-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  background: var(--forest);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.header-nav a {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 14px 22px;
+  transition: background 0.2s;
+}
+
+.header-nav a:hover {
+  background: var(--forest-dark);
+  color: var(--gold-light);
+}
+
+/* ====== HERO — PRESIDENT'S MESSAGE ====== */
+.president-message {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 24px 50px;
+}
+
+.message-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid var(--cream-dark);
+}
+
+.message-header .official-seal {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.message-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: var(--forest-dark);
+  margin-bottom: 6px;
+}
+
+.message-header .date {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+.message-body {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.15rem;
+  color: #333;
+  line-height: 1.85;
+}
+
+.message-body p {
+  margin-bottom: 20px;
+  text-indent: 2em;
+}
+
+.message-body p:first-child {
+  text-indent: 0;
+}
+
+.message-body p:first-child::first-letter {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: 3.5rem;
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 6px;
+  color: var(--forest);
+}
+
+.message-body .emphasis {
+  color: var(--forest-dark);
+  font-weight: 600;
+}
+
+.message-body .underline {
+  text-decoration: underline;
+  text-decoration-color: var(--red-alert);
+  text-underline-offset: 3px;
+}
+
+.message-signature {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--cream-dark);
+}
+
+.message-signature .sig-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.6rem;
+  color: var(--forest-dark);
+  margin-bottom: 4px;
+}
+
+.message-signature .sig-title {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.message-signature .sig-years {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.9rem;
+  color: var(--gray);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* ====== DIVIDER ====== */
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 40px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gold);
+}
+
+.section-divider span {
+  color: var(--forest);
+  font-size: 1.2rem;
+}
+
+/* ====== COMMUNITY STANDARDS ====== */
+.standards {
+  background: var(--white);
+  border-top: 1px solid var(--cream-dark);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 60px 24px;
+}
+
+.standards-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.standards-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.standards-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--forest-dark);
+  margin-bottom: 8px;
+}
+
+.standards-header p {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+.standard-item {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.standard-item:last-child { border-bottom: none; }
+
+.standard-number {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: var(--forest);
+  text-align: center;
+  line-height: 1;
+  padding-top: 4px;
+}
+
+.standard-number span {
+  display: block;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.55rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 2px;
+}
+
+.standard-title {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--forest-dark);
+  margin-bottom: 6px;
+}
+
+.standard-text {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+}
+
+.standard-text .fine {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--red-alert);
+  display: inline-block;
+  margin-top: 6px;
+}
+
+/* ====== FAQ ====== */
+.faq {
+  padding: 60px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.faq-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--forest-dark);
+  margin-bottom: 8px;
+}
+
+.faq-header p {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+.faq-item {
+  margin-bottom: 28px;
+}
+
+.faq-question {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--forest-dark);
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.faq-question::before {
+  content: 'Q:';
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  color: var(--forest);
+  flex-shrink: 0;
+}
+
+.faq-answer {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+  padding-left: 30px;
+  position: relative;
+}
+
+.faq-answer::before {
+  content: 'A:';
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  color: var(--gold);
+  position: absolute;
+  left: 0;
+}
+
+/* ====== APPROVED COLORS ====== */
+.colors-section {
+  background: var(--white);
+  border-top: 1px solid var(--cream-dark);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 60px 24px;
+}
+
+.colors-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.colors-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.colors-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--forest-dark);
+  margin-bottom: 8px;
+}
+
+.colors-header p {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.color-swatch {
+  text-align: center;
+}
+
+.swatch-block {
+  width: 100%;
+  height: 80px;
+  border: 2px solid var(--cream-dark);
+  margin-bottom: 8px;
+}
+
+.swatch-name {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--forest-dark);
+}
+
+.swatch-code {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--gray);
+}
+
+.color-note {
+  text-align: center;
+  margin-top: 24px;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+/* ====== VIOLATION REPORT FORM ====== */
+.violation-section {
+  background: var(--forest-dark);
+  padding: 60px 24px;
+  position: relative;
+}
+
+.violation-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent,
+    transparent 40px,
+    rgba(255,255,255,0.01) 40px,
+    rgba(255,255,255,0.01) 41px
+  );
+  pointer-events: none;
+}
+
+.violation-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.violation-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.violation-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.violation-header p {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  color: var(--gold-pale);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.violation-form {
+  background: var(--white);
+  padding: 36px 32px;
+  border: 2px solid var(--gold);
+}
+
+.violation-form h3 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--forest-dark);
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+.v-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.v-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.v-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.v-form-group label {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--forest-dark);
+  margin-bottom: 6px;
+}
+
+.v-form-group input,
+.v-form-group select,
+.v-form-group textarea {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  padding: 11px 14px;
+  border: 1px solid var(--cream-dark);
+  background: var(--cream);
+  color: var(--black);
+  transition: border-color 0.2s;
+}
+
+.v-form-group input:focus,
+.v-form-group select:focus,
+.v-form-group textarea:focus {
+  outline: none;
+  border-color: var(--forest);
+}
+
+.v-form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.v-form-group input::placeholder,
+.v-form-group textarea::placeholder {
+  color: #BBB;
+  font-style: italic;
+}
+
+.v-checkbox-row {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--cream);
+  border: 1px solid var(--cream-dark);
+}
+
+.v-checkbox-row label {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--forest-dark);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  color: #444;
+  cursor: pointer;
+}
+
+.checkbox-option:last-child { margin-bottom: 0; }
+
+.checkbox-option input[type="checkbox"] {
+  accent-color: var(--forest);
+  width: 16px;
+  height: 16px;
+}
+
+.violation-submit {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--forest);
+  color: var(--white);
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.violation-submit:hover {
+  background: var(--forest-dark);
+}
+
+.v-form-disclaimer {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--gray);
+  text-align: center;
+  margin-top: 14px;
+  font-style: italic;
+}
+
+/* Violation success */
+.violation-success {
+  display: none;
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--white);
+  border: 2px solid var(--gold);
+}
+
+.violation-success.active {
+  display: block;
+  animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.violation-success .check-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.violation-success h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--forest-dark);
+  margin-bottom: 12px;
+}
+
+.violation-success p {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/* ====== ANNOUNCEMENTS / RECENT ACTIONS ====== */
+.announcements {
+  padding: 60px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.announcements-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.announcements-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--forest-dark);
+  margin-bottom: 8px;
+}
+
+.announcement {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+.announcement:last-child { border-bottom: none; }
+
+.announcement-date {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.announcement-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--forest-dark);
+  margin-bottom: 8px;
+}
+
+.announcement-text {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+}
+
+/* ====== FOOTER ====== */
+.site-footer {
+  background: var(--forest-dark);
+  padding: 40px 24px;
+  text-align: center;
+  border-top: 4px solid var(--gold);
+}
+
+.footer-crest {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.site-footer p {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.site-footer .footer-official {
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  margin-bottom: 10px;
+}
+
+.site-footer .footer-disclaimer {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.3);
+  font-style: italic;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ====== SCROLL ANIMATIONS ====== */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 600px) {
+  .header-top { flex-direction: column; text-align: center; }
+  .header-text { text-align: center; }
+  .header-nav { flex-wrap: wrap; }
+  .header-nav a { padding: 10px 14px; font-size: 0.7rem; }
+  .standard-item { grid-template-columns: 1fr; }
+  .standard-number { text-align: left; }
+  .v-form-row { grid-template-columns: 1fr; }
+  .color-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- OFFICIAL NOTICE BANNER -->
+<div class="official-banner">
+  ⚠️ NOTICE: An unauthorized website (<a href="https://impeachcolleen.com">impeachcolleen.com</a>) is circulating misinformation about this community.
+  <br>The Board is aware and is consulting legal counsel. Do not engage. ⚠️
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-top">
+    <div class="header-crest"></div>
+    <div class="header-text">
+      <h1>Shady Pines HOA</h1>
+      <div class="header-sub">Est. 2003 — A Covenant-Protected Community</div>
+    </div>
+  </div>
+  <nav class="header-nav">
+    <a href="#message">President's Message</a>
+    <a href="#standards">Standards</a>
+    <a href="#faq">FAQ</a>
+    <a href="#colors">Approved Colors</a>
+    <a href="#report">Report a Violation</a>
+  </nav>
+</header>
+
+<!-- PRESIDENT'S MESSAGE -->
+<section class="president-message" id="message">
+  <div class="message-header reveal">
+    <div class="official-seal">Office of the President — Shady Pines Homeowners Association</div>
+    <h2>A Message to Our Community</h2>
+    <div class="date" id="messageDate"></div>
+  </div>
+
+  <div class="message-body reveal">
+    <p>Dear Residents of Shady Pines,</p>
+
+    <p>It has come to my attention that a <span class="emphasis">small but vocal group</span> of residents has launched what can only be described as a personal attack against my leadership and, by extension, against the very standards that make Shady Pines the premier residential community in the tri-county area.</p>
+
+    <p>Let me be direct: I am not going anywhere. I was elected to this position by a clear majority — <span class="emphasis">37 votes to 12</span> — in a properly noticed election held at 6:15 AM on a Tuesday, as permitted by our bylaws. The results were certified by the Board, of which I am Chair. This is democracy in action.</p>
+
+    <p>To those behind the so-called "petition": I understand that change is difficult. When I took office, Shady Pines was in <span class="underline">crisis</span>. Mailbox colors were inconsistent. Garden statuary was unchecked. The Hendersons had <span class="emphasis">two</span> garden gnomes — a fact the previous administration simply ignored. Under my leadership, we now have one approved mailbox color, zero unapproved lawn ornaments, and a community that looks exactly the way it should: <span class="emphasis">uniform, dignified, and beige</span>.</p>
+
+    <p>Regarding the allegations of "embezzlement" — the Holiday Block Party Fund was reallocated to critical landscaping infrastructure through a fully documented process. The documentation is currently under review and will be made available once the review is complete. The review timeline is also under review.</p>
+
+    <p>As for the pool hours: the previous schedule was unsustainable. Children were <span class="emphasis">audible</span>. The new hours reflect a balanced approach to community wellness. The weekend reservations for Board retreats are an investment in governance excellence. You're welcome.</p>
+
+    <p>I encourage all residents to focus on what matters: maintaining property values, adhering to community standards, and submitting their Quarterly Exterior Inspection Self-Assessments by the 15th. Those who have concerns are welcome to submit them in writing, in triplicate, to the Community Correspondence Review Sub-Committee, which meets biannually.</p>
+
+    <p>Shady Pines has never been more orderly. I intend to keep it that way.</p>
+  </div>
+
+  <div class="message-signature reveal">
+    <div class="sig-name">Colleen</div>
+    <div class="sig-title">President, Board Chair, Architectural Review Committee Chair,<br>Pool Schedule Coordinator, Chili Cook-Off Head Judge</div>
+    <div class="sig-years">Serving Shady Pines since 2019. Whether you like it or not.</div>
+  </div>
+</section>
+
+<div class="section-divider"><span>🌲</span></div>
+
+<!-- COMMUNITY STANDARDS -->
+<section class="standards" id="standards">
+  <div class="standards-inner">
+    <div class="standards-header reveal">
+      <h2>Community Standards</h2>
+      <p>Compliance is not optional. It's what separates us from the apartments.</p>
+    </div>
+
+    <div class="standard-item reveal">
+      <div class="standard-number">§1<span>Revised</span></div>
+      <div>
+        <div class="standard-title">Exterior Paint Colors</div>
+        <div class="standard-text">All exterior surfaces must be painted in a Board-approved color (see Approved Color Palette below). "Agreeable Gray" is NOT approved despite what the internet tells you. The Board finds it disagreeable. <span class="fine">Violation: $250/day</span></div>
+      </div>
+    </div>
+
+    <div class="standard-item reveal">
+      <div class="standard-number">§3<span>Active</span></div>
+      <div>
+        <div class="standard-title">Lawn Ornamentation</div>
+        <div class="standard-text">Decorative lawn items are limited to one (1) per lot, not to exceed 10 inches in height, and must have a "neutral or pleasant" facial expression as determined by the Board President. Items displaying sarcasm, smugness, or "attitude" will be confiscated. <span class="fine">Violation: $200 + confiscation</span></div>
+      </div>
+    </div>
+
+    <div class="standard-item reveal">
+      <div class="standard-number">§7<span>Active</span></div>
+      <div>
+        <div class="standard-title">Recreational Equipment</div>
+        <div class="standard-text">Trampolines, bounce houses, slip-n-slides, and any apparatus designed to propel a human body vertically are prohibited on all lots. Basketball hoops are permitted but must not be used between the hours of 7AM and 10PM. <span class="fine">Violation: $300</span></div>
+      </div>
+    </div>
+
+    <div class="standard-item reveal">
+      <div class="standard-number">§9<span>New</span></div>
+      <div>
+        <div class="standard-title">Mailbox Standards</div>
+        <div class="standard-text">All mailboxes must be painted SW 7012 "Creamy" (formerly Eggshell, formerly Ivory). Residents found to be using the previous approved color after the transition period will be fined. The transition period ended before it was announced. <span class="fine">Violation: $200</span></div>
+      </div>
+    </div>
+
+    <div class="standard-item reveal">
+      <div class="standard-number">§12<span>New</span></div>
+      <div>
+        <div class="standard-title">Vegetation Temperament Guidelines</div>
+        <div class="standard-text">Front-yard plants must project a "calm and welcoming energy." Tomatoes, cacti, and sunflowers over 4 feet have been classified as "visually aggressive" and are no longer permitted. The community garden has been replaced with the Serenity Rock Zone for everyone's benefit. <span class="fine">Violation: $150 + mandatory landscaping consultation</span></div>
+      </div>
+    </div>
+
+    <div class="standard-item reveal">
+      <div class="standard-number">§14<span>Revised</span></div>
+      <div>
+        <div class="standard-title">Noise & Wind Instruments</div>
+        <div class="standard-text">Wind chimes, outdoor speakers, and any device that produces sound via "ambient atmospheric conditions" are prohibited. This includes but is not limited to: chimes, flags that flap audibly, and squeaky gates that haven't been oiled. Residents who claim not to own wind chimes may be subject to a verification inspection. <span class="fine">Violation: $150/occurrence</span></div>
+      </div>
+    </div>
+
+    <div class="standard-item reveal">
+      <div class="standard-number">§18<span>Active</span></div>
+      <div>
+        <div class="standard-title">Correspondence Conduct</div>
+        <div class="standard-text">All written communications to the Board must be submitted in a respectful tone. Emails containing exclamation points, ALL CAPS, or "passive-aggressive quotation marks" will be classified as "aggressive correspondence" and may result in a fine. Sarcasm will be assessed on a case-by-case basis by the Board President. <span class="fine">Violation: $150</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="faq-header reveal">
+    <h2>Frequently Asked Questions</h2>
+    <p>We believe in transparency. Most of these are real questions. Some of them we wish weren't.</p>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-question">Why was my patio extension denied?</div>
+    <div class="faq-answer">Because it didn't meet community standards. If you need specifics, the Board reviewed your submission and determined that it was, and I quote the official minutes, "not in keeping with the aesthetic vision for Shady Pines." The President's patio extension was approved through a separate expedited process available to Board members. This is standard practice.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-question">Can I see the minutes from the last Board meeting?</div>
+    <div class="faq-answer">Minutes from all Board meetings are available upon request. Requests are processed by the Community Correspondence Review Sub-Committee, which meets twice yearly. Current processing time is 11 months. We appreciate your patience and remind you that patience is itself a community standard.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-question">What happened to the Holiday Block Party fund?</div>
+    <div class="faq-answer">The fund was reallocated to a critical landscaping initiative that benefits the entire community. The vendor was selected through a thorough process. The fact that the vendor shares a last name and home address with a Board member is coincidental and not relevant to this discussion.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-question">Why can't I use the pool on weekends in July?</div>
+    <div class="faq-answer">The Board has reserved weekend hours for strategic governance retreats, which are essential for maintaining community excellence. The agenda for these retreats is confidential. The inflatable flamingo visible from the parking lot is a Board-approved wellness tool.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-question">How do I run for Board President?</div>
+    <div class="faq-answer">Elections are held annually at a time and location to be determined by the current Board President. Candidates must submit a 15-page platform proposal, pass a community standards compliance audit (administered by the Board President), and collect signatures from 75% of residents. The current Board President ran unopposed. Twice. This is democracy working as intended.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-question">Is the chili cook-off judging process fair?</div>
+    <div class="faq-answer">Absolutely. The judging criteria — taste, presentation, and "overall spirit" — are evaluated by a panel of qualified experts. The panel currently consists of one expert. All scoring is final. The trophy is engraved in advance to save time, not because the outcome is predetermined. Next question.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-question">What is impeachcolleen.com?</div>
+    <div class="faq-answer">An unauthorized website created by disgruntled residents who have been fined a combined 47 times for legitimate violations. The Board's legal team is reviewing all options. We encourage residents not to visit the site at <a href="https://impeachcolleen.com" style="color:var(--red-alert);">impeachcolleen.com</a>, sign its so-called "petition," or share it on social media. Doing so may be considered "conduct detrimental to community harmony" under §18.</div>
+  </div>
+</section>
+
+<!-- APPROVED COLOR PALETTE -->
+<section class="colors-section" id="colors">
+  <div class="colors-inner">
+    <div class="colors-header reveal">
+      <h2>Approved Exterior Color Palette</h2>
+      <p>Effective immediately. All previous palettes are void. Yes, again.</p>
+    </div>
+
+    <div class="color-grid reveal">
+      <div class="color-swatch">
+        <div class="swatch-block" style="background: #F5F0E1;"></div>
+        <div class="swatch-name">Creamy</div>
+        <div class="swatch-code">SW 7012</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background: #E8DFC8;"></div>
+        <div class="swatch-name">Accessible Beige</div>
+        <div class="swatch-code">SW 7036</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background: #EDE6D8;"></div>
+        <div class="swatch-name">Alabaster</div>
+        <div class="swatch-code">SW 7008</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background: #E3D8C5;"></div>
+        <div class="swatch-name">Kilim Beige</div>
+        <div class="swatch-code">SW 6106</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background: #D5C8AE;"></div>
+        <div class="swatch-name">Familiar Beige</div>
+        <div class="swatch-code">SW 6093</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background: #DDD5C2;"></div>
+        <div class="swatch-name">Balanced Beige</div>
+        <div class="swatch-code">SW 7037</div>
+      </div>
+    </div>
+
+    <div class="color-note reveal">
+      All six colors are beige. This is intentional. If you cannot distinguish between them, the Board recommends an eye exam. At your own expense.
+    </div>
+  </div>
+</section>
+
+<!-- VIOLATION REPORT FORM — SECOND EMAIL CAPTURE -->
+<section class="violation-section" id="report">
+  <div class="violation-inner">
+    <div class="violation-header reveal">
+      <h2>Report a Violation</h2>
+      <p>See something? Say something. Anonymity is technically available but the Board will know.</p>
+    </div>
+
+    <div class="violation-form reveal" id="violationForm">
+      <h3>Confidential Violation Report Form</h3>
+
+      <div class="v-form-row">
+        <div class="v-form-group">
+          <label for="vName">Your Name *</label>
+          <input type="text" id="vName" placeholder="Concerned Resident">
+        </div>
+        <div class="v-form-group">
+          <label for="vEmail">Your Email *</label>
+          <input type="email" id="vEmail" placeholder="your.email@example.com">
+        </div>
+      </div>
+
+      <div class="v-form-row">
+        <div class="v-form-group">
+          <label for="vLot">Violator's Lot Number</label>
+          <input type="text" id="vLot" placeholder="e.g., Lot 42">
+        </div>
+        <div class="v-form-group">
+          <label for="vSeverity">Severity Level</label>
+          <select id="vSeverity">
+            <option value="">Select...</option>
+            <option>Minor (wrong shade of beige)</option>
+            <option>Moderate (visible personality)</option>
+            <option>Severe (unapproved joy)</option>
+            <option>Critical (direct challenge to Board authority)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="v-checkbox-row">
+        <label>Nature of Violation (select all that apply)</label>
+        <label class="checkbox-option">
+          <input type="checkbox"> Unapproved exterior paint color
+        </label>
+        <label class="checkbox-option">
+          <input type="checkbox"> Lawn ornament with "attitude"
+        </label>
+        <label class="checkbox-option">
+          <input type="checkbox"> Visible recreational equipment
+        </label>
+        <label class="checkbox-option">
+          <input type="checkbox"> Aggressive vegetation (tomatoes, sunflowers, etc.)
+        </label>
+        <label class="checkbox-option">
+          <input type="checkbox"> Audible children
+        </label>
+        <label class="checkbox-option">
+          <input type="checkbox"> Mailbox color non-compliance
+        </label>
+        <label class="checkbox-option">
+          <input type="checkbox"> Unauthorized wind chimes (real or suspected)
+        </label>
+        <label class="checkbox-option">
+          <input type="checkbox"> General aura of non-compliance
+        </label>
+      </div>
+
+      <div class="v-form-row">
+        <div class="v-form-group full-width">
+          <label for="vDescription">Detailed Description of the Offense</label>
+          <textarea id="vDescription" placeholder="Please be specific. Include timestamps, photographic evidence descriptions, and the emotional impact on you personally."></textarea>
+        </div>
+      </div>
+
+      <button class="violation-submit" type="button" onclick="submitViolation()">
+        Submit Report
+      </button>
+
+      <div class="v-form-disclaimer">
+        Reports are reviewed by the Board President personally. Retaliation against reporters is prohibited unless the Board deems it necessary.
+      </div>
+    </div>
+
+    <!-- VIOLATION SUCCESS -->
+    <div class="violation-success" id="violationSuccess">
+      <div class="check-icon">📋</div>
+      <h3>Report Received</h3>
+      <p>Thank you for your vigilance. Your report has been filed and will be processed in the order it was received. The Board will take appropriate action, which may include fines, hearings, or a sternly worded letter on official letterhead. You will receive updates via email.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ANNOUNCEMENTS -->
+<section class="announcements">
+  <div class="announcements-header reveal">
+    <h2>Recent Board Actions</h2>
+  </div>
+
+  <div class="announcement reveal">
+    <div class="announcement-date" id="announce1Date"></div>
+    <div class="announcement-title">Pool Hours Adjusted for Summer Season</div>
+    <div class="announcement-text">Weekend pool hours have been reserved for Board governance retreats through the end of August. Weekday hours remain 10AM–4PM. The inflatable flamingo is Board property and is not to be touched.</div>
+  </div>
+
+  <div class="announcement reveal">
+    <div class="announcement-date" id="announce2Date"></div>
+    <div class="announcement-title">Chili Cook-Off Results Certified</div>
+    <div class="announcement-text">Congratulations to the Board President on her third consecutive victory. Suggestions for a "blind tasting format" have been reviewed and rejected. The current format ensures "judging excellence and consistency."</div>
+  </div>
+
+  <div class="announcement reveal">
+    <div class="announcement-date" id="announce3Date"></div>
+    <div class="announcement-title">Community Garden Transition Complete</div>
+    <div class="announcement-text">The former community garden is now the Serenity Rock Zone. Residents are welcome to enjoy the rocks during posted Serenity Hours (Tuesday and Thursday, 2–3PM). Touching the rocks is discouraged.</div>
+  </div>
+
+  <div class="announcement reveal">
+    <div class="announcement-date" id="announce4Date"></div>
+    <div class="announcement-title">Unauthorized Website Under Legal Review</div>
+    <div class="announcement-text">The Board is aware of an unauthorized website at <a href="https://impeachcolleen.com" style="color:var(--red-alert);">impeachcolleen.com</a> making baseless claims about community leadership. Residents who have visited, signed, or shared the site are encouraged to self-report to avoid additional penalties. This is not a threat. It is an opportunity.</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-crest">🌲</div>
+  <p class="footer-official">The Official Website of the Shady Pines Homeowners Association</p>
+  <p>Shady Pines HOA — Maintaining Standards Since 2003</p>
+  <p>"A Covenant-Protected Community"</p>
+  <p class="footer-disclaimer">All content on this website is approved by the Board of Directors. Unauthorized reproduction, criticism, or eye-rolling is prohibited under §18 of the Community Standards.</p>
+  <p class="footer-disclaimer" style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; max-width: 550px;">
+    &copy; 2026 Full Uproar Games, Inc. All rights reserved. This is a work of satirical fiction created for entertainment purposes. "Shady Pines HOA," "Colleen," and all characters, community standards, and board actions depicted on this site are entirely fictional and are part of <strong style="color:rgba(255,255,255,0.5);">HOA The Game</strong>, an upcoming board game by Full Uproar Games. Any resemblance to actual persons, homeowners associations, or approved color palettes is purely coincidental. No actual beige was harmed in the making of this website. By submitting your email, you consent to receive marketing communications from Full Uproar Games, Inc. You may unsubscribe at any time.
+  </p>
+</footer>
+
+<script>
+// ====== DYNAMIC DATES ======
+(function() {
+  const now = new Date();
+  
+  // President's message date — always "last week"
+  const msgDate = new Date(now);
+  msgDate.setDate(msgDate.getDate() - 5);
+  document.getElementById('messageDate').textContent = msgDate.toLocaleDateString('en-US', { 
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+  });
+
+  // Announcement dates — staggered recent dates
+  const offsets = [3, 10, 21, 35];
+  offsets.forEach((offset, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - offset);
+    const el = document.getElementById(`announce${i + 1}Date`);
+    if (el) {
+      el.textContent = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+  });
+})();
+
+// ====== SCROLL REVEAL ======
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+revealElements.forEach(el => revealObserver.observe(el));
+
+// ====== VIOLATION FORM SUBMIT ======
+async function submitViolation() {
+  const name = document.getElementById('vName').value.trim();
+  const email = document.getElementById('vEmail').value.trim();
+
+  if (!name || !email) {
+    alert('Please provide your name and email. Anonymous tips are "technically available" but we still need your email.');
+    return;
+  }
+
+  if (!email.includes('@') || !email.includes('.')) {
+    alert('Please enter a valid email address for follow-up correspondence.');
+    return;
+  }
+
+  // Send to newsletter API
+  try {
+    await fetch('https://fulluproar.com/api/newsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        name: name,
+        source: 'shadypineshoa-violation'
+      })
+    });
+  } catch (e) {
+    // Don't block the UI on API failure
+    console.error('API error:', e);
+  }
+
+  document.getElementById('violationForm').style.display = 'none';
+  document.getElementById('violationSuccess').classList.add('active');
+}
+
+// ====== SMOOTH SCROLL FOR NAV ======
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
+});
+</script>
+
+</body>
+</html>

@@ -4,6 +4,29 @@ import { rateLimit } from '@/lib/middleware/rate-limit';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Marketing domains allowed to POST email signups
+const ALLOWED_ORIGINS = [
+  'https://www.impeachcolleen.com',
+  'https://impeachcolleen.com',
+  'https://www.shadypineshoa.org',
+  'https://shadypineshoa.org',
+];
+
+function corsHeaders(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const headers: Record<string, string> = {};
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    headers['Access-Control-Allow-Origin'] = origin;
+    headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS';
+    headers['Access-Control-Allow-Headers'] = 'Content-Type';
+  }
+  return headers;
+}
+
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, { status: 204, headers: corsHeaders(request) });
+}
+
 export async function POST(request: NextRequest) {
   // Rate limit newsletter signups
   const rateLimitResponse = await rateLimit(request, 'promo');
@@ -43,10 +66,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Successfully subscribed',
       isNew: subscriber.createdAt.getTime() === subscriber.updatedAt.getTime()
-    });
+    }, { headers: corsHeaders(request) });
   } catch (error) {
     console.error('Error subscribing to newsletter:', error);
-    return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500, headers: corsHeaders(request) });
   }
 }
 

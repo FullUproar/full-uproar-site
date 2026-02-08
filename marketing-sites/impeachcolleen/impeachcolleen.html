@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMPEACH COLLEEN — Shady Pines HOA Accountability Project</title>
+<meta name="description" content="Colleen has gone too far. Sign the petition to remove her as HOA President. The residents of Shady Pines deserve better.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Oswald:wght@400;600;700&family=Permanent+Marker&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #C41E3A;
+  --red-dark: #8B0000;
+  --blue: #1B3A6B;
+  --blue-dark: #0F2345;
+  --cream: #FFF8E7;
+  --cream-dark: #F0E4C8;
+  --yellow: #FFD700;
+  --yellow-pale: #FFF3B0;
+  --white: #FFFFFF;
+  --black: #1A1A1A;
+  --wood: #8B6914;
+  --grass: #2D6A1E;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--cream);
+  color: var(--black);
+  font-family: 'Source Serif 4', Georgia, serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ====== YARD SIGN TEXTURE OVERLAY ====== */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.01) 2px, rgba(0,0,0,0.01) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,0.008) 3px, rgba(0,0,0,0.008) 6px);
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ====== ANNOUNCEMENT BANNER ====== */
+.top-banner {
+  background: var(--red);
+  color: var(--white);
+  text-align: center;
+  padding: 10px 20px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: bannerPulse 3s ease-in-out infinite;
+}
+
+@keyframes bannerPulse {
+  0%, 100% { background: var(--red); }
+  50% { background: var(--red-dark); }
+}
+
+/* ====== HERO SECTION — THE YARD SIGN ====== */
+.hero {
+  background: var(--blue);
+  padding: 60px 20px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(255,255,255,0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 0; right: 0;
+  height: 60px;
+  background: var(--cream);
+  clip-path: polygon(0 50%, 2% 40%, 5% 55%, 8% 42%, 12% 52%, 15% 38%, 20% 50%, 25% 42%, 30% 55%, 35% 40%, 40% 48%, 45% 38%, 50% 52%, 55% 42%, 60% 55%, 65% 40%, 70% 50%, 75% 38%, 80% 48%, 85% 42%, 88% 55%, 92% 40%, 95% 50%, 98% 42%, 100% 50%, 100% 100%, 0 100%);
+}
+
+.yard-sign {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--white);
+  border: 8px solid var(--red);
+  padding: 40px 50px;
+  position: relative;
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.3),
+    inset 0 0 0 3px var(--blue),
+    inset 0 0 0 6px var(--white);
+  transform: rotate(-1deg);
+  animation: signAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes signAppear {
+  from { transform: rotate(-1deg) scale(0.8) translateY(30px); opacity: 0; }
+  to { transform: rotate(-1deg) scale(1) translateY(0); opacity: 1; }
+}
+
+.yard-sign::before,
+.yard-sign::after {
+  content: '★';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: var(--red);
+}
+.yard-sign::before { left: 12px; }
+.yard-sign::after { right: 12px; }
+
+.hero-subtitle {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-family: 'Alfa Slab One', serif;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 8px;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+
+.hero-name {
+  font-family: 'Permanent Marker', cursive;
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  color: var(--blue);
+  line-height: 1;
+  margin-bottom: 12px;
+  transform: rotate(1deg);
+  display: block;
+}
+
+.hero-tagline {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red-dark);
+}
+
+/* Stakes underneath the sign */
+.sign-stakes {
+  display: flex;
+  justify-content: center;
+  gap: 200px;
+  margin-top: -10px;
+  position: relative;
+  z-index: -1;
+}
+
+.stake {
+  width: 12px;
+  height: 100px;
+  background: linear-gradient(90deg, #A0855C, #C4A96A, #8B7340);
+  border-radius: 0 0 2px 2px;
+  animation: signAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+/* ====== COUNTER BAR ====== */
+.counter-bar {
+  background: var(--yellow);
+  border-top: 4px solid var(--red);
+  border-bottom: 4px solid var(--red);
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.counter-bar .count-label {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red-dark);
+}
+
+.counter-bar .count-number {
+  font-family: 'Alfa Slab One', serif;
+  font-size: 3rem;
+  color: var(--red);
+  display: block;
+  line-height: 1.1;
+}
+
+.counter-bar .count-goal {
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.95rem;
+  color: var(--blue);
+  font-style: italic;
+}
+
+/* ====== CHARGES SECTION ====== */
+.charges {
+  padding: 80px 20px;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-header h2 {
+  font-family: 'Alfa Slab One', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: var(--red);
+  margin-bottom: 10px;
+}
+
+.section-header .divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  color: var(--blue);
+  font-size: 1.2rem;
+}
+
+.section-header .divider::before,
+.section-header .divider::after {
+  content: '';
+  width: 80px;
+  height: 3px;
+  background: var(--red);
+}
+
+.charge-card {
+  background: var(--white);
+  border: 3px solid var(--blue);
+  border-left: 8px solid var(--red);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: chargeSlide 0.5s ease forwards;
+}
+
+.charge-card:nth-child(2) { animation-delay: 0.1s; }
+.charge-card:nth-child(3) { animation-delay: 0.15s; }
+.charge-card:nth-child(4) { animation-delay: 0.2s; }
+.charge-card:nth-child(5) { animation-delay: 0.25s; }
+.charge-card:nth-child(6) { animation-delay: 0.3s; }
+.charge-card:nth-child(7) { animation-delay: 0.35s; }
+.charge-card:nth-child(8) { animation-delay: 0.4s; }
+.charge-card:nth-child(9) { animation-delay: 0.45s; }
+
+@keyframes chargeSlide {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.charge-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.charge-number {
+  font-family: 'Alfa Slab One', serif;
+  font-size: 1.4rem;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+
+.charge-title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+.charge-detail {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.05rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+.charge-detail em {
+  color: var(--red-dark);
+  font-style: italic;
+}
+
+/* ====== EVIDENCE SECTION ====== */
+.evidence {
+  background: var(--blue-dark);
+  padding: 80px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.evidence::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.01) 20px, rgba(255,255,255,0.01) 40px);
+  pointer-events: none;
+}
+
+.evidence .section-header h2 { color: var(--yellow); }
+.evidence .section-header .divider { color: var(--yellow); }
+.evidence .section-header .divider::before,
+.evidence .section-header .divider::after { background: var(--yellow); }
+
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.evidence-item {
+  background: var(--cream);
+  padding: 28px;
+  border: 2px solid var(--wood);
+  position: relative;
+  transform: rotate(var(--rot, -1deg));
+  transition: transform 0.3s;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.evidence-item:nth-child(2) { --rot: 1.5deg; }
+.evidence-item:nth-child(3) { --rot: -0.5deg; }
+.evidence-item:nth-child(4) { --rot: 2deg; }
+.evidence-item:nth-child(5) { --rot: -1.5deg; }
+.evidence-item:nth-child(6) { --rot: 0.8deg; }
+
+.evidence-item:hover { transform: rotate(0deg) scale(1.02); }
+
+.evidence-item::before {
+  content: '📌';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+}
+
+.evidence-stamp {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  border: 2px solid var(--red);
+  display: inline-block;
+  padding: 2px 10px;
+  margin-bottom: 12px;
+  transform: rotate(-3deg);
+}
+
+.evidence-title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--blue);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.evidence-text {
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.evidence-text .redacted {
+  background: var(--black);
+  color: var(--black);
+  padding: 0 4px;
+  user-select: none;
+  cursor: not-allowed;
+}
+
+/* ====== TESTIMONIALS ====== */
+.testimonials {
+  padding: 80px 20px;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.testimonial {
+  background: var(--white);
+  border: 3px solid var(--cream-dark);
+  padding: 32px 36px;
+  margin-bottom: 24px;
+  position: relative;
+  border-radius: 2px;
+}
+
+.testimonial::before {
+  content: '"';
+  font-family: 'Alfa Slab One', serif;
+  font-size: 5rem;
+  color: var(--red);
+  opacity: 0.15;
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  line-height: 1;
+}
+
+.testimonial-text {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.testimonial-author {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.testimonial-author span {
+  color: #888;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ====== PETITION / CTA SECTION ====== */
+.petition {
+  background: var(--red);
+  padding: 80px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.petition::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    repeating-linear-gradient(-45deg, transparent, transparent 30px, rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 60px);
+  pointer-events: none;
+}
+
+.petition-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.petition h2 {
+  font-family: 'Alfa Slab One', serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  color: var(--white);
+  margin-bottom: 12px;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+.petition .petition-sub {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.15rem;
+  color: var(--yellow-pale);
+  margin-bottom: 36px;
+  font-style: italic;
+}
+
+.petition-form {
+  background: var(--white);
+  padding: 36px 32px;
+  border: 4px solid var(--blue);
+  text-align: left;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.petition-form h3 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--blue);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1rem;
+  padding: 12px 14px;
+  border: 2px solid var(--cream-dark);
+  background: var(--cream);
+  color: var(--black);
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #AAA;
+  font-style: italic;
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 18px;
+  background: var(--red);
+  color: var(--white);
+  font-family: 'Alfa Slab One', serif;
+  font-size: 1.3rem;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  transition: background 0.2s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn:hover {
+  background: var(--red-dark);
+  transform: translateY(-1px);
+}
+
+.submit-btn:active {
+  transform: translateY(1px);
+}
+
+.form-disclaimer {
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.8rem;
+  color: #888;
+  text-align: center;
+  margin-top: 14px;
+  font-style: italic;
+}
+
+/* ====== SUCCESS STATE ====== */
+.petition-success {
+  display: none;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.petition-success.active {
+  display: block;
+  animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.petition-success .check {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.petition-success h3 {
+  font-family: 'Alfa Slab One', serif;
+  font-size: 1.8rem;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+
+.petition-success p {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto 24px;
+}
+
+.petition-success .share-prompt {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 16px;
+}
+
+.share-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.share-btn {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  border: 3px solid var(--blue);
+  background: var(--white);
+  color: var(--blue);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.share-btn:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/* ====== FOOTER ====== */
+.footer {
+  background: var(--blue-dark);
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.footer p {
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 8px;
+}
+
+.footer .footer-legal {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.3);
+  font-style: italic;
+}
+
+/* ====== FLOATING YARD SIGNS ====== */
+.floating-signs {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.scroll-cta {
+  background: var(--red);
+  color: var(--white);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 24px;
+  border: 3px solid var(--white);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  animation: floatBounce 2s ease-in-out infinite;
+}
+
+.scroll-cta:hover {
+  background: var(--red-dark);
+  transform: scale(1.05);
+  animation: none;
+}
+
+@keyframes floatBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 600px) {
+  .yard-sign {
+    padding: 28px 24px;
+    border-width: 6px;
+  }
+  
+  .yard-sign::before,
+  .yard-sign::after { display: none; }
+  
+  .sign-stakes { gap: 100px; }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .charge-card {
+    padding: 20px 22px;
+  }
+  
+  .evidence-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .evidence-item {
+    transform: rotate(0deg) !important;
+  }
+  
+  .floating-signs { 
+    bottom: 10px; 
+    right: 10px; 
+  }
+}
+
+/* ====== SCROLL-TRIGGERED ANIMATIONS ====== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BANNER -->
+<div class="top-banner">
+  ⚠️ Emergency Neighborhood Meeting — <span id="meetingDate"></span>, 7PM at the Community Pavilion ⚠️
+</div>
+<script>
+(function() {
+  const now = new Date();
+  const meetingDate = new Date(now.getFullYear(), now.getMonth() + 2, 15);
+  const formatted = meetingDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  document.getElementById('meetingDate').textContent = formatted;
+})();
+</script>
+
+<!-- HERO — THE YARD SIGN -->
+<section class="hero">
+  <div class="yard-sign">
+    <div class="hero-subtitle">Shady Pines Homeowners For Accountability</div>
+    <div class="hero-title">IMPEACH</div>
+    <span class="hero-name">COLLEEN</span>
+    <div class="hero-tagline">Our Neighborhood Deserves Better ★ 2026</div>
+  </div>
+  <div class="sign-stakes">
+    <div class="stake"></div>
+    <div class="stake"></div>
+  </div>
+</section>
+
+<!-- SIGNATURE COUNTER -->
+<div class="counter-bar">
+  <span class="count-label">Residents Who've Had Enough</span>
+  <span class="count-number" id="signatureCount">1,247</span>
+  <span class="count-goal">We need 2,000 signatures to force a vote. We're almost there.</span>
+</div>
+
+<!-- THE CHARGES -->
+<section class="charges">
+  <div class="section-header reveal">
+    <h2>The Charges Against Colleen</h2>
+    <div class="divider">★</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE I</div>
+    <div class="charge-title">Abuse of the Fine System</div>
+    <div class="charge-detail">Fined the Henderson family <em>$200 for a garden gnome</em> deemed "inconsistent with neighborhood character." The gnome was 11 inches tall. The approved maximum? 12 inches. The gnome was compliant. Colleen fined them anyway because she <em>"didn't like its expression."</em></div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE II</div>
+    <div class="charge-title">Embezzlement of Community Funds</div>
+    <div class="charge-detail">$4,300 earmarked for the Holiday Block Party somehow became a <em>"landscaping consultation fee"</em> paid to her cousin's company. The block party was downgraded to a folding table with store-brand lemonade. Children cried.</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE III</div>
+    <div class="charge-title">Selective Enforcement of Patio Regulations</div>
+    <div class="charge-detail">Denied THREE patio extension requests in Q2 alone, citing "aesthetic disruption." Meanwhile, Colleen's own 400-square-foot patio expansion was approved <em>unanimously</em> at a meeting where she was the only board member present. At 6AM. On a Saturday.</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE IV</div>
+    <div class="charge-title">The Great Mailbox Color Scandal</div>
+    <div class="charge-detail">Changed the approved mailbox color from <em>Eggshell (#F0EAD6)</em> to <em>Ivory (#FFFFF0)</em> without a community vote. 14 families were fined for non-compliance before the change was even announced. Total fines collected: $2,800. Coincidentally, this matches the cost of Colleen's new driveway pavers.</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE V</div>
+    <div class="charge-title">Unconstitutional Trampoline Ban</div>
+    <div class="charge-detail">Banned all trampolines citing "liability concerns." When residents pointed out the CC&Rs contain no trampoline provision, Colleen <em>amended the CC&Rs herself</em> and backdated the amendment. Multiple witnesses confirm the document smelled like fresh ink.</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE VI</div>
+    <div class="charge-title">Weaponization of the Architectural Review Committee</div>
+    <div class="charge-detail">The ARC hasn't approved a single exterior paint color that isn't beige since Colleen took office. 47 submissions for "Agreeable Gray" — the <em>number one selling paint color in America</em> — have been rejected as "too bold."</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE VII</div>
+    <div class="charge-title">Suppression of Meeting Minutes</div>
+    <div class="charge-detail">Residents who've requested copies of board meeting minutes have been told they're "under review" for <em>eleven consecutive months</em>. When Karen Delacroix filed a FOIA request, Colleen reminded her that HOAs aren't government entities. She then fined Karen $150 for "aggressive correspondence."</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE VIII</div>
+    <div class="charge-title">The Pool Hours Incident</div>
+    <div class="charge-detail">Changed pool hours from 8AM–9PM to 10AM–4PM because she <em>"could hear children from her living room."</em> Her house is four blocks from the pool. This was presented as a "noise reduction initiative." The pool was later reserved exclusively for "board wellness retreats" on all weekends in July.</div>
+  </div>
+
+  <div class="charge-card">
+    <div class="charge-number">CHARGE IX</div>
+    <div class="charge-title">Rigging of the Annual Chili Cook-Off</div>
+    <div class="charge-detail">Colleen has won the Shady Pines Chili Cook-Off for <em>three consecutive years</em>. She is also the sole judge. When residents proposed a blind tasting format, the motion was tabled because Colleen claimed a <em>"conflict of scheduling."</em> The cook-off is always on the same Saturday.</div>
+  </div>
+
+  <div class="charge-card" style="border-left-color: var(--blue); background: #F0F4FF;">
+    <div class="charge-number" style="color: var(--blue);">SEE FOR YOURSELF</div>
+    <div class="charge-title">Colleen Has Responded</div>
+    <div class="charge-detail">Rather than address any of these charges, Colleen launched her own website at <a href="https://shadypineshoa.org" style="color:var(--red);font-weight:600;">shadypineshoa.org</a> calling us "a small but vocal group." She also threatened to fine anyone who visits this site. <em>Read it. It proves every point we're making.</em></div>
+  </div>
+
+</section>
+
+<!-- EVIDENCE BOARD -->
+<section class="evidence">
+  <div class="section-header reveal">
+    <h2>The Evidence</h2>
+    <div class="divider">★</div>
+  </div>
+
+  <div class="evidence-grid">
+    <div class="evidence-item reveal">
+      <div class="evidence-stamp">LEAKED</div>
+      <div class="evidence-title">Board Meeting Minutes — Feb 12</div>
+      <div class="evidence-text">"Motion to increase presidential <span class="redacted">discretionary</span> budget to $<span class="redacted">8,000</span> per quarter. Motion carried. All in favor: <span class="redacted">Colleen</span>. All opposed: None present."</div>
+    </div>
+
+    <div class="evidence-item reveal">
+      <div class="evidence-stamp">EXHIBIT A</div>
+      <div class="evidence-title">Violation Notice — The Parkers</div>
+      <div class="evidence-text">Fine: $350. Reason: "Unapproved holiday decoration (inflatable snowman) exceeds 6-foot height restriction by an estimated 3 inches." Measuring tool used: <span class="redacted">visual estimate from vehicle</span>.</div>
+    </div>
+
+    <div class="evidence-item reveal">
+      <div class="evidence-stamp">SUSPICIOUS</div>
+      <div class="evidence-title">Vendor Invoice — "GreenScape Solutions"</div>
+      <div class="evidence-text">$4,300 for "consultation services." GreenScape Solutions was registered 3 days before the invoice date. Registered agent: <span class="redacted">████████</span>. Address matches a residential property on Colleen's street.</div>
+    </div>
+
+    <div class="evidence-item reveal">
+      <div class="evidence-stamp">INTERCEPTED</div>
+      <div class="evidence-title">Email to Board Members — Aug 3</div>
+      <div class="evidence-text">"Please be advised that the emergency meeting scheduled for 6:00 AM will proceed as planned. Coffee will NOT be provided. This is intentional."</div>
+    </div>
+
+    <div class="evidence-item reveal">
+      <div class="evidence-stamp">EXHIBIT D</div>
+      <div class="evidence-title">Amended CC&Rs — Section 14.7(b)</div>
+      <div class="evidence-text">"No recreational bouncing apparatus shall be permitted on any lot." Handwriting analysis confirms the amendment was written in <span class="redacted">the same pen</span> used to sign Colleen's most recent pool reservation.</div>
+    </div>
+
+    <div class="evidence-item reveal">
+      <div class="evidence-stamp">TESTIMONY</div>
+      <div class="evidence-title">Anonymous Tip — Chili Cook-Off</div>
+      <div class="evidence-text">"I watched her taste all nine entries, write notes, then throw the notes away and hand herself the trophy. The trophy was <span class="redacted">already engraved</span>."</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-header reveal">
+    <h2>Voices From the Neighborhood</h2>
+    <div class="divider">★</div>
+  </div>
+
+  <div class="testimonial reveal">
+    <div class="testimonial-text">I painted my front door Sherwin-Williams "Naval" — a tasteful navy blue approved in 14 other HOAs in this zip code. Colleen said it was "confrontational." I was fined $400 and told to repaint it "Accessible Beige" within 72 hours. It was Thanksgiving weekend.</div>
+    <div class="testimonial-author">Dave R. <span>— Lot 42, Shady Pines resident since 2018</span></div>
+  </div>
+
+  <div class="testimonial reveal">
+    <div class="testimonial-text">My son's basketball hoop has been in our driveway for six years with no issues. The week after I asked about the missing block party funds at the open forum, I received a violation notice. Coincidence? I've been fined every month since.</div>
+    <div class="testimonial-author">Maria S. <span>— Lot 107, Shady Pines resident since 2016</span></div>
+  </div>
+
+  <div class="testimonial reveal">
+    <div class="testimonial-text">I've served on four HOA boards across three states. I have never seen a president unilaterally amend CC&Rs, eliminate oversight committees, AND win their own chili cook-off. This isn't governance. This is a regime.</div>
+    <div class="testimonial-author">Tom B. <span>— Lot 23, Former HOA Board Member</span></div>
+  </div>
+
+  <div class="testimonial reveal">
+    <div class="testimonial-text">She told me my wind chimes were a "noise ordinance violation" and I needed to remove them or face daily fines. I don't have wind chimes. I have never had wind chimes. When I pointed this out, she said she'd "make a note of my hostility."</div>
+    <div class="testimonial-author">Janet K. <span>— Lot 88, Shady Pines resident since 2019</span></div>
+  </div>
+
+  <div class="testimonial reveal">
+    <div class="testimonial-text">The community garden was thriving until Colleen decided tomatoes were "visually aggressive." She replaced the entire garden with ornamental rocks. She calls it the "Serenity Zone." Nobody is serene.</div>
+    <div class="testimonial-author">The Nguyen Family <span>— Lot 56, Shady Pines residents since 2017</span></div>
+  </div>
+</section>
+
+<!-- PETITION / EMAIL CAPTURE -->
+<section class="petition" id="petition">
+  <div class="petition-inner">
+    <h2>Sign the Petition</h2>
+    <p class="petition-sub">Add your name. Force a vote. Take back Shady Pines.</p>
+
+    <div class="petition-form" id="petitionForm">
+      <h3>Official Recall Petition</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input type="text" id="firstName" placeholder="Your first name" required>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input type="text" id="lastName" placeholder="Your last name" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" placeholder="your.email@example.com" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="lot">Lot Number</label>
+          <input type="text" id="lot" placeholder="e.g., Lot 42">
+        </div>
+        <div class="form-group">
+          <label for="years">Years in Shady Pines</label>
+          <select id="years">
+            <option value="">Select...</option>
+            <option>Less than 1 year</option>
+            <option>1–3 years</option>
+            <option>3–5 years</option>
+            <option>5–10 years</option>
+            <option>10+ years (I've seen things)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="story">Your Worst Colleen Story <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional but therapeutic)</span></label>
+          <textarea id="story" placeholder="Tell us what happened. We believe you."></textarea>
+        </div>
+      </div>
+
+      <button class="submit-btn" type="button" onclick="submitPetition()">
+        ★ Sign the Petition ★
+      </button>
+
+      <div class="form-disclaimer">
+        Your information is protected and will only be used for recall proceedings and important neighborhood updates. We are not Colleen. We would never misuse your data.
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="petition-success" id="petitionSuccess">
+      <div class="check">✊</div>
+      <h3>Your Voice Has Been Counted</h3>
+      <p>Thank you for standing with your neighbors. Colleen doesn't know it yet, but the tide is turning. We'll be in touch with next steps — keep your eyes on your inbox and your mailbox color compliant.</p>
+      <div class="share-prompt">Spread the Word — Every Signature Matters</div>
+      <div class="share-buttons">
+        <button class="share-btn" onclick="shareTwitter()">Share on X</button>
+        <button class="share-btn" onclick="shareFacebook()">Share on Facebook</button>
+        <button class="share-btn" onclick="copyLink()">Copy Link</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Shady Pines Homeowners For Accountability — A resident-led initiative</p>
+  <p>impeachcolleen.com — Because someone had to say it.</p>
+  <p class="footer-legal">This website represents the views of concerned Shady Pines residents and is not affiliated with the Shady Pines HOA Board of Directors. Yet.<br>For Colleen's "official" propaganda, see <a href="https://shadypineshoa.org" style="color:rgba(255,255,255,0.5);text-decoration:underline;">shadypineshoa.org</a>. Read it and decide for yourself.</p>
+  <p class="footer-legal" style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.7rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+    &copy; 2026 Full Uproar Games, Inc. All rights reserved. This is a work of satirical fiction created for entertainment purposes. "Shady Pines HOA," "Colleen," and all characters, events, and controversies depicted on this site are entirely fictional and are part of <strong style="color:rgba(255,255,255,0.5);">HOA The Game</strong>, an upcoming board game by Full Uproar Games. Any resemblance to actual persons, homeowners associations, or neighborhood drama is purely coincidental. No actual petitions, fines, or chili cook-offs were involved in the making of this website. By submitting your email, you consent to receive marketing communications from Full Uproar Games, Inc. You may unsubscribe at any time.
+  </p>
+</footer>
+
+<!-- FLOATING CTA -->
+<div class="floating-signs">
+  <a href="#petition" class="scroll-cta">✍️ Sign Now</a>
+</div>
+
+<script>
+// ====== SMOOTH SCROLL ======
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
+});
+
+// ====== SCROLL REVEAL ======
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+revealElements.forEach(el => revealObserver.observe(el));
+
+// ====== SIGNATURE COUNTER ANIMATION ======
+const countEl = document.getElementById('signatureCount');
+const targetCount = 1247;
+let currentCount = 0;
+
+function animateCount() {
+  const increment = Math.ceil(targetCount / 60);
+  if (currentCount < targetCount) {
+    currentCount = Math.min(currentCount + increment, targetCount);
+    countEl.textContent = currentCount.toLocaleString();
+    requestAnimationFrame(animateCount);
+  }
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    animateCount();
+    counterObserver.disconnect();
+  }
+}, { threshold: 0.5 });
+
+counterObserver.observe(countEl);
+
+// ====== PETITION SUBMIT ======
+async function submitPetition() {
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('email').value.trim();
+
+  if (!firstName || !lastName || !email) {
+    alert('Please fill in your name and email. Every signature counts!');
+    return;
+  }
+
+  if (!email.includes('@') || !email.includes('.')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // Send to newsletter API
+  try {
+    await fetch('https://fulluproar.com/api/newsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        name: firstName + ' ' + lastName,
+        source: 'impeachcolleen-petition'
+      })
+    });
+  } catch (e) {
+    // Don't block the UI on API failure
+    console.error('API error:', e);
+  }
+  
+  // Show success state
+  document.getElementById('petitionForm').style.display = 'none';
+  document.getElementById('petitionSuccess').classList.add('active');
+
+  // Increment counter
+  const count = parseInt(countEl.textContent.replace(/,/g, '')) + 1;
+  countEl.textContent = count.toLocaleString();
+}
+
+// ====== SHARE FUNCTIONS ======
+function shareTwitter() {
+  const text = encodeURIComponent("I just signed the petition to impeach our HOA president. Enough is enough. #ImpeachColleen");
+  const url = encodeURIComponent("https://impeachcolleen.com");
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+}
+
+function shareFacebook() {
+  const url = encodeURIComponent("https://impeachcolleen.com");
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+function copyLink() {
+  navigator.clipboard.writeText('https://impeachcolleen.com').then(() => {
+    event.target.textContent = 'Copied!';
+    setTimeout(() => { event.target.textContent = 'Copy Link'; }, 2000);
+  });
+}
+
+// ====== HIDE FLOATING CTA WHEN PETITION IS VISIBLE ======
+const petitionSection = document.getElementById('petition');
+const floatingCta = document.querySelector('.floating-signs');
+
+const petitionObserver = new IntersectionObserver((entries) => {
+  floatingCta.style.opacity = entries[0].isIntersecting ? '0' : '1';
+  floatingCta.style.pointerEvents = entries[0].isIntersecting ? 'none' : 'auto';
+}, { threshold: 0.3 });
+
+petitionObserver.observe(petitionSection);
+</script>
+
+</body>
+</html>
