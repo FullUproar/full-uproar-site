@@ -1113,17 +1113,266 @@ body {
 }
 
 /* ====== RESPONSIVE ====== */
+/* ====== RESPONSIVE — TABLET ====== */
+@media (max-width: 768px) {
+  .president-message { padding: 40px 20px 36px; }
+  .events { padding: 40px 20px; }
+  .standards { padding: 40px 20px; }
+  .faq { padding: 40px 20px; }
+  .colors-section { padding: 40px 20px; }
+  .violation-section { padding: 40px 20px; }
+  .announcements { padding: 40px 20px; }
+  .minutes { padding: 40px 20px; }
+  .testimonials { padding: 40px 20px; }
+  .violation-form { padding: 28px 24px; }
+  .minute-entry { padding: 20px; }
+  .testimonial-card { padding: 22px 24px; }
+}
+
+/* ====== RESPONSIVE — MOBILE ====== */
 @media (max-width: 600px) {
-  .header-top { flex-direction: column; text-align: center; }
+  /* Banner */
+  .official-banner {
+    font-size: 0.65rem;
+    padding: 10px 12px;
+    letter-spacing: 1px;
+  }
+
+  /* Header */
+  .header-top {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px 14px;
+    gap: 12px;
+  }
+
   .header-text { text-align: center; }
-  .header-nav { flex-wrap: wrap; }
-  .header-nav a { padding: 10px 14px; font-size: 0.7rem; }
-  .standard-item { grid-template-columns: 1fr; }
-  .standard-number { text-align: left; }
-  .v-form-row { grid-template-columns: 1fr; }
-  .color-grid { grid-template-columns: repeat(3, 1fr); }
-  .event-card { grid-template-columns: 60px 1fr; gap: 12px; }
-  .event-date-box .event-day { font-size: 1.3rem; }
+
+  .header-crest {
+    width: 60px;
+    height: 60px;
+  }
+
+  .header-crest::after { font-size: 1.5rem; }
+
+  .header-text .header-sub {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+  }
+
+  .header-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .header-nav a {
+    padding: 10px 12px;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+  }
+
+  /* President's Message */
+  .president-message { padding: 30px 14px 28px; }
+  .message-header { margin-bottom: 24px; padding-bottom: 20px; }
+  .message-header .official-seal { font-size: 0.6rem; letter-spacing: 2px; }
+
+  .message-body { font-size: 1.05rem; line-height: 1.75; }
+  .message-body p { margin-bottom: 16px; text-indent: 1.5em; }
+  .message-body p:first-child::first-letter {
+    font-size: 2.8rem;
+    margin-right: 6px;
+  }
+
+  .message-signature { margin-top: 28px; padding-top: 20px; }
+  .message-signature .sig-name { font-size: 1.3rem; }
+  .message-signature .sig-title { font-size: 0.65rem; letter-spacing: 1.5px; }
+
+  /* Section dividers */
+  .section-divider { padding: 0 20px; }
+
+  /* Section headers — shared */
+  .events-header,
+  .standards-header,
+  .faq-header,
+  .colors-header,
+  .minutes-header,
+  .testimonials-header,
+  .announcements-header { margin-bottom: 24px; }
+
+  .events-header h2,
+  .standards-header h2,
+  .faq-header h2,
+  .colors-header h2,
+  .minutes-header h2,
+  .testimonials-header h2,
+  .announcements-header h2 { font-size: 1.4rem; }
+
+  /* Events */
+  .events { padding: 30px 14px; }
+  .event-card {
+    grid-template-columns: 56px 1fr;
+    gap: 12px;
+    padding: 16px 0;
+  }
+  .event-date-box { padding: 8px 6px; }
+  .event-date-box .event-month { font-size: 0.55rem; }
+  .event-date-box .event-day { font-size: 1.2rem; }
+  .event-title { font-size: 0.85rem; }
+  .event-time { font-size: 0.65rem; }
+  .event-desc { font-size: 0.93rem; line-height: 1.55; }
+
+  /* Standards */
+  .standards { padding: 30px 14px; }
+  .standard-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 18px 0;
+  }
+  .standard-number {
+    text-align: left;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .standard-number span { margin-top: 0; }
+  .standard-title { font-size: 0.85rem; }
+  .standard-text { font-size: 0.95rem; }
+
+  /* FAQ */
+  .faq { padding: 30px 14px; }
+  .faq-question { font-size: 0.93rem; gap: 8px; }
+  .faq-answer { font-size: 0.95rem; padding-left: 24px; }
+
+  /* Board Minutes */
+  .minutes { padding: 30px 14px; }
+  .minute-entry {
+    padding: 16px 14px;
+    margin-bottom: 14px;
+  }
+  .minute-entry::before {
+    font-size: 0.5rem;
+    top: 6px;
+    right: 8px;
+  }
+  .minute-date { font-size: 0.65rem; }
+  .minute-attendees { font-size: 0.85rem; margin-bottom: 10px; padding-bottom: 10px; }
+  .minute-item {
+    font-size: 0.95rem;
+    padding-left: 12px;
+    margin-bottom: 10px;
+  }
+  .minute-vote { font-size: 0.65rem; }
+
+  /* Testimonials */
+  .testimonials { padding: 30px 14px; }
+  .testimonial-card {
+    padding: 20px 18px;
+    margin-bottom: 14px;
+  }
+  .testimonial-card::before {
+    font-size: 3rem;
+    top: 2px;
+    left: 10px;
+  }
+  .testimonial-quote { font-size: 1rem; }
+  .testimonial-author { font-size: 0.7rem; }
+
+  /* Colors */
+  .colors-section { padding: 30px 14px; }
+  .color-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .swatch-block { height: 60px; }
+  .swatch-name { font-size: 0.6rem; }
+  .swatch-code { font-size: 0.75rem; }
+  .color-note { font-size: 0.88rem; }
+
+  /* Violation Form */
+  .violation-section { padding: 30px 12px; }
+  .violation-header h2 { font-size: 1.4rem; }
+  .violation-header p { font-size: 0.95rem; }
+
+  .violation-form { padding: 20px 14px; }
+  .violation-form h3 { font-size: 0.75rem; margin-bottom: 18px; padding-bottom: 12px; }
+
+  .v-form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .v-form-group input,
+  .v-form-group select,
+  .v-form-group textarea {
+    font-size: 16px; /* prevents iOS zoom */
+    padding: 10px 12px;
+  }
+
+  .v-form-group label { font-size: 0.65rem; }
+
+  .v-checkbox-row { padding: 12px; margin: 14px 0; }
+  .v-checkbox-row label { font-size: 0.65rem; }
+  .checkbox-option { font-size: 0.93rem; gap: 8px; }
+
+  .violation-submit {
+    padding: 14px;
+    font-size: 0.8rem;
+  }
+
+  .v-form-disclaimer { font-size: 0.8rem; }
+
+  .violation-success h3 { font-size: 1.2rem; }
+  .violation-success p { font-size: 0.95rem; }
+
+  /* Announcements */
+  .announcements { padding: 30px 14px; }
+  .announcement { padding: 18px 0; }
+  .announcement-title { font-size: 1.05rem; }
+  .announcement-text { font-size: 0.95rem; }
+
+  /* Footer */
+  .site-footer { padding: 28px 14px; }
+  .site-footer p { font-size: 0.75rem; }
+  .site-footer .footer-official { font-size: 0.6rem; letter-spacing: 1.5px; }
+  .site-footer .footer-disclaimer { font-size: 0.75rem; max-width: 100%; }
+}
+
+/* ====== RESPONSIVE — SMALL PHONE ====== */
+@media (max-width: 400px) {
+  .official-banner { font-size: 0.58rem; padding: 8px 8px; letter-spacing: 0.5px; }
+
+  .header-top { padding: 14px 12px 10px; gap: 8px; }
+  .header-crest { width: 48px; height: 48px; }
+  .header-crest::after { font-size: 1.2rem; }
+  .header-text .header-sub { font-size: 0.6rem; letter-spacing: 1.5px; }
+  .header-nav a { padding: 8px 10px; font-size: 0.55rem; letter-spacing: 1px; }
+
+  .president-message { padding: 24px 10px 20px; }
+  .message-body { font-size: 0.98rem; }
+  .message-body p:first-child::first-letter { font-size: 2.2rem; }
+
+  .events { padding: 24px 10px; }
+  .event-card { grid-template-columns: 48px 1fr; gap: 10px; }
+  .event-date-box .event-day { font-size: 1rem; }
+  .event-desc { font-size: 0.88rem; }
+
+  .standards { padding: 24px 10px; }
+  .faq { padding: 24px 10px; }
+  .minutes { padding: 24px 10px; }
+  .testimonials { padding: 24px 10px; }
+
+  .minute-entry { padding: 12px 10px; }
+  .testimonial-card { padding: 16px 14px; }
+
+  .colors-section { padding: 24px 10px; }
+  .color-grid { grid-template-columns: repeat(2, 1fr); }
+  .swatch-block { height: 50px; }
+
+  .violation-section { padding: 24px 8px; }
+  .violation-form { padding: 16px 10px; }
+
+  .announcements { padding: 24px 10px; }
+  .site-footer { padding: 20px 10px; }
 }
 </style>
 </head>
