@@ -69,20 +69,22 @@ html, body {
   text-align: center;
   padding: 40px 24px;
   opacity: 0;
+  transform: scale(0.97);
   pointer-events: none;
-  transition: opacity 0.6s ease;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .scene.active {
   opacity: 1;
+  transform: scale(1);
   pointer-events: auto;
 }
 
 /* Elements within scenes animate in via stagger classes */
 .scene .stagger {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .scene.active .stagger.show {
@@ -140,7 +142,11 @@ html, body {
   position: relative;
   max-height: 80vh;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+
+.dict-card::-webkit-scrollbar { display: none; }
 
 .dict-card::before {
   content: '';
@@ -234,8 +240,8 @@ html, body {
   max-width: 600px;
   opacity: 0;
   position: absolute;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  transform: translateY(10px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(12px);
 }
 
 .feeling-quote.visible {
@@ -445,7 +451,7 @@ html, body {
   height: 100%;
   background: linear-gradient(90deg, var(--purple), var(--yellow));
   width: 0%;
-  transition: width 0.3s ease;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ====== PROGRESS DOTS ====== */
@@ -464,7 +470,7 @@ html, body {
   height: 6px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
-  transition: background 0.3s, transform 0.3s;
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
@@ -661,36 +667,37 @@ html, body {
     if (index < 0 || index >= scenes.length) return;
     transitioning = true;
 
-    // Deactivate all
-    scenes.forEach((s, i) => {
-      const el = document.getElementById(s.id);
-      el.classList.remove('active');
-      el.querySelectorAll('.stagger').forEach(st => st.classList.remove('show'));
-    });
+    var prevIndex = current;
+    current = index;
 
     // Clear timers
     clearTimeout(timer);
     clearTimeout(feelTimer);
 
-    current = index;
+    // Fade out previous scene (simultaneous crossfade — no gap)
+    if (prevIndex !== index) {
+      var prevEl = document.getElementById(scenes[prevIndex].id);
+      prevEl.querySelectorAll('.stagger').forEach(function(st) { st.classList.remove('show'); });
+      prevEl.classList.remove('active');
+    }
 
     // Update dots
-    dotsContainer.querySelectorAll('.dot').forEach((d, i) => {
+    dotsContainer.querySelectorAll('.dot').forEach(function(d, i) {
       d.className = 'dot' + (i === current ? ' active' : (i < current ? ' done' : ''));
     });
 
     // Update progress
     progressFill.style.width = ((current / (scenes.length - 1)) * 100) + '%';
 
-    // Activate new scene after brief pause for crossfade
-    setTimeout(function() {
-      const scene = scenes[current];
-      const el = document.getElementById(scene.id);
-      el.classList.add('active');
+    // Activate new scene simultaneously (true crossfade)
+    var scene = scenes[current];
+    var el = document.getElementById(scene.id);
+    el.classList.add('active');
 
-      // Stagger children
+    // Stagger children with a slight delay so fade-in starts first
+    setTimeout(function() {
       if (scene.staggerDelay > 0) {
-        const staggers = el.querySelectorAll('.stagger');
+        var staggers = el.querySelectorAll('.stagger');
         staggers.forEach(function(st, i) {
           setTimeout(function() { st.classList.add('show'); }, i * scene.staggerDelay);
         });
@@ -698,7 +705,7 @@ html, body {
 
       // Handle feelings scene — cycle quotes
       if (scene.id === 'scene-feel') {
-        const label = el.querySelector('.feeling-label');
+        var label = el.querySelector('.feeling-label');
         if (label) { label.classList.add('show'); }
         feelIndex = 0;
         showFeelingQuote();
@@ -715,9 +722,10 @@ html, body {
       } else {
         tapHint.classList.remove('visible');
       }
+    }, 150);
 
-      transitioning = false;
-    }, 100);
+    // Allow next interaction after crossfade mostly completes
+    setTimeout(function() { transitioning = false; }, 800);
   }
 
   function goTo(index) {
