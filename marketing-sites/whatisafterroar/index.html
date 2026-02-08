@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afterroar — The Feeling After a Night Well Played</title>
+<meta name="description" content="Afterroar (n.) — The emotional afterglow of a night well played. The laughter, chaos, connection, and shared experience that makes you want to do it again.">
+<meta property="og:title" content="What is Afterroar?">
+<meta property="og:description" content="The emotional afterglow of a night well played. We coined a word for it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://whatisafterroar.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF8200;
+  --orange-glow: rgba(255, 130, 0, 0.15);
+  --orange-dim: rgba(255, 130, 0, 0.08);
+  --yellow: #FBDB65;
+  --purple: #7D55C7;
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-light: #1a1a1a;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --white: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(255, 130, 0, 0.3);
+  color: var(--white);
+}
+
+/* ====== AMBIENT BACKGROUND ====== */
+.ambient-glow {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 130, 0, 0.04), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(125, 85, 199, 0.03), transparent);
+}
+
+/* ====== HERO SECTION ====== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px;
+  z-index: 1;
+}
+
+.hero-wordmark {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 5rem;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+  animation: fadeUp 1s ease-out;
+}
+
+.hero-wordmark span {
+  color: var(--orange);
+}
+
+.hero-phonetic {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+  letter-spacing: 0.05em;
+  animation: fadeUp 1s ease-out 0.15s both;
+}
+
+.hero-tagline {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text);
+  max-width: 600px;
+  margin-bottom: 3.5rem;
+  line-height: 1.5;
+  animation: fadeUp 1s ease-out 0.3s both;
+}
+
+.scroll-cue {
+  animation: fadeUp 1s ease-out 0.6s both, float 3s ease-in-out infinite 1.6s;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.scroll-cue:hover { color: var(--orange); }
+
+.scroll-cue svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+/* ====== DICTIONARY DEFINITION ====== */
+.definition-section {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 100px 24px 120px;
+}
+
+.dictionary-card {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 3.5rem;
+  position: relative;
+}
+
+.dictionary-card::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 40px; right: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--orange), transparent);
+}
+
+.dict-word {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 2.8rem;
+  color: var(--white);
+  margin-bottom: 0.25rem;
+}
+
+.dict-word span { color: var(--orange); }
+
+.dict-pronunciation {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.dict-pos {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dict-definition {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+.dict-definition strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.dict-number {
+  color: var(--orange);
+  font-weight: 700;
+  margin-right: 0.5rem;
+}
+
+.dict-example {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  padding-left: 1.5rem;
+  border-left: 2px solid rgba(255, 130, 0, 0.3);
+  margin: 1rem 0 1.75rem;
+  line-height: 1.6;
+}
+
+.dict-origin {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dict-origin strong {
+  color: var(--text-muted);
+}
+
+.tm {
+  font-size: 0.6em;
+  vertical-align: super;
+  color: var(--text-dim);
+}
+
+/* ====== FEELING SECTION ====== */
+.feeling-section {
+  position: relative;
+  z-index: 1;
+  padding: 80px 24px 100px;
+  text-align: center;
+}
+
+.feeling-section .section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 2rem;
+}
+
+.feeling-quotes {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.feeling-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.5;
+  opacity: 0.85;
+  position: relative;
+  padding: 0 2rem;
+}
+
+.feeling-quote::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: rgba(255, 130, 0, 0.3);
+  margin: 0 auto 1.5rem;
+}
+
+.feeling-context {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  display: block;
+  margin-top: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+/* ====== THE PROBLEM / FRICTION SECTION ====== */
+.friction-section {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 24px 100px;
+}
+
+.friction-section .section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.friction-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.friction-section .section-sub {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 3.5rem;
+  line-height: 1.6;
+}
+
+.friction-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.friction-item {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.friction-item:hover {
+  border-color: rgba(125, 85, 199, 0.2);
+  transform: translateY(-2px);
+}
+
+.friction-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.friction-item h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.friction-item p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ====== AFTERROAR+ TEASE ====== */
+.plus-section {
+  position: relative;
+  z-index: 1;
+  padding: 100px 24px;
+  text-align: center;
+}
+
+.plus-card {
+  max-width: 700px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, rgba(255, 130, 0, 0.06), rgba(125, 85, 199, 0.06));
+  border: 1px solid rgba(255, 130, 0, 0.15);
+  border-radius: 20px;
+  padding: 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.plus-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange), var(--purple));
+}
+
+.plus-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  background: rgba(255, 130, 0, 0.1);
+  border: 1px solid rgba(255, 130, 0, 0.2);
+  border-radius: 100px;
+  padding: 0.4rem 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.plus-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.plus-card h2 span { color: var(--orange); }
+
+.plus-card .plus-sub {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+}
+
+.plus-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  text-align: left;
+  margin-bottom: 2.5rem;
+}
+
+.plus-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.plus-feature-icon {
+  color: var(--orange);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.plus-coming {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ====== EMAIL CAPTURE ====== */
+.capture-section {
+  position: relative;
+  z-index: 1;
+  padding: 80px 24px 120px;
+  text-align: center;
+}
+
+.capture-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+}
+
+.capture-section .capture-sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.capture-form {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 480px;
+  margin: 0 auto 1rem;
+  justify-content: center;
+}
+
+.capture-form input[type="email"] {
+  flex: 1;
+  padding: 0.9rem 1.25rem;
+  background: var(--surface-light);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--white);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.capture-form input[type="email"]:focus {
+  border-color: var(--orange);
+}
+
+.capture-form input[type="email"]::placeholder {
+  color: var(--text-dim);
+}
+
+.capture-btn {
+  padding: 0.9rem 2rem;
+  background: var(--orange);
+  border: none;
+  border-radius: 10px;
+  color: var(--bg);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.capture-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(255, 130, 0, 0.3);
+}
+
+.capture-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
+
+.capture-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.capture-note {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.capture-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.capture-success svg {
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.capture-success span {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.capture-error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* ====== FOOTER ====== */
+.footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 3rem 24px;
+  text-align: center;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.footer-brand-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--orange);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.85rem;
+  color: var(--bg);
+}
+
+.footer-brand-text {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.footer-brand-text a {
+  color: var(--orange);
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.footer-brand-text a:hover { opacity: 0.8; }
+
+.footer-legal {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.footer-legal a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.footer-legal a:hover {
+  color: var(--orange);
+}
+
+/* ====== ANIMATIONS ====== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Intersection Observer reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ====== RESPONSIVE — TABLET ====== */
+@media (max-width: 768px) {
+  .hero-wordmark { font-size: 3.5rem; }
+  .hero-tagline { font-size: 1.25rem; }
+  .dictionary-card { padding: 2.5rem; }
+  .dict-word { font-size: 2.2rem; }
+  .feeling-quote { font-size: 1.4rem; padding: 0 1rem; }
+  .friction-grid { gap: 1rem; }
+  .friction-item { padding: 1.5rem; }
+  .plus-card { padding: 2.5rem; }
+  .plus-card h2 { font-size: 1.8rem; }
+}
+
+/* ====== RESPONSIVE — MOBILE ====== */
+@media (max-width: 600px) {
+  .hero { padding: 60px 20px; min-height: 90vh; }
+  .hero-wordmark { font-size: 2.8rem; letter-spacing: -0.01em; }
+  .hero-phonetic { font-size: 1.1rem; margin-bottom: 2rem; }
+  .hero-tagline { font-size: 1.1rem; margin-bottom: 2.5rem; }
+
+  .definition-section { padding: 60px 20px 80px; }
+  .dictionary-card { padding: 2rem 1.5rem; }
+  .dict-word { font-size: 1.8rem; }
+  .dict-pronunciation { font-size: 1rem; }
+  .dict-definition { font-size: 1.1rem; }
+  .dict-example { font-size: 1rem; padding-left: 1rem; }
+
+  .feeling-section { padding: 60px 20px 80px; }
+  .feeling-quote { font-size: 1.2rem; padding: 0; }
+
+  .friction-section { padding: 60px 20px 80px; }
+  .friction-section h2 { font-size: 1.7rem; }
+  .friction-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .friction-item { padding: 1.5rem; }
+
+  .plus-section { padding: 60px 20px 80px; }
+  .plus-card { padding: 2rem 1.5rem; border-radius: 14px; }
+  .plus-card h2 { font-size: 1.6rem; }
+  .plus-features { grid-template-columns: 1fr; gap: 1rem; }
+
+  .capture-section { padding: 60px 20px 80px; }
+  .capture-section h2 { font-size: 1.5rem; }
+  .capture-form { flex-direction: column; }
+  .capture-form input[type="email"] { font-size: 16px; /* prevent iOS zoom */ }
+  .capture-btn { justify-content: center; }
+}
+
+/* ====== RESPONSIVE — SMALL PHONE ====== */
+@media (max-width: 400px) {
+  .hero-wordmark { font-size: 2.2rem; }
+  .hero-tagline { font-size: 1rem; }
+  .dictionary-card { padding: 1.5rem 1.25rem; }
+  .dict-word { font-size: 1.5rem; }
+  .feeling-quote { font-size: 1.05rem; }
+  .friction-section h2 { font-size: 1.4rem; }
+  .plus-card { padding: 1.5rem 1.25rem; }
+  .plus-card h2 { font-size: 1.35rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+
+<!-- ====== HERO ====== -->
+<section class="hero">
+  <h1 class="hero-wordmark">After<span>roar</span><sup class="tm">&trade;</sup></h1>
+  <p class="hero-phonetic">/&thinsp;af&middot;ter&middot;roar&thinsp;/</p>
+  <p class="hero-tagline">The feeling that lingers after a night well played.</p>
+  <a href="#definition" class="scroll-cue">
+    <span>Discover the meaning</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14M19 12l-7 7-7-7"/>
+    </svg>
+  </a>
+</section>
+
+<!-- ====== DICTIONARY DEFINITION ====== -->
+<section class="definition-section reveal" id="definition">
+  <div class="dictionary-card">
+    <div class="dict-word">after<span>roar</span></div>
+    <div class="dict-pronunciation">/ˈaf.tər.rɔːr/</div>
+    <div class="dict-pos">noun &mdash; coined 2025 by Full Uproar Games</div>
+
+    <p class="dict-definition">
+      <span class="dict-number">1.</span>
+      The emotional afterglow of a night well played&mdash;the mix of <strong>laughter</strong>, <strong>chaos</strong>, <strong>connection</strong>, and <strong>shared experience</strong> that makes you want to do it again.
+    </p>
+
+    <div class="dict-example">
+      "That game night left us all with serious afterroar&mdash;we were still quoting each other at brunch the next day."
+    </div>
+
+    <p class="dict-definition">
+      <span class="dict-number">2.</span>
+      The buzz on the drive home. The inside jokes that stick. The stories you're still laughing about the next day. What happens when a night isn't just fun in the moment&mdash;it becomes <strong>a memory worth repeating</strong>.
+    </p>
+
+    <div class="dict-example">
+      "It's not about who won. It's about the afterroar."
+    </div>
+
+    <div class="dict-origin">
+      <strong>Origin:</strong> English, 2025. From <em>after</em> (following in time) + <em>roar</em> (uproarious laughter, the raw sound of people having the time of their lives). Coined by Full Uproar Games to describe the feeling their games are designed to create. Trademark pending.
+    </div>
+  </div>
+</section>
+
+<!-- ====== YOU KNOW THE FEELING ====== -->
+<section class="feeling-section reveal">
+  <div class="section-label">You Know the Feeling</div>
+  <div class="feeling-quotes">
+    <div class="feeling-quote">
+      The car ride home where everyone's still laughing about what just happened.
+      <span class="feeling-context">That's afterroar.</span>
+    </div>
+    <div class="feeling-quote">
+      The group chat at 2 AM &mdash; nothing but voice notes, inside jokes, and "when are we doing this again?"
+      <span class="feeling-context">That's afterroar.</span>
+    </div>
+    <div class="feeling-quote">
+      Bringing it up weeks later and the whole table loses it all over again.
+      <span class="feeling-context">That's afterroar.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ====== THE FRICTION THAT KILLS IT ====== -->
+<section class="friction-section reveal">
+  <div class="section-label">But Most Game Nights Never Get There</div>
+  <h2>The friction that kills the afterroar.</h2>
+  <p class="section-sub">
+    Great game nights don't fail because of bad games. They fail because of everything around them.
+  </p>
+  <div class="friction-grid">
+    <div class="friction-item">
+      <div class="friction-icon">&#128197;</div>
+      <h3>The planning nightmare</h3>
+      <p>Thirty texts to pick a date. Two cancellations. One person who "might" show up. The night almost doesn't happen.</p>
+    </div>
+    <div class="friction-item">
+      <div class="friction-icon">&#129300;</div>
+      <h3>The wrong game</h3>
+      <p>Someone picks a 3-hour strategy game for a group that wanted something quick and chaotic. The vibe dies before it starts.</p>
+    </div>
+    <div class="friction-item">
+      <div class="friction-icon">&#128214;</div>
+      <h3>The rules debate</h3>
+      <p>Twenty minutes reading a rulebook. Arguments over edge cases. Half the group is on their phone before the first round.</p>
+    </div>
+    <div class="friction-item">
+      <div class="friction-icon">&#128564;</div>
+      <h3>The fizzle-out</h3>
+      <p>One round ends and nobody knows what to play next. The energy drops. People start checking the time. Another "fine" night.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== AFTERROAR+ TEASE ====== -->
+<section class="plus-section reveal">
+  <div class="plus-card">
+    <div class="plus-badge">Coming Soon</div>
+    <h2>After<span>roar</span>+</h2>
+    <p class="plus-sub">
+      A subscription built to protect the afterroar. We handle the friction so you can focus on the night.
+    </p>
+    <div class="plus-features">
+      <div class="plus-feature">
+        <span class="plus-feature-icon">&#9670;</span>
+        <span>Smart game matching for your group size, vibe, and experience level</span>
+      </div>
+      <div class="plus-feature">
+        <span class="plus-feature-icon">&#9670;</span>
+        <span>Curated game night kits shipped to your door</span>
+      </div>
+      <div class="plus-feature">
+        <span class="plus-feature-icon">&#9670;</span>
+        <span>Quick-start digital guides that replace the rulebook</span>
+      </div>
+      <div class="plus-feature">
+        <span class="plus-feature-icon">&#9670;</span>
+        <span>Exclusive games, expansions, and early access drops</span>
+      </div>
+    </div>
+    <p class="plus-coming">Details dropping soon. Get on the list to hear first.</p>
+  </div>
+</section>
+
+<!-- ====== EMAIL CAPTURE ====== -->
+<section class="capture-section reveal" id="signup">
+  <h2>Get the afterroar. Not the spam.</h2>
+  <p class="capture-sub">Be the first to know when Afterroar+ launches, plus early access to new games and exclusive drops.</p>
+
+  <div id="capture-form-container">
+    <form class="capture-form" id="email-form" onsubmit="handleSubmit(event)">
+      <input
+        type="email"
+        id="email-input"
+        placeholder="your@email.com"
+        required
+        autocomplete="email"
+      />
+      <button type="submit" class="capture-btn" id="submit-btn">
+        Notify Me
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 5l7 7-7 7M5 12h15"/>
+        </svg>
+      </button>
+    </form>
+    <p class="capture-note">No spam. Unsubscribe anytime. We're building, not blasting.</p>
+  </div>
+
+  <div id="capture-success" class="capture-success" style="display: none;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6L9 17l-5-5"/>
+    </svg>
+    <span>You're on the list. The afterroar is coming.</span>
+  </div>
+
+  <p id="capture-error" class="capture-error" style="display: none;"></p>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="footer-brand-icon">FU</div>
+    <div class="footer-brand-text">
+      A <a href="https://fulluproar.com" target="_blank" rel="noopener">Full Uproar</a> creation
+    </div>
+  </div>
+  <p class="footer-legal">
+    Afterroar&trade; is a trademark of Full Uproar Games.<br>
+    &copy; 2025 Full Uproar Games. All rights reserved.
+    <br><br>
+    <a href="https://fulluproar.com" target="_blank" rel="noopener">fulluproar.com</a>
+  </p>
+</footer>
+
+<script>
+// ====== INTERSECTION OBSERVER FOR REVEALS ======
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ====== EMAIL FORM ======
+async function handleSubmit(e) {
+  e.preventDefault();
+
+  const emailInput = document.getElementById('email-input');
+  const submitBtn = document.getElementById('submit-btn');
+  const formContainer = document.getElementById('capture-form-container');
+  const successEl = document.getElementById('capture-success');
+  const errorEl = document.getElementById('capture-error');
+
+  const email = emailInput.value.trim();
+  if (!email) return;
+
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    errorEl.textContent = 'Please enter a valid email address.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = 'Sending\u2026';
+  errorEl.style.display = 'none';
+
+  try {
+    const response = await fetch('https://fulluproar.com/api/newsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        source: 'afterroar-waitlist'
+      })
+    });
+
+    if (response.ok) {
+      formContainer.style.display = 'none';
+      successEl.style.display = 'flex';
+      try { localStorage.setItem('afterroar-subscribed', 'true'); } catch(e) {}
+    } else {
+      const data = await response.json();
+      errorEl.textContent = data.error || 'Something went wrong. Please try again.';
+      errorEl.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Notify Me <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5l7 7-7 7M5 12h15"/></svg>';
+    }
+  } catch(err) {
+    errorEl.textContent = 'Failed to connect. Please try again.';
+    errorEl.style.display = 'block';
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Notify Me <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5l7 7-7 7M5 12h15"/></svg>';
+  }
+}
+
+// Check if already subscribed
+try {
+  if (localStorage.getItem('afterroar-subscribed') === 'true') {
+    document.getElementById('capture-form-container').style.display = 'none';
+    document.getElementById('capture-success').style.display = 'flex';
+  }
+} catch(e) {}
+</script>
+
+</body>
+</html>

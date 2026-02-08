@@ -10,6 +10,8 @@ const ALLOWED_ORIGINS = [
   'https://impeachcolleen.com',
   'https://www.shadypineshoa.org',
   'https://shadypineshoa.org',
+  'https://www.whatisafterroar.com',
+  'https://whatisafterroar.com',
 ];
 
 function corsHeaders(request: NextRequest) {
