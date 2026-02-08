@@ -478,6 +478,67 @@ html, body {
   background: rgba(125, 85, 199, 0.4);
 }
 
+/* ====== NAV ARROWS ====== */
+.nav-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 99;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(22, 27, 34, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s, border-color 0.3s;
+  pointer-events: none;
+}
+
+.nav-arrow.visible {
+  opacity: 0.35;
+  pointer-events: auto;
+}
+
+.nav-arrow.visible:hover {
+  opacity: 1;
+  background: rgba(22, 27, 34, 0.85);
+  border-color: rgba(125, 85, 199, 0.4);
+  color: var(--white);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.nav-arrow.visible:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.nav-arrow svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-arrow-prev { left: 16px; }
+.nav-arrow-next { right: 16px; }
+
+/* Hide arrows on touch/mobile — swipe is primary there */
+@media (max-width: 768px) {
+  .nav-arrow { display: none; }
+}
+@media (hover: none) {
+  .nav-arrow { display: none; }
+}
+
 /* ====== TAP HINT ====== */
 .tap-hint {
   position: fixed;
@@ -624,6 +685,14 @@ html, body {
   </div>
 </div>
 
+<!-- ====== NAV ARROWS ====== -->
+<div class="nav-arrow nav-arrow-prev" id="arrowPrev" aria-label="Previous">
+  <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+</div>
+<div class="nav-arrow nav-arrow-next" id="arrowNext" aria-label="Next">
+  <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+</div>
+
 <!-- ====== PROGRESS ====== -->
 <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 <div class="progress-dots" id="dots"></div>
@@ -648,6 +717,8 @@ html, body {
   const progressFill = document.getElementById('progressFill');
   const dotsContainer = document.getElementById('dots');
   const tapHint = document.getElementById('tapHint');
+  const arrowPrev = document.getElementById('arrowPrev');
+  const arrowNext = document.getElementById('arrowNext');
 
   // Build dots
   scenes.forEach((_, i) => {
@@ -656,6 +727,24 @@ html, body {
     dot.addEventListener('click', function(e) { e.stopPropagation(); goTo(i); });
     dotsContainer.appendChild(dot);
   });
+
+  // Arrow click handlers
+  arrowPrev.addEventListener('click', function(e) { e.stopPropagation(); goTo(current - 1); });
+  arrowNext.addEventListener('click', function(e) { e.stopPropagation(); advance(); });
+
+  function updateArrows() {
+    // Show/hide based on position
+    if (current > 0) {
+      arrowPrev.classList.add('visible');
+    } else {
+      arrowPrev.classList.remove('visible');
+    }
+    if (current < scenes.length - 1) {
+      arrowNext.classList.add('visible');
+    } else {
+      arrowNext.classList.remove('visible');
+    }
+  }
 
   // ====== SCENE TRANSITIONS ======
   function showScene(index) {
@@ -683,6 +772,9 @@ html, body {
 
     // Update progress
     progressFill.style.width = ((current / (scenes.length - 1)) * 100) + '%';
+
+    // Update arrows
+    updateArrows();
 
     // Activate new scene simultaneously (true crossfade)
     var scene = scenes[current];
@@ -760,7 +852,7 @@ html, body {
   // ====== INPUT HANDLERS ======
   // Click/tap to advance (but not on interactive elements)
   document.addEventListener('click', function(e) {
-    if (e.target.closest('a, button, input, form, .dot')) return;
+    if (e.target.closest('a, button, input, form, .dot, .nav-arrow')) return;
     advance();
   });
 
