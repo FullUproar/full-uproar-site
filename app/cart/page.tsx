@@ -3,15 +3,18 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Truck, Package } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Truck, Package, User } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
+import { useUser } from '@clerk/nextjs';
 import Navigation from '../components/Navigation';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
 import TrustBadges from '@/app/components/TrustBadges';
+import EmailCapture from '../components/EmailCapture';
 
 export default function CartPage() {
   const router = useRouter();
+  const { isSignedIn } = useUser();
   const { items, updateQuantity, removeFromCart, getTotalPrice, getTotalItems, clearCart } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -432,7 +435,45 @@ export default function CartPage() {
                   Continue Shopping
                 </button>
               </Link>
-              
+
+              {/* Guest user email capture + sign-in nudge */}
+              {!isSignedIn && (
+                <div style={{
+                  marginTop: '1.5rem',
+                  padding: '1rem',
+                  background: 'rgba(255, 130, 0, 0.05)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255, 130, 0, 0.15)',
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginBottom: '0.75rem',
+                  }}>
+                    <User size={16} style={{ color: '#FF8200' }} />
+                    <Link
+                      href="/sign-in?redirect_url=/cart"
+                      style={{
+                        color: '#FF8200',
+                        fontWeight: 700,
+                        fontSize: '0.875rem',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      Sign in for faster checkout
+                    </Link>
+                  </div>
+                  <EmailCapture
+                    variant="compact"
+                    source="cart"
+                    heading="Stay updated on deals"
+                    subtext=""
+                    ctaText="Join"
+                  />
+                </div>
+              )}
+
               <p style={{
                 fontSize: '0.875rem',
                 color: '#9ca3af',
@@ -441,7 +482,7 @@ export default function CartPage() {
               }}>
                 Free shipping on orders over $50
               </p>
-              
+
               {/* Trust Badge */}
               <TrustBadges variant="compact" />
             </div>

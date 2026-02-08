@@ -140,9 +140,18 @@ model NewsPost {
 }
 
 model EmailSubscriber {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  name             String?
+  source           String?  // 'homepage', 'footer', 'shop', 'product', 'cart', 'checkout', 'slide-in', 'order-confirmation'
+  marketingConsent Boolean  @default(true)
+  isActive         Boolean  @default(true)
+  ipAddress        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  @@index([source])
+  @@index([isActive])
 }
 
 model Artwork {

@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import EmailSlideIn from '@/app/components/EmailSlideIn';
 
 export const metadata: Metadata = {
   title: 'Shop Merch | Full Uproar',
@@ -29,5 +30,10 @@ export default function MerchShopLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      {children}
+      <EmailSlideIn />
+    </>
+  );
 }

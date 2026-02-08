@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/lib/cartStore';
-import { ArrowLeft, CreditCard, Truck, Package, AlertCircle, TestTube, Rocket, Calendar } from 'lucide-react';
+import { ArrowLeft, CreditCard, Truck, Package, AlertCircle, TestTube, Rocket, Calendar, X, User } from 'lucide-react';
+import Link from 'next/link';
+import { useUser } from '@clerk/nextjs';
 import Navigation from '@/app/components/Navigation';
 import { simulatePayment, TEST_CARDS, formatTestCardDisplay } from '@/lib/payment-test-mode';
 import dynamic from 'next/dynamic';
@@ -58,8 +60,11 @@ type OrderForm = {
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { isSignedIn } = useUser();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [signInDismissed, setSignInDismissed] = useState(false);
+  const [marketingOptIn, setMarketingOptIn] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
@@ -120,6 +125,11 @@ export default function CheckoutPage() {
   // Load persisted form data and redirect if cart is empty
   useEffect(() => {
     setMounted(true);
+
+    // Restore sign-in dismiss state
+    if (sessionStorage.getItem('checkout-signin-dismissed') === 'true') {
+      setSignInDismissed(true);
+    }
 
     // Restore form data from sessionStorage if available
     const savedForm = sessionStorage.getItem('checkout_form');
@@ -409,6 +419,22 @@ export default function CheckoutPage() {
         return;
       }
 
+      // Subscribe to newsletter if opted in
+      if (marketingOptIn && form.customerEmail) {
+        fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: form.customerEmail,
+            name: form.customerName,
+            source: 'checkout'
+          })
+        }).catch(() => {}); // Fire and forget - don't block checkout
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('newsletter-subscribed', 'true');
+        }
+      }
+
       // Mark that we're navigating away BEFORE clearing cart to prevent race condition
       // The useEffect that checks for empty cart would otherwise redirect to home
       setIsNavigatingAway(true);
@@ -548,6 +574,52 @@ export default function CheckoutPage() {
           </div>
         )}
 
+        {/* Sign-in nudge for guest users */}
+        {!isSignedIn && !signInDismissed && (
+          <div style={{
+            maxWidth: '48rem',
+            margin: '0 auto 1.5rem',
+            padding: '0.875rem 1.25rem',
+            background: 'rgba(255, 130, 0, 0.08)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 130, 0, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <User size={18} style={{ color: '#FF8200', flexShrink: 0 }} />
+              <span style={{ color: '#e2e8f0', fontSize: '0.875rem' }}>
+                Already have an account?{' '}
+                <Link
+                  href="/sign-in?redirect_url=/checkout"
+                  style={{ color: '#FF8200', fontWeight: 700, textDecoration: 'none' }}
+                >
+                  Sign in
+                </Link>
+                {' '}for faster checkout with saved addresses and payment methods.
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                setSignInDismissed(true);
+                sessionStorage.setItem('checkout-signin-dismissed', 'true');
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#6b7280',
+                cursor: 'pointer',
+                padding: '0.25rem',
+                flexShrink: 0,
+              }}
+            >
+              <X size={16} />
+            </button>
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', marginBottom: '2rem' }}>
           <div style={{ maxWidth: '48rem', margin: '0 auto', width: '100%' }}>
             {/* Progress indicator */}
@@ -635,6 +707,28 @@ export default function CheckoutPage() {
                     {errors.customerEmail && (
                       <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>{errors.customerEmail}</p>
                     )}
+                    <label style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      marginTop: '0.75rem',
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                      color: '#9ca3af',
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={marketingOptIn}
+                        onChange={(e) => setMarketingOptIn(e.target.checked)}
+                        style={{
+                          accentColor: '#FF8200',
+                          width: '1rem',
+                          height: '1rem',
+                          cursor: 'pointer',
+                        }}
+                      />
+                      Keep me updated on new games, deals, and chaos (unsubscribe anytime)
+                    </label>
                   </div>
 
                   <div>

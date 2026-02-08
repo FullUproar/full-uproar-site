@@ -9,6 +9,7 @@ import AddToCartButton from '@/app/components/AddToCartButton';
 import { analytics } from '@/lib/analytics/analytics';
 import { LoadingSection, SkeletonGrid } from '@/app/components/ui';
 import EmptyState from '@/app/components/ui/EmptyState';
+import EmailCapture from '@/app/components/EmailCapture';
 
 interface Game {
   id: number;
@@ -373,6 +374,14 @@ export default function ShopGamesPage() {
             ))}
           </div>
         )}
+
+        {/* Email Capture Banner */}
+        <EmailCapture
+          variant="banner"
+          source="shop-games"
+          heading="Be the first to know"
+          subtext="Get notified when new games launch and snag exclusive deals."
+        />
       </div>
     </div>
   );

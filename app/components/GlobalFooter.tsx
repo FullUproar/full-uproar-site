@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import EmailCapture from './EmailCapture';
 
 const FooterLogo = dynamic(() => import('./FooterLogo'), {
   ssr: false,
@@ -32,7 +33,16 @@ export default function GlobalFooter() {
           Professionally ruining game nights since day one
         </p>
         
-        <div style={{ 
+        <div style={{
+          marginTop: '2rem',
+          marginBottom: '2rem',
+          display: 'flex',
+          justifyContent: 'center',
+        }}>
+          <EmailCapture variant="inline" source="footer" />
+        </div>
+
+        <div style={{
           marginTop: '2rem',
           marginBottom: '2rem',
           display: 'flex',

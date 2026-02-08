@@ -2,11 +2,13 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { CheckCircle, Package, Truck, Mail, ArrowRight, Copy } from 'lucide-react';
+import { CheckCircle, Package, Truck, Mail, ArrowRight, Copy, User, Zap, ShieldCheck, Clock } from 'lucide-react';
 import FuglyLogo from '@/app/components/FuglyLogo';
 import Link from 'next/link';
+import { useUser } from '@clerk/nextjs';
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import { useCartStore } from '@/lib/cartStore';
+import EmailCapture from '@/app/components/EmailCapture';
 
 interface OrderDetails {
   id: string;
@@ -32,6 +34,7 @@ interface OrderDetails {
 function OrderConfirmationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isSignedIn } = useUser();
   const orderId = searchParams.get('orderId');
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -434,6 +437,72 @@ function OrderConfirmationContent() {
                 <Truck style={{ width: '1.25rem', height: '1.25rem' }} />
               </Link>
             </div>
+          </div>
+
+          {/* Account Upsell (guest users only) */}
+          {!isSignedIn && (
+            <div style={{
+              background: '#1f2937',
+              borderRadius: '0.75rem',
+              padding: '2rem',
+              border: '4px solid rgba(255, 130, 0, 0.2)',
+              marginTop: '2rem'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                <User style={{ width: '1.5rem', height: '1.5rem', color: '#FF8200' }} />
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FF8200', margin: 0 }}>
+                  Create Your Full Uproar Account
+                </h2>
+              </div>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                {[
+                  { icon: <Truck style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200' }} />, text: 'Track orders in real-time' },
+                  { icon: <Zap style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200' }} />, text: 'Faster checkout next time' },
+                  { icon: <ShieldCheck style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200' }} />, text: 'Exclusive member deals' },
+                  { icon: <Clock style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200' }} />, text: 'Order history & reorders' },
+                ].map((benefit, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    {benefit.icon}
+                    <span style={{ color: '#e2e8f0', fontSize: '0.875rem' }}>{benefit.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <Link
+                href="/sign-up?redirect_url=/account"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  background: '#FF8200',
+                  color: '#111827',
+                  fontWeight: 900,
+                  padding: '0.875rem 1.5rem',
+                  borderRadius: '0.5rem',
+                  textDecoration: 'none',
+                  fontSize: '0.95rem',
+                }}
+              >
+                Create Account <ArrowRight style={{ width: '1rem', height: '1rem' }} />
+              </Link>
+            </div>
+          )}
+
+          {/* Newsletter CTA */}
+          <div style={{ marginTop: '2rem' }}>
+            <EmailCapture
+              variant="card"
+              source="order-confirmation"
+              heading="Get first dibs on new games"
+              subtext="Exclusive deals, new game launches, and chaos-worthy updates. Straight to your inbox."
+              prefillEmail={order?.customerEmail}
+            />
           </div>
         </div>
       </div>

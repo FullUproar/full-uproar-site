@@ -6,6 +6,7 @@ import Navigation from '@/app/components/Navigation';
 import { Shirt, Tag, Filter, Package } from 'lucide-react';
 import { LoadingSection, SkeletonGrid } from '@/app/components/ui';
 import EmptyState from '@/app/components/ui/EmptyState';
+import EmailCapture from '@/app/components/EmailCapture';
 
 interface MerchItem {
   id: number;
@@ -280,6 +281,14 @@ export default function ShopMerchPage() {
             ))}
           </div>
         )}
+
+        {/* Email Capture Banner */}
+        <EmailCapture
+          variant="banner"
+          source="shop-merch"
+          heading="New merch drops incoming"
+          subtext="Be the first to grab new designs straight from Fugly's workshop."
+        />
       </div>
     </div>
   );

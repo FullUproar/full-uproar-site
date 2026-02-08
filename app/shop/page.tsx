@@ -8,6 +8,7 @@ import { ShoppingCart, Calendar, Users, Play, Package, Sparkles, Dice1, Map, Zap
 import { useCartStore } from '@/lib/cartStore';
 import AddToCartButton from '../components/AddToCartButton';
 import { analytics, useAnalytics } from '@/lib/analytics/analytics';
+import EmailCapture from '../components/EmailCapture';
 
 interface Game {
   id: number;
@@ -1001,6 +1002,14 @@ function ShopContent() {
             )}
           </>
         )}
+
+        {/* Email Capture Banner */}
+        <EmailCapture
+          variant="banner"
+          source="shop"
+          heading="Never miss a drop"
+          subtext="New game alerts, exclusive deals, and first dibs on merch."
+        />
       </div>
     </div>
   );
