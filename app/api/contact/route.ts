@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 import { sendTicketEmails } from '@/lib/email';
+import { rateLimit } from '@/lib/middleware/rate-limit';
 
 // Map contact form subjects to support ticket categories
 const categoryMap: Record<string, string> = {
@@ -41,6 +42,12 @@ async function generateTicketNumber(): Promise<string> {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limit contact form submissions
+  const rateLimitResponse = await rateLimit(request, 'api');
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
     const body = await request.json();
     const { name, email, subject, message, captchaToken } = body;

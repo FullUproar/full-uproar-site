@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { email, name, source } = body;
+    const { email, source } = body;
 
     if (!email || !EMAIL_REGEX.test(email)) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
@@ -54,12 +54,10 @@ export async function POST(request: NextRequest) {
       update: {
         // On duplicate, update source if provided (tracks latest touchpoint)
         ...(source ? { source } : {}),
-        ...(name ? { name } : {}),
         isActive: true,
       },
       create: {
         email: email.toLowerCase().trim(),
-        name: name || null,
         source: source || 'homepage',
         ipAddress,
       }

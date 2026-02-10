@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 import { Prisma } from '@prisma/client';
 import { calculateTaxSync } from '@/lib/tax';
+import { ADMIN_ROLES } from '@/lib/constants';
 
 // Store open status - controlled by env var NEXT_PUBLIC_STORE_OPEN
 const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
           where: { clerkId: clerkUserId },
           select: { role: true }
         });
-        isAdmin = user?.role === 'ADMIN';
+        isAdmin = ADMIN_ROLES.includes(user?.role as any);
       }
 
       if (!isAdmin) {

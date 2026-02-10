@@ -140,6 +140,6 @@ export function formatTestCardDisplay(cardNumber: string): string {
 }
 
 export function isTestMode(): boolean {
-  // Could be controlled by environment variable
-  return process.env.NEXT_PUBLIC_PAYMENT_TEST_MODE !== 'false';
+  // Delegates to the unified payment mode (NEXT_PUBLIC_CHECKOUT_MODE)
+  return (process.env.NEXT_PUBLIC_CHECKOUT_MODE || 'dev') !== 'live';
 }

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { ADMIN_ROLES } from '@/lib/constants';
+import { isSimulatedMode } from '@/lib/payment-mode';
 
 // Store open status - controlled by env var NEXT_PUBLIC_STORE_OPEN
 const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
@@ -19,7 +21,7 @@ export async function POST(request: NextRequest) {
           where: { clerkId: userId },
           select: { role: true }
         });
-        isAdmin = user?.role === 'ADMIN';
+        isAdmin = ADMIN_ROLES.includes(user?.role as any);
       }
 
       if (!isAdmin) {
@@ -61,8 +63,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if we're in test mode or Stripe is not configured
-    if (!stripe || process.env.NEXT_PUBLIC_PAYMENT_TEST_MODE === 'true') {
+    // Check if we're in simulated mode or Stripe is not configured
+    if (!stripe || isSimulatedMode()) {
       // Return a mock payment intent for test mode
       return NextResponse.json({
         clientSecret: `test_secret_${orderId}`,

@@ -75,7 +75,7 @@ export async function POST(
         refundError = stripeError.message;
         refundStatus = 'failed';
       }
-    } else if (process.env.NEXT_PUBLIC_PAYMENT_TEST_MODE === 'true') {
+    } else if ((process.env.NEXT_PUBLIC_CHECKOUT_MODE || 'dev') === 'dev') {
       // Test mode refund
       refundId = `test_refund_${Date.now()}`;
       refundStatus = 'succeeded';

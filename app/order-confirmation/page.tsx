@@ -36,6 +36,7 @@ function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const { isSignedIn } = useUser();
   const orderId = searchParams.get('orderId');
+  const redirectStatus = searchParams.get('redirect_status');
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -47,8 +48,14 @@ function OrderConfirmationContent() {
       return;
     }
 
+    // Handle Stripe redirect (3D Secure, etc.) — if payment failed during redirect, go back to checkout
+    if (redirectStatus && redirectStatus !== 'succeeded') {
+      router.push(`/checkout?error=payment_failed`);
+      return;
+    }
+
     fetchOrder();
-  }, [orderId, router]);
+  }, [orderId, router, redirectStatus]);
 
   const fetchOrder = async () => {
     try {

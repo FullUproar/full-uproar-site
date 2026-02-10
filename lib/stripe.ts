@@ -1,9 +1,8 @@
 import Stripe from 'stripe';
+import { isStripeTestKeys } from '@/lib/payment-mode';
 
-// Stripe mode: 'test' or 'live' (defaults to 'live')
-// Uses NEXT_PUBLIC_ so it's available on both server and client
-export const STRIPE_MODE = process.env.NEXT_PUBLIC_STRIPE_MODE || 'live';
-export const isStripeTestMode = STRIPE_MODE === 'test';
+// Derive Stripe key selection from the single NEXT_PUBLIC_CHECKOUT_MODE env var
+export const isStripeTestMode = isStripeTestKeys();
 
 // Get the appropriate secret key based on mode
 const getSecretKey = () => {

@@ -8,12 +8,15 @@ import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
 import Navigation from '@/app/components/Navigation';
 import { simulatePayment, TEST_CARDS, formatTestCardDisplay } from '@/lib/payment-test-mode';
+import { getPaymentMode, isSimulatedMode, isStripeMode, isLiveMode } from '@/lib/payment-mode';
 import dynamic from 'next/dynamic';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import TrustBadges from '@/app/components/TrustBadges';
 import SMSOptIn from '@/app/components/SMSOptIn';
+
+const PAYMENT_MODE = getPaymentMode();
 
 // Store status configuration - controlled by env var
 const STORE_STATUS = {
@@ -69,6 +72,9 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
   const [isNavigatingAway, setIsNavigatingAway] = useState(false);
+  // Stripe payment flow: orderId is set after order creation, triggers StripeCheckout mount
+  const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
+  const [orderTotalCents, setOrderTotalCents] = useState<number>(0);
   const [taxInfo, setTaxInfo] = useState<{
     taxCents: number;
     isEstimate: boolean;
@@ -136,7 +142,8 @@ export default function CheckoutPage() {
     if (savedForm) {
       try {
         const parsedForm = JSON.parse(savedForm);
-        setForm(parsedForm);
+        // Restore form data but keep default empty card details (never restored from storage)
+        setForm(prev => ({ ...prev, ...parsedForm, cardDetails: prev.cardDetails }));
       } catch (error) {
         console.error('Failed to restore form data:', error);
       }
@@ -164,10 +171,11 @@ export default function CheckoutPage() {
     }
   }, [items, router, isNavigatingAway]);
 
-  // Persist form data to sessionStorage whenever it changes
+  // Persist form data to sessionStorage (never persist card details)
   useEffect(() => {
     if (mounted) {
-      sessionStorage.setItem('checkout_form', JSON.stringify(form));
+      const { cardDetails, ...formWithoutCard } = form;
+      sessionStorage.setItem('checkout_form', JSON.stringify(formWithoutCard));
     }
   }, [form, mounted]);
 
@@ -282,7 +290,8 @@ export default function CheckoutPage() {
     }
 
     if (step === 3) {
-      if (form.paymentMethod === 'card') {
+      // Only validate card fields in simulated mode (Stripe Elements handles its own validation)
+      if (form.paymentMethod === 'card' && isSimulatedMode()) {
         if (!form.cardDetails.number) newErrors['card.number'] = 'Card number is required';
         if (!form.cardDetails.expiry) newErrors['card.expiry'] = 'Expiry date is required';
         if (!form.cardDetails.cvc) newErrors['card.cvc'] = 'CVC is required';
@@ -339,116 +348,132 @@ export default function CheckoutPage() {
     return cleaned;
   };
 
-  const handleSubmit = async () => {
-    if (!validateStep(3)) return;
+  // Create order via API — shared by both simulated and Stripe flows
+  const handleCreateOrder = async (): Promise<{ id: string; totalCents: number } | null> => {
+    const shippingAddress = `${form.shippingAddress.street}${form.shippingAddress.apartment ? ', ' + form.shippingAddress.apartment : ''}, ${form.shippingAddress.city}, ${form.shippingAddress.state} ${form.shippingAddress.zipCode}, ${form.shippingAddress.country}`;
+    const billingAddress = form.billingAddress.sameAsShipping
+      ? shippingAddress
+      : `${form.billingAddress.street}${form.billingAddress.apartment ? ', ' + form.billingAddress.apartment : ''}, ${form.billingAddress.city}, ${form.billingAddress.state} ${form.billingAddress.zipCode}, ${form.billingAddress.country}`;
 
-    setIsProcessing(true);
+    const orderData = {
+      customerEmail: form.customerEmail,
+      customerName: form.customerName,
+      customerPhone: form.phone,
+      shippingAddress,
+      billingAddress,
+      shippingAddressData: {
+        state: form.shippingAddress.state,
+        zipCode: form.shippingAddress.zipCode,
+        city: form.shippingAddress.city,
+        country: form.shippingAddress.country
+      },
+      shippingMethod: selectedShipping ? {
+        carrier: selectedShipping.carrier,
+        carrierCode: selectedShipping.carrierCode,
+        service: selectedShipping.service,
+        serviceCode: selectedShipping.serviceCode,
+        priceCents: selectedShipping.priceCents,
+        estimatedDays: selectedShipping.estimatedDays
+      } : null,
+      items: items.map(item => ({
+        itemType: item.type,
+        ...(item.type === 'game' ? { gameId: item.id } : { merchId: item.id }),
+        ...(item.type === 'merch' && item.size ? { merchSize: item.size } : {}),
+        quantity: item.quantity,
+        priceCents: item.priceCents
+      }))
+    };
 
-    try {
-      // Format addresses
-      const shippingAddress = `${form.shippingAddress.street}${form.shippingAddress.apartment ? ', ' + form.shippingAddress.apartment : ''}, ${form.shippingAddress.city}, ${form.shippingAddress.state} ${form.shippingAddress.zipCode}, ${form.shippingAddress.country}`;
-      const billingAddress = form.billingAddress.sameAsShipping 
-        ? shippingAddress 
-        : `${form.billingAddress.street}${form.billingAddress.apartment ? ', ' + form.billingAddress.apartment : ''}, ${form.billingAddress.city}, ${form.billingAddress.state} ${form.billingAddress.zipCode}, ${form.billingAddress.country}`;
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    });
 
-      // Create order
-      const orderData = {
-        customerEmail: form.customerEmail,
-        customerName: form.customerName,
-        customerPhone: form.phone,
-        shippingAddress,
-        billingAddress,
-        // Include structured address for accurate tax calculation
-        shippingAddressData: {
-          state: form.shippingAddress.state,
-          zipCode: form.shippingAddress.zipCode,
-          city: form.shippingAddress.city,
-          country: form.shippingAddress.country
-        },
-        // Selected shipping method
-        shippingMethod: selectedShipping ? {
-          carrier: selectedShipping.carrier,
-          carrierCode: selectedShipping.carrierCode,
-          service: selectedShipping.service,
-          serviceCode: selectedShipping.serviceCode,
-          priceCents: selectedShipping.priceCents,
-          estimatedDays: selectedShipping.estimatedDays
-        } : null,
-        items: items.map(item => ({
-          itemType: item.type,
-          ...(item.type === 'game' ? { gameId: item.id } : { merchId: item.id }),
-          ...(item.type === 'merch' && item.size ? { merchSize: item.size } : {}),
-          quantity: item.quantity,
-          priceCents: item.priceCents
-        }))
-      };
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Order creation failed:', errorData);
 
-      // Debug logs removed for production
+      if (response.status === 503) {
+        setErrors({
+          submit: `🚀 ${errorData.error || 'Store launching soon!'} Join our mailing list to be notified when we open!`
+        });
+        return null;
+      }
 
-      const response = await fetch('/api/orders', {
+      throw new Error(errorData.error || 'Failed to create order');
+    }
+
+    const order = await response.json();
+    return { id: order.id, totalCents: order.totalCents || total };
+  };
+
+  // Post-payment success — shared by both simulated and Stripe flows
+  const handlePostPaymentSuccess = async (completedOrderId: string) => {
+    if (marketingOptIn && form.customerEmail) {
+      fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-      });
+        body: JSON.stringify({
+          email: form.customerEmail,
+          source: 'checkout'
+        })
+      }).catch(() => {});
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('newsletter-subscribed', 'true');
+      }
+    }
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Order creation failed:', errorData);
+    setIsNavigatingAway(true);
+    clearCart();
+    sessionStorage.removeItem('checkout_form');
+    router.push(`/order-confirmation?orderId=${completedOrderId}`);
+  };
 
-        // Handle store-closed 503 response gracefully
-        if (response.status === 503) {
-          setErrors({
-            submit: `🚀 ${errorData.error || 'Store launching soon!'} Join our mailing list to be notified when we open!`
-          });
+  const handleSubmit = async () => {
+    if (isSimulatedMode()) {
+      // SIMULATED MODE: validate card fields, create order, simulate payment
+      if (!validateStep(3)) return;
+      setIsProcessing(true);
+
+      try {
+        const order = await handleCreateOrder();
+        if (!order) { setIsProcessing(false); return; }
+
+        const paymentResult = await simulatePayment(form.cardDetails.number);
+        if (!paymentResult.success) {
+          setErrors({ payment: paymentResult.error || 'Payment failed' });
           setIsProcessing(false);
           return;
         }
 
-        throw new Error(errorData.error || 'Failed to create order');
-      }
-
-      const order = await response.json();
-
-      // Simulate payment processing
-      const paymentResult = await simulatePayment(form.cardDetails.number);
-      
-      if (!paymentResult.success) {
-        // Show payment error
-        setErrors({ payment: paymentResult.error || 'Payment failed' });
+        await handlePostPaymentSuccess(order.id);
+      } catch (error) {
+        console.error('Checkout error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+        setErrors({ submit: errorMessage });
+      } finally {
         setIsProcessing(false);
-        return;
       }
+    } else {
+      // STRIPE MODE: create order, then mount StripeCheckout for payment
+      setIsProcessing(true);
+      setErrors({});
 
-      // Subscribe to newsletter if opted in
-      if (marketingOptIn && form.customerEmail) {
-        fetch('/api/newsletter', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: form.customerEmail,
-            name: form.customerName,
-            source: 'checkout'
-          })
-        }).catch(() => {}); // Fire and forget - don't block checkout
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('newsletter-subscribed', 'true');
-        }
+      try {
+        const order = await handleCreateOrder();
+        if (!order) { setIsProcessing(false); return; }
+
+        // Store order info — this triggers StripeCheckout to mount
+        setOrderTotalCents(order.totalCents);
+        setCreatedOrderId(order.id);
+      } catch (error) {
+        console.error('Checkout error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+        setErrors({ submit: errorMessage });
+      } finally {
+        setIsProcessing(false);
       }
-
-      // Mark that we're navigating away BEFORE clearing cart to prevent race condition
-      // The useEffect that checks for empty cart would otherwise redirect to home
-      setIsNavigatingAway(true);
-
-      // Clear cart, form data, and redirect to success page
-      clearCart();
-      sessionStorage.removeItem('checkout_form');
-      router.push(`/order-confirmation?orderId=${order.id}`);
-    } catch (error) {
-      console.error('Checkout error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
-      setErrors({ submit: errorMessage });
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -523,7 +548,7 @@ export default function CheckoutPage() {
           textTransform: 'uppercase',
           letterSpacing: '0.05em'
         }}>
-          FUGLY CHECKOUT
+          {isLiveMode() ? 'SECURE CHECKOUT' : 'FUGLY CHECKOUT'}
         </h1>
 
         {/* Store Coming Soon Banner */}
@@ -1123,8 +1148,8 @@ export default function CheckoutPage() {
                     PAY FOR THE CHAOS
                   </h2>
                   
-                  {/* Trust Badge */}
-                  <TrustBadges variant="compact" />
+                  {/* Trust Badge — full layout in live mode */}
+                  <TrustBadges variant={isLiveMode() ? 'horizontal' : 'compact'} />
                   
                   {/* Order Summary */}
                   <div style={{
@@ -1244,15 +1269,16 @@ export default function CheckoutPage() {
                     </label>
                   </div>
 
-                  {form.paymentMethod === 'card' && (
+                  {/* SIMULATED MODE: Custom card inputs */}
+                  {form.paymentMethod === 'card' && isSimulatedMode() && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
                       <div>
                         <label style={labelStyle}>Card Number</label>
                         <input
                           type="text"
                           value={form.cardDetails.number}
-                          onChange={(e) => setForm({ 
-                            ...form, 
+                          onChange={(e) => setForm({
+                            ...form,
                             cardDetails: { ...form.cardDetails, number: formatCardNumber(e.target.value) }
                           })}
                           style={inputStyle}
@@ -1278,8 +1304,8 @@ export default function CheckoutPage() {
                           <input
                             type="text"
                             value={form.cardDetails.expiry}
-                            onChange={(e) => setForm({ 
-                              ...form, 
+                            onChange={(e) => setForm({
+                              ...form,
                               cardDetails: { ...form.cardDetails, expiry: formatExpiry(e.target.value) }
                             })}
                             style={inputStyle}
@@ -1304,8 +1330,8 @@ export default function CheckoutPage() {
                           <input
                             type="text"
                             value={form.cardDetails.cvc}
-                            onChange={(e) => setForm({ 
-                              ...form, 
+                            onChange={(e) => setForm({
+                              ...form,
                               cardDetails: { ...form.cardDetails, cvc: e.target.value.replace(/\D/g, '') }
                             })}
                             style={inputStyle}
@@ -1331,8 +1357,8 @@ export default function CheckoutPage() {
                         <input
                           type="text"
                           value={form.cardDetails.name}
-                          onChange={(e) => setForm({ 
-                            ...form, 
+                          onChange={(e) => setForm({
+                            ...form,
                             cardDetails: { ...form.cardDetails, name: e.target.value }
                           })}
                           style={inputStyle}
@@ -1353,32 +1379,74 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '1rem',
-                    padding: '1rem',
-                    background: 'rgba(255, 130, 0, 0.1)',
-                    borderRadius: '0.75rem',
-                    border: '2px solid rgba(255, 130, 0, 0.3)'
-                  }}>
-                    <TestTube style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200', flexShrink: 0, marginTop: '0.125rem' }} />
-                    <div style={{ fontSize: '0.875rem', color: '#FBDB65' }}>
-                      <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>🧪 Test Mode Active</p>
-                      <p style={{ marginBottom: '0.5rem' }}>This is a simulated checkout. No real payment will be processed.</p>
-                      <details style={{ cursor: 'pointer' }}>
-                        <summary style={{ fontWeight: 'bold', color: '#FBDB65' }}>View test card numbers →</summary>
-                        <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.75rem', fontFamily: 'monospace' }}>
-                          <p>✅ 4242 4242 4242 4242 - Success</p>
-                          <p>❌ 4000 0000 0000 0002 - Declined</p>
-                          <p>💸 4000 0000 0000 9995 - Insufficient funds</p>
-                          <p>⏱️ 4000 0000 0000 0069 - Expired card</p>
-                          <p>🐌 4000 0000 0000 1000 - Slow network (5s)</p>
-                        </div>
-                      </details>
+                  {/* STRIPE MODE: Stripe Payment Elements */}
+                  {form.paymentMethod === 'card' && isStripeMode() && createdOrderId && (
+                    <div style={{ marginTop: '1rem' }}>
+                      <StripeCheckout
+                        orderId={createdOrderId}
+                        amount={orderTotalCents}
+                        onSuccess={() => handlePostPaymentSuccess(createdOrderId)}
+                        onError={(error) => setErrors({ payment: error })}
+                        onProcessingChange={setIsProcessing}
+                      />
                     </div>
-                  </div>
+                  )}
 
+                  {/* Stripe test mode subtle indicator */}
+                  {PAYMENT_MODE === 'stripe-test' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.75rem 1rem',
+                      background: 'rgba(255, 130, 0, 0.08)',
+                      borderRadius: '0.5rem',
+                      border: '1px solid rgba(255, 130, 0, 0.15)',
+                    }}>
+                      <TestTube style={{ width: '0.875rem', height: '0.875rem', color: '#FF8200' }} />
+                      <span style={{ fontSize: '0.8rem', color: '#FF8200' }}>
+                        Stripe Test Mode — No real charges will be made. Use card 4242 4242 4242 4242.
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Simulated mode: full test card banner */}
+                  {isSimulatedMode() && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '1rem',
+                      padding: '1rem',
+                      background: 'rgba(255, 130, 0, 0.1)',
+                      borderRadius: '0.75rem',
+                      border: '2px solid rgba(255, 130, 0, 0.3)'
+                    }}>
+                      <TestTube style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200', flexShrink: 0, marginTop: '0.125rem' }} />
+                      <div style={{ fontSize: '0.875rem', color: '#FBDB65' }}>
+                        <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Test Mode Active</p>
+                        <p style={{ marginBottom: '0.5rem' }}>This is a simulated checkout. No real payment will be processed.</p>
+                        <details style={{ cursor: 'pointer' }}>
+                          <summary style={{ fontWeight: 'bold', color: '#FBDB65' }}>View test card numbers</summary>
+                          <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                            <p>4242 4242 4242 4242 - Success</p>
+                            <p>4000 0000 0000 0002 - Declined</p>
+                            <p>4000 0000 0000 9995 - Insufficient funds</p>
+                            <p>4000 0000 0000 0069 - Expired card</p>
+                            <p>4000 0000 0000 1000 - Slow network (5s)</p>
+                          </div>
+                        </details>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Simulated mode: test card type display */}
+                  {isSimulatedMode() && form.cardDetails.number && (
+                    <div style={{ fontSize: '0.75rem', color: '#6b7280', textAlign: 'center' }}>
+                      Test card type: {formatTestCardDisplay(form.cardDetails.number)}
+                    </div>
+                  )}
+
+                  {/* Error displays */}
                   {errors.payment && (
                     <div style={{
                       display: 'flex',
@@ -1422,79 +1490,78 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  {form.cardDetails.number && (
-                    <div style={{ fontSize: '0.75rem', color: '#6b7280', textAlign: 'center' }}>
-                      Test card type: {formatTestCardDisplay(form.cardDetails.number)}
+                  {/* Security Notice — shown when StripeCheckout isn't rendering its own */}
+                  {!(isStripeMode() && createdOrderId) && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      padding: '0.75rem',
+                      background: 'rgba(16, 185, 129, 0.05)',
+                      borderRadius: '0.5rem',
+                      border: '1px solid rgba(16, 185, 129, 0.2)',
+                      marginBottom: '1rem'
+                    }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                      </svg>
+                      <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold' }}>
+                        Your payment info is encrypted and secure • Powered by Stripe
+                      </span>
                     </div>
                   )}
 
-                  {/* Security Notice */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.75rem',
-                    background: 'rgba(16, 185, 129, 0.05)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(16, 185, 129, 0.2)',
-                    marginBottom: '1rem'
-                  }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
-                      <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-                      <path d="M9 12l2 2 4-4"/>
-                    </svg>
-                    <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold' }}>
-                      Your payment info is encrypted and secure • Powered by Stripe
-                    </span>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <button
-                      onClick={handleBack}
-                      style={{
-                        ...buttonStyle,
-                        background: 'transparent',
-                        border: '2px solid #374151',
-                        color: '#FBDB65'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#4b5563';
-                        e.currentTarget.style.background = 'rgba(55, 65, 81, 0.2)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = '#374151';
-                        e.currentTarget.style.background = 'transparent';
-                      }}
-                    >
-                      Back
-                    </button>
-                    <button
-                      onClick={handleSubmit}
-                      disabled={isProcessing || form.paymentMethod === 'fugly-credit'}
-                      style={{
-                        ...buttonStyle,
-                        background: isProcessing || form.paymentMethod === 'fugly-credit' ? '#4b5563' : '#FF8200',
-                        color: isProcessing || form.paymentMethod === 'fugly-credit' ? '#9ca3af' : '#111827',
-                        cursor: isProcessing || form.paymentMethod === 'fugly-credit' ? 'not-allowed' : 'pointer',
-                        opacity: isProcessing || form.paymentMethod === 'fugly-credit' ? 0.7 : 1
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isProcessing && form.paymentMethod !== 'fugly-credit') {
-                          e.currentTarget.style.background = '#ea580c';
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isProcessing && form.paymentMethod !== 'fugly-credit') {
-                          e.currentTarget.style.background = '#FF8200';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }
-                      }}
-                    >
-                      {isProcessing ? 'Preparing mayhem...' : 'Unleash the Mayhem!'}
-                    </button>
-                  </div>
+                  {/* Action buttons — only show when StripeCheckout isn't active (it has its own button) */}
+                  {!(isStripeMode() && createdOrderId) && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <button
+                        onClick={handleBack}
+                        style={{
+                          ...buttonStyle,
+                          background: 'transparent',
+                          border: '2px solid #374151',
+                          color: '#FBDB65'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#4b5563';
+                          e.currentTarget.style.background = 'rgba(55, 65, 81, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = '#374151';
+                          e.currentTarget.style.background = 'transparent';
+                        }}
+                      >
+                        Back
+                      </button>
+                      <button
+                        onClick={handleSubmit}
+                        disabled={isProcessing || form.paymentMethod === 'fugly-credit'}
+                        style={{
+                          ...buttonStyle,
+                          background: isProcessing || form.paymentMethod === 'fugly-credit' ? '#4b5563' : '#FF8200',
+                          color: isProcessing || form.paymentMethod === 'fugly-credit' ? '#9ca3af' : '#111827',
+                          cursor: isProcessing || form.paymentMethod === 'fugly-credit' ? 'not-allowed' : 'pointer',
+                          opacity: isProcessing || form.paymentMethod === 'fugly-credit' ? 0.7 : 1
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isProcessing && form.paymentMethod !== 'fugly-credit') {
+                            e.currentTarget.style.background = '#ea580c';
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isProcessing && form.paymentMethod !== 'fugly-credit') {
+                            e.currentTarget.style.background = '#FF8200';
+                            e.currentTarget.style.transform = 'scale(1)';
+                          }
+                        }}
+                      >
+                        {isProcessing ? 'Preparing your order...' : isStripeMode() ? 'Proceed to Payment' : 'Unleash the Mayhem!'}
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
