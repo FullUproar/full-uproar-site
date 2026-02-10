@@ -245,7 +245,14 @@ lib/
    - Responsive breakpoints with useBreakpoint() hook
    - Shared UI components (EmptyState, LoadingState, Skeletons)
 
-4. **Security**
+4. **Notifications** (lib/email.ts + lib/discord.ts)
+   - Order confirmation email (on payment success)
+   - Shipping notification email with tracking link (on ShipStation webhook)
+   - Payment failed email with retry CTA
+   - Refund notification email (full/partial, from webhook + admin)
+   - Discord team alerts for orders, shipments, refunds
+
+5. **Security**
    - Input sanitization (XSS protection)
    - Rate limiting on sensitive endpoints
    - Permission-based access control
@@ -327,7 +334,10 @@ BLOB_READ_WRITE_TOKEN    - Vercel Blob storage
 ### Optional
 ```
 STRIPE_WEBHOOK_SECRET    - For webhook verification
-DISCORD_WEBHOOK_URL      - Order notifications
+DISCORD_WEBHOOK_URL      - Order/shipping/refund team notifications
+GMAIL_USER               - Gmail address for transactional emails
+GMAIL_APP_PASSWORD       - Gmail App Password for SMTP
+NEXT_PUBLIC_CHECKOUT_MODE - Payment mode: dev/test/live (default: dev)
 ```
 
 ---
@@ -361,4 +371,4 @@ DISCORD_WEBHOOK_URL      - Order notifications
 
 ---
 
-Last Updated: February 2025
+Last Updated: February 2026
