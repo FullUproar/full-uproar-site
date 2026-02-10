@@ -1331,3 +1331,286 @@ Questions? Hit us up at support@fulluproar.com
     return false;
   }
 }
+
+/**
+ * Send payment failed notification to customer
+ */
+export async function sendPaymentFailedNotification(data: {
+  orderId: string;
+  customerName: string;
+  customerEmail: string;
+  errorMessage: string;
+}): Promise<boolean> {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn('Email not configured - skipping payment failed notification');
+    return false;
+  }
+
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://fulluproar.com';
+  const shortId = data.orderId.slice(-8).toUpperCase();
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 35px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 10px;">⚠️</div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                Payment Issue
+              </h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 14px;">
+                We couldn't process your payment
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="color: #e2e8f0; font-size: 18px; margin: 0 0 20px 0;">
+                Hey ${data.customerName},
+              </p>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                We tried to process the payment for your order <strong style="color: #e2e8f0;">#${shortId}</strong>, but ran into an issue:
+              </p>
+
+              <!-- Error Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px; border: 2px solid #dc2626;">
+                <tr>
+                  <td style="padding: 20px; text-align: center;">
+                    <p style="color: #fca5a5; font-size: 15px; font-weight: 600; margin: 0;">
+                      ${data.errorMessage || 'Your payment could not be completed'}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                Your cart items are still saved. You can try again with a different payment method or the same card.
+              </p>
+
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 10px 0 25px 0;">
+                    <a href="${BASE_URL}/checkout"
+                       style="display: inline-block; background-color: #FF8200; color: #111827; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 900; font-size: 16px; text-transform: uppercase; letter-spacing: 0.05em;">
+                      Try Again
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
+                Need help? Contact us at <a href="mailto:support@fulluproar.com" style="color: #FF8200; text-decoration: none;">support@fulluproar.com</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
+              <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+                Full Uproar Games Inc.<br>
+                <span style="color: #FF8200;">Professionally ruining game nights since day one.</span>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  const text = `
+Hey ${data.customerName},
+
+PAYMENT ISSUE
+
+We tried to process the payment for your order #${shortId}, but ran into an issue:
+
+${data.errorMessage || 'Your payment could not be completed'}
+
+Your cart items are still saved. Try again at: ${BASE_URL}/checkout
+
+Need help? Contact us at support@fulluproar.com
+
+- The Full Uproar Team
+`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Full Uproar Games" <${process.env.GMAIL_USER}>`,
+      to: data.customerEmail,
+      subject: `Payment issue with your Full Uproar order`,
+      text,
+      html,
+    });
+    console.log(`Payment failed notification sent to ${data.customerEmail} for order ${data.orderId}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send payment failed notification:', error);
+    return false;
+  }
+}
+
+/**
+ * Send refund notification to customer
+ */
+export async function sendRefundNotification(data: {
+  orderId: string;
+  customerName: string;
+  customerEmail: string;
+  refundAmountCents: number;
+  isFullRefund: boolean;
+  reason?: string;
+}): Promise<boolean> {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn('Email not configured - skipping refund notification');
+    return false;
+  }
+
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://fulluproar.com';
+  const shortId = data.orderId.slice(-8).toUpperCase();
+  const refundAmount = `$${(data.refundAmountCents / 100).toFixed(2)}`;
+  const refundType = data.isFullRefund ? 'Full Refund' : 'Partial Refund';
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #7D55C7 0%, #7c3aed 100%); padding: 35px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 10px;">💰</div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                ${refundType} Processed
+              </h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 14px;">
+                Your refund is on its way
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="color: #e2e8f0; font-size: 18px; margin: 0 0 20px 0;">
+                Hey ${data.customerName},
+              </p>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                We've processed a refund for your order <strong style="color: #e2e8f0;">#${shortId}</strong>.
+              </p>
+
+              <!-- Refund Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px; border: 2px solid #7D55C7;">
+                <tr>
+                  <td style="padding: 25px; text-align: center;">
+                    <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
+                      Refund Amount
+                    </p>
+                    <p style="color: #a78bfa; font-size: 32px; font-weight: bold; margin: 0 0 8px 0;">
+                      ${refundAmount}
+                    </p>
+                    <p style="color: #64748b; font-size: 14px; margin: 0;">
+                      ${refundType}${data.reason ? ` — ${data.reason}` : ''}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                The refund has been submitted to your payment provider. Please allow <strong style="color: #e2e8f0;">5–10 business days</strong> for it to appear on your statement.
+              </p>
+
+              <!-- Track Order Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 10px 0 25px 0;">
+                    <a href="${BASE_URL}/track-order"
+                       style="display: inline-block; background-color: #7D55C7; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                      View Order Details
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0; text-align: center;">
+                Questions? Contact us at <a href="mailto:support@fulluproar.com" style="color: #FF8200; text-decoration: none;">support@fulluproar.com</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
+              <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+                Full Uproar Games Inc.<br>
+                <span style="color: #FF8200;">Professionally ruining game nights since day one.</span>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  const text = `
+Hey ${data.customerName},
+
+${refundType.toUpperCase()} PROCESSED
+
+We've processed a refund for your order #${shortId}.
+
+Refund Amount: ${refundAmount}
+Type: ${refundType}${data.reason ? `\nReason: ${data.reason}` : ''}
+
+The refund has been submitted to your payment provider. Please allow 5-10 business days for it to appear on your statement.
+
+View your order: ${BASE_URL}/track-order
+
+Questions? Contact us at support@fulluproar.com
+
+- The Full Uproar Team
+`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Full Uproar Games" <${process.env.GMAIL_USER}>`,
+      to: data.customerEmail,
+      subject: `${refundType} processed for your Full Uproar order`,
+      text,
+      html,
+    });
+    console.log(`Refund notification sent to ${data.customerEmail} for order ${data.orderId}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send refund notification:', error);
+    return false;
+  }
+}

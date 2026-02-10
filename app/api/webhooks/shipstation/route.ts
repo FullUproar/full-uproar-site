@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 import crypto from 'crypto';
+import { sendOrderShippedNotification } from '@/lib/email';
+import { sendDiscordShippingNotification } from '@/lib/discord';
 
 /**
  * ShipStation Webhook Handler
@@ -204,7 +206,19 @@ async function processShipment(shipment: ShipStationShipment) {
   // Find the order in our database
   const order = await prisma.order.findUnique({
     where: { id: orderId },
-    select: { id: true, status: true, trackingNumber: true },
+    select: {
+      id: true,
+      status: true,
+      trackingNumber: true,
+      customerName: true,
+      customerEmail: true,
+      items: {
+        include: {
+          game: { select: { title: true, slug: true } },
+          merch: { select: { name: true, slug: true } },
+        },
+      },
+    },
   });
 
   if (!order) {
@@ -265,8 +279,33 @@ async function processShipment(shipment: ShipStationShipment) {
 
   console.log(`Order ${orderId} updated with tracking: ${shipment.trackingNumber}`);
 
-  // TODO: Send shipping notification email to customer
-  // await sendShippingNotification(orderId, shipment.trackingNumber);
+  // Send shipping notification email (non-critical — don't fail webhook if email fails)
+  try {
+    await sendOrderShippedNotification({
+      orderId,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      trackingNumber: shipment.trackingNumber,
+      shippingCarrier: getCarrierName(shipment.carrierCode),
+      items: order.items.map(item => ({
+        quantity: item.quantity,
+        priceCents: item.priceCents,
+        merchSize: item.merchSize,
+        game: item.game,
+        merch: item.merch,
+      })),
+    });
+  } catch (emailError) {
+    console.error('Failed to send shipping notification email:', emailError);
+  }
+
+  // Discord notification for team (non-critical)
+  sendDiscordShippingNotification({
+    orderId,
+    customerName: order.customerName,
+    trackingNumber: shipment.trackingNumber,
+    carrier: getCarrierName(shipment.carrierCode),
+  }).catch(err => console.error('Discord shipping notification failed:', err));
 }
 
 function getCarrierName(carrierCode: string): string {

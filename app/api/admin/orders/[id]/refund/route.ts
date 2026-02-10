@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requirePermission, getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe';
+import { sendRefundNotification } from '@/lib/email';
+import { sendDiscordRefundNotification } from '@/lib/discord';
 
 export async function POST(
   request: NextRequest,
@@ -115,6 +117,31 @@ export async function POST(
         noteType: 'general'
       }
     });
+
+    // Send refund notification to customer (non-critical)
+    if (refundStatus !== 'failed' && order.customerEmail) {
+      try {
+        await sendRefundNotification({
+          orderId: order.id,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          refundAmountCents: refundAmount,
+          isFullRefund: refundAmount === order.totalCents,
+          reason: reason || undefined,
+        });
+      } catch (emailError) {
+        console.error('Failed to send refund notification:', emailError);
+      }
+    }
+
+    // Discord notification for team (non-critical)
+    sendDiscordRefundNotification({
+      orderId: order.id,
+      customerName: order.customerName,
+      refundAmountCents: refundAmount,
+      isFullRefund: refundAmount === order.totalCents,
+      reason: reason || undefined,
+    }).catch(err => console.error('Discord refund notification failed:', err));
 
     // Return items to inventory if full refund
     if (refundAmount === order.totalCents) {

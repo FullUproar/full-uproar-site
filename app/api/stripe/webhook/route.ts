@@ -4,7 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { paymentLogger } from '@/lib/services/logger';
 import { withErrorHandler } from '@/lib/utils/error-handler';
-import { sendOrderConfirmation } from '@/lib/email';
+import { sendOrderConfirmation, sendPaymentFailedNotification, sendRefundNotification } from '@/lib/email';
+import { sendDiscordOrderNotification, sendDiscordRefundNotification } from '@/lib/discord';
 import { syncOrderToShipStation, isShipStationConfigured } from '@/lib/shipping/shipstation';
 import { fulfillPrintifyOrder, isPrintifyConfigured } from '@/lib/printify/auto-fulfill';
 
@@ -222,6 +223,15 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
           );
         }
 
+        // Discord notification for team (non-critical)
+        sendDiscordOrderNotification({
+          orderId: order.id,
+          customerName: order.customerName,
+          totalCents: order.totalCents,
+          itemCount: order.items.length,
+          shippingMethod: order.shippingMethod || undefined,
+        }).catch(err => console.error('Discord order notification failed:', err));
+
         paymentLogger.info('Payment succeeded', {
           orderId,
           paymentIntentId: paymentIntent.id,
@@ -310,6 +320,24 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
           }
         });
 
+        // Send payment failed notification (non-critical)
+        try {
+          const failedOrder = await prisma.order.findUnique({
+            where: { id: orderId },
+            select: { customerName: true, customerEmail: true },
+          });
+          if (failedOrder?.customerEmail) {
+            await sendPaymentFailedNotification({
+              orderId,
+              customerName: failedOrder.customerName,
+              customerEmail: failedOrder.customerEmail,
+              errorMessage: paymentIntent.last_payment_error?.message || 'Your payment could not be completed',
+            });
+          }
+        } catch (emailError) {
+          console.error('Failed to send payment failed notification:', emailError);
+        }
+
         paymentLogger.warn('Payment failed', {
           orderId,
           paymentIntentId: paymentIntent.id,
@@ -391,6 +419,29 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             paymentLogger.info('Inventory restored for refund', { orderId: order.id });
           }
         });
+
+        // Send refund notification (non-critical)
+        try {
+          if (order.customerEmail) {
+            await sendRefundNotification({
+              orderId: order.id,
+              customerName: order.customerName,
+              customerEmail: order.customerEmail,
+              refundAmountCents: charge.amount_refunded,
+              isFullRefund,
+            });
+          }
+        } catch (emailError) {
+          console.error('Failed to send refund notification:', emailError);
+        }
+
+        // Discord notification for team (non-critical)
+        sendDiscordRefundNotification({
+          orderId: order.id,
+          customerName: order.customerName,
+          refundAmountCents: charge.amount_refunded,
+          isFullRefund,
+        }).catch(err => console.error('Discord refund notification failed:', err));
 
         paymentLogger.info('Refund processed', {
           orderId: order.id,
