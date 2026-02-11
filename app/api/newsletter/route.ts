@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { rateLimit } from '@/lib/middleware/rate-limit';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -75,6 +76,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const { searchParams } = new URL(request.url);
     const stats = searchParams.get('stats');
 

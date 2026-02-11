@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server';
 import { Prisma } from '@prisma/client';
 import { calculateTaxSync } from '@/lib/tax';
 import { ADMIN_ROLES } from '@/lib/constants';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 // Store open status - controlled by env var NEXT_PUBLIC_STORE_OPEN
 const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
@@ -20,6 +21,10 @@ class InventoryError extends Error {
 
 export async function GET(request: NextRequest) {
   try {
+    // Admin-only: listing all orders requires admin access
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const email = searchParams.get('email');
@@ -89,6 +94,12 @@ export async function POST(request: NextRequest) {
 
     if (body.items.length === 0) {
       return NextResponse.json({ error: 'Order must contain at least one item' }, { status: 400 });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(body.customerEmail)) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
     // Use a serializable transaction to prevent race conditions
@@ -524,9 +535,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Update order status
+// Update order status (admin only)
 export async function PUT(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

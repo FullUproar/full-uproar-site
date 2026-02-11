@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET(request: NextRequest) {
   try {
@@ -56,6 +57,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const body = await request.json();
     
     // Parse sizes if provided
@@ -116,13 +120,16 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    
+
     if (!id) {
       return NextResponse.json({ error: 'Merch ID is required' }, { status: 400 });
     }
-    
+
     const body = await request.json();
     const sizes = body.sizes ? (typeof body.sizes === 'string' ? JSON.parse(body.sizes) : body.sizes) : null;
     
@@ -172,13 +179,16 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    
+
     if (!id) {
       return NextResponse.json({ error: 'Merch ID is required' }, { status: 400 });
     }
-    
+
     // Delete inventory first
     await prisma.inventory.deleteMany({
       where: { merchId: parseInt(id) }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET(request: NextRequest) {
   try {
@@ -52,6 +53,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const body = await request.json();
     
     // Generate slug from title
@@ -104,13 +108,16 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    
+
     if (!id) {
       return NextResponse.json({ error: 'Game ID is required' }, { status: 400 });
     }
-    
+
     const body = await request.json();
     
     const game = await prisma.game.update({
@@ -144,13 +151,16 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.authorized) return adminCheck.response;
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    
+
     if (!id) {
       return NextResponse.json({ error: 'Game ID is required' }, { status: 400 });
     }
-    
+
     await prisma.game.delete({
       where: { id: parseInt(id) }
     });

@@ -7,8 +7,8 @@ export async function POST(request: Request) {
     const { searchParams } = new URL(request.url);
     const secret = searchParams.get('secret');
     
-    // Simple auth check
-    if (secret !== 'seed-2024') {
+    // Auth check via environment variable (never hardcode secrets)
+    if (!process.env.SEED_SECRET || secret !== process.env.SEED_SECRET) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     

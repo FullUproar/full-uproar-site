@@ -275,8 +275,11 @@ export default function CheckoutPage() {
     const newErrors: Record<string, string> = {};
 
     if (step === 1) {
-      if (!form.customerEmail) newErrors.customerEmail = 'Email is required';
-      if (!form.customerEmail.includes('@')) newErrors.customerEmail = 'Invalid email';
+      if (!form.customerEmail) {
+        newErrors.customerEmail = 'Email is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.customerEmail)) {
+        newErrors.customerEmail = 'Please enter a valid email address';
+      }
       if (!form.customerName) newErrors.customerName = 'Name is required';
       if (!form.phone) newErrors.phone = 'Phone is required';
     }
@@ -445,6 +448,16 @@ export default function CheckoutPage() {
           setErrors({ payment: paymentResult.error || 'Payment failed' });
           setIsProcessing(false);
           return;
+        }
+
+        // Mark order as paid on the server (simulated mode)
+        const paidResponse = await fetch(`/api/orders/${order.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'simulate-payment' })
+        });
+        if (!paidResponse.ok) {
+          console.error('Failed to confirm simulated payment');
         }
 
         await handlePostPaymentSuccess(order.id);
