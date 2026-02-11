@@ -13,6 +13,11 @@ import {
 } from '../useApi';
 import { api } from '../../utils/api-client';
 
+// Ensure fetch is available in test environment
+if (typeof global.fetch === 'undefined') {
+  global.fetch = jest.fn();
+}
+
 // Mock the API client
 jest.mock('../../utils/api-client', () => ({
   api: {
@@ -36,11 +41,6 @@ jest.mock('../../utils/logger', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
-  jest.useFakeTimers();
-});
-
-afterEach(() => {
-  jest.useRealTimers();
 });
 
 describe('useApi', () => {
@@ -515,6 +515,14 @@ describe('useInfiniteScroll', () => {
 });
 
 describe('usePolling', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('should poll data at intervals', async () => {
     const mockData1 = { count: 1 };
     const mockData2 = { count: 2 };
@@ -535,23 +543,18 @@ describe('usePolling', () => {
     });
 
     // Advance timer for first interval
-    act(() => {
+    await act(async () => {
       jest.advanceTimersByTime(1000);
     });
 
-    await waitFor(() => {
-      expect(result.current.data).toEqual(mockData2);
-    });
+    expect(result.current.data).toEqual(mockData2);
 
     // Advance timer for second interval
-    act(() => {
+    await act(async () => {
       jest.advanceTimersByTime(1000);
     });
 
-    await waitFor(() => {
-      expect(result.current.data).toEqual(mockData3);
-    });
-
+    expect(result.current.data).toEqual(mockData3);
     expect(api.get).toHaveBeenCalledTimes(3);
   });
 
@@ -585,6 +588,14 @@ describe('usePolling', () => {
 });
 
 describe('useSearch', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('should search with debounce', async () => {
     const mockResults = { results: [{ id: 1, name: 'Result 1' }] };
     (api.get as jest.Mock).mockResolvedValueOnce({
@@ -611,14 +622,11 @@ describe('useSearch', () => {
     expect(api.get).not.toHaveBeenCalled();
 
     // Advance timer past debounce
-    act(() => {
+    await act(async () => {
       jest.advanceTimersByTime(500);
     });
 
-    await waitFor(() => {
-      expect(result.current.results).toEqual(mockResults);
-    });
-
+    expect(result.current.results).toEqual(mockResults);
     expect(api.get).toHaveBeenCalledWith(
       '/api/search?q=test',
       expect.any(Object)
@@ -676,13 +684,11 @@ describe('useSearch', () => {
       result.current.search('test');
     });
 
-    act(() => {
+    await act(async () => {
       jest.advanceTimersByTime(300);
     });
 
-    await waitFor(() => {
-      expect(result.current.results).toEqual(mockResults);
-    });
+    expect(result.current.results).toEqual(mockResults);
 
     act(() => {
       result.current.clear();
@@ -705,14 +711,11 @@ describe('useSearch', () => {
       result.current.search('error');
     });
 
-    act(() => {
+    await act(async () => {
       jest.advanceTimersByTime(300);
     });
 
-    await waitFor(() => {
-      expect(result.current.error).toEqual(mockError);
-    });
-
+    expect(result.current.error).toEqual(mockError);
     expect(result.current.results).toBeNull();
   });
 });

@@ -151,22 +151,25 @@ describe('Skeleton', () => {
 describe('SkeletonText', () => {
   it('should render default number of lines', () => {
     const { container } = render(<SkeletonText />);
-    const lines = container.querySelectorAll('div > div');
-    
+    const wrapper = container.firstChild as HTMLElement;
+    const lines = wrapper.children;
+
     expect(lines).toHaveLength(3);
   });
 
   it('should render custom number of lines', () => {
     const { container } = render(<SkeletonText lines={5} />);
-    const lines = container.querySelectorAll('div > div');
-    
+    const wrapper = container.firstChild as HTMLElement;
+    const lines = wrapper.children;
+
     expect(lines).toHaveLength(5);
   });
 
   it('should make last line shorter', () => {
     const { container } = render(<SkeletonText lines={3} />);
-    const lines = container.querySelectorAll('div > div');
-    
+    const wrapper = container.firstChild as HTMLElement;
+    const lines = wrapper.children;
+
     expect(lines[0]).toHaveStyle({ width: '100%' });
     expect(lines[1]).toHaveStyle({ width: '100%' });
     expect(lines[2]).toHaveStyle({ width: '60%' });
@@ -232,9 +235,10 @@ describe('LoadingOverlay', () => {
   });
 
   it('should render when visible', () => {
-    render(<LoadingOverlay visible={true} />);
-    
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument(); // Spinner
+    const { container } = render(<LoadingOverlay visible={true} />);
+
+    // Spinner renders as an SVG element
+    expect(container.querySelector('svg')).toBeInTheDocument();
   });
 
   it('should render with message', () => {
@@ -246,19 +250,17 @@ describe('LoadingOverlay', () => {
   it('should apply blur effect by default', () => {
     const { container } = render(<LoadingOverlay visible={true} />);
     const overlay = container.firstChild as HTMLElement;
-    
-    expect(overlay).toHaveStyle({
-      backdropFilter: 'blur(4px)',
-    });
+
+    // Check backdropFilter directly using camelCase property (jsdom supports this)
+    expect((overlay.style as any).backdropFilter).toBe('blur(4px)');
   });
 
   it('should not apply blur when disabled', () => {
     const { container } = render(<LoadingOverlay visible={true} blur={false} />);
     const overlay = container.firstChild as HTMLElement;
-    
-    expect(overlay).toHaveStyle({
-      backdropFilter: 'none',
-    });
+
+    // Check backdropFilter directly using camelCase property (jsdom supports this)
+    expect((overlay.style as any).backdropFilter).toBe('none');
   });
 });
 
@@ -309,12 +311,8 @@ describe('LoadingButton', () => {
     const primaryBtn = primary.querySelector('button');
     const dangerBtn = danger.querySelector('button');
     
-    expect(primaryBtn).toHaveStyle({
-      background: expect.stringContaining('#FF8200'),
-    });
-    expect(dangerBtn).toHaveStyle({
-      background: expect.stringContaining('#ef4444'),
-    });
+    expect(primaryBtn?.style.background).toContain('#FF8200');
+    expect(dangerBtn?.style.background).toContain('#ef4444');
   });
 
   it('should apply size styles', () => {
@@ -402,7 +400,13 @@ describe('RefreshButton', () => {
 });
 
 describe('LazyLoad', () => {
-  jest.useFakeTimers();
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
 
   it('should show fallback initially', () => {
     render(
@@ -410,7 +414,7 @@ describe('LazyLoad', () => {
         <div>Content</div>
       </LazyLoad>
     );
-    
+
     expect(screen.getByText('Loading...')).toBeInTheDocument();
     expect(screen.queryByText('Content')).not.toBeInTheDocument();
   });
@@ -421,13 +425,13 @@ describe('LazyLoad', () => {
         <div>Content</div>
       </LazyLoad>
     );
-    
+
     // Initially shows skeleton
     expect(screen.queryByText('Content')).not.toBeInTheDocument();
-    
+
     // Advance timers
     jest.advanceTimersByTime(200);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Content')).toBeInTheDocument();
     });
@@ -439,7 +443,7 @@ describe('LazyLoad', () => {
         <div>Content</div>
       </LazyLoad>
     );
-    
+
     // Should render SkeletonCard by default
     const card = container.querySelector('[style*="border-radius: 12px"]');
     expect(card).toBeInTheDocument();
@@ -447,18 +451,16 @@ describe('LazyLoad', () => {
 
   it('should clean up timer on unmount', () => {
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-    
+
     const { unmount } = render(
       <LazyLoad delay={1000}>
         <div>Content</div>
       </LazyLoad>
     );
-    
+
     unmount();
-    
+
     expect(clearTimeoutSpy).toHaveBeenCalled();
     clearTimeoutSpy.mockRestore();
   });
-
-  jest.useRealTimers();
 });

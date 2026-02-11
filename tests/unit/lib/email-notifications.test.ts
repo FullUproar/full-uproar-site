@@ -1,23 +1,30 @@
 /**
+ * @jest-environment node
+ */
+
+/**
  * Tests for order notification email functions
  */
 
-// Mock nodemailer before importing the module
-const mockSendMail = jest.fn().mockResolvedValue({ messageId: 'test-id' });
+// Mock nodemailer — define sendMail inline to avoid jest.mock hoisting TDZ issues
 jest.mock('nodemailer', () => ({
   createTransport: jest.fn(() => ({
-    sendMail: mockSendMail,
+    sendMail: jest.fn().mockResolvedValue({ messageId: 'test-id' }),
   })),
 }));
 
 // Mock stripe (imported transitively by email module)
 jest.mock('@/lib/stripe', () => ({ stripe: null }));
 
+import nodemailer from 'nodemailer';
 import {
   sendPaymentFailedNotification,
   sendRefundNotification,
   sendOrderShippedNotification,
 } from '@/lib/email';
+
+// Get reference to the sendMail mock created when email.ts loaded
+const mockSendMail = (nodemailer.createTransport as jest.Mock).mock.results[0].value.sendMail as jest.Mock;
 
 describe('sendPaymentFailedNotification', () => {
   const baseData = {

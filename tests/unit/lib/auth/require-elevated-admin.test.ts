@@ -1,4 +1,8 @@
 /**
+ * @jest-environment node
+ */
+
+/**
  * Unit tests for requireElevatedAdmin (lib/auth/require-elevated-admin.ts)
  * Tests the 2FA elevation gate for sensitive admin operations.
  */

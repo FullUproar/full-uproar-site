@@ -2,6 +2,18 @@
  * Tests for the API client
  */
 
+// Mock logger to prevent Logger singleton from starting intervals and calling fetch
+jest.mock('../logger', () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    critical: jest.fn(),
+    metric: jest.fn(),
+  },
+}));
+
 import { api, apiClient } from '../api-client';
 
 // Mock fetch
@@ -84,10 +96,10 @@ describe('ApiClient', () => {
       });
 
       // First request
-      await api.get('/api/cached', { cache: { ttl: 5000 } });
+      await api.get('/api/cached', { cacheConfig: { ttl: 5000 } });
 
       // Second request (should use cache)
-      const result = await api.get('/api/cached', { cache: { ttl: 5000 } });
+      const result = await api.get('/api/cached', { cacheConfig: { ttl: 5000 } });
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -412,14 +424,14 @@ describe('ApiClient', () => {
       });
 
       // Cache the response
-      await api.get('/api/cache-test', { cache: { ttl: 5000 } });
+      await api.get('/api/cache-test', { cacheConfig: { ttl: 5000 } });
       expect(fetch).toHaveBeenCalledTimes(1);
 
       // Clear cache for this endpoint
       api.clearCache('/api/cache-test');
 
       // Next request should fetch again
-      await api.get('/api/cache-test', { cache: { ttl: 5000 } });
+      await api.get('/api/cache-test', { cacheConfig: { ttl: 5000 } });
       expect(fetch).toHaveBeenCalledTimes(2);
     });
 
@@ -433,16 +445,16 @@ describe('ApiClient', () => {
       });
 
       // Cache multiple responses
-      await api.get('/api/cache1', { cache: { ttl: 5000 } });
-      await api.get('/api/cache2', { cache: { ttl: 5000 } });
+      await api.get('/api/cache1', { cacheConfig: { ttl: 5000 } });
+      await api.get('/api/cache2', { cacheConfig: { ttl: 5000 } });
       expect(fetch).toHaveBeenCalledTimes(2);
 
       // Clear all cache
       api.clearCache();
 
       // Both should fetch again
-      await api.get('/api/cache1', { cache: { ttl: 5000 } });
-      await api.get('/api/cache2', { cache: { ttl: 5000 } });
+      await api.get('/api/cache1', { cacheConfig: { ttl: 5000 } });
+      await api.get('/api/cache2', { cacheConfig: { ttl: 5000 } });
       expect(fetch).toHaveBeenCalledTimes(4);
     });
 
@@ -458,18 +470,18 @@ describe('ApiClient', () => {
       });
 
       // Cache with 1 second TTL
-      await api.get('/api/ttl-test', { cache: { ttl: 1000 } });
+      await api.get('/api/ttl-test', { cacheConfig: { ttl: 1000 } });
       expect(fetch).toHaveBeenCalledTimes(1);
 
       // Immediately fetch again (should use cache)
-      await api.get('/api/ttl-test', { cache: { ttl: 1000 } });
+      await api.get('/api/ttl-test', { cacheConfig: { ttl: 1000 } });
       expect(fetch).toHaveBeenCalledTimes(1);
 
       // Advance time past TTL
       jest.advanceTimersByTime(1100);
 
       // Should fetch again after TTL expires
-      await api.get('/api/ttl-test', { cache: { ttl: 1000 } });
+      await api.get('/api/ttl-test', { cacheConfig: { ttl: 1000 } });
       expect(fetch).toHaveBeenCalledTimes(2);
 
       jest.useRealTimers();

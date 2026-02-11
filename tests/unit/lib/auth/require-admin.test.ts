@@ -1,4 +1,8 @@
 /**
+ * @jest-environment node
+ */
+
+/**
  * Unit tests for requireAdmin and isAdmin (lib/auth/require-admin.ts)
  * Tests the admin gate used by every /api/admin/* route.
  */

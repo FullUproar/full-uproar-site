@@ -1,33 +1,36 @@
-// Mock NextResponse before imports
-const mockNextResponse = jest.fn((body, init) => ({
-  body,
-  status: init?.status || 200,
-}));
+/**
+ * @jest-environment node
+ */
 
-mockNextResponse.json = jest.fn((data, init) => ({
-  ...init,
-  body: data,
-  json: () => Promise.resolve(data),
-}));
+// Mock NextResponse — define inline to avoid jest.mock hoisting TDZ issues
+jest.mock('next/server', () => {
+  const mockJson = jest.fn((data, init) => ({
+    ...init,
+    body: data,
+    json: () => Promise.resolve(data),
+  }));
+  const mockRedirect = jest.fn((url, status) => ({ url, status }));
+  const MockNextResponse = jest.fn((body, init) => ({
+    body,
+    status: init?.status || 200,
+  }));
+  MockNextResponse.json = mockJson;
+  MockNextResponse.redirect = mockRedirect;
+  return { NextResponse: MockNextResponse };
+});
 
-mockNextResponse.redirect = jest.fn((url, status) => ({
-  url,
-  status,
-}));
-
-jest.mock('next/server', () => ({
-  NextResponse: mockNextResponse,
-}));
-
-import { 
-  successResponse, 
-  errorResponse, 
+import {
+  successResponse,
+  errorResponse,
   paginatedResponse,
   noContentResponse,
   CacheHeaders,
   CorsHeaders
 } from '@/lib/utils/api-response';
 import { NextResponse } from 'next/server';
+
+// Get reference for assertions
+const mockNextResponse = NextResponse as unknown as jest.Mock & { json: jest.Mock; redirect: jest.Mock };
 
 // Mock error handler
 jest.mock('@/lib/utils/errors', () => ({
