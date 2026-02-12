@@ -587,7 +587,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                   ) : (
                     <ul style={{ listStyle: 'none', padding: 0 }}>
                       <li>• 200+ Chaos Cards</li>
-                      <li>• 1 Fugly-approved rulebook</li>
+                      <li>• 1 Rulebook</li>
                       <li>• Special chaos dice</li>
                       <li>• Score tracking tokens</li>
                       <li>• Exclusive Fugly sticker</li>
@@ -1105,7 +1105,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Shield style={{ width: '16px', height: '16px', color: '#86efac' }} />
-                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>Secure checkout • Fugly approved</span>
+                    <span style={{ color: '#FBDB65', fontWeight: '600' }}>Secure checkout • Powered by Stripe</span>
                   </div>
                 </div>
 

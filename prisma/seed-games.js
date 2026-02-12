@@ -93,7 +93,7 @@ const sampleNews = [
   {
     title: "Mayhem Machine Bundle Saves You $10",
     excerpt: "Get all three game-modifier decks for just $49.99. That's like getting Dumbest Ways to Win basically free. Math is hard. Savings are easy.",
-    content: "Bundle up and save! When you buy Hack Your Deck, Crime and Funishments, and Dumbest Ways to Win together, you save $10 off the individual prices. Fugly approved!"
+    content: "Bundle up and save! When you buy Hack Your Deck, Crime and Funishments, and Dumbest Ways to Win together, you save $10 off the individual prices."
   },
   {
     title: "HOA: The Game Coming 2026",
