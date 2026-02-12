@@ -62,6 +62,9 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
   const [scrollY, setScrollY] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [notifyEmail, setNotifyEmail] = useState('');
+  const [notifyStatus, setNotifyStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const addToCartStore = useCartStore((state) => state.addToCart);
   const addToast = useToastStore((state) => state.addToast);
 
@@ -85,10 +88,7 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
   const isOutOfStock = game.stock <= 0;
 
   const handleAddToCart = () => {
-    if (isOutOfStock) {
-      addToast({ message: 'This game is currently out of stock', type: 'error' });
-      return;
-    }
+    if (isOutOfStock) return;
 
     addToCartStore({
       id: game.id,
@@ -99,7 +99,41 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
       type: 'game'
     });
 
-    addToast({ message: `${game.title} added to cart!`, type: 'success' });
+    // Visual feedback on the button
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
+
+  const handleNotifyMe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!notifyEmail || notifyStatus === 'loading') return;
+
+    setNotifyStatus('loading');
+    try {
+      const res = await fetch(`/api/games/${game.id}/notify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: notifyEmail }),
+      });
+      const data = await res.json();
+
+      if (data.inStock) {
+        // Game came back in stock while they were on the page
+        window.location.reload();
+        return;
+      }
+
+      if (!res.ok) {
+        addToast({ message: data.error || 'Something went wrong', type: 'error' });
+        setNotifyStatus('error');
+        return;
+      }
+
+      setNotifyStatus('success');
+    } catch {
+      addToast({ message: 'Something went wrong. Please try again.', type: 'error' });
+      setNotifyStatus('error');
+    }
   };
 
   const allImages = [
@@ -241,40 +275,111 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
             }}>
               ${(game.priceCents / 100).toFixed(2)}
             </div>
-            <button
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className="hero-cta"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: 'clamp(0.875rem, 2vw, 1.25rem) clamp(1.5rem, 3vw, 2.5rem)',
-                background: isOutOfStock ? '#444' : 'linear-gradient(135deg, #FF8200, #ea580c)',
-                color: isOutOfStock ? '#888' : 'white',
-                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
-                fontWeight: 'bold',
-                border: 'none',
-                borderRadius: '50px',
-                cursor: isOutOfStock ? 'not-allowed' : 'pointer',
-                transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: isOutOfStock ? 'none' : '0 8px 30px rgba(255, 130, 0, 0.5)',
-                opacity: isOutOfStock ? 0.7 : 1
-              }}
-            >
-              <ShoppingCart size={isMobile ? 22 : 26} />
-              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
-            </button>
-            {game.stock > 0 && game.stock < 10 && (
-              <p style={{
-                color: '#ef4444',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                marginTop: '0.75rem',
-                textShadow: '0 2px 8px rgba(0,0,0,0.8)'
-              }}>
-                Only {game.stock} left in stock!
-              </p>
+            {isOutOfStock ? (
+              /* Notify Me Form — Out of Stock */
+              notifyStatus === 'success' ? (
+                <div style={{
+                  background: 'rgba(34, 197, 94, 0.15)',
+                  border: '2px solid #22c55e',
+                  borderRadius: '12px',
+                  padding: '1rem 1.5rem',
+                  textAlign: 'center',
+                }}>
+                  <p style={{ color: '#22c55e', fontWeight: 'bold', margin: 0, fontSize: '1.1rem' }}>
+                    ✓ We'll email you when it's back!
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p style={{
+                    color: '#94a3b8',
+                    fontSize: '0.95rem',
+                    marginBottom: '0.75rem',
+                    textShadow: '0 2px 8px rgba(0,0,0,0.8)'
+                  }}>
+                    Sold out — get notified when it's back:
+                  </p>
+                  <form onSubmit={handleNotifyMe} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <input
+                      type="email"
+                      placeholder="Your email"
+                      value={notifyEmail}
+                      onChange={(e) => setNotifyEmail(e.target.value)}
+                      required
+                      style={{
+                        padding: '0.75rem 1.25rem',
+                        borderRadius: '50px',
+                        border: '2px solid #374151',
+                        background: '#1a1a2e',
+                        color: '#e2e8f0',
+                        fontSize: '1rem',
+                        outline: 'none',
+                        minWidth: '220px',
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={notifyStatus === 'loading'}
+                      style={{
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '50px',
+                        border: 'none',
+                        background: '#7D55C7',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '1rem',
+                        cursor: notifyStatus === 'loading' ? 'wait' : 'pointer',
+                        opacity: notifyStatus === 'loading' ? 0.7 : 1,
+                        transition: 'all 0.3s ease',
+                      }}
+                    >
+                      {notifyStatus === 'loading' ? 'Saving...' : 'Notify Me'}
+                    </button>
+                  </form>
+                </div>
+              )
+            ) : (
+              /* Add to Cart Button — In Stock */
+              <>
+                <button
+                  onClick={handleAddToCart}
+                  className="hero-cta"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: 'clamp(0.875rem, 2vw, 1.25rem) clamp(1.5rem, 3vw, 2.5rem)',
+                    background: addedToCart
+                      ? 'linear-gradient(135deg, #22c55e, #16a34a)'
+                      : 'linear-gradient(135deg, #FF8200, #ea580c)',
+                    color: 'white',
+                    fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+                    fontWeight: 'bold',
+                    border: 'none',
+                    borderRadius: '50px',
+                    cursor: 'pointer',
+                    transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: addedToCart
+                      ? '0 8px 30px rgba(34, 197, 94, 0.5)'
+                      : '0 8px 30px rgba(255, 130, 0, 0.5)',
+                    transform: addedToCart ? 'scale(1.05)' : 'scale(1)',
+                  }}
+                >
+                  <ShoppingCart size={isMobile ? 22 : 26} />
+                  {addedToCart ? 'Added to Cart ✓' : 'Add to Cart'}
+                </button>
+                {game.stock > 0 && game.stock < 10 && (
+                  <p style={{
+                    color: '#ef4444',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    marginTop: '0.75rem',
+                    textShadow: '0 2px 8px rgba(0,0,0,0.8)'
+                  }}>
+                    Only {game.stock} left in stock!
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -522,42 +627,101 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
         textAlign: 'center'
       }}>
         <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'white', marginBottom: '1rem', fontWeight: 'bold' }}>
-          Ready to Play?
+          {isOutOfStock ? 'Want This Game?' : 'Ready to Play?'}
         </h2>
         <div style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: '#FBDB65', fontWeight: 'bold', marginBottom: 'clamp(1rem, 3vw, 2rem)' }}>
           ${(game.priceCents / 100).toFixed(2)}
         </div>
-        <button
-          onClick={handleAddToCart}
-          disabled={isOutOfStock}
-          className="cta-button"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '1rem',
-            padding: 'clamp(1rem, 2vw, 1.5rem) clamp(2rem, 4vw, 3rem)',
-            background: isOutOfStock ? '#333' : '#0a0a0a',
-            color: isOutOfStock ? '#666' : '#FBDB65',
-            fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
-            fontWeight: 'bold',
-            border: 'none',
-            borderRadius: '50px',
-            cursor: isOutOfStock ? 'not-allowed' : 'pointer',
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: isOutOfStock ? 'none' : '0 10px 30px rgba(0,0,0,0.3)',
-            opacity: isOutOfStock ? 0.7 : 1
-          }}
-        >
-          <ShoppingCart size={isMobile ? 24 : 30} />
-          {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
-        </button>
-        <div style={{ marginTop: '2rem' }}>
-          {game.stock > 0 && game.stock < 10 && (
-            <p style={{ color: '#FBDB65', fontSize: '1.2rem', fontWeight: 'bold' }}>
-              Only {game.stock} left in stock!
-            </p>
-          )}
-        </div>
+        {isOutOfStock ? (
+          notifyStatus === 'success' ? (
+            <div style={{
+              background: 'rgba(34, 197, 94, 0.2)',
+              border: '2px solid #22c55e',
+              borderRadius: '12px',
+              padding: '1rem 2rem',
+              display: 'inline-block',
+            }}>
+              <p style={{ color: '#22c55e', fontWeight: 'bold', margin: 0, fontSize: '1.2rem' }}>
+                ✓ We'll email you when it's back!
+              </p>
+            </div>
+          ) : (
+            <div>
+              <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '1rem', fontSize: '1.1rem' }}>
+                Currently sold out — be the first to know when it's back:
+              </p>
+              <form onSubmit={handleNotifyMe} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  value={notifyEmail}
+                  onChange={(e) => setNotifyEmail(e.target.value)}
+                  required
+                  style={{
+                    padding: '1rem 1.5rem',
+                    borderRadius: '50px',
+                    border: '2px solid rgba(255,255,255,0.2)',
+                    background: 'rgba(0,0,0,0.4)',
+                    color: 'white',
+                    fontSize: '1.1rem',
+                    outline: 'none',
+                    minWidth: '240px',
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={notifyStatus === 'loading'}
+                  style={{
+                    padding: '1rem 2rem',
+                    borderRadius: '50px',
+                    border: 'none',
+                    background: '#0a0a0a',
+                    color: '#FBDB65',
+                    fontWeight: 'bold',
+                    fontSize: '1.1rem',
+                    cursor: notifyStatus === 'loading' ? 'wait' : 'pointer',
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  {notifyStatus === 'loading' ? 'Saving...' : 'Notify Me'}
+                </button>
+              </form>
+            </div>
+          )
+        ) : (
+          <>
+            <button
+              onClick={handleAddToCart}
+              className="cta-button"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '1rem',
+                padding: 'clamp(1rem, 2vw, 1.5rem) clamp(2rem, 4vw, 3rem)',
+                background: addedToCart ? '#22c55e' : '#0a0a0a',
+                color: addedToCart ? 'white' : '#FBDB65',
+                fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
+                fontWeight: 'bold',
+                border: 'none',
+                borderRadius: '50px',
+                cursor: 'pointer',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+                transform: addedToCart ? 'scale(1.05)' : 'scale(1)',
+              }}
+            >
+              <ShoppingCart size={isMobile ? 24 : 30} />
+              {addedToCart ? 'Added to Cart ✓' : 'Add to Cart'}
+            </button>
+            <div style={{ marginTop: '2rem' }}>
+              {game.stock > 0 && game.stock < 10 && (
+                <p style={{ color: '#FBDB65', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                  Only {game.stock} left in stock!
+                </p>
+              )}
+            </div>
+          </>
+        )}
       </section>
 
       {/* Similar Games */}
@@ -694,31 +858,58 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
                 </div>
               )}
             </div>
-            <button
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className="sticky-cta"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: isMobile ? '0.75rem 1.25rem' : '1rem 2rem',
-                background: isOutOfStock ? '#444' : 'linear-gradient(135deg, #FF8200, #ea580c)',
-                color: isOutOfStock ? '#888' : 'white',
-                fontSize: isMobile ? '0.9rem' : '1rem',
-                fontWeight: 'bold',
-                border: 'none',
-                borderRadius: '50px',
-                cursor: isOutOfStock ? 'not-allowed' : 'pointer',
-                transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: isOutOfStock ? 'none' : '0 4px 15px rgba(255, 130, 0, 0.4)',
-                whiteSpace: 'nowrap',
-                opacity: isOutOfStock ? 0.7 : 1
-              }}
-            >
-              <ShoppingCart size={isMobile ? 18 : 22} />
-              {isOutOfStock ? 'Out of Stock' : 'Get Your Copy'}
-            </button>
+            {isOutOfStock ? (
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="sticky-cta"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: isMobile ? '0.75rem 1.25rem' : '1rem 2rem',
+                  background: '#7D55C7',
+                  color: 'white',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  fontWeight: 'bold',
+                  border: 'none',
+                  borderRadius: '50px',
+                  cursor: 'pointer',
+                  transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 4px 15px rgba(125, 85, 199, 0.4)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {notifyStatus === 'success' ? '✓ Notified' : 'Get Notified'}
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                className="sticky-cta"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: isMobile ? '0.75rem 1.25rem' : '1rem 2rem',
+                  background: addedToCart
+                    ? 'linear-gradient(135deg, #22c55e, #16a34a)'
+                    : 'linear-gradient(135deg, #FF8200, #ea580c)',
+                  color: 'white',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  fontWeight: 'bold',
+                  border: 'none',
+                  borderRadius: '50px',
+                  cursor: 'pointer',
+                  transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: addedToCart
+                    ? '0 4px 15px rgba(34, 197, 94, 0.4)'
+                    : '0 4px 15px rgba(255, 130, 0, 0.4)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <ShoppingCart size={isMobile ? 18 : 22} />
+                {addedToCart ? 'Added ✓' : 'Get Your Copy'}
+              </button>
+            )}
           </div>
         </div>
       </div>

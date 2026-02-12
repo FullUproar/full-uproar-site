@@ -119,6 +119,7 @@ model Game {
   reviews             Review[]
   designComponents    DesignComponent[]
   gameNightGames      GameNightGame[] // Games added to game night lineups
+  stockNotifications  StockNotification[]
 }
 
 model Comic {
@@ -2349,4 +2350,17 @@ model FulfillmentScan {
   @@index([fulfillmentId])
   @@index([barcode])
   @@index([packageId])
+}
+
+model StockNotification {
+  id         Int       @id @default(autoincrement())
+  email      String
+  gameId     Int
+  game       Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  notified   Boolean   @default(false)
+  notifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@unique([email, gameId])
+  @@index([gameId, notified])
 }

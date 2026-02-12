@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth/require-admin';
+import { sendBackInStockNotification } from '@/lib/email';
 
 export async function GET(
   request: NextRequest,
@@ -70,10 +71,50 @@ export async function PATCH(
       updateData.launchDate = new Date(updateData.launchDate);
     }
 
+    // Check current stock before update (for back-in-stock notifications)
+    const currentGame = await prisma.game.findUnique({
+      where: { id: gameId },
+      select: { stock: true, title: true, slug: true, priceCents: true, imageUrl: true },
+    });
+
     const updatedGame = await prisma.game.update({
       where: { id: gameId },
       data: updateData
     });
+
+    // If stock went from 0 to >0, send back-in-stock notifications (fire-and-forget)
+    if (currentGame && currentGame.stock <= 0 && updatedGame.stock > 0) {
+      (async () => {
+        try {
+          const notifications = await prisma.stockNotification.findMany({
+            where: { gameId, notified: false },
+          });
+
+          for (const notification of notifications) {
+            await sendBackInStockNotification({
+              customerEmail: notification.email,
+              gameName: currentGame.title,
+              gameSlug: currentGame.slug,
+              priceCents: currentGame.priceCents,
+              imageUrl: currentGame.imageUrl || undefined,
+            });
+            // Small delay between emails to avoid rate limits
+            await new Promise(resolve => setTimeout(resolve, 200));
+          }
+
+          // Mark all as notified
+          if (notifications.length > 0) {
+            await prisma.stockNotification.updateMany({
+              where: { gameId, notified: false },
+              data: { notified: true, notifiedAt: new Date() },
+            });
+            console.log(`Sent ${notifications.length} back-in-stock notifications for ${currentGame.title}`);
+          }
+        } catch (error) {
+          console.error('Failed to send back-in-stock notifications:', error);
+        }
+      })();
+    }
 
     return NextResponse.json(updatedGame);
   } catch (error) {

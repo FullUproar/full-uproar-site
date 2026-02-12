@@ -1614,3 +1614,144 @@ Questions? Contact us at support@fulluproar.com
     return false;
   }
 }
+
+// ============================================================
+// Back-in-Stock Notification
+// ============================================================
+
+export async function sendBackInStockNotification(data: {
+  customerEmail: string;
+  gameName: string;
+  gameSlug: string;
+  priceCents: number;
+  imageUrl?: string;
+}): Promise<boolean> {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn('Email not configured - skipping back-in-stock notification');
+    return false;
+  }
+
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://fulluproar.com';
+  const price = `$${(data.priceCents / 100).toFixed(2)}`;
+  const productUrl = `${BASE_URL}/shop/games/${data.gameSlug}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+        <tr>
+          <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111827; border-radius: 12px; overflow: hidden;">
+              <!-- Header -->
+              <tr>
+                <td style="background: linear-gradient(135deg, #FF8200 0%, #ea580c 100%); padding: 35px; text-align: center;">
+                  <div style="font-size: 48px; margin-bottom: 10px;">🎉</div>
+                  <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                    It's Back in Stock!
+                  </h1>
+                  <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 14px;">
+                    The game you've been waiting for is available again
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Content -->
+              <tr>
+                <td style="padding: 40px 30px;">
+                  <p style="color: #e2e8f0; font-size: 18px; margin: 0 0 20px 0;">
+                    Great news!
+                  </p>
+
+                  <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                    <strong style="color: #FBDB65;">${data.gameName}</strong> is back in stock and ready to ship. You asked us to let you know — so here we are!
+                  </p>
+
+                  <!-- Product Card -->
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1f2937; border-radius: 8px; margin-bottom: 25px; border: 2px solid #FF8200;">
+                    <tr>
+                      <td style="padding: 20px; text-align: center;">
+                        ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.gameName}" style="max-width: 200px; border-radius: 8px; margin-bottom: 15px;" />` : ''}
+                        <p style="color: #FBDB65; font-size: 20px; font-weight: bold; margin: 0 0 5px 0;">
+                          ${data.gameName}
+                        </p>
+                        <p style="color: #FF8200; font-size: 24px; font-weight: bold; margin: 0;">
+                          ${price}
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <p style="color: #ef4444; font-size: 14px; font-weight: 600; text-align: center; margin: 0 0 25px 0;">
+                    ⚡ Stock is limited — grab yours before it's gone again!
+                  </p>
+
+                  <!-- CTA Button -->
+                  <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td align="center" style="padding: 10px 0 25px 0;">
+                        <a href="${productUrl}"
+                           style="display: inline-block; background-color: #FF8200; color: #111827; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 900; font-size: 16px; text-transform: uppercase; letter-spacing: 0.05em;">
+                          Get Your Copy
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="background-color: #1f2937; padding: 25px 30px; border-top: 1px solid #374151;">
+                  <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+                    Full Uproar Games Inc.<br>
+                    <span style="color: #FF8200;">Professionally ruining game nights since day one.</span>
+                  </p>
+                  <p style="color: #475569; font-size: 11px; margin: 10px 0 0 0; text-align: center;">
+                    You received this because you signed up for a back-in-stock notification.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+
+  const text = `
+IT'S BACK IN STOCK!
+
+Great news! ${data.gameName} is back in stock and ready to ship.
+
+Price: ${price}
+
+Stock is limited — grab yours before it's gone again!
+
+Get your copy: ${productUrl}
+
+---
+Full Uproar Games Inc.
+Professionally ruining game nights since day one.
+  `.trim();
+
+  try {
+    await transporter.sendMail({
+      from: `"Full Uproar Games" <${process.env.GMAIL_USER}>`,
+      to: data.customerEmail,
+      subject: `🎉 ${data.gameName} is back in stock!`,
+      text,
+      html,
+    });
+    console.log(`Back-in-stock notification sent to ${data.customerEmail} for ${data.gameName}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send back-in-stock notification:', error);
+    return false;
+  }
+}
