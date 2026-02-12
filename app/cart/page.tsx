@@ -73,7 +73,7 @@ export default function CartPage() {
           textTransform: 'uppercase',
           letterSpacing: '0.05em'
         }}>
-          YOUR FUGLY CART
+          YOUR CART
         </h1>
 
         {items.length === 0 ? (
@@ -97,7 +97,7 @@ export default function CartPage() {
               color: '#FBDB65', 
               marginBottom: '3rem' 
             }}>
-              Fugly is disappointed. Add some chaos!
+              Nothing here yet. Time to browse!
             </p>
             <Link href="/shop">
               <button style={{
@@ -410,7 +410,7 @@ export default function CartPage() {
                   e.currentTarget.style.background = '#FF8200';
                 }}
               >
-                Checkout Now →
+                Checkout Now
                 <ArrowRight size={20} />
               </button>
               
