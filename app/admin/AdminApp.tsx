@@ -107,8 +107,10 @@ export default function AdminApp() {
       ];
 
       if (validViews.includes(viewParam as ViewType)) {
-        // Redirect game edit/new to dedicated pages
-        if (viewParam === 'games-edit' && idParam) {
+        // Redirect to dedicated pages
+        if (viewParam === 'orders-detail' && idParam) {
+          router.push(`/admin/orders/${idParam}`);
+        } else if (viewParam === 'games-edit' && idParam) {
           router.push(`/admin/games/${idParam}/edit`);
         } else if (viewParam === 'games-new') {
           router.push('/admin/games/new');
@@ -137,9 +139,15 @@ export default function AdminApp() {
       case 'orders-list':
         return (
           <OrdersListView
-            onViewDetails={(order) => navigateTo({ type: 'orders-detail', data: order })}
+            onViewDetails={(order) => router.push(`/admin/orders/${order.id}`)}
           />
         );
+
+      case 'orders-detail':
+        if (currentView.data?.id) {
+          router.push(`/admin/orders/${currentView.data.id}`);
+        }
+        return null;
 
       case 'games-list':
         return (

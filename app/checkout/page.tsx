@@ -8,10 +8,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useUser } from '@clerk/nextjs';
 import Navigation from '@/app/components/Navigation';
-import { simulatePayment, TEST_CARDS, formatTestCardDisplay } from '@/lib/payment-test-mode';
-import { getPaymentMode, isSimulatedMode, isStripeMode, isLiveMode } from '@/lib/payment-mode';
+import { simulatePayment, formatTestCardDisplay } from '@/lib/payment-test-mode';
+import { getPaymentMode, isSimulatedMode, isStripeMode } from '@/lib/payment-mode';
 import dynamic from 'next/dynamic';
-import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import TrustBadges from '@/app/components/TrustBadges';
@@ -722,7 +721,7 @@ export default function CheckoutPage() {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: colors.textMuted, ...typography.small }}>
-              Tax{currentStep >= 3 && taxInfo.isEstimate ? ' (est.)' : ''}
+              Tax
             </span>
             <span style={{ color: colors.textSecondary, ...typography.small }}>
               {currentStep >= 3 ? (
@@ -1328,7 +1327,7 @@ export default function CheckoutPage() {
                           <span style={{ color: colors.textSecondary }}>${(shipping / 100).toFixed(2)}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ color: colors.textMuted }}>Tax{taxInfo.isEstimate ? ' (est.)' : ''}</span>
+                          <span style={{ color: colors.textMuted }}>Tax</span>
                           <span style={{ color: colors.textSecondary }}>
                             {isCalculatingTax ? (
                               <span style={{ ...typography.xs }}>Calculating...</span>
