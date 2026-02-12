@@ -82,9 +82,11 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
   const showStickyFooter = scrollY > 400;
   const heroArrowOpacity = Math.max(0, 1 - scrollY / 300);
 
+  const isOutOfStock = game.stock <= 0;
+
   const handleAddToCart = () => {
-    if (game.stock === 0) {
-      addToast({ message: 'Out of stock', type: 'error' });
+    if (isOutOfStock) {
+      addToast({ message: 'This game is currently out of stock', type: 'error' });
       return;
     }
 
@@ -241,25 +243,27 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
             </div>
             <button
               onClick={handleAddToCart}
+              disabled={isOutOfStock}
               className="hero-cta"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.75rem',
                 padding: 'clamp(0.875rem, 2vw, 1.25rem) clamp(1.5rem, 3vw, 2.5rem)',
-                background: 'linear-gradient(135deg, #FF8200, #ea580c)',
-                color: 'white',
+                background: isOutOfStock ? '#444' : 'linear-gradient(135deg, #FF8200, #ea580c)',
+                color: isOutOfStock ? '#888' : 'white',
                 fontSize: 'clamp(1rem, 2vw, 1.3rem)',
                 fontWeight: 'bold',
                 border: 'none',
                 borderRadius: '50px',
-                cursor: 'pointer',
+                cursor: isOutOfStock ? 'not-allowed' : 'pointer',
                 transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 8px 30px rgba(255, 130, 0, 0.5)'
+                boxShadow: isOutOfStock ? 'none' : '0 8px 30px rgba(255, 130, 0, 0.5)',
+                opacity: isOutOfStock ? 0.7 : 1
               }}
             >
               <ShoppingCart size={isMobile ? 22 : 26} />
-              Add to Cart
+              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
             </button>
             {game.stock > 0 && game.stock < 10 && (
               <p style={{
@@ -525,25 +529,27 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
         </div>
         <button
           onClick={handleAddToCart}
+          disabled={isOutOfStock}
           className="cta-button"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '1rem',
             padding: 'clamp(1rem, 2vw, 1.5rem) clamp(2rem, 4vw, 3rem)',
-            background: '#0a0a0a',
-            color: '#FBDB65',
+            background: isOutOfStock ? '#333' : '#0a0a0a',
+            color: isOutOfStock ? '#666' : '#FBDB65',
             fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
             fontWeight: 'bold',
             border: 'none',
             borderRadius: '50px',
-            cursor: 'pointer',
+            cursor: isOutOfStock ? 'not-allowed' : 'pointer',
             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            boxShadow: isOutOfStock ? 'none' : '0 10px 30px rgba(0,0,0,0.3)',
+            opacity: isOutOfStock ? 0.7 : 1
           }}
         >
           <ShoppingCart size={isMobile ? 24 : 30} />
-          Add to Cart
+          {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
         </button>
         <div style={{ marginTop: '2rem' }}>
           {game.stock > 0 && game.stock < 10 && (
@@ -690,26 +696,28 @@ export default function GameShopPage({ game, similarGames, reviewSummary }: Game
             </div>
             <button
               onClick={handleAddToCart}
+              disabled={isOutOfStock}
               className="sticky-cta"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: isMobile ? '0.75rem 1.25rem' : '1rem 2rem',
-                background: 'linear-gradient(135deg, #FF8200, #ea580c)',
-                color: 'white',
+                background: isOutOfStock ? '#444' : 'linear-gradient(135deg, #FF8200, #ea580c)',
+                color: isOutOfStock ? '#888' : 'white',
                 fontSize: isMobile ? '0.9rem' : '1rem',
                 fontWeight: 'bold',
                 border: 'none',
                 borderRadius: '50px',
-                cursor: 'pointer',
+                cursor: isOutOfStock ? 'not-allowed' : 'pointer',
                 transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 4px 15px rgba(255, 130, 0, 0.4)',
-                whiteSpace: 'nowrap'
+                boxShadow: isOutOfStock ? 'none' : '0 4px 15px rgba(255, 130, 0, 0.4)',
+                whiteSpace: 'nowrap',
+                opacity: isOutOfStock ? 0.7 : 1
               }}
             >
               <ShoppingCart size={isMobile ? 18 : 22} />
-              Get Your Copy
+              {isOutOfStock ? 'Out of Stock' : 'Get Your Copy'}
             </button>
           </div>
         </div>
