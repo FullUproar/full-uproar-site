@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/lib/cartStore';
-import { ArrowLeft, ArrowRight, CreditCard, AlertCircle, TestTube, Rocket, X, User, Check, ChevronDown, ChevronUp, Loader2, Edit3 } from 'lucide-react';
+import { CreditCard, AlertCircle, TestTube, Rocket, X, User, Check, ChevronDown, ChevronUp, Loader2, Edit3 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useUser } from '@clerk/nextjs';
@@ -493,14 +493,14 @@ export default function CheckoutPage() {
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    padding: '0.75rem 1rem',
+    padding: '0.5rem 0.75rem',
     background: colors.textDark,
     color: colors.creamYellow,
-    borderRadius: '0.5rem',
-    border: `2px solid ${colors.bgCardHover}`,
+    borderRadius: '0.375rem',
+    border: `1px solid ${colors.bgCardHover}`,
     outline: 'none',
-    fontSize: typography.body.fontSize,
-    transition: 'all 0.3s',
+    fontSize: typography.small.fontSize,
+    transition: 'all 0.2s',
     boxSizing: 'border-box' as const,
   };
 
@@ -508,8 +508,8 @@ export default function CheckoutPage() {
     display: 'block',
     color: colors.creamYellow,
     fontWeight: typography.label.fontWeight,
-    fontSize: typography.label.fontSize,
-    marginBottom: spacing.sm,
+    fontSize: typography.xs.fontSize,
+    marginBottom: '0.25rem',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
   };
@@ -518,18 +518,16 @@ export default function CheckoutPage() {
     width: '100%',
     background: colors.primary,
     color: colors.textDark,
-    padding: '1rem',
+    padding: '0.875rem',
     borderRadius: '50px',
     fontWeight: 900,
-    fontSize: typography.bodyLarge.fontSize,
+    fontSize: typography.body.fontSize,
     border: 'none',
     cursor: 'pointer',
     transition: 'all 0.3s',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    textAlign: 'center',
     gap: spacing.sm,
   };
 
@@ -579,7 +577,7 @@ export default function CheckoutPage() {
   ];
 
   const renderProgressBar = () => (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: spacing['3xl'], gap: '0' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: spacing.lg, gap: '0' }}>
       {steps.map(({ step, label }) => {
         const isCompleted = currentStep > step;
         const isCurrent = currentStep === step;
@@ -592,25 +590,25 @@ export default function CheckoutPage() {
               onClick={() => isCompleted && setCurrentStep(step)}
             >
               <div style={{
-                width: '2.5rem',
-                height: '2.5rem',
+                width: '2rem',
+                height: '2rem',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 900,
-                fontSize: '1rem',
+                fontSize: '0.8rem',
                 background: isCompleted ? colors.success : isCurrent ? colors.primary : colors.bgCardHover,
                 color: isCompleted || isCurrent ? 'white' : colors.textMuted,
                 border: isCompleted ? `3px solid ${colors.success}` : isCurrent ? `3px solid ${colors.primary}` : `3px solid #4b5563`,
                 transition: 'all 0.3s',
                 animation: isCurrent ? 'pulse 2s infinite' : 'none',
               }}>
-                {isCompleted ? <Check size={18} strokeWidth={3} /> : step}
+                {isCompleted ? <Check size={14} strokeWidth={3} /> : step}
               </div>
               <span style={{
-                marginTop: spacing.xs,
-                fontSize: typography.xs.fontSize,
+                marginTop: '2px',
+                fontSize: '0.65rem',
                 fontWeight: 700,
                 color: isFuture ? colors.textMuted : colors.creamYellow,
                 textTransform: 'uppercase',
@@ -620,10 +618,10 @@ export default function CheckoutPage() {
             </div>
             {step < 3 && (
               <div style={{
-                width: isMobile ? '3rem' : '6rem',
-                height: '3px',
-                margin: `0 ${isMobile ? '0.5rem' : '1rem'}`,
-                marginBottom: '1.5rem',
+                width: isMobile ? '3rem' : '5rem',
+                height: '2px',
+                margin: `0 ${isMobile ? '0.5rem' : '0.75rem'}`,
+                marginBottom: '1.2rem',
                 background: currentStep > step ? colors.primary : colors.bgCardHover,
                 borderRadius: '2px',
                 transition: 'all 0.3s',
@@ -642,13 +640,13 @@ export default function CheckoutPage() {
 
     const summaryContent = (
       <>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
           {items.map((item) => (
-            <div key={`${item.id}-${item.size || ''}-${item.color || ''}`} style={{ display: 'flex', gap: spacing.md, alignItems: 'center' }}>
+            <div key={`${item.id}-${item.size || ''}-${item.color || ''}`} style={{ display: 'flex', gap: spacing.sm, alignItems: 'center' }}>
               <div style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '8px',
+                width: '40px',
+                height: '40px',
+                borderRadius: '6px',
                 overflow: 'hidden',
                 background: colors.bgCardHover,
                 flexShrink: 0,
@@ -658,8 +656,8 @@ export default function CheckoutPage() {
                   <Image
                     src={item.imageUrl}
                     alt={item.name}
-                    width={48}
-                    height={48}
+                    width={40}
+                    height={40}
                     style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                     unoptimized
                   />
@@ -699,31 +697,31 @@ export default function CheckoutPage() {
           ))}
         </div>
 
-        <div style={{ borderTop: `1px solid ${colors.bgCardHover}`, marginTop: spacing.md, paddingTop: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+        <div style={{ borderTop: `1px solid ${colors.bgCardHover}`, marginTop: spacing.sm, paddingTop: spacing.sm, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: colors.textMuted, ...typography.small }}>Subtotal</span>
-            <span style={{ color: colors.textSecondary, ...typography.small }}>${(subtotal / 100).toFixed(2)}</span>
+            <span style={{ color: colors.textMuted, ...typography.xs }}>Subtotal</span>
+            <span style={{ color: colors.textSecondary, ...typography.xs }}>${(subtotal / 100).toFixed(2)}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: colors.textMuted, ...typography.small }}>
+            <span style={{ color: colors.textMuted, ...typography.xs }}>
               Shipping
               {selectedShipping && (
-                <span style={{ fontSize: typography.xs.fontSize, display: 'block', color: colors.textMuted }}>
+                <span style={{ fontSize: '0.65rem', display: 'block', color: colors.textMuted }}>
                   {selectedShipping.carrier} {selectedShipping.service}
                 </span>
               )}
             </span>
-            <span style={{ color: colors.textSecondary, ...typography.small }}>
+            <span style={{ color: colors.textSecondary, ...typography.xs }}>
               {currentStep >= 2 && selectedShipping ? `$${(shipping / 100).toFixed(2)}` : (
                 <span style={{ color: colors.textMuted, fontStyle: 'italic' }}>Calculated next</span>
               )}
             </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: colors.textMuted, ...typography.small }}>
+            <span style={{ color: colors.textMuted, ...typography.xs }}>
               Tax
             </span>
-            <span style={{ color: colors.textSecondary, ...typography.small }}>
+            <span style={{ color: colors.textSecondary, ...typography.xs }}>
               {currentStep >= 3 ? (
                 isCalculatingTax ? (
                   <span style={{ color: colors.textMuted, fontStyle: 'italic' }}>Calculating...</span>
@@ -733,9 +731,9 @@ export default function CheckoutPage() {
               )}
             </span>
           </div>
-          <div style={{ borderTop: `1px solid ${colors.bgCardHover}`, paddingTop: spacing.sm, display: 'flex', justifyContent: 'space-between', marginTop: spacing.xs }}>
-            <span style={{ fontSize: typography.h4.fontSize, fontWeight: 900, color: colors.primary }}>Total</span>
-            <span style={{ fontSize: typography.h4.fontSize, fontWeight: 900, color: colors.primary }}>
+          <div style={{ borderTop: `1px solid ${colors.bgCardHover}`, paddingTop: spacing.xs, display: 'flex', justifyContent: 'space-between', marginTop: spacing.xs }}>
+            <span style={{ ...typography.body, fontWeight: 900, color: colors.primary }}>Total</span>
+            <span style={{ ...typography.body, fontWeight: 900, color: colors.primary }}>
               ${((currentStep >= 3 ? total : subtotal + shipping) / 100).toFixed(2)}
             </span>
           </div>
@@ -753,8 +751,8 @@ export default function CheckoutPage() {
         <div style={{
           background: colors.bgCard,
           borderRadius: '0.75rem',
-          border: `2px solid ${colors.bgCardHover}`,
-          marginBottom: spacing.xl,
+          border: `1px solid ${colors.bgCardHover}`,
+          marginBottom: spacing.md,
           overflow: 'hidden',
         }}>
           <button
@@ -764,25 +762,25 @@ export default function CheckoutPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: spacing.lg,
+              padding: spacing.md,
               background: 'none',
               border: 'none',
               cursor: 'pointer',
               color: colors.creamYellow,
             }}
           >
-            <span style={{ ...typography.small, fontWeight: 700 }}>
+            <span style={{ ...typography.xs, fontWeight: 700 }}>
               Order Summary ({totalItems} {totalItems === 1 ? 'item' : 'items'})
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-              <span style={{ ...typography.body, fontWeight: 900, color: colors.primary }}>
+              <span style={{ ...typography.small, fontWeight: 900, color: colors.primary }}>
                 ${((currentStep >= 3 ? total : subtotal + shipping) / 100).toFixed(2)}
               </span>
-              {orderSummaryExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              {orderSummaryExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </div>
           </button>
           {orderSummaryExpanded && (
-            <div style={{ padding: `0 ${spacing.lg} ${spacing.lg}` }}>
+            <div style={{ padding: `0 ${spacing.md} ${spacing.md}` }}>
               {summaryContent}
             </div>
           )}
@@ -794,14 +792,14 @@ export default function CheckoutPage() {
     return (
       <div style={{
         position: 'sticky',
-        top: spacing.xl,
+        top: spacing.md,
         background: colors.bgCard,
-        borderRadius: '1rem',
-        padding: spacing.lg,
-        border: `2px solid ${colors.bgCardHover}`,
+        borderRadius: '0.75rem',
+        padding: spacing.md,
+        border: `1px solid ${colors.bgCardHover}`,
         alignSelf: 'start',
       }}>
-        <h3 style={{ ...typography.h4, color: colors.creamYellow, marginBottom: spacing.lg, margin: `0 0 ${spacing.lg}` }}>
+        <h3 style={{ ...typography.small, fontWeight: 700, color: colors.creamYellow, margin: `0 0 ${spacing.md}`, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Order Summary
         </h3>
         {summaryContent}
@@ -827,13 +825,13 @@ export default function CheckoutPage() {
       <div style={{ minHeight: '100vh', background: colors.gradientHero }}>
         <Navigation />
 
-        <div style={{ maxWidth: '72rem', margin: '0 auto', padding: `${spacing['3xl']} ${spacing.page}` }}>
+        <div style={{ maxWidth: '72rem', margin: '0 auto', padding: `${spacing.lg} ${spacing.page}` }}>
           {/* Page title */}
           <h1 style={{
-            ...typography.h1,
+            ...typography.h3,
             color: colors.primary,
             textAlign: 'center',
-            marginBottom: spacing.xl,
+            marginBottom: spacing.md,
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
           }}>
@@ -920,15 +918,14 @@ export default function CheckoutPage() {
               <div style={{
                 background: colors.bgCard,
                 borderRadius: '1rem',
-                padding: spacing.xl,
+                padding: spacing.lg,
                 border: `2px solid ${colors.bgCardHover}`,
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
               }}>
 
                 {/* ── Step 1: Contact Information ── */}
                 {currentStep === 1 && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
-                    <h2 style={{ ...typography.h2, color: colors.primary, marginBottom: spacing.sm }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+                    <h2 style={{ ...typography.h4, color: colors.primary, margin: 0 }}>
                       Contact Information
                     </h2>
 
@@ -1028,15 +1025,15 @@ export default function CheckoutPage() {
                       onMouseEnter={(e) => { e.currentTarget.style.background = colors.primaryDark; e.currentTarget.style.transform = 'scale(1.02)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.background = colors.primary; e.currentTarget.style.transform = 'scale(1)'; }}
                     >
-                      Continue to Shipping <ArrowRight size={18} />
+                      Continue to Shipping
                     </button>
                   </div>
                 )}
 
                 {/* ── Step 2: Shipping Address ── */}
                 {currentStep === 2 && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
-                    <h2 style={{ ...typography.h2, color: colors.primary, marginBottom: spacing.sm }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+                    <h2 style={{ ...typography.h4, color: colors.primary, margin: 0 }}>
                       Shipping Address
                     </h2>
 
@@ -1211,7 +1208,7 @@ export default function CheckoutPage() {
                         onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#4b5563'; e.currentTarget.style.background = 'rgba(55, 65, 81, 0.2)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.bgCardHover; e.currentTarget.style.background = 'transparent'; }}
                       >
-                        <ArrowLeft size={18} /> Back
+                        Back
                       </button>
                       <button
                         onClick={handleNext}
@@ -1219,7 +1216,7 @@ export default function CheckoutPage() {
                         onMouseEnter={(e) => { e.currentTarget.style.background = colors.primaryDark; e.currentTarget.style.transform = 'scale(1.02)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = colors.primary; e.currentTarget.style.transform = 'scale(1)'; }}
                       >
-                        Continue to Payment <ArrowRight size={18} />
+                        Continue to Payment
                       </button>
                     </div>
                   </div>
@@ -1227,8 +1224,8 @@ export default function CheckoutPage() {
 
                 {/* ── Step 3: Review & Pay ── */}
                 {currentStep === 3 && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
-                    <h2 style={{ ...typography.h2, color: colors.primary, marginBottom: spacing.sm }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+                    <h2 style={{ ...typography.h4, color: colors.primary, margin: 0 }}>
                       Review & Pay
                     </h2>
 
@@ -1529,7 +1526,7 @@ export default function CheckoutPage() {
                           onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#4b5563'; e.currentTarget.style.background = 'rgba(55, 65, 81, 0.2)'; }}
                           onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.bgCardHover; e.currentTarget.style.background = 'transparent'; }}
                         >
-                          <ArrowLeft size={18} /> Back
+                          Back
                         </button>
                         <button
                           onClick={handleSubmit}
@@ -1548,11 +1545,7 @@ export default function CheckoutPage() {
                             if (!isProcessing) { e.currentTarget.style.background = colors.primary; e.currentTarget.style.transform = 'scale(1)'; }
                           }}
                         >
-                          {isProcessing ? (
-                            <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Placing your order...</>
-                          ) : (
-                            'Place Order'
-                          )}
+                          {isProcessing ? 'Processing...' : 'Place Order'}
                         </button>
                       </div>
                     )}
