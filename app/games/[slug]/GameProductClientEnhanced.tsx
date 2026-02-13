@@ -508,7 +508,7 @@ export default function GameProductClientEnhanced({ game, similarGames }: GamePr
                     <h4 className="font-bold text-orange-300 mb-2">Game Components</h4>
                     <ul className="space-y-2 text-gray-300">
                       <li>• 200+ Chaos Cards</li>
-                      <li>• 1 Rulebook</li>
+                      <li>• 1 Fugly-approved rulebook</li>
                       <li>• Special chaos dice</li>
                       <li>• Score tracking tokens</li>
                     </ul>

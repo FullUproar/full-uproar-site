@@ -75,7 +75,7 @@ export default function MerchSection({ merchItems }: MerchSectionProps) {
             FUGLY'S MERCH MADNESS
           </h2>
           <p className="text-xl text-yellow-400 font-bold">
-            Wear the chaos. BE the chaos. Game night fashion at its finest.
+            Wear the chaos. BE the chaos. Fugly-approved fashion disasters.
           </p>
         </div>
 
