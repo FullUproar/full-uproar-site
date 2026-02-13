@@ -6,9 +6,11 @@ import { Search, Package, Truck, CheckCircle, Clock, AlertCircle, User, ChevronD
 import FuglyLogo from '@/app/components/FuglyLogo';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
+import { formatOrderNumber } from '@/lib/utils/order-number';
 
 interface OrderDetails {
   id: string;
+  orderNumber?: number;
   customerEmail: string;
   customerName: string;
   shippingAddress: string;
@@ -36,7 +38,7 @@ interface OrderDetails {
 
 interface UserOrder {
   id: string;
-  orderNumber: string;
+  orderNumber?: number;
   status: string;
   totalAmount: number;
   createdAt: string;
@@ -191,10 +193,16 @@ export default function TrackOrderPage() {
     setOrder(null);
 
     try {
-      let response = await fetch(`/api/orders/${searchValue.trim()}`);
+      const value = searchValue.trim();
+
+      // Support FU-XXXX format: extract number and look up by orderNumber
+      const fuMatch = value.match(/^FU-(\d+)$/i);
+      const lookupId = fuMatch ? fuMatch[1] : value;
+
+      let response = await fetch(`/api/orders/${lookupId}`);
 
       if (!response.ok) {
-        response = await fetch(`/api/orders?email=${encodeURIComponent(searchValue.trim())}`);
+        response = await fetch(`/api/orders?email=${encodeURIComponent(value)}`);
         if (response.ok) {
           const orders = await response.json();
           if (orders.length > 0) {
@@ -203,7 +211,7 @@ export default function TrackOrderPage() {
             setError('No orders found with that email address');
           }
         } else {
-          setError('Order not found. Check your order ID or email.');
+          setError('Order not found. Check your order number or email.');
         }
       } else {
         const data = await response.json();
@@ -331,7 +339,7 @@ export default function TrackOrderPage() {
                         {getStatusIcon(userOrder.status)}
                         <div style={{ textAlign: 'left' }}>
                           <p style={{ fontWeight: 700, color: '#FBDB65', margin: 0 }}>
-                            Order #{userOrder.id.slice(-8).toUpperCase()}
+                            Order {formatOrderNumber(userOrder.orderNumber, userOrder.id)}
                           </p>
                           <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>
                             {formatShortDate(userOrder.createdAt)} • {userOrder.items.length} item{userOrder.items.length !== 1 ? 's' : ''}
@@ -452,7 +460,7 @@ export default function TrackOrderPage() {
                 type="text"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Enter order ID or email"
+                placeholder="Enter order number (FU-1001) or email"
                 style={{
                   flex: 1,
                   padding: '1rem 1.25rem',
@@ -508,7 +516,7 @@ export default function TrackOrderPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div>
                   <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FBDB65', margin: 0 }}>
-                    Order #{order.id}
+                    Order {formatOrderNumber(order.orderNumber, order.id)}
                   </h3>
                   <p style={{ color: '#9ca3af', marginTop: '0.25rem' }}>
                     Placed on {formatDate(order.createdAt)}

@@ -123,6 +123,7 @@ export async function POST(
       try {
         await sendRefundNotification({
           orderId: order.id,
+          orderNumber: order.orderNumber,
           customerName: order.customerName,
           customerEmail: order.customerEmail,
           refundAmountCents: refundAmount,

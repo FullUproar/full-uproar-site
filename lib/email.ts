@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { formatOrderNumber } from '@/lib/utils/order-number';
 
 // Gmail SMTP transporter
 const transporter = nodemailer.createTransport({
@@ -915,6 +916,7 @@ export interface OrderItem {
 
 export interface OrderConfirmationData {
   orderId: string;
+  orderNumber?: number;
   customerName: string;
   customerEmail: string;
   shippingAddress: string;
@@ -1017,7 +1019,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
                             Order Number
                           </p>
                           <p style="color: #FF8200; font-size: 16px; font-weight: bold; margin: 0; font-family: monospace;">
-                            ${data.orderId.slice(0, 8).toUpperCase()}
+                            ${formatOrderNumber(data.orderNumber, data.orderId)}
                           </p>
                         </td>
                         <td width="50%">
@@ -1138,7 +1140,7 @@ ORDER CONFIRMED!
 
 Great news! Your payment went through and we're getting your order ready.
 
-Order Number: ${data.orderId.slice(0, 8).toUpperCase()}
+Order Number: ${formatOrderNumber(data.orderNumber, data.orderId)}
 Order Date: ${orderDate}
 
 YOUR ITEMS:
@@ -1163,7 +1165,7 @@ Questions? Hit us up at support@fulluproar.com
     await transporter.sendMail({
       from: `"Full Uproar Games" <${process.env.GMAIL_USER}>`,
       to: data.customerEmail,
-      subject: `Order Confirmed! Your Full Uproar order #${data.orderId.slice(0, 8).toUpperCase()}`,
+      subject: `Order Confirmed! Your Full Uproar order ${formatOrderNumber(data.orderNumber, data.orderId)}`,
       text,
       html,
     });
@@ -1337,6 +1339,7 @@ Questions? Hit us up at support@fulluproar.com
  */
 export async function sendPaymentFailedNotification(data: {
   orderId: string;
+  orderNumber?: number;
   customerName: string;
   customerEmail: string;
   errorMessage: string;
@@ -1347,7 +1350,7 @@ export async function sendPaymentFailedNotification(data: {
   }
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://fulluproar.com';
-  const shortId = data.orderId.slice(-8).toUpperCase();
+  const shortId = formatOrderNumber(data.orderNumber, data.orderId);
 
   const html = `
 <!DOCTYPE html>
@@ -1472,6 +1475,7 @@ Need help? Contact us at support@fulluproar.com
  */
 export async function sendRefundNotification(data: {
   orderId: string;
+  orderNumber?: number;
   customerName: string;
   customerEmail: string;
   refundAmountCents: number;
@@ -1484,7 +1488,7 @@ export async function sendRefundNotification(data: {
   }
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://fulluproar.com';
-  const shortId = data.orderId.slice(-8).toUpperCase();
+  const shortId = formatOrderNumber(data.orderNumber, data.orderId);
   const refundAmount = `$${(data.refundAmountCents / 100).toFixed(2)}`;
   const refundType = data.isFullRefund ? 'Full Refund' : 'Partial Refund';
 

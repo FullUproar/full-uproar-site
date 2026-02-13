@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     // Format orders for the frontend
     const formattedOrders = orders.map(order => ({
       id: order.id,
-      orderNumber: order.id, // Using ID as order number for now
+      orderNumber: order.orderNumber,
       status: order.status,
       totalAmount: order.totalCents,
       currency: 'USD',

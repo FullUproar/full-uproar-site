@@ -198,6 +198,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         try {
           await sendOrderConfirmation({
             orderId: order.id,
+            orderNumber: order.orderNumber,
             customerName: order.customerName,
             customerEmail: order.customerEmail,
             shippingAddress: order.shippingAddress,
@@ -324,11 +325,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         try {
           const failedOrder = await prisma.order.findUnique({
             where: { id: orderId },
-            select: { customerName: true, customerEmail: true },
+            select: { customerName: true, customerEmail: true, orderNumber: true },
           });
           if (failedOrder?.customerEmail) {
             await sendPaymentFailedNotification({
               orderId,
+              orderNumber: failedOrder.orderNumber,
               customerName: failedOrder.customerName,
               customerEmail: failedOrder.customerEmail,
               errorMessage: paymentIntent.last_payment_error?.message || 'Your payment could not be completed',
@@ -425,6 +427,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
           if (order.customerEmail) {
             await sendRefundNotification({
               orderId: order.id,
+              orderNumber: order.orderNumber,
               customerName: order.customerName,
               customerEmail: order.customerEmail,
               refundAmountCents: charge.amount_refunded,

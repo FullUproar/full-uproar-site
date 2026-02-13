@@ -63,11 +63,11 @@ describe('sendPaymentFailedNotification', () => {
     expect(call.text).toContain('Your card was declined');
   });
 
-  it('includes short order ID in email', async () => {
-    await sendPaymentFailedNotification(baseData);
+  it('includes order number in email', async () => {
+    await sendPaymentFailedNotification({ ...baseData, orderNumber: 1042 });
 
     const call = mockSendMail.mock.calls[0][0];
-    expect(call.html).toContain('BCD-EF01');
+    expect(call.html).toContain('FU-1042');
   });
 
   it('includes try again link', async () => {

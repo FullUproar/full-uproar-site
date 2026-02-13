@@ -12,9 +12,11 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { adminStyles } from '../../styles/adminStyles';
 import { useToastStore } from '@/lib/toastStore';
+import { formatOrderNumber } from '@/lib/utils/order-number';
 
 interface OrderDetail {
   id: string;
+  orderNumber?: number;
   userId?: string;
   customerName: string;
   customerEmail: string;
@@ -272,7 +274,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         }}>
           <div>
             <h1 style={{ ...adminStyles.title, marginBottom: '8px' }}>
-              Order {order.id}
+              Order {formatOrderNumber(order.orderNumber, order.id)}
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
               <span style={{
@@ -299,10 +301,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <button
               style={adminStyles.outlineButton}
-              onClick={() => copyToClipboard(order.id)}
+              onClick={() => copyToClipboard(formatOrderNumber(order.orderNumber, order.id))}
             >
               <Copy size={16} />
-              Copy ID
+              Copy Order #
             </button>
             <button
               style={adminStyles.outlineButton}

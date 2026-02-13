@@ -8,32 +8,35 @@ export async function GET(
 ) {
   try {
     const { orderId } = await params;
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
-      include: {
-        items: {
-          include: {
-            game: {
-              select: {
-                title: true,
-                slug: true,
-                imageUrl: true
-              }
-            },
-            merch: {
-              select: {
-                name: true,
-                slug: true,
-                imageUrl: true
-              }
+    const includeConfig = {
+      items: {
+        include: {
+          game: {
+            select: {
+              title: true,
+              slug: true,
+              imageUrl: true
+            }
+          },
+          merch: {
+            select: {
+              name: true,
+              slug: true,
+              imageUrl: true
             }
           }
-        },
-        statusHistory: {
-          orderBy: { createdAt: 'desc' }
         }
+      },
+      statusHistory: {
+        orderBy: { createdAt: 'desc' as const }
       }
-    });
+    };
+
+    // Support lookup by orderNumber (numeric) or CUID
+    const orderNum = parseInt(orderId, 10);
+    const order = !isNaN(orderNum) && String(orderNum) === orderId
+      ? await prisma.order.findUnique({ where: { orderNumber: orderNum }, include: includeConfig })
+      : await prisma.order.findUnique({ where: { id: orderId }, include: includeConfig });
 
     if (!order) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });

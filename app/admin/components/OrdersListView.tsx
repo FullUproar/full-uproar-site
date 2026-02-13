@@ -10,8 +10,11 @@ import { Package, Eye, Search, PackageCheck, Loader2 } from 'lucide-react';
  * Card-based layout on mobile, table on desktop.
  */
 
+import { formatOrderNumber } from '@/lib/utils/order-number';
+
 interface Order {
   id: string;
+  orderNumber?: number;
   paymentIntentId?: string;
   customerEmail: string;
   customerName: string;
@@ -67,7 +70,8 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
     const matchesSearch =
       order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.id.toLowerCase().includes(searchTerm.toLowerCase());
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      formatOrderNumber(order.orderNumber, order.id).toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
 
@@ -149,7 +153,7 @@ export default function OrdersListView({ onViewDetails }: OrdersListViewProps) {
                   {order.customerName || 'Guest'}
                 </div>
                 <div style={styles.orderId}>
-                  #{order.id.slice(0, 8)}
+                  {formatOrderNumber(order.orderNumber, order.id)}
                 </div>
               </div>
               <div style={styles.orderMeta}>

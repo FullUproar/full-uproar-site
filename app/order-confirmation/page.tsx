@@ -10,8 +10,11 @@ import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import { useCartStore } from '@/lib/cartStore';
 import EmailCapture from '@/app/components/EmailCapture';
 
+import { formatOrderNumber } from '@/lib/utils/order-number';
+
 interface OrderDetails {
   id: string;
+  orderNumber?: number;
   customerEmail: string;
   customerName: string;
   shippingAddress: string;
@@ -89,9 +92,11 @@ function OrderConfirmationContent() {
     }
   };
 
+  const displayOrderNumber = order ? formatOrderNumber(order.orderNumber, order.id) : '';
+
   const copyOrderId = () => {
-    if (orderId) {
-      navigator.clipboard.writeText(orderId);
+    if (displayOrderNumber) {
+      navigator.clipboard.writeText(displayOrderNumber);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -170,8 +175,8 @@ function OrderConfirmationContent() {
               padding: '0.5rem 1rem',
               marginTop: '1rem'
             }}>
-              <span style={{ color: '#9ca3af' }}>Order ID:</span>
-              <span style={{ color: '#FF8200', fontFamily: 'monospace', fontWeight: 'bold' }}>{orderId}</span>
+              <span style={{ color: '#9ca3af' }}>Order:</span>
+              <span style={{ color: '#FF8200', fontFamily: 'monospace', fontWeight: 'bold' }}>{displayOrderNumber}</span>
               <button
                 onClick={copyOrderId}
                 style={{
