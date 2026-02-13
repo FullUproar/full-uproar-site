@@ -940,7 +940,7 @@ export default function CheckoutPage() {
                         value={form.customerEmail}
                         onChange={(e) => setForm({ ...form, customerEmail: e.target.value })}
                         style={inputStyle}
-                        placeholder="you@example.com"
+                        placeholder=""
                         {...focusHandlers}
                       />
                       {errors.customerEmail && (
@@ -973,7 +973,7 @@ export default function CheckoutPage() {
                         value={form.customerName}
                         onChange={(e) => setForm({ ...form, customerName: e.target.value })}
                         style={inputStyle}
-                        placeholder="John Smith"
+                        placeholder=""
                         {...focusHandlers}
                       />
                       {errors.customerName && (
@@ -992,7 +992,7 @@ export default function CheckoutPage() {
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: formatPhoneNumber(e.target.value) })}
                         style={inputStyle}
-                        placeholder="(555) 123-4567"
+                        placeholder=""
                         maxLength={14}
                         {...focusHandlers}
                       />
@@ -1047,7 +1047,7 @@ export default function CheckoutPage() {
                         value={form.shippingAddress.street}
                         onChange={(e) => setForm({ ...form, shippingAddress: { ...form.shippingAddress, street: e.target.value } })}
                         style={inputStyle}
-                        placeholder="123 Main Street"
+                        placeholder=""
                         {...focusHandlers}
                       />
                       {errors['shipping.street'] && (
@@ -1062,7 +1062,7 @@ export default function CheckoutPage() {
                         value={form.shippingAddress.apartment}
                         onChange={(e) => setForm({ ...form, shippingAddress: { ...form.shippingAddress, apartment: e.target.value } })}
                         style={inputStyle}
-                        placeholder="Apt 4B"
+                        placeholder=""
                         {...focusHandlers}
                       />
                     </div>
@@ -1075,7 +1075,7 @@ export default function CheckoutPage() {
                           value={form.shippingAddress.city}
                           onChange={(e) => setForm({ ...form, shippingAddress: { ...form.shippingAddress, city: e.target.value } })}
                           style={inputStyle}
-                          placeholder="New York"
+                          placeholder=""
                           {...focusHandlers}
                         />
                         {errors['shipping.city'] && (
@@ -1089,7 +1089,7 @@ export default function CheckoutPage() {
                           value={form.shippingAddress.state}
                           onChange={(e) => setForm({ ...form, shippingAddress: { ...form.shippingAddress, state: e.target.value } })}
                           style={inputStyle}
-                          placeholder="NY"
+                          placeholder=""
                           maxLength={2}
                           {...focusHandlers}
                         />
@@ -1106,7 +1106,7 @@ export default function CheckoutPage() {
                         value={form.shippingAddress.zipCode}
                         onChange={(e) => setForm({ ...form, shippingAddress: { ...form.shippingAddress, zipCode: e.target.value } })}
                         style={inputStyle}
-                        placeholder="10001"
+                        placeholder=""
                         {...focusHandlers}
                       />
                       {errors['shipping.zipCode'] && (
@@ -1406,7 +1406,7 @@ export default function CheckoutPage() {
                             value={form.cardDetails.name}
                             onChange={(e) => setForm({ ...form, cardDetails: { ...form.cardDetails, name: e.target.value } })}
                             style={inputStyle}
-                            placeholder="John Smith"
+                            placeholder=""
                             {...focusHandlers}
                           />
                           {errors['card.name'] && (
