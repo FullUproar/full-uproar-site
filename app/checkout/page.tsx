@@ -6,7 +6,7 @@ import { useCartStore } from '@/lib/cartStore';
 import { CreditCard, AlertCircle, TestTube, Rocket, X, User, Check, ChevronDown, ChevronUp, Loader2, Edit3 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Navigation from '@/app/components/Navigation';
 import { simulatePayment, formatTestCardDisplay } from '@/lib/payment-test-mode';
 import { getPaymentMode, isSimulatedMode, isStripeMode } from '@/lib/payment-mode';
@@ -69,7 +69,8 @@ const formatPhoneNumber = (value: string) => {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { isSignedIn } = useUser();
+  const { data: session } = useSession();
+  const isSignedIn = !!session;
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [signInDismissed, setSignInDismissed] = useState(false);

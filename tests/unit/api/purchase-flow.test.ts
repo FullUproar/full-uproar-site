@@ -15,7 +15,7 @@
 
 // ─── Mocks (must be before imports) ──────────────────────────────
 
-jest.mock('@clerk/nextjs/server', () => ({
+jest.mock('@/lib/auth-config', () => ({
   auth: jest.fn(),
 }));
 
@@ -56,7 +56,7 @@ jest.mock('@/lib/payment-mode', () => ({
 // ─── Imports ─────────────────────────────────────────────────────
 
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth/require-admin';
 import { isSimulatedMode } from '@/lib/payment-mode';
@@ -73,7 +73,7 @@ const mockIsSimulatedMode = isSimulatedMode as jest.MockedFunction<typeof isSimu
 
 beforeEach(() => {
   jest.clearAllMocks();
-  mockAuth.mockResolvedValue({ userId: null } as any);
+  mockAuth.mockResolvedValue(null as any);
 });
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -91,8 +91,8 @@ function createRequest(method: string, path: string, body?: any): NextRequest {
 function adminAuthorized() {
   mockRequireAdmin.mockResolvedValue({
     authorized: true,
-    userId: 'clerk_admin',
-    user: { id: '1', role: 'ADMIN', email: 'admin@test.com' },
+    userId: 'db-admin-1',
+    user: { id: 'db-admin-1', role: 'ADMIN', email: 'admin@test.com' },
   } as any);
 }
 
@@ -106,7 +106,7 @@ function adminUnauthorized(status: 401 | 403 = 401) {
 
 /** Authenticate as admin so POST bypasses the store-closed gate */
 function authenticateAsAdmin() {
-  mockAuth.mockResolvedValue({ userId: 'clerk_admin' } as any);
+  mockAuth.mockResolvedValue({ user: { id: 'db-admin-1', role: 'ADMIN' } } as any);
   (prisma.user.findUnique as jest.Mock).mockResolvedValue({ role: 'ADMIN' });
 }
 
@@ -226,7 +226,7 @@ describe('POST /api/orders — Order creation validation', () => {
 
   it('should return 503 for non-admin when store is closed', async () => {
     // Don't authenticate as admin — store-closed check should block
-    mockAuth.mockResolvedValue({ userId: null } as any);
+    mockAuth.mockResolvedValue(null as any);
 
     const response = await createOrder(
       createRequest('POST', '/api/orders', {

@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    // Get Clerk user
-    const clerkUser = await currentUser();
-    
-    if (!clerkUser) {
-      return NextResponse.json({ 
-        error: 'Not authenticated with Clerk' 
+    // Get session user
+    const session = await getSession();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json({
+        error: 'Not authenticated'
       }, { status: 401 });
     }
 
@@ -17,18 +18,17 @@ export async function GET(request: NextRequest) {
     let dbUser = null;
     try {
       dbUser = await prisma.user.findUnique({
-        where: { clerkId: clerkUser.id }
+        where: { id: userId }
       });
     } catch (dbError) {
       console.error('Database error:', dbError);
     }
 
     return NextResponse.json({
-      clerk: {
-        id: clerkUser.id,
-        email: clerkUser.emailAddresses?.[0]?.emailAddress || 'No email',
-        firstName: clerkUser.firstName,
-        lastName: clerkUser.lastName
+      session: {
+        id: userId,
+        email: session.user?.email || 'No email',
+        name: session.user?.name,
       },
       database: dbUser ? {
         id: dbUser.id,
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Whoami error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Failed to get user info',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });

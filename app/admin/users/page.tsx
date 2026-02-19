@@ -9,7 +9,7 @@ import { ADMIN_ROLES } from '@/lib/constants';
 
 interface User {
   id: string;
-  clerkId: string;
+  clerkId?: string;
   email: string;
   username?: string;
   displayName?: string;
@@ -539,16 +539,6 @@ export default function UserManagementPage() {
                   value={selectedUser.username || ''}
                   disabled
                   style={{ ...adminStyles.input, opacity: 0.7 }}
-                />
-              </div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <label style={adminStyles.label}>Clerk ID</label>
-                <input
-                  type="text"
-                  value={selectedUser.clerkId}
-                  disabled
-                  style={{ ...adminStyles.input, opacity: 0.7, fontSize: '12px' }}
                 />
               </div>
 

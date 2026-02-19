@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { rateLimit } from '@/lib/middleware/rate-limit';
 
 interface CartItem {
@@ -40,7 +40,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user ID if authenticated
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
 
     // Get client IP for guest abuse prevention
     const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||

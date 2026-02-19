@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, Package, Truck, Mail, ArrowRight, Copy, User, Zap, ShieldCheck, Clock } from 'lucide-react';
 import FuglyLogo from '@/app/components/FuglyLogo';
 import Link from 'next/link';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { MetaPixelEvents } from '@/app/components/MetaPixel';
 import { useCartStore } from '@/lib/cartStore';
 import EmailCapture from '@/app/components/EmailCapture';
@@ -37,7 +37,8 @@ interface OrderDetails {
 function OrderConfirmationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isSignedIn } = useUser();
+  const { data: session } = useSession();
+  const isSignedIn = !!session;
   const orderId = searchParams.get('orderId');
   const redirectStatus = searchParams.get('redirect_status');
   const [order, setOrder] = useState<OrderDetails | null>(null);

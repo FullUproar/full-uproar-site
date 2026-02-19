@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requirePermission } from '@/lib/auth';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 export async function PATCH(
   request: NextRequest,
@@ -20,12 +20,12 @@ export async function PATCH(
 
     if (body.status !== undefined) {
       updatedData.status = body.status;
-      
+
       // If marking as approved, track who approved it
       if (body.status === 'READY_FOR_PRINT') {
-        const user = await currentUser();
-        if (user) {
-          updatedData.approvedBy = user.id;
+        const session = await getSession();
+        if (session?.user?.id) {
+          updatedData.approvedBy = session.user.id;
         }
         updatedData.lastReviewedAt = new Date();
       }
@@ -46,7 +46,7 @@ export async function PATCH(
   } catch (error: any) {
     console.error('Error updating design component:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to update design component',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined,
         code: error.code
@@ -73,7 +73,7 @@ export async function DELETE(
   } catch (error: any) {
     console.error('Error deleting design component:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to delete design component',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined,
         code: error.code

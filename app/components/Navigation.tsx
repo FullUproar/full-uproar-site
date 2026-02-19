@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { Menu, X, ShoppingCart, Package, User, Settings, Gamepad2, ChevronDown, Wand2 } from 'lucide-react';
-import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
+import { Menu, X, User, ChevronDown, Wand2 } from 'lucide-react';
 import FuglyLogo from './FuglyLogo';
 import CartButton from './CartButton';
 import MobileCartButton from './MobileCartButton';
+import UserDropdown from './UserDropdown';
 
 interface NavItem {
   href: string;
@@ -17,6 +18,7 @@ interface NavItem {
 
 export default function Navigation() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -268,7 +270,7 @@ export default function Navigation() {
                   </div>
                 ))}
                 
-                <SignedOut>
+                {!session ? (
                   <Link href="/sign-in">
                     <button style={{
                       background: '#FF8200',
@@ -282,76 +284,9 @@ export default function Navigation() {
                       SIGN IN
                     </button>
                   </Link>
-                </SignedOut>
-                
-                <SignedIn>
-                  <UserButton 
-                    afterSignOutUrl="/"
-                    appearance={{
-                      elements: {
-                        avatarBox: "w-10 h-10 border-2 border-orange-500",
-                        userButtonPopoverCard: "bg-gray-900 border-2 border-orange-500",
-                        userButtonPopoverActionButton: "text-orange-400 hover:text-orange-300 hover:bg-orange-500/20",
-                        userButtonPopoverActionButtonText: "text-orange-400",
-                        userButtonPopoverActionButtonIcon: "text-orange-400",
-                        userButtonPopoverFooter: "hidden",
-                        userPreviewMainIdentifier: "text-orange-400 font-bold",
-                        userPreviewSecondaryIdentifier: "text-gray-400",
-                        userButtonTrigger: "hover:opacity-80",
-                        userButtonBox: "shadow-xl",
-                        userButtonOuterIdentifier: "text-orange-400",
-                        userButtonPopoverMain: "bg-gray-900",
-                        userButtonPopoverActions: "bg-gray-900",
-                        userPreviewTextContainer: "text-orange-400",
-                        userButtonPopoverActionButtonTextContainer: "text-orange-400",
-                        accordionTriggerButton: "text-orange-400 hover:text-orange-300",
-                      },
-                      variables: {
-                        colorPrimary: "#FF8200",
-                        colorText: "#FBDB65",
-                        colorTextOnPrimaryBackground: "#111827",
-                        colorTextSecondary: "#94a3b8",
-                        colorBackground: "#111827",
-                        colorInputBackground: "#1f2937",
-                        colorInputText: "#FBDB65",
-                        borderRadius: "0.5rem"
-                      }
-                    }}
-                  >
-                    <UserButton.MenuItems>
-                      <UserButton.Link
-                        label="Game Kit"
-                        labelIcon={<Wand2 size={16} />}
-                        href="/game-kit"
-                      />
-                      <UserButton.Link
-                        label="Game Nights"
-                        labelIcon={<Gamepad2 size={16} />}
-                        href="/game-nights"
-                      />
-                      <UserButton.Link
-                        label="Account Settings"
-                        labelIcon={<Settings size={16} />}
-                        href="/account"
-                      />
-                      <UserButton.Link
-                        label="My Profile"
-                        labelIcon={<User size={16} />}
-                        href="/profile"
-                      />
-                      <UserButton.Link
-                        label="Track Orders"
-                        labelIcon={<Package size={16} />}
-                        href="/track-order"
-                      />
-                      <UserButton.Link
-                        label="Admin Dashboard"
-                        labelIcon={<Package size={16} />}
-                        href="/admin"
-                      />
-                    </UserButton.MenuItems>
-                  </UserButton>
-                </SignedIn>
+                ) : (
+                  <UserDropdown user={session.user} />
+                )}
                 
                 <CartButton />
               </div>
@@ -473,7 +408,7 @@ export default function Navigation() {
 
           <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.1)', margin: '0.5rem 0' }} />
 
-          <SignedOut>
+          {!session ? (
             <Link href="/sign-in" style={{ width: '100%' }} onClick={() => setIsMenuOpen(false)}>
               <button style={{
                 background: '#FF8200',
@@ -488,40 +423,40 @@ export default function Navigation() {
                 SIGN IN
               </button>
             </Link>
-          </SignedOut>
-
-          <SignedIn>
-            <Link
-              href="/game-kit"
-              style={{ ...styles.navLink, display: 'flex', alignItems: 'center', padding: '0.5rem', gap: '8px' }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <Wand2 size={20} />
-              GAME KIT
-            </Link>
-            <Link
-              href="/track-order"
-              style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              TRACK ORDERS
-            </Link>
-            <Link
-              href="/admin"
-              style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              ADMIN
-            </Link>
-            <Link
-              href="/account"
-              style={{ ...styles.navLink, display: 'flex', alignItems: 'center', padding: '0.5rem', gap: '8px' }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <User size={20} />
-              MY ACCOUNT
-            </Link>
-          </SignedIn>
+          ) : (
+            <>
+              <Link
+                href="/game-kit"
+                style={{ ...styles.navLink, display: 'flex', alignItems: 'center', padding: '0.5rem', gap: '8px' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Wand2 size={20} />
+                GAME KIT
+              </Link>
+              <Link
+                href="/track-order"
+                style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                TRACK ORDERS
+              </Link>
+              <Link
+                href="/admin"
+                style={{ ...styles.navLink, display: 'block', padding: '0.5rem' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                ADMIN
+              </Link>
+              <Link
+                href="/account"
+                style={{ ...styles.navLink, display: 'flex', alignItems: 'center', padding: '0.5rem', gap: '8px' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <User size={20} />
+                MY ACCOUNT
+              </Link>
+            </>
+          )}
           
           <MobileCartButton onClose={() => setIsMenuOpen(false)} />
         </div>

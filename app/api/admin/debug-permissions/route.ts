@@ -24,8 +24,7 @@ export async function GET(request: NextRequest) {
       user: {
         id: user.id,
         email: user.email,
-        role: user.role,
-        clerkId: user.clerkId
+        role: user.role
       },
       rolePermissions,
       individualPermissions: user.permissions,

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Calendar, Users, ArrowRight, Zap, Skull, Pause, ChevronDown, Heart, ShieldCheck, Truck, Sparkles, Trophy, Gamepad2, Shuffle, Clock } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import DeploymentInfo from './DeploymentInfo';
 import FuglyChaosMode from './FuglyChaosMode';
 import FuglyLogo from './FuglyLogo';
@@ -96,7 +96,7 @@ interface FullUproarHomeProps {
 type WeaponCategory = 'games' | 'mods' | 'gamenight' | null;
 
 export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
-  const { user } = useUser();
+  const { data: session } = useSession();
   const [email, setEmail] = useState('');
   const [activeGame, setActiveGame] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -1669,7 +1669,7 @@ export default function FullUproarHomeStyled({ games }: FullUproarHomeProps) {
       </footer>
 
       {/* Deployment info for logged-in users */}
-      <DeploymentInfo isVisible={!!user} />
+      <DeploymentInfo isVisible={!!session} />
 
       {/* Chaos Mode effects */}
       <FuglyChaosMode />

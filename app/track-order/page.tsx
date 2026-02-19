@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { Search, Package, Truck, CheckCircle, Clock, AlertCircle, User, ChevronDown, ChevronRight } from 'lucide-react';
 import FuglyLogo from '@/app/components/FuglyLogo';
 import Link from 'next/link';
@@ -150,7 +150,9 @@ const styles = {
 };
 
 export default function TrackOrderPage() {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { data: session, status } = useSession();
+  const isSignedIn = !!session;
+  const isLoaded = status !== 'loading';
   const [searchValue, setSearchValue] = useState('');
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [userOrders, setUserOrders] = useState<UserOrder[]>([]);

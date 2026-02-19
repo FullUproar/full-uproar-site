@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import type { Prisma } from '@prisma/client';
 
@@ -20,13 +20,14 @@ interface CardInput {
  */
 export async function POST(request: NextRequest) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const session = await getSession();
+    const userId = session?.user?.id;
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
+      where: { id: userId },
     });
 
     if (!dbUser) {

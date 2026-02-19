@@ -1,15 +1,15 @@
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth as getSession } from '@/lib/auth-config'
 import { prisma } from '@/lib/prisma'
 import { UserRole } from '@prisma/client'
 import { hasPermission, Role, Resource, Action } from '@/lib/permissions/config'
 
 export async function getCurrentUser() {
-  const user = await currentUser()
-  if (!user) return null
+  const session = await getSession()
+  if (!session?.user?.id) return null
 
   const dbUser = await prisma.user.findUnique({
-    where: { clerkId: user.id },
-    include: { 
+    where: { id: session.user.id },
+    include: {
       permissions: true,
       profile: true,
       roles: true // Include multiple roles
@@ -27,21 +27,21 @@ export async function getUserRoles(userId: string): Promise<Role[]> {
     where: { id: userId },
     include: { roles: true }
   })
-  
+
   if (!user) return []
-  
+
   // God mode for info@fulluproar.com
   if (user.email === 'info@fulluproar.com') {
     return [Role.GOD]
   }
-  
+
   const roles: Role[] = []
-  
+
   // Add primary role
   if (user.role) {
     roles.push(user.role as Role)
   }
-  
+
   // Add additional roles
   for (const roleAssignment of user.roles) {
     // Check if role is not expired
@@ -49,7 +49,7 @@ export async function getUserRoles(userId: string): Promise<Role[]> {
       roles.push(roleAssignment.role as Role)
     }
   }
-  
+
   // Remove duplicates
   return [...new Set(roles)]
 }
@@ -73,7 +73,7 @@ export async function checkPermission(
 
   // Get all user roles
   const userRoles = await getUserRoles(user.id)
-  
+
   // Check permission using the new system
   return hasPermission(
     userRoles,
@@ -84,11 +84,11 @@ export async function checkPermission(
 }
 
 export async function requireAuth() {
-  const { userId } = await auth()
-  if (!userId) {
+  const session = await getSession()
+  if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
-  return userId
+  return session.user.id
 }
 
 export async function requirePermission(
@@ -107,8 +107,8 @@ export async function requirePermission(
     throw new Error('Unauthorized')
   }
 
-  const hasPermission = await checkPermission(resource, action)
-  if (!hasPermission) {
+  const permitted = await checkPermission(resource, action)
+  if (!permitted) {
     throw new Error(`Forbidden: Missing permission for ${resource}:${action}`)
   }
 
@@ -130,7 +130,7 @@ export async function assignRole(
     const assigner = await prisma.user.findUnique({
       where: { id: assignedBy }
     })
-    
+
     if (assigner) {
       const assignerRoles = await getUserRoles(assignedBy)
       if (!hasPermission(assignerRoles, 'users:roles', 'update', assigner.email)) {
@@ -138,7 +138,7 @@ export async function assignRole(
       }
     }
   }
-  
+
   // Create role assignment
   return await prisma.userRoleAssignment.create({
     data: {
@@ -177,7 +177,7 @@ export async function updatePrimaryRole(userId: string, role: Role) {
  * Check if user is God (info@fulluproar.com)
  */
 export async function isGod(user: { email: string, roles?: any[] }): Promise<boolean> {
-  return user.email === 'info@fulluproar.com' || 
+  return user.email === 'info@fulluproar.com' ||
          (user.roles?.some(r => r.role === 'GOD') ?? false)
 }
 
@@ -186,11 +186,11 @@ export async function isGod(user: { email: string, roles?: any[] }): Promise<boo
  */
 export async function ensureGodUser() {
   const godEmail = 'info@fulluproar.com'
-  
+
   const user = await prisma.user.findUnique({
     where: { email: godEmail }
   })
-  
+
   if (user) {
     // Ensure user has GOD role
     if (user.role !== UserRole.GOD) {
@@ -199,7 +199,7 @@ export async function ensureGodUser() {
         data: { role: UserRole.GOD }
       })
     }
-    
+
     // Also assign GOD role in the roles table
     const godRole = await prisma.userRoleAssignment.findFirst({
       where: {
@@ -207,7 +207,7 @@ export async function ensureGodUser() {
         role: UserRole.GOD
       }
     })
-    
+
     if (!godRole) {
       await prisma.userRoleAssignment.create({
         data: {

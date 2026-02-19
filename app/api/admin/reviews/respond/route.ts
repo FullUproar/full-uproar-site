@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check admin permission
     const adminUser = await prisma.user.findFirst({
-      where: { clerkId: userId },
+      where: { id: userId },
       select: { id: true, role: true, displayName: true, username: true }
     });
 

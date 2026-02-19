@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { sendTicketEmails } from '@/lib/email';
 import { rateLimit } from '@/lib/middleware/rate-limit';
 
@@ -84,19 +84,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get current user if logged in
-    const { userId: clerkId } = await auth();
-
-    // Look up internal user ID if logged in
-    let internalUserId: string | null = null;
-    if (clerkId) {
-      const user = await prisma.user.findUnique({
-        where: { clerkId },
-        select: { id: true }
-      });
-      if (user) {
-        internalUserId = user.id;
-      }
-    }
+    const session = await getSession();
+    const internalUserId = session?.user?.id || null;
 
     // Generate ticket number
     const ticketNumber = await generateTicketNumber();

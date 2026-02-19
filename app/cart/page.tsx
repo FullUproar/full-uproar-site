@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Truck, Package, User } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Navigation from '../components/Navigation';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
 import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analytics';
@@ -14,7 +14,8 @@ import EmailCapture from '../components/EmailCapture';
 
 export default function CartPage() {
   const router = useRouter();
-  const { isSignedIn } = useUser();
+  const { data: session } = useSession();
+  const isSignedIn = !!session;
   const { items, updateQuantity, removeFromCart, getTotalPrice, getTotalItems, clearCart } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);

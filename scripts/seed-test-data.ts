@@ -51,7 +51,6 @@ async function seedTestData() {
         username: 'testadmin',
         displayName: 'Test Admin',
         role: 'SUPER_ADMIN',
-        clerkId: 'test_admin_' + Date.now(),
       }
     });
 

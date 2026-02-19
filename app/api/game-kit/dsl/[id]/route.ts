@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 
@@ -10,7 +10,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
 
     const game = await prisma.customGameDefinition.findUnique({
       where: { id },
@@ -55,7 +56,8 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const { userId } = await auth();
+    const patchSession = await getSession();
+    const userId = patchSession?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -108,7 +110,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const { userId } = await auth();
+    const delSession = await getSession();
+    const userId = delSession?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

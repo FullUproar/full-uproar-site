@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 
 /**
@@ -11,15 +11,16 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const session = await getSession();
+    const userId = session?.user?.id;
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { id } = await context.params;
 
     const dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
+      where: { id: userId },
     });
 
     if (!dbUser) {
@@ -77,15 +78,16 @@ export async function PATCH(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const patchSession = await getSession();
+    const patchUserId = patchSession?.user?.id;
+    if (!patchUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { id } = await context.params;
 
     const dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
+      where: { id: patchUserId },
     });
 
     if (!dbUser) {
@@ -166,15 +168,16 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const delSession = await getSession();
+    const delUserId = delSession?.user?.id;
+    if (!delUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { id } = await context.params;
 
     const dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
+      where: { id: delUserId },
     });
 
     if (!dbUser) {

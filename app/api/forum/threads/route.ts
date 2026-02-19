@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { UserSecurityService } from '@/lib/services/user-security';
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -121,11 +122,12 @@ export async function GET(request: NextRequest) {
     const order = searchParams.get('order') || 'desc';
 
     // Get current user for access control
-    const { userId: clerkId } = await auth();
+    const sessionData = await getSession();
+    const currentUserId = sessionData?.user?.id;
     let dbUser = null;
-    if (clerkId) {
+    if (currentUserId) {
       dbUser = await prisma.user.findUnique({
-        where: { clerkId },
+        where: { id: currentUserId },
         select: { id: true, membershipTier: true },
       });
     }

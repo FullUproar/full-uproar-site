@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { headers } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     const body = await request.json();
     const { action, productType, productId, metadata } = body;
 

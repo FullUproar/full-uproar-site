@@ -1,16 +1,16 @@
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth as getSession } from '@/lib/auth-config'
 import { prisma } from '@/lib/prisma'
 import { UserRole } from '@prisma/client'
 
 export async function getCurrentUser() {
-  const user = await currentUser()
-  if (!user) return null
+  const session = await getSession()
+  if (!session?.user?.id) return null
 
   const dbUser = await prisma.user.findUnique({
-    where: { clerkId: user.id },
-    include: { 
+    where: { id: session.user.id },
+    include: {
       permissions: true,
-      profile: true 
+      profile: true
     }
   })
 
@@ -21,13 +21,6 @@ export async function checkPermission(
   resource: string,
   action?: string
 ): Promise<boolean> {
-  // If called with old signature (3 params), handle it
-  if (arguments.length === 3) {
-    console.warn('checkPermission called with deprecated signature. Use checkPermission(resource, action) instead.');
-    resource = arguments[1];
-    action = arguments[2];
-  }
-
   // Handle colon notation (e.g., 'admin:access')
   if (!action && resource.includes(':')) {
     const parts = resource.split(':');
@@ -48,8 +41,8 @@ export async function checkPermission(
 
   // Check role-based permissions
   const rolePermissions = getRolePermissions(user.role)
-  if (rolePermissions.some(p => 
-    p.resource === resource && 
+  if (rolePermissions.some(p =>
+    p.resource === resource &&
     (p.action === action || p.action === '*')
   )) {
     return true
@@ -67,11 +60,11 @@ export async function checkPermission(
 }
 
 export async function requireAuth() {
-  const { userId } = await auth()
-  if (!userId) {
+  const session = await getSession()
+  if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
-  return userId
+  return session.user.id
 }
 
 export async function requirePermission(

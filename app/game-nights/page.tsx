@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import {
   Calendar,
   Plus,
@@ -61,7 +61,9 @@ const statusConfig: Record<string, { color: string; label: string }> = {
 
 export default function GameNightsPage() {
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoaded = status !== 'loading';
   const [gameNights, setGameNights] = useState<{ hosted: GameNight[]; attending: GameNight[] }>({
     hosted: [],
     attending: [],

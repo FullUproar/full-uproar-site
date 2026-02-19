@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requirePermission } from '@/lib/auth';
-import { clerkClient } from '@clerk/nextjs/server';
 
 export async function PATCH(
   req: NextRequest,
@@ -51,7 +50,7 @@ export async function DELETE(
     const resolvedParams = await params;
     const userId = resolvedParams.id;
 
-    // Get user to find Clerk ID
+    // Get user to verify they exist
     const user = await prisma.user.findUnique({
       where: { id: userId }
     });
@@ -75,14 +74,6 @@ export async function DELETE(
     await prisma.user.delete({
       where: { id: userId }
     });
-
-    // Try to delete from Clerk (optional, may fail if already deleted)
-    try {
-      const clerk = await clerkClient();
-      await clerk.users.deleteUser(user.clerkId);
-    } catch (clerkError) {
-      console.log('Clerk deletion failed (user may already be deleted):', clerkError);
-    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

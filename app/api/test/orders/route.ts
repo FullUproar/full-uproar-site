@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requirePermission } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { withErrorHandler } from '@/lib/utils/error-handler';
-import { isTestMode } from '@/app/api/admin/test-mode/route';
+// Check test mode via environment
+const isTestMode = () => process.env.NODE_ENV === 'development';
 
 const testCustomers = [
   { name: 'Test Customer 1', email: 'test1@example.com' },

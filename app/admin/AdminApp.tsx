@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import {
   Package, ShoppingBag, ShoppingCart, Settings,
@@ -47,7 +47,9 @@ const menuItems = [
 ];
 
 export default function AdminApp() {
-  const { user, isLoaded } = useUser();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoaded = status !== 'loading';
   const router = useRouter();
   const searchParams = useSearchParams();
 

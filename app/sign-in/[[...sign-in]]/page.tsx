@@ -1,61 +1,48 @@
 'use client';
 
 import { useState } from 'react';
-import { useSignIn } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import FuglyLogo from '@/app/components/FuglyLogo';
-import { OAuthStrategy } from '@clerk/types';
 
 export default function SignInPage() {
-  const { isLoaded, signIn, setActive } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoaded || !signIn) return;
-    
     setError('');
     setLoading(true);
 
     try {
-      const result = await signIn.create({
-        identifier: email,
+      const result = await signIn('credentials', {
+        email,
         password,
+        redirect: false,
       });
 
-      if (result.status === 'complete') {
-        await setActive({ session: result.createdSessionId });
-        router.push('/');
-      } else {
-        console.error('Sign in not complete:', result);
-        setError('Sign in failed. Please try again.');
+      if (result?.error) {
+        setError('Invalid email or password');
+      } else if (result?.ok) {
+        router.push(callbackUrl);
+        router.refresh();
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Sign in error:', err);
-      setError(err.errors?.[0]?.message || 'Invalid email or password');
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const signInWithGoogle = async () => {
-    if (!isLoaded || !signIn) return;
-    
-    try {
-      await signIn.authenticateWithRedirect({
-        strategy: 'oauth_google' as OAuthStrategy,
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/'
-      });
-    } catch (err: any) {
-      console.error('Google sign-in error:', err);
-      setError('Failed to sign in with Google. Please try again.');
-    }
+    await signIn('google', { callbackUrl });
   };
 
   const styles = {
@@ -169,17 +156,13 @@ export default function SignInPage() {
     }
   };
 
-  if (!isLoaded) {
-    return null;
-  }
-
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
           <FuglyLogo size={80} />
         </div>
-        
+
         <h1 style={styles.title}>Welcome Back</h1>
         <p style={styles.subtitle}>Sign in to continue the chaos</p>
 
@@ -220,7 +203,6 @@ export default function SignInPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               style={styles.input}
-              placeholder="chaos@example.com"
               required
             />
           </div>
@@ -233,9 +215,13 @@ export default function SignInPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
-              placeholder="••••••••"
               required
             />
+            <div style={{ marginTop: '0.5rem', textAlign: 'right' as const }}>
+              <Link href="/forgot-password" style={{ ...styles.link, fontSize: '0.875rem' }}>
+                Forgot password?
+              </Link>
+            </div>
           </div>
 
           {error && (

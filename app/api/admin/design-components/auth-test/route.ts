@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -9,29 +9,29 @@ export async function GET(request: NextRequest) {
   };
 
   try {
-    // Test 1: Check Clerk authentication
+    // Test 1: Check authentication
     try {
-      const clerkUser = await currentUser();
-      if (clerkUser) {
-        results.tests.clerkAuth = {
+      const session = await getSession();
+      if (session?.user) {
+        results.tests.auth = {
           status: 'PASS',
-          userId: clerkUser.id,
-          email: clerkUser.emailAddresses[0]?.emailAddress
+          userId: session.user.id,
+          email: session.user.email
         };
       } else {
-        results.tests.clerkAuth = 'No user authenticated';
+        results.tests.auth = 'No user authenticated';
       }
     } catch (e: any) {
-      results.tests.clerkAuth = `FAIL: ${e.message}`;
+      results.tests.auth = `FAIL: ${e.message}`;
     }
 
     // Test 2: Check database user
-    if (results.tests.clerkAuth?.userId) {
+    if (results.tests.auth?.userId) {
       try {
         const dbUser = await prisma.user.findUnique({
-          where: { clerkId: results.tests.clerkAuth.userId }
+          where: { id: results.tests.auth.userId }
         });
-        
+
         if (dbUser) {
           results.tests.dbUser = {
             status: 'PASS',
@@ -41,21 +41,20 @@ export async function GET(request: NextRequest) {
           };
         } else {
           results.tests.dbUser = 'User not found in database';
-          
+
           // Try to find by email
-          const clerkUser = await currentUser();
-          if (clerkUser?.emailAddresses[0]?.emailAddress) {
+          const session = await getSession();
+          if (session?.user?.email) {
             const userByEmail = await prisma.user.findUnique({
-              where: { email: clerkUser.emailAddresses[0].emailAddress }
+              where: { email: session.user.email }
             });
-            
+
             if (userByEmail) {
               results.tests.dbUserByEmail = {
                 found: true,
                 id: userByEmail.id,
-                clerkId: userByEmail.clerkId,
                 role: userByEmail.role,
-                needsClerkIdUpdate: userByEmail.clerkId !== clerkUser.id
+                needsIdUpdate: userByEmail.id !== session.user.id
               };
             }
           }

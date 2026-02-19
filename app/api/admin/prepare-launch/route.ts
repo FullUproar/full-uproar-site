@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // Admin-only endpoint to prepare site for pre-launch state
 // Sets all games to 0 stock and marks them as preorder with Spring 2026 launch
 
 export async function POST() {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
 
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -15,7 +16,7 @@ export async function POST() {
 
     // Verify admin role
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
+      where: { id: userId },
       select: { role: true }
     });
 

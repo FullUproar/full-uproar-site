@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Navigation from '@/app/components/Navigation';
 import { ArrowLeft, Send } from 'lucide-react';
 import Link from 'next/link';
@@ -16,7 +16,9 @@ interface Board {
 function NewThreadForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { userId, isLoaded } = useAuth();
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
+  const isLoaded = status !== 'loading';
   const [boards, setBoards] = useState<Board[]>([]);
   const [selectedBoard, setSelectedBoard] = useState<string>('');
   const [title, setTitle] = useState('');

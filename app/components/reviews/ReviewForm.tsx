@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import ReviewStars from './ReviewStars';
 
 interface ReviewFormProps {
@@ -12,7 +12,9 @@ interface ReviewFormProps {
 }
 
 export default function ReviewForm({ gameId, merchId, onSuccess, onCancel }: ReviewFormProps) {
-  const { isSignedIn, user } = useUser();
+  const { data: session, status } = useSession();
+  const isSignedIn = !!session;
+  const user = session?.user;
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
@@ -271,7 +273,7 @@ export default function ReviewForm({ gameId, merchId, onSuccess, onCancel }: Rev
       </div>
 
       <p style={{ color: '#6b7280', fontSize: 12, marginTop: 16 }}>
-        {user?.firstName || user?.username || 'You'} - Your review will be posted publicly.
+        {user?.name?.split(' ')[0] || 'You'} - Your review will be posted publicly.
         If you've purchased this product, your review will be marked as a verified purchase.
       </p>
     </form>

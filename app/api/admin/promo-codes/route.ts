@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // GET - List all promo codes
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check admin permission
     const user = await prisma.user.findFirst({
-      where: { clerkId: userId },
+      where: { id: userId },
       select: { role: true }
     });
 
@@ -104,14 +105,15 @@ export async function GET(request: NextRequest) {
 // POST - Create new promo code
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check admin permission
     const adminUser = await prisma.user.findFirst({
-      where: { clerkId: userId },
+      where: { id: userId },
       select: { role: true, displayName: true, username: true }
     });
 
@@ -221,14 +223,15 @@ export async function POST(request: NextRequest) {
 // PUT - Update promo code
 export async function PUT(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check admin permission
     const adminUser = await prisma.user.findFirst({
-      where: { clerkId: userId },
+      where: { id: userId },
       select: { role: true }
     });
 
@@ -311,14 +314,15 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete promo code
 export async function DELETE(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check admin permission
     const adminUser = await prisma.user.findFirst({
-      where: { clerkId: userId },
+      where: { id: userId },
       select: { role: true }
     });
 

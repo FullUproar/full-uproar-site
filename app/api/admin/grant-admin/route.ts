@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // Authorized admin emails that can self-grant (for initial setup)
 const AUTHORIZED_ADMIN_EMAILS = [
@@ -9,14 +9,14 @@ const AUTHORIZED_ADMIN_EMAILS = [
 
 export async function POST() {
   try {
-    const { userId } = await auth();
-    const clerkUser = await currentUser();
+    const session = await getSession();
+    const userId = session?.user?.id;
 
-    if (!userId || !clerkUser) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const email = clerkUser.emailAddresses[0]?.emailAddress?.toLowerCase() || '';
+    const email = (session.user?.email || '').toLowerCase();
 
     // Security: Only allow this endpoint in specific conditions
     const isDevelopment = process.env.NODE_ENV === 'development';
@@ -37,28 +37,27 @@ export async function POST() {
 
     // Check if user exists
     let user = await prisma.user.findUnique({
-      where: { clerkId: userId }
+      where: { id: userId }
     });
 
     if (!user) {
       // Create user if they don't exist
-      const username = clerkUser.username || email.split('@')[0];
+      const username = email.split('@')[0];
 
       user = await prisma.user.create({
         data: {
-          clerkId: userId,
+          id: userId,
           email: email,
           username: username,
-          displayName: clerkUser.firstName || username,
+          displayName: session.user?.name || username,
           role: 'ADMIN',
-          emailVerified: clerkUser.emailAddresses[0]?.verification?.status === 'verified',
           cultDevotion: 0
         }
       });
     } else {
       // Update existing user to admin
       user = await prisma.user.update({
-        where: { clerkId: userId },
+        where: { id: userId },
         data: { role: 'ADMIN' }
       });
     }

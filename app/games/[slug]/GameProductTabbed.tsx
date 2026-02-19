@@ -9,7 +9,7 @@ import {
   Info, AlertCircle, X, Plus, Minus, ThumbsUp, ThumbsDown, Play
 } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
@@ -71,7 +71,7 @@ interface GameProductTabbedProps {
 
 export default function GameProductTabbed({ game, similarGames }: GameProductTabbedProps) {
   const router = useRouter();
-  const { user } = useUser();
+  const { data: session } = useSession();
   const { addToCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -695,7 +695,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
               <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FBDB65' }}>
                 Customer Reviews
               </h3>
-              {user ? (
+              {session ? (
                 <button
                   onClick={() => setShowReviewForm(true)}
                   style={{
@@ -839,7 +839,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
               ) : (
                 <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>
                   <p style={{ fontSize: '18px', marginBottom: '16px' }}>No reviews yet. Be the first to share your chaos experience!</p>
-                  {!user && (
+                  {!session && (
                     <p>Sign in to write a review</p>
                   )}
                 </div>

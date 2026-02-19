@@ -9,7 +9,6 @@ async function manualAdminSetup() {
     // Create user with SUPER_ADMIN role
     const user = await prisma.user.create({
       data: {
-        clerkId: 'manual_' + Date.now(), // Temporary ID until Clerk webhook updates it
         email: email,
         username: 'admin',
         displayName: 'Full Uproar Admin',
@@ -23,7 +22,6 @@ async function manualAdminSetup() {
 
     console.log(`✅ Successfully created ${user.email} as SUPER_ADMIN`);
     console.log(`User ID: ${user.id}`);
-    console.log(`Clerk ID: ${user.clerkId} (temporary - will update on first login)`);
     
     // Create initial forum boards
     console.log('\nCreating initial forum boards...');
@@ -73,8 +71,6 @@ async function manualAdminSetup() {
     }
 
     console.log('\n🎉 Manual setup complete!');
-    console.log('\nIMPORTANT: When you sign in with info@fulluproar.com, the Clerk webhook');
-    console.log('will update your user record with the correct Clerk ID.');
     console.log('\nYou can now access the admin panel at https://www.fulluproar.com/admin');
     
   } catch (error) {

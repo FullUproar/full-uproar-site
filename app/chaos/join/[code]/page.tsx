@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 interface PageProps {
@@ -12,7 +12,9 @@ interface PageProps {
 export default function JoinChaosPage({ params }: PageProps) {
   const { code } = use(params);
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoaded = status !== 'loading';
 
   const [displayName, setDisplayName] = useState('');
   const [pronouns, setPronouns] = useState('');
@@ -72,7 +74,7 @@ export default function JoinChaosPage({ params }: PageProps) {
   // Pre-fill display name from user profile
   useEffect(() => {
     if (user) {
-      const name = user.firstName || user.username || '';
+      const name = user.name?.split(' ')[0] || '';
       setDisplayName(name);
     }
   }, [user]);

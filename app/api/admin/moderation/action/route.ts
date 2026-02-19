@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requirePermission } from '@/lib/auth';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { ReportResolutionType } from '@prisma/client';
 
 export async function POST(req: NextRequest) {
@@ -9,9 +9,20 @@ export async function POST(req: NextRequest) {
     // Check moderation permission
     await requirePermission('admin', 'write');
 
-    const moderator = await currentUser();
-    if (!moderator) {
+    const session = await getSession();
+    const moderatorId = session?.user?.id;
+    if (!moderatorId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Look up moderator from DB
+    const moderator = await prisma.user.findUnique({
+      where: { id: moderatorId },
+      select: { id: true }
+    });
+
+    if (!moderator) {
+      return NextResponse.json({ error: 'Moderator not found' }, { status: 401 });
     }
 
     const body = await req.json();

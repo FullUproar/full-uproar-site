@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const { userId } = await auth();
-    
+    const session = await getSession();
+    const userId = session?.user?.id;
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Get user from database
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
+      where: { id: userId },
       include: {
         addresses: {
           orderBy: [
@@ -37,8 +38,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    
+    const session = await getSession();
+    const userId = session?.user?.id;
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -47,17 +49,16 @@ export async function POST(request: NextRequest) {
 
     // Get or create user
     let user = await prisma.user.findUnique({
-      where: { clerkId: userId }
+      where: { id: userId }
     });
 
     if (!user) {
       // Create user if doesn't exist
-      const { sessionClaims } = await auth();
       user = await prisma.user.create({
         data: {
-          clerkId: userId,
-          email: sessionClaims?.email as string || '',
-          displayName: sessionClaims?.fullName as string || 'User'
+          id: userId,
+          email: session?.user?.email || '',
+          displayName: session?.user?.name || 'User'
         }
       });
     }
@@ -97,15 +98,16 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    
+    const session = await getSession();
+    const userId = session?.user?.id;
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
     const addressId = searchParams.get('id');
-    
+
     if (!addressId) {
       return NextResponse.json({ error: 'Address ID required' }, { status: 400 });
     }
@@ -114,7 +116,7 @@ export async function PUT(request: NextRequest) {
 
     // Get user
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId }
+      where: { id: userId }
     });
 
     if (!user) {
@@ -159,22 +161,23 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    
+    const session = await getSession();
+    const userId = session?.user?.id;
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
     const addressId = searchParams.get('id');
-    
+
     if (!addressId) {
       return NextResponse.json({ error: 'Address ID required' }, { status: 400 });
     }
 
     // Get user
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId }
+      where: { id: userId }
     });
 
     if (!user) {

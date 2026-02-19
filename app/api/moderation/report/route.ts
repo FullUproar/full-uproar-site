@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 export async function POST(req: NextRequest) {
   try {
-    const user = await currentUser();
+    const session = await getSession();
+    const userId = session?.user?.id;
 
-    if (!user) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
     // Check if user already reported this content
     const existingReport = await prisma.report.findFirst({
       where: {
-        reporterId: user.id,
+        reporterId: userId,
         contentType,
         contentId,
         status: { in: ['PENDING', 'UNDER_REVIEW'] }
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     // Create the report
     const report = await prisma.report.create({
       data: {
-        reporterId: user.id,
+        reporterId: userId,
         contentType,
         contentId,
         targetUserId: targetUserId || null,

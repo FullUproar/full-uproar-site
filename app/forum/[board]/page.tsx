@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Navigation from '@/app/components/Navigation';
 import {
   ArrowLeft, Plus, Pin, Lock, MessageCircle, Eye, Clock,
@@ -44,7 +44,8 @@ interface AccessDeniedInfo {
 export default function BoardPage() {
   const params = useParams();
   const router = useRouter();
-  const { isSignedIn } = useUser();
+  const { data: session } = useSession();
+  const isSignedIn = !!session;
   const boardSlug = params.board as string;
 
   const [board, setBoard] = useState<Board | null>(null);

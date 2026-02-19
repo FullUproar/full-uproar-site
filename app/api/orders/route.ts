@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { Prisma } from '@prisma/client';
 import { calculateTaxSync } from '@/lib/tax';
 import { ADMIN_ROLES } from '@/lib/constants';
@@ -59,7 +59,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Get user ID if authenticated (needed for promo code tracking)
-    const { userId: clerkUserId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
 
     // Get client IP for promo code abuse tracking
     const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -70,9 +71,9 @@ export async function POST(request: NextRequest) {
     if (!STORE_OPEN) {
       let isAdmin = false;
 
-      if (clerkUserId) {
+      if (userId) {
         const user = await prisma.user.findUnique({
-          where: { clerkId: clerkUserId },
+          where: { id: userId },
           select: { role: true }
         });
         isAdmin = ADMIN_ROLES.includes(user?.role as any);
@@ -317,10 +318,10 @@ export async function POST(request: NextRequest) {
               where: {
                 promoCodeId: promoCode.id,
                 OR: [
-                  ...(clerkUserId ? [{ userId: clerkUserId }] : []),
+                  ...(userId ? [{ userId: userId }] : []),
                   { userEmail: body.customerEmail },
                   // Also check IP for guest users to prevent abuse with multiple emails
-                  ...(!clerkUserId && clientIp !== 'unknown' ? [{ ipAddress: clientIp }] : [])
+                  ...(!userId && clientIp !== 'unknown' ? [{ ipAddress: clientIp }] : [])
                 ]
               }
             });
@@ -336,7 +337,7 @@ export async function POST(request: NextRequest) {
             const previousOrders = await tx.order.count({
               where: {
                 OR: [
-                  ...(clerkUserId ? [{ userId: clerkUserId }] : []),
+                  ...(userId ? [{ userId: userId }] : []),
                   { customerEmail: body.customerEmail }
                 ],
                 status: { notIn: ['cancelled', 'pending'] }
@@ -352,7 +353,7 @@ export async function POST(request: NextRequest) {
           // Check specific user restrictions
           if (isValid && promoCode.specificUserIds) {
             const allowedUsers = JSON.parse(promoCode.specificUserIds) as string[];
-            if (!clerkUserId || !allowedUsers.includes(clerkUserId)) {
+            if (!userId || !allowedUsers.includes(userId)) {
               isValid = false;
               invalidReason = 'Promo code is not valid for your account';
             }
@@ -492,7 +493,7 @@ export async function POST(request: NextRequest) {
           data: {
             promoCodeId: promoCodeToRecord.id,
             orderId: order.id,
-            userId: clerkUserId || null,
+            userId: userId || null,
             userEmail: body.customerEmail,
             ipAddress: clientIp !== 'unknown' ? clientIp : null,
             discountApplied: discountCents

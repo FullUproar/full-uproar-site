@@ -37,7 +37,5 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   });
 });
 
-// Export for other modules to check test mode
-export function isTestMode() {
-  return testModeEnabled;
-}
+// Note: isTestMode() was previously exported here but Next.js route files
+// can only export HTTP handlers. Check test mode via GET /api/admin/test-mode instead.

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 
 /**
@@ -8,14 +8,15 @@ import { prisma } from '@/lib/prisma';
  */
 export async function GET(request: NextRequest) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const session = await getSession();
+    const userId = session?.user?.id;
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get or create the DB user
+    // Get the DB user
     const dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
+      where: { id: userId },
     });
 
     if (!dbUser) {
@@ -79,25 +80,19 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const postSession = await getSession();
+    const postUserId = postSession?.user?.id;
+    if (!postUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get or create the DB user
-    let dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
+    // Get the DB user
+    const dbUser = await prisma.user.findUnique({
+      where: { id: postUserId },
     });
 
     if (!dbUser) {
-      // Create user if doesn't exist
-      dbUser = await prisma.user.create({
-        data: {
-          clerkId: user.id,
-          email: user.emailAddresses[0]?.emailAddress || '',
-          displayName: user.firstName || 'Player',
-        },
-      });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const body = await request.json();

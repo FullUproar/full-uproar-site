@@ -7,8 +7,8 @@
  * Tests the admin gate used by every /api/admin/* route.
  */
 
-// Mock Clerk
-jest.mock('@clerk/nextjs/server', () => ({
+// Mock Auth.js
+jest.mock('@/lib/auth-config', () => ({
   auth: jest.fn(),
 }));
 
@@ -21,7 +21,7 @@ jest.mock('@/lib/prisma', () => ({
   },
 }));
 
-import { auth } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin, isAdmin } from '@/lib/auth/require-admin';
 
@@ -33,8 +33,8 @@ beforeEach(() => {
 });
 
 describe('requireAdmin', () => {
-  it('should return unauthorized when no userId', async () => {
-    mockAuth.mockResolvedValue({ userId: null } as any);
+  it('should return unauthorized when no session', async () => {
+    mockAuth.mockResolvedValue(null as any);
 
     const result = await requireAdmin();
 
@@ -46,7 +46,7 @@ describe('requireAdmin', () => {
   });
 
   it('should return forbidden when user not found in DB', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_123' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-1', role: 'ADMIN' } } as any);
     mockFindUnique.mockResolvedValue(null);
 
     const result = await requireAdmin();
@@ -59,7 +59,7 @@ describe('requireAdmin', () => {
   });
 
   it('should return forbidden for USER role', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_123' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-1', role: 'USER' } } as any);
     mockFindUnique.mockResolvedValue({
       id: 'db-1',
       role: 'USER',
@@ -71,7 +71,7 @@ describe('requireAdmin', () => {
   });
 
   it('should return forbidden for MODERATOR role', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_123' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-1', role: 'MODERATOR' } } as any);
     mockFindUnique.mockResolvedValue({
       id: 'db-1',
       role: 'MODERATOR',
@@ -83,7 +83,7 @@ describe('requireAdmin', () => {
   });
 
   it('should authorize ADMIN role', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_123' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-1', role: 'ADMIN' } } as any);
     mockFindUnique.mockResolvedValue({
       id: 'db-1',
       role: 'ADMIN',
@@ -94,14 +94,14 @@ describe('requireAdmin', () => {
 
     expect(result.authorized).toBe(true);
     if (result.authorized) {
-      expect(result.userId).toBe('clerk_123');
+      expect(result.userId).toBe('db-1');
       expect(result.user.role).toBe('ADMIN');
       expect(result.user.email).toBe('admin@test.com');
     }
   });
 
   it('should authorize SUPER_ADMIN role', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_456' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-2', role: 'SUPER_ADMIN' } } as any);
     mockFindUnique.mockResolvedValue({
       id: 'db-2',
       role: 'SUPER_ADMIN',
@@ -113,7 +113,7 @@ describe('requireAdmin', () => {
   });
 
   it('should authorize GOD role', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_789' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-3', role: 'GOD' } } as any);
     mockFindUnique.mockResolvedValue({
       id: 'db-3',
       role: 'GOD',
@@ -124,10 +124,10 @@ describe('requireAdmin', () => {
     expect(result.authorized).toBe(true);
   });
 
-  it('should query user by clerkId', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_specific' } as any);
+  it('should query user by id', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'db-specific', role: 'ADMIN' } } as any);
     mockFindUnique.mockResolvedValue({
-      id: 'db-1',
+      id: 'db-specific',
       role: 'ADMIN',
       email: 'admin@test.com',
     });
@@ -135,7 +135,7 @@ describe('requireAdmin', () => {
     await requireAdmin();
 
     expect(mockFindUnique).toHaveBeenCalledWith({
-      where: { clerkId: 'clerk_specific' },
+      where: { id: 'db-specific' },
       select: { id: true, role: true, email: true },
     });
   });
@@ -143,7 +143,7 @@ describe('requireAdmin', () => {
 
 describe('isAdmin', () => {
   it('should return true for admin users', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_123' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-1', role: 'ADMIN' } } as any);
     mockFindUnique.mockResolvedValue({
       id: 'db-1',
       role: 'ADMIN',
@@ -155,7 +155,7 @@ describe('isAdmin', () => {
   });
 
   it('should return false for non-admin users', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_123' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-1', role: 'USER' } } as any);
     mockFindUnique.mockResolvedValue({
       id: 'db-1',
       role: 'USER',
@@ -167,7 +167,7 @@ describe('isAdmin', () => {
   });
 
   it('should return false when not authenticated', async () => {
-    mockAuth.mockResolvedValue({ userId: null } as any);
+    mockAuth.mockResolvedValue(null as any);
 
     const result = await isAdmin();
     expect(result).toBe(false);

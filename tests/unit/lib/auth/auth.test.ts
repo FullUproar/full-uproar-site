@@ -1,6 +1,6 @@
 /**
  * Unit tests for auth helpers (lib/auth.ts)
- * Mocks Clerk's auth() and currentUser() to test our auth logic in isolation.
+ * Mocks Auth.js auth() to test our auth logic in isolation.
  *
  * Covers workflows: #16-21 (Account & Auth) — the parts we own
  * Strategy: Mock the auth provider, test our permission/role logic directly
@@ -8,10 +8,9 @@
 
 import { UserRole } from '@prisma/client';
 
-// Mock Clerk before importing auth module
-jest.mock('@clerk/nextjs/server', () => ({
+// Mock Auth.js before importing auth module
+jest.mock('@/lib/auth-config', () => ({
   auth: jest.fn(),
-  currentUser: jest.fn(),
 }));
 
 // Mock Prisma
@@ -23,25 +22,20 @@ jest.mock('@/lib/prisma', () => ({
   },
 }));
 
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser, checkPermission, requireAuth, requirePermission } from '@/lib/auth';
 
 const mockAuth = auth as jest.MockedFunction<typeof auth>;
-const mockCurrentUser = currentUser as jest.MockedFunction<typeof currentUser>;
 const mockFindUnique = prisma.user.findUnique as jest.MockedFunction<any>;
 
-// Test user fixtures
-const clerkUser = {
-  id: 'clerk_user_123',
-  emailAddresses: [{ emailAddress: 'test@example.com' }],
-  firstName: 'Test',
-  lastName: 'User',
+// Session fixture for authenticated user
+const authenticatedSession = {
+  user: { id: 'db-user-1', role: 'USER' },
 } as any;
 
 const dbUserBase = {
   id: 'db-user-1',
-  clerkId: 'clerk_user_123',
   email: 'test@example.com',
   role: UserRole.USER,
   permissions: [],
@@ -57,28 +51,28 @@ beforeEach(() => {
 });
 
 describe('getCurrentUser', () => {
-  it('should return null when Clerk user is not authenticated', async () => {
-    mockCurrentUser.mockResolvedValue(null as any);
+  it('should return null when user is not authenticated', async () => {
+    mockAuth.mockResolvedValue(null as any);
     const result = await getCurrentUser();
     expect(result).toBeNull();
     expect(mockFindUnique).not.toHaveBeenCalled();
   });
 
-  it('should look up DB user by clerkId', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+  it('should look up DB user by id', async () => {
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser());
 
     const result = await getCurrentUser();
 
     expect(mockFindUnique).toHaveBeenCalledWith({
-      where: { clerkId: 'clerk_user_123' },
+      where: { id: 'db-user-1' },
       include: { permissions: true, profile: true },
     });
     expect(result).toEqual(makeDbUser());
   });
 
   it('should return null when DB user not found', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(null);
 
     const result = await getCurrentUser();
@@ -88,26 +82,26 @@ describe('getCurrentUser', () => {
 
 describe('requireAuth', () => {
   it('should return userId when authenticated', async () => {
-    mockAuth.mockResolvedValue({ userId: 'clerk_user_123' } as any);
+    mockAuth.mockResolvedValue({ user: { id: 'db-user-1', role: 'USER' } } as any);
     const result = await requireAuth();
-    expect(result).toBe('clerk_user_123');
+    expect(result).toBe('db-user-1');
   });
 
   it('should throw when not authenticated', async () => {
-    mockAuth.mockResolvedValue({ userId: null } as any);
+    mockAuth.mockResolvedValue(null as any);
     await expect(requireAuth()).rejects.toThrow('Unauthorized');
   });
 });
 
 describe('checkPermission', () => {
   it('should return false when user is not authenticated', async () => {
-    mockCurrentUser.mockResolvedValue(null as any);
+    mockAuth.mockResolvedValue(null as any);
     const result = await checkPermission('admin', 'access');
     expect(result).toBe(false);
   });
 
   it('should grant all permissions to GOD role', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.GOD }));
 
     expect(await checkPermission('admin', 'access')).toBe(true);
@@ -115,7 +109,7 @@ describe('checkPermission', () => {
   });
 
   it('should grant all permissions to SUPER_ADMIN role', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.SUPER_ADMIN }));
 
     expect(await checkPermission('admin', 'access')).toBe(true);
@@ -123,7 +117,7 @@ describe('checkPermission', () => {
   });
 
   it('should grant role-based permissions to ADMIN', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.ADMIN }));
 
     // ADMIN has admin:*, users:read/create/update/delete, products:*, etc.
@@ -134,7 +128,7 @@ describe('checkPermission', () => {
   });
 
   it('should limit MODERATOR to message and user moderation permissions', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.MODERATOR }));
 
     expect(await checkPermission('messages', 'read')).toBe(true);
@@ -146,7 +140,7 @@ describe('checkPermission', () => {
   });
 
   it('should limit USER to basic permissions', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.USER }));
 
     expect(await checkPermission('messages', 'create')).toBe(true);
@@ -158,7 +152,7 @@ describe('checkPermission', () => {
   });
 
   it('should handle colon notation (resource:action)', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.ADMIN }));
 
     expect(await checkPermission('admin:access')).toBe(true);
@@ -166,7 +160,7 @@ describe('checkPermission', () => {
   });
 
   it('should check individual permissions from DB', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(
       makeDbUser({
         role: UserRole.USER,
@@ -186,7 +180,7 @@ describe('checkPermission', () => {
   });
 
   it('should reject expired individual permissions', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(
       makeDbUser({
         role: UserRole.USER,
@@ -206,7 +200,7 @@ describe('checkPermission', () => {
   });
 
   it('should reject revoked individual permissions', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(
       makeDbUser({
         role: UserRole.USER,
@@ -228,7 +222,7 @@ describe('checkPermission', () => {
 
 describe('requirePermission', () => {
   it('should return user when permission is granted', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.ADMIN }));
 
     const result = await requirePermission('admin', 'access');
@@ -236,19 +230,19 @@ describe('requirePermission', () => {
   });
 
   it('should throw Unauthorized when not authenticated', async () => {
-    mockCurrentUser.mockResolvedValue(null as any);
+    mockAuth.mockResolvedValue(null as any);
     await expect(requirePermission('admin', 'access')).rejects.toThrow('Unauthorized');
   });
 
   it('should throw Forbidden when permission denied', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.USER }));
 
     await expect(requirePermission('admin', 'access')).rejects.toThrow('Forbidden');
   });
 
   it('should handle colon notation', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeDbUser({ role: UserRole.ADMIN }));
 
     const result = await requirePermission('orders:read');

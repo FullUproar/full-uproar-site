@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser, useClerk } from '@clerk/nextjs';
+import { useSession, signOut } from 'next-auth/react';
 import { 
   User, Settings, Shield, Bell, Palette, Globe, 
   Mail, Phone, Camera, Save, X, Loader2, 
@@ -63,8 +63,9 @@ interface OrderItem {
 
 export default function AccountView() {
   const router = useRouter();
-  const { user, isLoaded } = useUser();
-  const { signOut } = useClerk();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoaded = status !== 'loading';
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
@@ -93,11 +94,12 @@ export default function AccountView() {
 
   useEffect(() => {
     if (isLoaded && user) {
+      const nameParts = (user.name || '').split(' ');
       setProfileData({
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        username: user.username || '',
-        email: user.primaryEmailAddress?.emailAddress || '',
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
+        username: user.name || '',
+        email: user.email || '',
       });
     }
   }, [isLoaded, user]);
@@ -221,12 +223,17 @@ export default function AccountView() {
     setMessage(null);
     
     try {
-      await user.update({
-        firstName: profileData.firstName,
-        lastName: profileData.lastName,
-        username: profileData.username,
+      const response = await fetch('/api/account/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          username: profileData.username,
+        }),
       });
-      
+      if (!response.ok) throw new Error('Failed to update profile');
+
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -237,8 +244,7 @@ export default function AccountView() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    router.push('/');
+    await signOut({ callbackUrl: '/' });
   };
 
   const styles = {
@@ -446,10 +452,10 @@ export default function AccountView() {
                     justifyContent: 'center',
                     border: '2px solid #FF8200'
                   }}>
-                    {user.imageUrl ? (
+                    {user.image ? (
                       <img
-                        src={user.imageUrl}
-                        alt={user.fullName || ''}
+                        src={user.image}
+                        alt={user.name || ''}
                         style={{ 
                           width: '100%', 
                           height: '100%', 
@@ -463,10 +469,10 @@ export default function AccountView() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 'bold', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {user.fullName || 'User'}
+                      {user.name || 'User'}
                     </div>
                     <div style={{ fontSize: '12px', color: '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {user.primaryEmailAddress?.emailAddress}
+                      {user.email}
                     </div>
                   </div>
                 </div>
@@ -609,10 +615,10 @@ export default function AccountView() {
                         position: 'relative',
                         overflow: 'hidden'
                       }}>
-                        {user.imageUrl ? (
+                        {user.image ? (
                           <img
-                            src={user.imageUrl}
-                            alt={user.fullName || ''}
+                            src={user.image}
+                            alt={user.name || ''}
                             style={{ 
                               width: '100%', 
                               height: '100%', 
@@ -904,7 +910,7 @@ export default function AccountView() {
                           Password
                         </div>
                         <div style={{ fontSize: '14px', color: '#94a3b8' }}>
-                          Managed by Clerk Auth
+                          Change your password
                         </div>
                       </div>
                       <button style={styles.secondaryButton}>

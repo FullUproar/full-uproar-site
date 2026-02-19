@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useAuth, useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import {
@@ -46,8 +46,9 @@ interface Post {
 export default function ThreadPage() {
   const params = useParams();
   const router = useRouter();
-  const { userId, isLoaded: authLoaded } = useAuth();
-  const { user } = useUser();
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
+  const authLoaded = status !== 'loading';
   
   const boardSlug = params.board as string;
   const threadSlug = params.thread as string;

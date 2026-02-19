@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { redirect, useRouter } from 'next/navigation';
 import { Upload, X, ArrowLeft, Save, Trash2, GripVertical, Star } from 'lucide-react';
 import ImageUpload from '@/app/components/ImageUpload';
@@ -19,7 +19,9 @@ interface PageProps {
 }
 
 export default function ManageImagesPage({ params }: PageProps) {
-  const { user, isLoaded } = useUser();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoaded = status !== 'loading';
   const router = useRouter();
   const [itemType, setItemType] = useState<string>('');
   const [itemId, setItemId] = useState<string>('');

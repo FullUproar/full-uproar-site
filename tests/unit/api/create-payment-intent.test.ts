@@ -14,7 +14,7 @@
 
 // ─── Mocks (must be before imports) ──────────────────────────────
 
-jest.mock('@clerk/nextjs/server', () => ({
+jest.mock('@/lib/auth-config', () => ({
   auth: jest.fn(),
 }));
 
@@ -47,7 +47,7 @@ jest.mock('@/lib/constants', () => ({
 // ─── Imports ─────────────────────────────────────────────────────
 
 import { NextRequest } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { isSimulatedMode } from '@/lib/payment-mode';
 import { stripe } from '@/lib/stripe';
@@ -86,7 +86,7 @@ const sampleOrder = {
 // so we authenticate as admin to bypass the store-closed gate.
 // Store-closed behavior is tested separately in purchase-flow.test.ts.
 function authenticateAsAdmin() {
-  mockAuth.mockResolvedValue({ userId: 'clerk_admin' } as any);
+  mockAuth.mockResolvedValue({ user: { id: 'db-admin-1', role: 'ADMIN' } } as any);
   (prisma.user.findUnique as jest.Mock).mockResolvedValue({ role: 'ADMIN' });
 }
 
@@ -226,7 +226,8 @@ describe('POST /api/stripe/create-payment-intent', () => {
     });
 
     it('should include userId in metadata when user is authenticated', async () => {
-      mockAuth.mockResolvedValue({ userId: 'clerk_user_123' } as any);
+      mockAuth.mockResolvedValue({ user: { id: 'db-user-1', role: 'USER' } } as any);
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue({ role: 'ADMIN' });
       (prisma.order.findUnique as jest.Mock).mockResolvedValue(sampleOrder);
       (prisma.order.update as jest.Mock).mockResolvedValue({});
       mockPaymentIntentsCreate.mockResolvedValue({
@@ -244,7 +245,7 @@ describe('POST /api/stripe/create-payment-intent', () => {
       expect(mockPaymentIntentsCreate).toHaveBeenCalledWith(
         expect.objectContaining({
           metadata: expect.objectContaining({
-            userId: 'clerk_user_123',
+            userId: 'db-user-1',
           }),
         })
       );

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { generateUniqueRoomCode, normalizeRoomCode, isValidRoomCode } from '@/lib/game-kit/room-codes';
 
@@ -12,7 +12,8 @@ const PARTYKIT_HOST = process.env.NEXT_PUBLIC_PARTYKIT_HOST || 'localhost:1999';
  */
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const authSession = await getSession();
+    const userId = authSession?.user?.id;
     const body = await request.json();
 
     const {

@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 export async function POST() {
   try {
-    const { userId } = await auth();
-    
+    const session = await getSession();
+    const userId = session?.user?.id;
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is admin - IMPORTANT: Use clerkId!
+    // Check if user is admin
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId }
+      where: { id: userId }
     });
 
     if (user?.role !== 'ADMIN' && user?.role !== 'SUPER_ADMIN') {
@@ -25,35 +26,35 @@ export async function POST() {
         name: 'General Chaos',
         slug: 'general',
         description: 'General discussion about games, life, and everything in between',
-        icon: '💬',
+        icon: '\u{1F4AC}',
         sortOrder: 1
       },
       {
         name: 'Game Strategies',
         slug: 'strategies',
         description: 'Share your most devious strategies and tactics',
-        icon: '🎯',
+        icon: '\u{1F3AF}',
         sortOrder: 2
       },
       {
         name: 'House Rules',
         slug: 'house-rules',
         description: 'Custom rules to make games even more chaotic',
-        icon: '📜',
+        icon: '\u{1F4DC}',
         sortOrder: 3
       },
       {
         name: 'Game Reviews',
         slug: 'reviews',
         description: 'Honest reviews focusing on chaos potential',
-        icon: '⭐',
+        icon: '\u2B50',
         sortOrder: 4
       },
       {
         name: 'Off Topic',
         slug: 'off-topic',
         description: 'Non-gaming chaos and general mayhem',
-        icon: '🎪',
+        icon: '\u{1F3AA}',
         sortOrder: 5
       }
     ];
@@ -112,14 +113,14 @@ Feel free to:
 
 Remember: If you're not making enemies, you're not playing hard enough!
 
-Let the chaos begin! 🔥😈💀`
+Let the chaos begin! \u{1F525}\u{1F608}\u{1F480}`
         }
       });
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: 'Forum seeded successfully',
-      boards: boards.length 
+      boards: boards.length
     });
   } catch (error) {
     console.error('Error seeding forum:', error);

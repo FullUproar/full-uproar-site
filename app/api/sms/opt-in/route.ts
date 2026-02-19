@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { 
   sendVerificationSMS, 
   generateVerificationCode, 
@@ -30,7 +30,8 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
     // Get current user if authenticated
-    const { userId: clerkUserId } = await auth();
+    const session = await getSession();
+    const sessionUserId = session?.user?.id;
     let user = null;
 
     if (userId) {
@@ -38,10 +39,10 @@ export async function POST(request: NextRequest) {
       user = await prisma.user.findUnique({
         where: { id: userId }
       });
-    } else if (clerkUserId) {
-      // If authenticated, find by Clerk ID
+    } else if (sessionUserId) {
+      // If authenticated, find by user ID
       user = await prisma.user.findUnique({
-        where: { clerkId: clerkUserId }
+        where: { id: sessionUserId }
       });
     } else if (email) {
       // Try to find by email if provided

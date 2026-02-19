@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // Check if user can access a board based on access level
 async function canAccessBoard(
@@ -27,11 +27,12 @@ async function canAccessBoard(
 export async function GET(request: NextRequest) {
   try {
     // Get current user for access control
-    const { userId: clerkId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     let dbUser = null;
-    if (clerkId) {
+    if (userId) {
       dbUser = await prisma.user.findUnique({
-        where: { clerkId },
+        where: { id: userId },
         select: { id: true, membershipTier: true },
       });
     }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Flag, X } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 
 interface ReportButtonProps {
   contentType: string; // 'POST', 'THREAD', 'USER', etc.
@@ -32,7 +32,8 @@ export default function ReportButton({
   url,
   compact = false
 }: ReportButtonProps) {
-  const { user } = useUser();
+  const { data: session } = useSession();
+  const user = session?.user;
   const [showModal, setShowModal] = useState(false);
   const [reason, setReason] = useState('');
   const [description, setDescription] = useState('');

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // GET /api/rituals/[id] - Get ritual details
 export async function GET(
@@ -9,8 +9,9 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const user = await currentUser();
-    if (!user) {
+    const session = await getSession();
+    const userId = session?.user?.id;
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -74,8 +75,8 @@ export async function GET(
     }
 
     // Check if user has access (creator or regular member)
-    const hasAccess = ritual.creatorId === user.id ||
-                     ritual.regulars.some(r => r.userId === user.id);
+    const hasAccess = ritual.creatorId === userId ||
+                     ritual.regulars.some(r => r.userId === userId);
 
     if (!hasAccess) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -99,8 +100,9 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const user = await currentUser();
-    if (!user) {
+    const patchSession = await getSession();
+    const patchUserId = patchSession?.user?.id;
+    if (!patchUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -113,7 +115,7 @@ export async function PATCH(
     }
 
     // Only creator can update
-    if (ritual.creatorId !== user.id) {
+    if (ritual.creatorId !== patchUserId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -203,8 +205,9 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const user = await currentUser();
-    if (!user) {
+    const delSession = await getSession();
+    const delUserId = delSession?.user?.id;
+    if (!delUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -217,7 +220,7 @@ export async function DELETE(
     }
 
     // Only creator can delete
-    if (ritual.creatorId !== user.id) {
+    if (ritual.creatorId !== delUserId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

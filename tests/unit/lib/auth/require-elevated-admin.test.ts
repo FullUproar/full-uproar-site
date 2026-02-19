@@ -7,10 +7,9 @@
  * Tests the 2FA elevation gate for sensitive admin operations.
  */
 
-// Mock Clerk
-jest.mock('@clerk/nextjs/server', () => ({
+// Mock Auth.js
+jest.mock('@/lib/auth-config', () => ({
   auth: jest.fn(),
-  currentUser: jest.fn(),
 }));
 
 // Mock Prisma
@@ -27,21 +26,20 @@ jest.mock('@/lib/auth/totp', () => ({
   isElevationValid: jest.fn(),
 }));
 
-import { currentUser } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { isElevationValid } from '@/lib/auth/totp';
 import { requireElevatedAdmin, requireAdminWithElevationStatus } from '@/lib/auth/require-elevated-admin';
 
-const mockCurrentUser = currentUser as jest.MockedFunction<typeof currentUser>;
+const mockAuth = auth as jest.MockedFunction<typeof auth>;
 const mockFindUnique = prisma.user.findUnique as jest.MockedFunction<any>;
 const mockIsElevationValid = isElevationValid as jest.MockedFunction<typeof isElevationValid>;
 
-const clerkUser = { id: 'clerk_123' } as any;
+const authenticatedSession = { user: { id: 'db-1', role: 'ADMIN' } } as any;
 
 function makeAdminUser(overrides = {}) {
   return {
     id: 'db-1',
-    clerkId: 'clerk_123',
     email: 'admin@test.com',
     role: 'ADMIN',
     permissions: [],
@@ -58,7 +56,7 @@ beforeEach(() => {
 
 describe('requireElevatedAdmin', () => {
   it('should return unauthorized for non-authenticated users', async () => {
-    mockCurrentUser.mockResolvedValue(null as any);
+    mockAuth.mockResolvedValue(null as any);
     mockFindUnique.mockResolvedValue(null);
 
     const result = await requireElevatedAdmin();
@@ -69,7 +67,7 @@ describe('requireElevatedAdmin', () => {
   });
 
   it('should return unauthorized for regular USER role', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeAdminUser({ role: 'USER' }));
 
     const result = await requireElevatedAdmin();
@@ -79,7 +77,7 @@ describe('requireElevatedAdmin', () => {
   });
 
   it('should authorize admin without 2FA (not elevated)', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeAdminUser({ totpEnabled: false }));
 
     const result = await requireElevatedAdmin();
@@ -90,7 +88,7 @@ describe('requireElevatedAdmin', () => {
   });
 
   it('should require elevation when 2FA enabled but not elevated', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeAdminUser({ totpEnabled: true }));
     mockIsElevationValid.mockReturnValue(false);
 
@@ -107,7 +105,7 @@ describe('requireElevatedAdmin', () => {
 
   it('should fully authorize when 2FA enabled and elevated', async () => {
     const futureDate = new Date(Date.now() + 60 * 60 * 1000);
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(
       makeAdminUser({
         totpEnabled: true,
@@ -124,7 +122,7 @@ describe('requireElevatedAdmin', () => {
   });
 
   it('should authorize SUPER_ADMIN with 2FA elevation', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(
       makeAdminUser({ role: 'SUPER_ADMIN', totpEnabled: true })
     );
@@ -136,7 +134,7 @@ describe('requireElevatedAdmin', () => {
   });
 
   it('should authorize GOD role', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(
       makeAdminUser({ role: 'GOD', totpEnabled: false })
     );
@@ -148,7 +146,7 @@ describe('requireElevatedAdmin', () => {
 
 describe('requireAdminWithElevationStatus', () => {
   it('should return unauthorized for non-admin', async () => {
-    mockCurrentUser.mockResolvedValue(null as any);
+    mockAuth.mockResolvedValue(null as any);
     mockFindUnique.mockResolvedValue(null);
 
     const result = await requireAdminWithElevationStatus();
@@ -156,7 +154,7 @@ describe('requireAdminWithElevationStatus', () => {
   });
 
   it('should return elevated=false when 2FA not enabled', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeAdminUser({ totpEnabled: false }));
 
     const result = await requireAdminWithElevationStatus();
@@ -166,7 +164,7 @@ describe('requireAdminWithElevationStatus', () => {
   });
 
   it('should report elevation status when 2FA enabled', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeAdminUser({ totpEnabled: true }));
     mockIsElevationValid.mockReturnValue(true);
 
@@ -177,7 +175,7 @@ describe('requireAdminWithElevationStatus', () => {
   });
 
   it('should not return error response (read-only check)', async () => {
-    mockCurrentUser.mockResolvedValue(clerkUser);
+    mockAuth.mockResolvedValue(authenticatedSession);
     mockFindUnique.mockResolvedValue(makeAdminUser({ totpEnabled: true }));
     mockIsElevationValid.mockReturnValue(false);
 

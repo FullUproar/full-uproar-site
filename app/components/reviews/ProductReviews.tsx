@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import ReviewStars from './ReviewStars';
 import ReviewForm from './ReviewForm';
 
@@ -38,7 +38,8 @@ interface ProductReviewsProps {
 }
 
 export default function ProductReviews({ gameId, merchId, productName }: ProductReviewsProps) {
-  const { isSignedIn, user } = useUser();
+  const { data: session } = useSession();
+  const isSignedIn = !!session;
   const [data, setData] = useState<ReviewsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);

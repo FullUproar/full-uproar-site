@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // POST /api/rituals/[id]/regulars - Add a regular member
 export async function POST(
@@ -9,8 +9,9 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const user = await currentUser();
-    if (!user) {
+    const session = await getSession();
+    const currentUserId = session?.user?.id;
+    if (!currentUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -26,8 +27,8 @@ export async function POST(
     }
 
     // Only creator or existing regulars can add members
-    const hasAccess = ritual.creatorId === user.id ||
-                     ritual.regulars.some(r => r.userId === user.id);
+    const hasAccess = ritual.creatorId === currentUserId ||
+                     ritual.regulars.some(r => r.userId === currentUserId);
 
     if (!hasAccess) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -96,8 +97,9 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const user = await currentUser();
-    if (!user) {
+    const delSession = await getSession();
+    const delUserId = delSession?.user?.id;
+    if (!delUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -120,7 +122,7 @@ export async function DELETE(
     }
 
     // Only creator can remove others, or users can remove themselves
-    if (ritual.creatorId !== user.id && targetUserId !== user.id) {
+    if (ritual.creatorId !== delUserId && targetUserId !== delUserId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

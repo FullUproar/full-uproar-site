@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // GET /api/rituals - List user's rituals
 export async function GET(req: NextRequest) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const session = await getSession();
+    const userId = session?.user?.id;
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -15,8 +16,8 @@ export async function GET(req: NextRequest) {
 
     const where: any = {
       OR: [
-        { creatorId: user.id },
-        { regulars: { some: { userId: user.id } } }
+        { creatorId: userId },
+        { regulars: { some: { userId: userId } } }
       ]
     };
 
@@ -72,8 +73,9 @@ export async function GET(req: NextRequest) {
 // POST /api/rituals - Create a ritual
 export async function POST(req: NextRequest) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const postSession = await getSession();
+    const postUserId = postSession?.user?.id;
+    if (!postUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -112,7 +114,7 @@ export async function POST(req: NextRequest) {
     // Create the ritual
     const ritual = await prisma.ritual.create({
       data: {
-        creatorId: user.id,
+        creatorId: postUserId,
         name,
         description: description || null,
         imageUrl: imageUrl || null,
@@ -148,7 +150,7 @@ export async function POST(req: NextRequest) {
     await prisma.ritualRegular.create({
       data: {
         ritualId: ritual.id,
-        userId: user.id,
+        userId: postUserId,
         role: 'host'
       }
     });

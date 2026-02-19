@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronRight, Mail, ShoppingCart, Calendar, Users, BookOpen, Star, Package, ArrowRight, Menu, X, Heart, Share2, Play, Zap, Skull, Pause } from 'lucide-react';
 import Image from 'next/image';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { useCartStore } from '@/lib/cartStore';
 import { formatAgeRating } from '@/lib/utils/formatting';
 
@@ -49,7 +49,7 @@ interface FullUproarHomeProps {
 }
 
 export default function FullUproarHome({ games, comics, news }: FullUproarHomeProps) {
-  const { user } = useUser();
+  const { data: session } = useSession();
   const { items, addToCart } = useCartStore();
   const [email, setEmail] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);

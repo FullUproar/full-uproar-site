@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { normalizeRoomCode, isValidRoomCode } from '@/lib/game-kit/room-codes';
 
@@ -13,7 +13,8 @@ export async function POST(
   { params }: { params: Promise<{ roomCode: string }> }
 ) {
   try {
-    const { userId } = await auth();
+    const postSession = await getSession();
+    const userId = postSession?.user?.id;
     const { roomCode: rawCode } = await params;
     const roomCode = normalizeRoomCode(rawCode);
     const body = await request.json();
@@ -140,7 +141,8 @@ export async function DELETE(
   { params }: { params: Promise<{ roomCode: string }> }
 ) {
   try {
-    const { userId } = await auth();
+    const delSession = await getSession();
+    const userId = delSession?.user?.id;
     const { roomCode: rawCode } = await params;
     const roomCode = normalizeRoomCode(rawCode);
 

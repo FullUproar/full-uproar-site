@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 
 // GET - List user's DSL game definitions
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -42,7 +43,8 @@ export async function GET(request: NextRequest) {
 // POST - Create a new DSL game definition
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const postSession = await getSession();
+    const userId = postSession?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

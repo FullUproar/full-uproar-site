@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Send, Mail, MessageSquare, Package, AlertCircle, CheckCircle, User } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import Navigation from '@/app/components/Navigation';
 import Turnstile from '@/app/components/Turnstile';
 
 export default function ContactPage() {
-  const { user, isLoaded } = useUser();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoaded = status !== 'loading';
   const [isMobile, setIsMobile] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -32,8 +34,8 @@ export default function ContactPage() {
   // Auto-fill name and email for logged-in users
   useEffect(() => {
     if (isLoaded && user) {
-      const fullName = user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim();
-      const email = user.primaryEmailAddress?.emailAddress || '';
+      const fullName = user.name || '';
+      const email = user.email || '';
       setFormData(prev => ({
         ...prev,
         name: fullName || prev.name,
@@ -214,7 +216,7 @@ export default function ContactPage() {
                   }}>
                     <User size={16} style={{ color: '#10b981' }} />
                     <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
-                      Signed in as {user.primaryEmailAddress?.emailAddress}
+                      Signed in as {user.email}
                     </span>
                   </div>
                 )}

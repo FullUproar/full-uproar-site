@@ -1,15 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useSignUp } from '@clerk/nextjs';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Turnstile from '@/app/components/Turnstile';
 import FuglyLogo from '@/app/components/FuglyLogo';
-import { OAuthStrategy } from '@clerk/types';
 
 export default function SignUpPage() {
-  const { isLoaded, signUp, setActive } = useSignUp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -20,97 +18,85 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoaded || !signUp) return;
-    
     setError('');
     setLoading(true);
 
     try {
-      // Verify CAPTCHA first
       if (!captchaToken) {
         setError('Please complete the CAPTCHA');
         setLoading(false);
         return;
       }
 
-      const captchaResponse = await fetch('/api/auth/verify-captcha', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: captchaToken })
+        body: JSON.stringify({ email, password, username, captchaToken }),
       });
 
-      const captchaResult = await captchaResponse.json();
-      if (!captchaResult.success) {
-        setError('CAPTCHA verification failed. Please try again.');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'An error occurred during sign up');
         setCaptchaToken('');
         setLoading(false);
         return;
       }
 
-      // Create the user
-      await signUp.create({
-        emailAddress: email,
-        password,
-        username,
-      });
-
-      // Send email verification code
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
-      
       setPendingVerification(true);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Sign up error:', err);
-      setError(err.errors?.[0]?.message || 'An error occurred during sign up');
+      setError('An error occurred during sign up');
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle verification
   const handleVerification = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoaded || !signUp) return;
-
     setError('');
     setLoading(true);
 
     try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code,
+      const response = await fetch('/api/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
       });
 
-      if (completeSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
-        router.push('/');
-      } else {
-        console.error('Sign up not complete:', completeSignUp);
-        setError('Verification failed. Please try again.');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Verification failed');
+        setLoading(false);
+        return;
       }
-    } catch (err: any) {
+
+      // Auto sign-in after verification
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.ok) {
+        router.push('/');
+        router.refresh();
+      } else {
+        router.push('/sign-in');
+      }
+    } catch (err) {
       console.error('Verification error:', err);
-      setError(err.errors?.[0]?.message || 'Verification failed');
+      setError('Verification failed');
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle Google sign-up
   const signUpWithGoogle = async () => {
-    if (!isLoaded || !signUp) return;
-    
-    try {
-      await signUp.authenticateWithRedirect({
-        strategy: 'oauth_google' as OAuthStrategy,
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/'
-      });
-    } catch (err: any) {
-      console.error('Google sign-up error:', err);
-      setError('Failed to sign up with Google. Please try again.');
-    }
+    await signIn('google', { callbackUrl: '/' });
   };
 
   const styles = {
@@ -224,17 +210,13 @@ export default function SignUpPage() {
     }
   };
 
-  if (!isLoaded) {
-    return null;
-  }
-
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
           <FuglyLogo size={80} />
         </div>
-        
+
         {!pendingVerification ? (
           <>
             <h1 style={styles.title}>Join the Chaos</h1>
@@ -277,7 +259,6 @@ export default function SignUpPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   style={styles.input}
-                  placeholder="chaos@example.com"
                   required
                 />
               </div>
@@ -290,7 +271,6 @@ export default function SignUpPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   style={styles.input}
-                  placeholder="ChaosLord420"
                   required
                 />
               </div>
@@ -303,7 +283,6 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   style={styles.input}
-                  placeholder="••••••••"
                   required
                 />
               </div>

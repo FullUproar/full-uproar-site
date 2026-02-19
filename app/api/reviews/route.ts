@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 export async function GET(request: NextRequest) {
   try {
@@ -96,7 +95,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json(
         { error: 'Must be logged in to review' },
@@ -105,9 +105,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user is banned from posting reviews
-    const dbUser = await prisma.user.findFirst({
-      where: { clerkId: userId },
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
       select: {
+        id: true,
+        email: true,
+        displayName: true,
+        username: true,
         reviewBanned: true,
         reviewBannedUntil: true,
         reviewBannedReason: true,
@@ -119,7 +123,7 @@ export async function POST(request: NextRequest) {
       if (dbUser.reviewBannedUntil && new Date() > dbUser.reviewBannedUntil) {
         // Auto-unban expired bans
         await prisma.user.update({
-          where: { clerkId: userId },
+          where: { id: userId },
           data: {
             reviewBanned: false,
             reviewBannedAt: null,
@@ -140,7 +144,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const user = await currentUser();
     const body = await request.json();
     const { gameId, merchId, rating, title, comment } = body;
 
@@ -194,7 +197,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user purchased this product for verification
-    const userEmail = user?.emailAddresses[0]?.emailAddress;
+    const userEmail = dbUser?.email;
     let verificationData: {
       verified: boolean;
       orderId?: string;
@@ -227,9 +230,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create display name from user info
-    const displayName = user?.firstName
-      ? `${user.firstName}${user.lastName ? ` ${user.lastName.charAt(0)}.` : ''}`
-      : user?.username || 'Chaos Agent';
+    const displayName = dbUser?.displayName || dbUser?.username || 'Chaos Agent';
 
     const review = await prisma.review.create({
       data: {
@@ -280,7 +281,8 @@ export async function POST(request: NextRequest) {
 // Vote on review helpfulness
 export async function PATCH(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json(
         { error: 'Must be logged in to vote' },

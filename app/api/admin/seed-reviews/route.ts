@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 
 // Fake review data templates
 const reviewTemplates = {
@@ -88,7 +88,8 @@ function getRandomDate(daysBack: number): Date {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -195,7 +196,7 @@ export async function POST(request: NextRequest) {
       await prisma.review.update({
         where: { id: reviewToRespond.id },
         data: {
-          responseText: "Thanks for the awesome review! We're thrilled you're enjoying the chaos. Game on! 🎲",
+          responseText: "Thanks for the awesome review! We're thrilled you're enjoying the chaos. Game on! \u{1F3B2}",
           responseBy: 'Full Uproar Team',
           responseAt: new Date(),
         },
@@ -219,7 +220,8 @@ export async function POST(request: NextRequest) {
 // DELETE endpoint to clear test reviews
 export async function DELETE(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { ADMIN_ROLES } from '@/lib/constants';
 import { isSimulatedMode } from '@/lib/payment-mode';
@@ -10,7 +10,8 @@ const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const session = await getSession();
+    const userId = session?.user?.id;
 
     // Check if store is open (allow admins to bypass for testing)
     if (!STORE_OPEN) {
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
 
       if (userId) {
         const user = await prisma.user.findUnique({
-          where: { clerkId: userId },
+          where: { id: userId },
           select: { role: true }
         });
         isAdmin = ADMIN_ROLES.includes(user?.role as any);

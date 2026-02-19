@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 import { ADMIN_ROLES, HTTP_STATUS } from '@/lib/constants';
 
@@ -12,9 +12,9 @@ export type AdminCheckResult =
  * Use at the start of admin API routes
  */
 export async function requireAdmin(): Promise<AdminCheckResult> {
-  const { userId } = await auth();
+  const session = await getSession();
 
-  if (!userId) {
+  if (!session?.user?.id) {
     return {
       authorized: false,
       response: NextResponse.json({ error: 'Unauthorized' }, { status: HTTP_STATUS.UNAUTHORIZED })
@@ -22,7 +22,7 @@ export async function requireAdmin(): Promise<AdminCheckResult> {
   }
 
   const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
+    where: { id: session.user.id },
     select: { id: true, role: true, email: true }
   });
 
@@ -33,7 +33,7 @@ export async function requireAdmin(): Promise<AdminCheckResult> {
     };
   }
 
-  return { authorized: true, userId, user };
+  return { authorized: true, userId: user.id, user };
 }
 
 /**

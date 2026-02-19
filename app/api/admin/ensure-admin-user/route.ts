@@ -1,42 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth as getSession } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    // Get current Clerk user
-    const clerkUser = await currentUser();
-    
-    if (!clerkUser) {
-      return NextResponse.json({ 
-        error: 'Not authenticated with Clerk. Please sign in first.' 
+    // Get current session user
+    const session = await getSession();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json({
+        error: 'Not authenticated. Please sign in first.'
       }, { status: 401 });
     }
 
-    const email = clerkUser.emailAddresses?.[0]?.emailAddress;
-    
+    const email = session.user?.email;
+
     if (!email) {
-      return NextResponse.json({ 
-        error: 'No email address found in Clerk user' 
+      return NextResponse.json({
+        error: 'No email address found in session'
       }, { status: 400 });
     }
 
     // Check if user exists
     let dbUser = await prisma.user.findUnique({
-      where: { clerkId: clerkUser.id }
+      where: { id: userId }
     });
 
     if (!dbUser) {
       // User doesn't exist, create them
+      const username = email.split('@')[0];
+
       dbUser = await prisma.user.create({
         data: {
-          clerkId: clerkUser.id,
+          id: userId,
           email: email,
-          username: clerkUser.username || undefined,
-          displayName: clerkUser.firstName && clerkUser.lastName 
-            ? `${clerkUser.firstName} ${clerkUser.lastName}` 
-            : clerkUser.firstName || undefined,
-          avatarUrl: clerkUser.imageUrl || undefined,
+          username: username || undefined,
+          displayName: session.user?.name || undefined,
+          avatarUrl: session.user?.image || undefined,
           role: email.toLowerCase() === 'info@fulluproar.com' ? 'ADMIN' : 'USER',
           cultDevotion: 0,
           cultLevel: 0,
@@ -50,7 +51,6 @@ export async function POST(request: NextRequest) {
           id: dbUser.id,
           email: dbUser.email,
           role: dbUser.role,
-          clerkId: dbUser.clerkId
         }
       });
     } else {
@@ -67,7 +67,6 @@ export async function POST(request: NextRequest) {
             id: dbUser.id,
             email: dbUser.email,
             role: dbUser.role,
-            clerkId: dbUser.clerkId
           }
         });
       }
@@ -78,13 +77,12 @@ export async function POST(request: NextRequest) {
           id: dbUser.id,
           email: dbUser.email,
           role: dbUser.role,
-          clerkId: dbUser.clerkId
         }
       });
     }
   } catch (error) {
     console.error('Ensure admin user error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Failed to ensure admin user',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });

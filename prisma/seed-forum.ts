@@ -374,7 +374,6 @@ async function main() {
 
     const user = await prisma.user.create({
       data: {
-        clerkId: `fake_${userData.username}_${Date.now()}`,
         email: userData.email,
         username: userData.username,
         displayName: userData.displayName,
