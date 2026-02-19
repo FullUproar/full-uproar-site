@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import { auth } from '@/lib/auth-config';
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/middleware/rate-limit';
