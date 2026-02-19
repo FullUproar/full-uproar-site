@@ -243,7 +243,7 @@ class Analytics {
   }
   
   private getUserId(): string | undefined {
-    // Get user ID from clerk or other auth provider
+    // Get user ID from auth provider
     if (typeof window !== 'undefined' && window.localStorage) {
       return window.localStorage.getItem('userId') || undefined;
     }

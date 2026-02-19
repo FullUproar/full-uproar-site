@@ -42,7 +42,7 @@ class SecurityAudit {
 
     const requiredVars = [
       'DATABASE_URL',
-      'CLERK_SECRET_KEY',
+      'AUTH_SECRET',
       'STRIPE_SECRET_KEY',
       'ENCRYPTION_KEY',
       'BACKUP_ENCRYPTION_KEY'

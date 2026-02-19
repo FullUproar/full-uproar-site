@@ -21,12 +21,12 @@ export function addSecurityHeaders(response: NextResponse): NextResponse {
   // Content Security Policy - adjust as needed
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://challenges.cloudflare.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https: http:",
-    "connect-src 'self' https://clerk.com https://*.clerk.accounts.dev wss://*.clerk.accounts.dev https://api.stripe.com",
-    "frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://js.stripe.com",
+    "connect-src 'self' https://accounts.google.com https://api.stripe.com",
+    "frame-src 'self' https://accounts.google.com https://challenges.cloudflare.com https://js.stripe.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

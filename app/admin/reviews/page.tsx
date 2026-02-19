@@ -166,7 +166,7 @@ export default function AdminReviewsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          clerkUserId: selectedReview.userId,
+          targetUserId: selectedReview.userId,
           reason: banReason,
           durationHours: banDuration ? parseInt(banDuration) : null,
         }),

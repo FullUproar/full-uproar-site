@@ -17,8 +17,9 @@ interface AppConfig {
   
   // Auth
   auth: {
-    clerkPublishableKey: string;
-    clerkSecretKey: string;
+    secret: string;
+    googleClientId: string;
+    googleClientSecret: string;
   };
   
   // Storage
@@ -83,8 +84,9 @@ class Config {
       },
       
       auth: {
-        clerkPublishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '',
-        clerkSecretKey: process.env.CLERK_SECRET_KEY || ''
+        secret: process.env.AUTH_SECRET || '',
+        googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+        googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       },
       
       storage: {
@@ -127,8 +129,8 @@ class Config {
       if (!this.config.database.url) {
         throw new Error('DATABASE_URL is required in production');
       }
-      if (!this.config.auth.clerkSecretKey) {
-        throw new Error('CLERK_SECRET_KEY is required in production');
+      if (!this.config.auth.secret) {
+        throw new Error('AUTH_SECRET is required in production');
       }
     }
   }
