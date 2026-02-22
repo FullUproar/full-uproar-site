@@ -6,7 +6,7 @@ import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import {
   Package, ShoppingBag, ShoppingCart, Settings,
   Plus, Eye, ArrowLeft, Menu, Home, Dices, Tag, X,
-  ChevronRight, Box, Loader2
+  ChevronRight, Box, Loader2, QrCode
 } from 'lucide-react';
 
 // Import components - Core only
@@ -29,6 +29,7 @@ type ViewType =
   | 'merch-new'
   | 'promo-codes'
   | 'packaging'
+  | 'qr-codes'
   | 'settings';
 
 interface ViewState {
@@ -44,6 +45,7 @@ const menuItems = [
   { id: 'merch', label: 'Merch', icon: ShoppingBag, view: 'merch-list' as ViewType },
   { id: 'promo', label: 'Promos', icon: Tag, view: 'promo-codes' as ViewType },
   { id: 'packaging', label: 'Packaging', icon: Box, view: 'packaging' as ViewType },
+  { id: 'qr-codes', label: 'QR Codes', icon: QrCode, view: 'qr-codes' as ViewType },
 ];
 
 export default function AdminApp() {
@@ -105,7 +107,7 @@ export default function AdminApp() {
       const validViews: ViewType[] = [
         'dashboard', 'orders-list', 'orders-detail', 'games-list', 'games-edit',
         'games-new', 'merch-list', 'merch-edit', 'merch-new', 'promo-codes',
-        'packaging', 'settings'
+        'packaging', 'qr-codes', 'settings'
       ];
 
       if (validViews.includes(viewParam as ViewType)) {
@@ -196,6 +198,14 @@ export default function AdminApp() {
         return (
           <iframe
             src="/admin/packaging"
+            style={{ width: '100%', height: 'calc(100vh - 120px)', border: 'none', background: '#0a0a0a' }}
+          />
+        );
+
+      case 'qr-codes':
+        return (
+          <iframe
+            src="/admin/redirects"
             style={{ width: '100%', height: 'calc(100vh - 120px)', border: 'none', background: '#0a0a0a' }}
           />
         );
