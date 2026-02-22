@@ -24,9 +24,9 @@ const games = [
     abbrev: 'caf',
   },
   {
-    slug: 'dice-not-included',
-    name: 'Dice Not Included',
-    abbrev: 'dni',
+    slug: 'splice-your-dice',
+    name: 'Splice Your Dice',
+    abbrev: 'syd',
   },
 ];
 

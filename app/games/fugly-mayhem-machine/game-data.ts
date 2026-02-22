@@ -219,8 +219,8 @@ export const FMM_GAMES: FMMGame[] = [
     },
   },
   {
-    slug: 'dice-not-included',
-    name: 'Dice Not Included',
+    slug: 'splice-your-dice',
+    name: 'Splice Your Dice',
     tagline: 'Add randomness to anything',
     description: 'A set of wild dice and event cards that inject random chaos into any game. Roll to add sudden events, modify outcomes, or completely change the game state.',
     color: '#10b981',
