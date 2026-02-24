@@ -74,7 +74,7 @@ export async function generateRegistrationOpts(
   const options = await generateRegistrationOptions({
     rpName: RP_NAME,
     rpID: RP_ID,
-    userID: userId,
+    userID: Buffer.from(userId).toString('base64url'),
     userName: userEmail,
     attestationType: 'none',
     excludeCredentials: existingCredentials.map((cred) => ({

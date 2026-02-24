@@ -44,6 +44,7 @@ export async function GET() {
 
     return NextResponse.json(options);
   } catch (error) {
+    console.error('[WebAuthn Register GET]', error);
     const { statusCode, body } = handleApiError(error);
     return NextResponse.json(body, { status: statusCode });
   }
@@ -104,6 +105,7 @@ export async function POST(request: NextRequest) {
       nickname: credential.nickname,
     });
   } catch (error) {
+    console.error('[WebAuthn Register POST]', error);
     const { statusCode, body } = handleApiError(error);
     return NextResponse.json(body, { status: statusCode });
   }
