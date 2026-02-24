@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Settings, Save, RefreshCw, Key, Globe, Mail, Shield, Bell, Database, Package } from 'lucide-react';
+import Link from 'next/link';
 import { adminStyles } from '../styles/adminStyles';
 
 interface Setting {
@@ -286,6 +287,24 @@ export default function SettingsView() {
               Backup
             </button>
           </div>
+
+          <Link href="/admin/settings/security-keys" style={{ textDecoration: 'none' }}>
+            <div style={{
+              ...adminStyles.card,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              cursor: 'pointer',
+            }}>
+              <Key size={32} style={{ color: '#FF8200' }} />
+              <div style={{ flex: 1 }}>
+                <h3 style={{ color: '#FBDB65', marginBottom: '4px' }}>Security Keys</h3>
+                <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+                  Manage YubiKey and FIDO2 security keys for admin 2FA
+                </p>
+              </div>
+            </div>
+          </Link>
 
           <div style={{
             ...adminStyles.card,

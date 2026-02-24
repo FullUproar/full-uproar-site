@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { isElevationValid } from '@/lib/auth/totp';
+import { prisma } from '@/lib/prisma';
 import { ADMIN_ROLES, HTTP_STATUS } from '@/lib/constants';
 
 interface ElevatedAdminCheck {
@@ -31,8 +32,13 @@ export async function requireElevatedAdmin(): Promise<ElevatedAdminCheck> {
     };
   }
 
-  // If 2FA is not enabled, allow access (but flag as not elevated)
-  if (!user.totpEnabled) {
+  // Check if user has any 2FA method enabled
+  const hasWebauthn = await prisma.webAuthnCredential.count({
+    where: { userId: user.id },
+  }) > 0;
+
+  // If no 2FA method is enabled, allow access (but flag as not elevated)
+  if (!user.totpEnabled && !hasWebauthn) {
     return {
       authorized: true,
       elevated: false,
@@ -75,7 +81,11 @@ export async function requireAdminWithElevationStatus(): Promise<ElevatedAdminCh
     };
   }
 
-  const elevated = user.totpEnabled ? isElevationValid(user.adminElevatedUntil) : false;
+  const hasWebauthnCreds = await prisma.webAuthnCredential.count({
+    where: { userId: user.id },
+  }) > 0;
+  const has2FA = user.totpEnabled || hasWebauthnCreds;
+  const elevated = has2FA ? isElevationValid(user.adminElevatedUntil) : false;
 
   return {
     authorized: true,

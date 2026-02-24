@@ -6,9 +6,11 @@ import AdminElevationModal from './AdminElevationModal';
 interface ElevationState {
   isAdmin: boolean;
   totpEnabled: boolean;
+  webauthnEnabled: boolean;
   isElevated: boolean;
   elevatedUntil: string | null;
   requiresElevation: boolean;
+  availableMethods: string[];
   loading: boolean;
 }
 
@@ -27,9 +29,11 @@ export function AdminElevationProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<ElevationState>({
     isAdmin: false,
     totpEnabled: false,
+    webauthnEnabled: false,
     isElevated: false,
     elevatedUntil: null,
     requiresElevation: false,
+    availableMethods: [],
     loading: true,
   });
 
@@ -48,19 +52,21 @@ export function AdminElevationProvider({ children }: { children: ReactNode }) {
       setState({
         isAdmin: data.isAdmin,
         totpEnabled: data.totpEnabled,
+        webauthnEnabled: data.webauthnEnabled || false,
         isElevated: data.isElevated,
         elevatedUntil: data.elevatedUntil,
         requiresElevation: data.requiresElevation,
+        availableMethods: data.availableMethods || [],
         loading: false,
       });
 
-      // If admin has 2FA enabled and isn't elevated, show modal
-      if (data.isAdmin && data.totpEnabled && !data.isElevated) {
+      // If admin has any 2FA method enabled and isn't elevated, show modal
+      if (data.isAdmin && (data.totpEnabled || data.webauthnEnabled) && !data.isElevated) {
         setShowModal(true);
       }
 
-      // If admin doesn't have 2FA enabled yet, prompt setup on first visit
-      if (data.isAdmin && !data.totpEnabled) {
+      // If admin doesn't have any 2FA enabled yet, prompt setup on first visit
+      if (data.isAdmin && !data.totpEnabled && !data.webauthnEnabled) {
         const hasSeenSetupPrompt = sessionStorage.getItem('admin_2fa_setup_dismissed');
         if (!hasSeenSetupPrompt) {
           setRequiresSetup(true);
@@ -94,7 +100,7 @@ export function AdminElevationProvider({ children }: { children: ReactNode }) {
         ...prev,
         isElevated: false,
         elevatedUntil: null,
-        requiresElevation: prev.totpEnabled,
+        requiresElevation: prev.totpEnabled || prev.webauthnEnabled,
       }));
     } catch (error) {
       console.error('Error de-elevating:', error);
@@ -117,7 +123,8 @@ export function AdminElevationProvider({ children }: { children: ReactNode }) {
   };
 
   // Determine if we should block access
-  const shouldBlockAccess = state.isAdmin && state.totpEnabled && !state.isElevated && !state.loading;
+  const has2FA = state.totpEnabled || state.webauthnEnabled;
+  const shouldBlockAccess = state.isAdmin && has2FA && !state.isElevated && !state.loading;
 
   return (
     <AdminElevationContext.Provider value={{ state, checkElevation, requireElevation, deElevate }}>
@@ -152,7 +159,9 @@ export function AdminElevationProvider({ children }: { children: ReactNode }) {
         onClose={handleClose}
         onElevated={handleElevated}
         requiresSetup={requiresSetup}
-        canDismiss={requiresSetup && !state.totpEnabled}
+        canDismiss={requiresSetup && !has2FA}
+        webauthnEnabled={state.webauthnEnabled}
+        availableMethods={state.availableMethods}
       />
     </AdminElevationContext.Provider>
   );

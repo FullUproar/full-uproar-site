@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { Shield, X, AlertTriangle, Mail } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Shield, X, AlertTriangle, Mail, Key, Fingerprint } from 'lucide-react';
+import { startAuthentication } from '@simplewebauthn/browser';
 
 interface AdminElevationModalProps {
   isOpen: boolean;
@@ -9,7 +10,11 @@ interface AdminElevationModalProps {
   onElevated: () => void;
   requiresSetup?: boolean;
   canDismiss?: boolean;
+  webauthnEnabled?: boolean;
+  availableMethods?: string[];
 }
+
+type AuthMode = 'webauthn' | 'totp';
 
 export default function AdminElevationModal({
   isOpen,
@@ -17,12 +22,80 @@ export default function AdminElevationModal({
   onElevated,
   requiresSetup = false,
   canDismiss = false,
+  webauthnEnabled = false,
+  availableMethods = [],
 }: AdminElevationModalProps) {
+  const [mode, setMode] = useState<AuthMode>(webauthnEnabled ? 'webauthn' : 'totp');
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [webauthnStatus, setWebauthnStatus] = useState<'idle' | 'waiting' | 'error'>('idle');
 
-  const handleElevate = async () => {
+  // Reset state when modal opens/closes or webauthnEnabled changes
+  useEffect(() => {
+    if (isOpen) {
+      setMode(webauthnEnabled ? 'webauthn' : 'totp');
+      setCode('');
+      setError('');
+      setLoading(false);
+      setWebauthnStatus('idle');
+    }
+  }, [isOpen, webauthnEnabled]);
+
+  // Auto-trigger WebAuthn when in webauthn mode
+  const initiateWebAuthn = useCallback(async () => {
+    if (!isOpen || mode !== 'webauthn' || webauthnStatus === 'waiting') return;
+
+    setWebauthnStatus('waiting');
+    setError('');
+
+    try {
+      // Get authentication options from server
+      const optionsRes = await fetch('/api/admin/webauthn/authenticate');
+      if (!optionsRes.ok) {
+        const data = await optionsRes.json();
+        throw new Error(data.error || data.message || 'Failed to get authentication options');
+      }
+      const options = await optionsRes.json();
+
+      // Trigger browser WebAuthn prompt (user taps YubiKey)
+      const authResponse = await startAuthentication(options);
+
+      // Verify with server
+      const verifyRes = await fetch('/api/admin/webauthn/authenticate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response: authResponse }),
+      });
+
+      if (!verifyRes.ok) {
+        const data = await verifyRes.json();
+        throw new Error(data.error || data.message || 'Verification failed');
+      }
+
+      onElevated();
+    } catch (err: any) {
+      // User cancelled or error
+      const message = err?.message || 'Authentication failed';
+      // Don't show error for user cancellation
+      if (message.includes('cancelled') || message.includes('canceled') || message.includes('abort') || message.includes('NotAllowedError')) {
+        setWebauthnStatus('idle');
+      } else {
+        setError(message);
+        setWebauthnStatus('error');
+      }
+    }
+  }, [isOpen, mode, webauthnStatus, onElevated]);
+
+  useEffect(() => {
+    if (isOpen && mode === 'webauthn' && webauthnStatus === 'idle') {
+      // Small delay to let modal render before triggering browser prompt
+      const timer = setTimeout(initiateWebAuthn, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, mode, webauthnStatus, initiateWebAuthn]);
+
+  const handleTotpElevate = async () => {
     if (code.length !== 6) {
       setError('Please enter a 6-digit code');
       return;
@@ -39,7 +112,7 @@ export default function AdminElevationModal({
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Invalid code');
+        setError(data.error || data.message || 'Invalid code');
         return;
       }
 
@@ -53,40 +126,14 @@ export default function AdminElevationModal({
 
   if (!isOpen) return null;
 
-  // If user needs 2FA setup, show message to contact admin
+  // ─── Setup Required Mode ──────────────────────────────────────
   if (requiresSetup) {
     return (
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-          padding: '1rem',
-        }}
-      >
-        <div
-          style={{
-            background: '#1a1a2e',
-            borderRadius: '1rem',
-            padding: '2rem',
-            maxWidth: '450px',
-            width: '100%',
-            border: '2px solid #FF8200',
-            boxShadow: '0 25px 50px -12px rgba(255, 130, 0, 0.25)',
-          }}
-        >
+      <div style={overlayStyle}>
+        <div style={cardStyle}>
           <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <AlertTriangle size={48} style={{ color: '#FF8200', margin: '0 auto 1rem' }} />
-            <h2 style={{ color: '#FBDB65', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            <h2 style={titleStyle}>
               2FA Setup Required
             </h2>
             <p style={{ color: '#9ca3af', marginBottom: '1.5rem' }}>
@@ -112,17 +159,7 @@ export default function AdminElevationModal({
 
           <button
             onClick={onClose}
-            style={{
-              width: '100%',
-              marginTop: '1.5rem',
-              padding: '0.75rem',
-              background: 'transparent',
-              color: '#9ca3af',
-              border: '1px solid #6b7280',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-            }}
+            style={secondaryButtonStyle}
           >
             Close
           </button>
@@ -131,63 +168,127 @@ export default function AdminElevationModal({
     );
   }
 
-  // Normal verification flow
+  // ─── WebAuthn Mode ────────────────────────────────────────────
+  if (mode === 'webauthn') {
+    return (
+      <div style={overlayStyle}>
+        <div style={cardStyle}>
+          {canDismiss && <CloseButton onClick={onClose} />}
+
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <Shield size={48} style={{ color: '#FF8200', margin: '0 auto 1rem' }} />
+            <h2 style={titleStyle}>
+              Admin Verification Required
+            </h2>
+            <p style={{ color: '#9ca3af' }}>
+              Tap your security key to verify your identity
+            </p>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: '2rem 1rem',
+            background: 'rgba(255, 130, 0, 0.05)',
+            borderRadius: '0.75rem',
+            border: '1px solid rgba(255, 130, 0, 0.2)',
+            marginBottom: '1rem',
+          }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: webauthnStatus === 'error' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255, 130, 0, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '1rem',
+              animation: webauthnStatus === 'waiting' ? 'pulse 2s infinite' : 'none',
+            }}>
+              <Key size={40} style={{ color: webauthnStatus === 'error' ? '#ef4444' : '#FF8200' }} />
+            </div>
+
+            <p style={{
+              color: webauthnStatus === 'error' ? '#ef4444' : '#FBDB65',
+              fontSize: '1.1rem',
+              fontWeight: 'bold',
+              marginBottom: '0.25rem',
+            }}>
+              {webauthnStatus === 'waiting' ? 'Waiting for security key...' :
+               webauthnStatus === 'error' ? 'Authentication failed' :
+               'Insert and tap your security key'}
+            </p>
+
+            {webauthnStatus === 'error' && error && (
+              <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '0.5rem', textAlign: 'center' }}>
+                {error}
+              </p>
+            )}
+
+            {(webauthnStatus === 'error' || webauthnStatus === 'idle') && (
+              <button
+                onClick={() => {
+                  setWebauthnStatus('idle');
+                  setError('');
+                  // Will re-trigger via useEffect
+                }}
+                style={{
+                  marginTop: '1rem',
+                  padding: '0.5rem 1.5rem',
+                  background: '#FF8200',
+                  color: '#0a0a0a',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                }}
+              >
+                Try Again
+              </button>
+            )}
+          </div>
+
+          {availableMethods.includes('totp') && (
+            <button
+              onClick={() => {
+                setMode('totp');
+                setError('');
+                setWebauthnStatus('idle');
+              }}
+              style={switchMethodStyle}
+            >
+              Use authenticator app instead
+            </button>
+          )}
+
+          <p style={sessionNoteStyle}>
+            Session will remain elevated for 3 hours
+          </p>
+
+          <style>{pulseKeyframes}</style>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── TOTP Mode ────────────────────────────────────────────────
   return (
     <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '1rem',
-      }}
+      style={overlayStyle}
       onClick={(e) => {
         if (e.target === e.currentTarget && canDismiss) {
           onClose();
         }
       }}
     >
-      <div
-        style={{
-          background: '#1a1a2e',
-          borderRadius: '1rem',
-          padding: '2rem',
-          maxWidth: '450px',
-          width: '100%',
-          border: '2px solid #FF8200',
-          boxShadow: '0 25px 50px -12px rgba(255, 130, 0, 0.25)',
-          position: 'relative',
-        }}
-      >
-        {canDismiss && (
-          <button
-            onClick={onClose}
-            style={{
-              position: 'absolute',
-              top: '1rem',
-              right: '1rem',
-              background: 'transparent',
-              border: 'none',
-              color: '#9ca3af',
-              cursor: 'pointer',
-              padding: '0.5rem',
-            }}
-          >
-            <X size={24} />
-          </button>
-        )}
+      <div style={cardStyle}>
+        {canDismiss && <CloseButton onClick={onClose} />}
 
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <Shield size={48} style={{ color: '#FF8200', margin: '0 auto 1rem' }} />
-          <h2 style={{ color: '#FBDB65', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <h2 style={titleStyle}>
             Admin Verification Required
           </h2>
           <p style={{ color: '#9ca3af' }}>
@@ -218,10 +319,11 @@ export default function AdminElevationModal({
               color: '#fff',
               marginBottom: '1rem',
               outline: 'none',
+              boxSizing: 'border-box',
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && code.length === 6) {
-                handleElevate();
+                handleTotpElevate();
               }
             }}
           />
@@ -231,7 +333,7 @@ export default function AdminElevationModal({
             </p>
           )}
           <button
-            onClick={handleElevate}
+            onClick={handleTotpElevate}
             disabled={loading || code.length !== 6}
             style={{
               width: '100%',
@@ -247,7 +349,21 @@ export default function AdminElevationModal({
           >
             {loading ? 'Verifying...' : 'Verify & Continue'}
           </button>
-          <p style={{ color: '#6b7280', fontSize: '0.75rem', textAlign: 'center', marginTop: '1rem' }}>
+
+          {webauthnEnabled && (
+            <button
+              onClick={() => {
+                setMode('webauthn');
+                setError('');
+                setCode('');
+              }}
+              style={switchMethodStyle}
+            >
+              Use security key instead
+            </button>
+          )}
+
+          <p style={sessionNoteStyle}>
             Session will remain elevated for 3 hours
           </p>
         </div>
@@ -255,3 +371,101 @@ export default function AdminElevationModal({
     </div>
   );
 }
+
+// ─── Shared Components ──────────────────────────────────────────
+
+function CloseButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        position: 'absolute',
+        top: '1rem',
+        right: '1rem',
+        background: 'transparent',
+        border: 'none',
+        color: '#9ca3af',
+        cursor: 'pointer',
+        padding: '0.5rem',
+      }}
+    >
+      <X size={24} />
+    </button>
+  );
+}
+
+// ─── Shared Styles ──────────────────────────────────────────────
+
+const overlayStyle: React.CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  backdropFilter: 'blur(8px)',
+  WebkitBackdropFilter: 'blur(8px)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 9999,
+  padding: '1rem',
+};
+
+const cardStyle: React.CSSProperties = {
+  background: '#1a1a2e',
+  borderRadius: '1rem',
+  padding: '2rem',
+  maxWidth: '450px',
+  width: '100%',
+  border: '2px solid #FF8200',
+  boxShadow: '0 25px 50px -12px rgba(255, 130, 0, 0.25)',
+  position: 'relative',
+};
+
+const titleStyle: React.CSSProperties = {
+  color: '#FBDB65',
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  marginBottom: '0.5rem',
+};
+
+const secondaryButtonStyle: React.CSSProperties = {
+  width: '100%',
+  marginTop: '1.5rem',
+  padding: '0.75rem',
+  background: 'transparent',
+  color: '#9ca3af',
+  border: '1px solid #6b7280',
+  borderRadius: '0.5rem',
+  cursor: 'pointer',
+  fontSize: '0.875rem',
+};
+
+const switchMethodStyle: React.CSSProperties = {
+  display: 'block',
+  width: '100%',
+  marginTop: '1rem',
+  padding: '0.5rem',
+  background: 'transparent',
+  color: '#9ca3af',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '0.85rem',
+  textDecoration: 'underline',
+  textAlign: 'center',
+};
+
+const sessionNoteStyle: React.CSSProperties = {
+  color: '#6b7280',
+  fontSize: '0.75rem',
+  textAlign: 'center',
+  marginTop: '1rem',
+};
+
+const pulseKeyframes = `
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+`;

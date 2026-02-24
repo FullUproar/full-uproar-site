@@ -43,8 +43,9 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
-    "bcryptjs": "^2.4.3",
     "@prisma/client": "^6.5.0",
+    "@simplewebauthn/browser": "^9.0.1",
+    "@simplewebauthn/server": "^9.0.3",
     "@stripe/react-stripe-js": "^3.9.0",
     "@stripe/stripe-js": "^7.8.0",
     "@types/multer": "^2.0.0",
@@ -52,6 +53,7 @@
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.2",
     "@vercel/blob": "^1.1.1",
+    "bcryptjs": "^2.4.3",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
     "fabric": "^6.9.0",

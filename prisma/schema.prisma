@@ -2405,6 +2405,7 @@ model VerificationToken {
 model WebAuthnCredential {
   id           String   @id @default(cuid())
   userId       String
+  nickname     String?            // e.g., "Home YubiKey", "Work YubiKey"
   credentialId String   @unique // base64url-encoded credential ID
   publicKey    Bytes              // CBOR-encoded public key
   counter      BigInt   @default(0)

@@ -87,12 +87,24 @@ export async function GET() {
     const isAdmin = ADMIN_ROLES.includes(user.role as typeof ADMIN_ROLES[number]);
     const isElevated = isElevationValid(user.adminElevatedUntil);
 
+    // Check for registered WebAuthn credentials
+    const webauthnCredentialCount = await prisma.webAuthnCredential.count({
+      where: { userId: user.id },
+    });
+    const webauthnEnabled = webauthnCredentialCount > 0;
+    const has2FA = user.totpEnabled || webauthnEnabled;
+
     return NextResponse.json({
       isAdmin,
       totpEnabled: user.totpEnabled,
+      webauthnEnabled,
       isElevated,
       elevatedUntil: user.adminElevatedUntil,
-      requiresElevation: isAdmin && user.totpEnabled && !isElevated,
+      requiresElevation: isAdmin && has2FA && !isElevated,
+      availableMethods: [
+        ...(webauthnEnabled ? ['webauthn'] : []),
+        ...(user.totpEnabled ? ['totp'] : []),
+      ],
     });
   } catch (error) {
     const { statusCode, body } = handleApiError(error);

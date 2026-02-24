@@ -18,6 +18,9 @@ jest.mock('@/lib/prisma', () => ({
     user: {
       findUnique: jest.fn(),
     },
+    webAuthnCredential: {
+      count: jest.fn().mockResolvedValue(0),
+    },
   },
 }));
 
