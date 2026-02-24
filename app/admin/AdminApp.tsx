@@ -6,8 +6,9 @@ import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import {
   Package, ShoppingBag, ShoppingCart, Settings,
   Plus, Eye, ArrowLeft, Menu, Home, Dices, Tag, X,
-  ChevronRight, Box, Loader2, QrCode
+  ChevronRight, Box, Loader2, QrCode, Key
 } from 'lucide-react';
+import Link from 'next/link';
 
 // Import components - Core only
 import GamesListView from './components/GamesListView';
@@ -288,6 +289,17 @@ export default function AdminApp() {
               );
             })}
             <div style={styles.mobileNavDivider} />
+            <Link
+              href="/admin/settings/security-keys"
+              style={{
+                ...styles.mobileNavItem,
+                color: '#94a3b8',
+                textDecoration: 'none',
+              }}
+            >
+              <Key size={20} />
+              <span>Security Keys</span>
+            </Link>
             <button
               onClick={() => navigateTo({ type: 'settings' })}
               style={{
@@ -330,6 +342,17 @@ export default function AdminApp() {
             })}
           </nav>
           <div style={styles.sidebarFooter}>
+            <Link
+              href="/admin/settings/security-keys"
+              style={{
+                ...styles.navItem,
+                color: '#94a3b8',
+                textDecoration: 'none',
+              }}
+            >
+              <Key size={18} />
+              <span>Security Keys</span>
+            </Link>
             <button
               onClick={() => navigateTo({ type: 'settings' })}
               style={{
