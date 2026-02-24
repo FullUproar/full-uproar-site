@@ -117,7 +117,7 @@ describe('generateRegistrationOpts', () => {
       expect.objectContaining({
         rpName: 'Full Uproar Admin',
         rpID: 'localhost',
-        userID: 'user-1',
+        userID: Buffer.from('user-1').toString('base64url'),
         userName: 'admin@fulluproar.com',
         attestationType: 'none',
         authenticatorSelection: expect.objectContaining({
@@ -172,7 +172,7 @@ describe('verifyRegistrationResp', () => {
     expect(mockVerifyReg).toHaveBeenCalledWith(
       expect.objectContaining({
         expectedChallenge: 'stored-challenge',
-        expectedOrigin: 'http://localhost:3000',
+        expectedOrigin: ['http://localhost:3000'],
         expectedRPID: 'localhost',
       }),
     );
@@ -243,7 +243,7 @@ describe('verifyAuthenticationResp', () => {
     expect(mockVerifyAuth).toHaveBeenCalledWith(
       expect.objectContaining({
         expectedChallenge: 'auth-challenge',
-        expectedOrigin: 'http://localhost:3000',
+        expectedOrigin: ['http://localhost:3000'],
         expectedRPID: 'localhost',
       }),
     );

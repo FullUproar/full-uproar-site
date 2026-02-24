@@ -14,7 +14,20 @@ import type {
 
 const RP_NAME = 'Full Uproar Admin';
 const RP_ID = process.env.WEBAUTHN_RP_ID || 'localhost';
-const ORIGIN = process.env.WEBAUTHN_ORIGIN || 'http://localhost:3000';
+
+// Accept both www and non-www origins (browser may send either)
+function getExpectedOrigins(): string[] {
+  const origin = process.env.WEBAUTHN_ORIGIN || 'http://localhost:3000';
+  const origins = [origin];
+  if (origin.includes('://www.')) {
+    origins.push(origin.replace('://www.', '://'));
+  } else if (origin.includes('://') && !origin.includes('://localhost')) {
+    const withWww = origin.replace('://', '://www.');
+    origins.push(withWww);
+  }
+  return origins;
+}
+const EXPECTED_ORIGINS = getExpectedOrigins();
 
 // ─── Challenge Store ─────────────────────────────────────────────
 // In-memory store keyed by userId. Each entry expires after 5 minutes.
@@ -105,7 +118,7 @@ export async function verifyRegistrationResp(
   const verification = await verifyRegistrationResponse({
     response,
     expectedChallenge,
-    expectedOrigin: ORIGIN,
+    expectedOrigin: EXPECTED_ORIGINS,
     expectedRPID: RP_ID,
     requireUserVerification: false,
   });
@@ -146,7 +159,7 @@ export async function verifyAuthenticationResp(
   const verification = await verifyAuthenticationResponse({
     response,
     expectedChallenge,
-    expectedOrigin: ORIGIN,
+    expectedOrigin: EXPECTED_ORIGINS,
     expectedRPID: RP_ID,
     requireUserVerification: false,
     authenticator: {
