@@ -43,10 +43,17 @@ export async function GET() {
     );
 
     return NextResponse.json(options);
-  } catch (error) {
+  } catch (error: any) {
     console.error('[WebAuthn Register GET]', error);
-    const { statusCode, body } = handleApiError(error);
-    return NextResponse.json(body, { status: statusCode });
+    // Return detailed errors for admin-only endpoints
+    if (error instanceof ForbiddenError || error instanceof ValidationError) {
+      const { statusCode, body } = handleApiError(error);
+      return NextResponse.json(body, { status: statusCode });
+    }
+    return NextResponse.json(
+      { error: 'WebAuthn registration options failed', detail: error?.message || String(error) },
+      { status: 500 },
+    );
   }
 }
 
@@ -104,9 +111,15 @@ export async function POST(request: NextRequest) {
       credentialId: credential.id,
       nickname: credential.nickname,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[WebAuthn Register POST]', error);
-    const { statusCode, body } = handleApiError(error);
-    return NextResponse.json(body, { status: statusCode });
+    if (error instanceof ForbiddenError || error instanceof ValidationError) {
+      const { statusCode, body } = handleApiError(error);
+      return NextResponse.json(body, { status: statusCode });
+    }
+    return NextResponse.json(
+      { error: 'WebAuthn registration verification failed', detail: error?.message || String(error) },
+      { status: 500 },
+    );
   }
 }

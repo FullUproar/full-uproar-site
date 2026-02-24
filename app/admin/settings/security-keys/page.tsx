@@ -52,7 +52,7 @@ export default function SecurityKeysPage() {
       const optionsRes = await fetch('/api/admin/webauthn/register');
       if (!optionsRes.ok) {
         const data = await optionsRes.json();
-        throw new Error(data.error || data.message || 'Failed to get registration options');
+        throw new Error(data.detail || data.error || data.message || 'Failed to get registration options');
       }
       const options = await optionsRes.json();
 
@@ -71,7 +71,7 @@ export default function SecurityKeysPage() {
 
       if (!verifyRes.ok) {
         const data = await verifyRes.json();
-        throw new Error(data.error || data.message || 'Registration failed');
+        throw new Error(data.detail || data.error || data.message || 'Registration failed');
       }
 
       setSuccess('Security key registered successfully!');

@@ -50,9 +50,16 @@ export async function GET() {
     );
 
     return NextResponse.json(options);
-  } catch (error) {
-    const { statusCode, body } = handleApiError(error);
-    return NextResponse.json(body, { status: statusCode });
+  } catch (error: any) {
+    console.error('[WebAuthn Auth GET]', error);
+    if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
+      const { statusCode, body } = handleApiError(error);
+      return NextResponse.json(body, { status: statusCode });
+    }
+    return NextResponse.json(
+      { error: 'WebAuthn authentication options failed', detail: error?.message || String(error) },
+      { status: 500 },
+    );
   }
 }
 
@@ -133,8 +140,15 @@ export async function POST(request: NextRequest) {
       elevatedUntil,
       message: 'Admin session elevated for 3 hours',
     });
-  } catch (error) {
-    const { statusCode, body } = handleApiError(error);
-    return NextResponse.json(body, { status: statusCode });
+  } catch (error: any) {
+    console.error('[WebAuthn Auth POST]', error);
+    if (error instanceof UnauthorizedError || error instanceof ForbiddenError || error instanceof ValidationError) {
+      const { statusCode, body } = handleApiError(error);
+      return NextResponse.json(body, { status: statusCode });
+    }
+    return NextResponse.json(
+      { error: 'WebAuthn authentication failed', detail: error?.message || String(error) },
+      { status: 500 },
+    );
   }
 }
