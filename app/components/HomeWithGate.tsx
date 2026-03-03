@@ -28,12 +28,13 @@ export default function HomeWithGate() {
 
   // A/B variant assignment + auth check on mount
   useEffect(() => {
-    // Determine A/B variant
-    let variant = getABVariant(AB_COOKIE_NAME);
-    if (!variant) {
-      variant = assignVariant();
-      setABVariant(AB_COOKIE_NAME, variant, AB_COOKIE_DAYS);
-    }
+    // Allow manual override via ?ab=A or ?ab=B (sets cookie too, so it persists)
+    const urlParam = new URLSearchParams(window.location.search).get('ab');
+    let variant: ABVariant =
+      urlParam === 'A' || urlParam === 'B'
+        ? urlParam
+        : (getABVariant(AB_COOKIE_NAME) ?? assignVariant());
+    setABVariant(AB_COOKIE_NAME, variant, AB_COOKIE_DAYS);
     setAbVariant(variant);
 
     // Track which variant this session is seeing
