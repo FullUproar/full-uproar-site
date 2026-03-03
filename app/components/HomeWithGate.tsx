@@ -1,8 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 // import ChaosWarningGate from './ChaosWarningGate'; // Temporarily disabled
 import FullUproarHomeStyled from './FullUproarHomeStyled';
+import { getABVariant, setABVariant, assignVariant, AB_COOKIE_NAME, AB_COOKIE_DAYS, type ABVariant } from '@/lib/ab-testing';
+
+// Code-split variant B so it only loads when assigned
+const TroublemakerHero = dynamic(() => import('./TroublemakerHero'), {
+  loading: () => (
+    <div style={{ minHeight: '100vh', background: '#0a0a0a' }} />
+  ),
+});
 
 // TEMP: Set to false to re-enable the chaos/passcode gate
 const BYPASS_GATE = true;
@@ -13,10 +22,20 @@ export default function HomeWithGate() {
   const [comics, setComics] = useState<any[]>([]);
   const [news, setNews] = useState<any[]>([]);
   const [merch, setMerch] = useState<any[]>([]);
-  const [loading, setLoading] = useState(!BYPASS_GATE);
+  const [loading, setLoading] = useState(true);
+  const [abVariant, setAbVariant] = useState<ABVariant | null>(null);
 
-  // Check if already authenticated on load (skipped if BYPASS_GATE is true)
+  // A/B variant assignment + auth check on mount
   useEffect(() => {
+    // Determine A/B variant
+    let variant = getABVariant(AB_COOKIE_NAME);
+    if (!variant) {
+      variant = assignVariant();
+      setABVariant(AB_COOKIE_NAME, variant, AB_COOKIE_DAYS);
+    }
+    setAbVariant(variant);
+
+    // Auth gate (skipped when BYPASS_GATE is true)
     if (BYPASS_GATE) {
       setLoading(false);
       return;
@@ -28,18 +47,18 @@ export default function HomeWithGate() {
     setLoading(false);
   }, []);
 
-  // Load data when authenticated
+  // Load data only for variant A (variant B doesn't need it)
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && abVariant === 'A') {
       loadData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, abVariant]);
 
   const loadData = async () => {
     try {
       const [gamesRes, comicsRes, newsRes, merchRes] = await Promise.all([
         fetch('/api/games?featured=true'),
-        fetch('/api/comics'), 
+        fetch('/api/comics'),
         fetch('/api/news'),
         fetch('/api/merch?featured=true')
       ]);
@@ -82,11 +101,12 @@ export default function HomeWithGate() {
     setIsAuthenticated(true);
   };
 
-  if (loading) {
+  // Show loading while determining variant
+  if (loading || abVariant === null) {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'linear-gradient(to bottom right, #111827, #1f2937, #ea580c)',
+      <div style={{
+        minHeight: '100vh',
+        background: '#0a0a0a',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -94,7 +114,7 @@ export default function HomeWithGate() {
         fontSize: '1.5rem',
         fontWeight: 'bold'
       }}>
-        Loading Fugly's chaos...
+        Loading Fugly&apos;s chaos...
       </div>
     );
   }
@@ -103,6 +123,11 @@ export default function HomeWithGate() {
   // if (!isAuthenticated) {
   //   return <ChaosWarningGate onProceed={handleCorrectPassword} />;
   // }
+
+  // A/B split: variant B gets the Troublemaker hero page
+  if (abVariant === 'B') {
+    return <TroublemakerHero />;
+  }
 
   return <FullUproarHomeStyled games={games} comics={comics} news={news} merch={merch} />;
 }
