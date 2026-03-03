@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 // import ChaosWarningGate from './ChaosWarningGate'; // Temporarily disabled
 import FullUproarHomeStyled from './FullUproarHomeStyled';
 import { getABVariant, setABVariant, assignVariant, AB_COOKIE_NAME, AB_COOKIE_DAYS, type ABVariant } from '@/lib/ab-testing';
+import { analytics, AnalyticsEvent } from '@/lib/analytics/analytics';
 
 // Code-split variant B so it only loads when assigned
 const TroublemakerHero = dynamic(() => import('./TroublemakerHero'), {
@@ -34,6 +35,12 @@ export default function HomeWithGate() {
       setABVariant(AB_COOKIE_NAME, variant, AB_COOKIE_DAYS);
     }
     setAbVariant(variant);
+
+    // Track which variant this session is seeing
+    analytics.track(AnalyticsEvent.AB_IMPRESSION, {
+      experiment: 'homepage_v3',
+      variant,
+    });
 
     // Auth gate (skipped when BYPASS_GATE is true)
     if (BYPASS_GATE) {

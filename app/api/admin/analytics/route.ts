@@ -202,5 +202,69 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     return NextResponse.json({ timeseries: events });
   }
   
+  // A/B test results
+  if (type === 'ab') {
+    const experiment = 'homepage_v3';
+
+    const [impressionEvents, ctaClicks, shopPageViews] = await Promise.all([
+      // All impression events for this experiment
+      prisma.analyticsEvent.findMany({
+        where: { eventType: 'ab_impression', timestamp: { gte: startDate } },
+        select: { sessionId: true, properties: true },
+      }),
+      // Explicit CTA clicks (variant B)
+      prisma.analyticsEvent.count({
+        where: { eventType: 'ab_cta_click', timestamp: { gte: startDate } },
+      }),
+      // Any shop page visits (used as conversion proxy for both variants)
+      prisma.analyticsEvent.findMany({
+        where: {
+          eventType: 'page_view',
+          pageUrl: { contains: '/shop' },
+          timestamp: { gte: startDate },
+        },
+        select: { sessionId: true },
+      }),
+    ]);
+
+    const shopSessionIds = new Set(shopPageViews.map((e) => e.sessionId));
+
+    const sessionsA = new Set(
+      impressionEvents
+        .filter((e) => (e.properties as any)?.variant === 'A' && (e.properties as any)?.experiment === experiment)
+        .map((e) => e.sessionId),
+    );
+    const sessionsB = new Set(
+      impressionEvents
+        .filter((e) => (e.properties as any)?.variant === 'B' && (e.properties as any)?.experiment === experiment)
+        .map((e) => e.sessionId),
+    );
+
+    const convA = [...sessionsA].filter((s) => shopSessionIds.has(s)).length;
+    const convB = [...sessionsB].filter((s) => shopSessionIds.has(s)).length;
+    const rateA = sessionsA.size > 0 ? (convA / sessionsA.size) * 100 : 0;
+    const rateB = sessionsB.size > 0 ? (convB / sessionsB.size) * 100 : 0;
+
+    return NextResponse.json({
+      ab: {
+        experiment,
+        variantA: {
+          label: 'Current Homepage',
+          impressions: sessionsA.size,
+          conversions: convA,
+          rate: parseFloat(rateA.toFixed(1)),
+          ctaClicks: null,
+        },
+        variantB: {
+          label: 'Troublemaker v3',
+          impressions: sessionsB.size,
+          conversions: convB,
+          rate: parseFloat(rateB.toFixed(1)),
+          ctaClicks,
+        },
+      },
+    });
+  }
+
   return NextResponse.json({ error: 'Invalid type parameter' }, { status: 400 });
 });

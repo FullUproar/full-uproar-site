@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, Users, ShoppingCart, Eye, Package, 
-  Activity, BarChart3, PieChart, ArrowUpRight, 
-  ArrowDownRight, Calendar, RefreshCcw
+import {
+  TrendingUp, Users, ShoppingCart, Eye, Package,
+  Activity, BarChart3, PieChart, ArrowUpRight,
+  ArrowDownRight, Calendar, RefreshCcw, FlaskConical
 } from 'lucide-react';
 import { adminStyles } from '../styles/adminStyles';
 import SimpleChart from './SimpleChart';
@@ -29,6 +29,11 @@ interface AnalyticsData {
   products?: any[];
   timeseries?: any[];
   recentActivity?: any[];
+  ab?: {
+    experiment: string;
+    variantA: { label: string; impressions: number; conversions: number; rate: number; ctaClicks: null };
+    variantB: { label: string; impressions: number; conversions: number; rate: number; ctaClicks: number };
+  };
 }
 
 export default function AnalyticsView() {
@@ -373,6 +378,140 @@ export default function AnalyticsView() {
     );
   };
 
+  const renderABTest = () => {
+    const ab = data.ab;
+    const MIN_IMPRESSIONS = 50;
+
+    if (!ab) {
+      return (
+        <div style={{ ...adminStyles.section, textAlign: 'center', color: '#94a3b8' }}>
+          No A/B data for the selected range.
+        </div>
+      );
+    }
+
+    const hasEnoughData =
+      ab.variantA.impressions >= MIN_IMPRESSIONS && ab.variantB.impressions >= MIN_IMPRESSIONS;
+
+    const winner =
+      !hasEnoughData
+        ? null
+        : ab.variantA.rate > ab.variantB.rate + 5
+        ? 'A'
+        : ab.variantB.rate > ab.variantA.rate + 5
+        ? 'B'
+        : null;
+
+    const renderVariantCard = (
+      variant: 'A' | 'B',
+      data: { label: string; impressions: number; conversions: number; rate: number; ctaClicks: number | null },
+      otherRate: number,
+    ) => {
+      const isLeading = winner === variant;
+      const rateDiff = variant === 'B' ? data.rate - otherRate : otherRate - data.rate;
+      return (
+        <div
+          style={{
+            ...adminStyles.card,
+            flex: 1,
+            minWidth: 260,
+            border: isLeading ? '1px solid #FF8200' : undefined,
+            position: 'relative',
+          }}
+        >
+          {isLeading && (
+            <div style={{
+              position: 'absolute',
+              top: -12,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#FF8200',
+              color: '#111827',
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              padding: '2px 10px',
+              borderRadius: 12,
+              textTransform: 'uppercase',
+            }}>
+              Leading
+            </div>
+          )}
+          <div style={{ marginBottom: 4 }}>
+            <span style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Variant {variant}
+            </span>
+          </div>
+          <h3 style={{ color: '#FBDB65', fontSize: 18, fontWeight: 700, marginBottom: 20 }}>
+            {data.label}
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div>
+              <div style={{ color: '#94a3b8', fontSize: 12, marginBottom: 2 }}>Sessions</div>
+              <div style={{ color: '#e2e8f0', fontSize: 26, fontWeight: 700 }}>
+                {formatNumber(data.impressions)}
+              </div>
+            </div>
+            <div>
+              <div style={{ color: '#94a3b8', fontSize: 12, marginBottom: 2 }}>Shop Visits (conversions)</div>
+              <div style={{ color: '#e2e8f0', fontSize: 26, fontWeight: 700 }}>
+                {formatNumber(data.conversions)}
+              </div>
+            </div>
+            <div>
+              <div style={{ color: '#94a3b8', fontSize: 12, marginBottom: 2 }}>Conversion Rate</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <span style={{ color: isLeading ? '#FF8200' : '#e2e8f0', fontSize: 32, fontWeight: 700 }}>
+                  {data.rate.toFixed(1)}%
+                </span>
+                {hasEnoughData && rateDiff !== 0 && (
+                  <span style={{ fontSize: 13, color: isLeading ? '#10b981' : '#ef4444' }}>
+                    {isLeading ? `▲ +${Math.abs(rateDiff).toFixed(1)}%` : `▼ −${Math.abs(rateDiff).toFixed(1)}%`}
+                  </span>
+                )}
+              </div>
+            </div>
+            {data.ctaClicks !== null && (
+              <div>
+                <div style={{ color: '#94a3b8', fontSize: 12, marginBottom: 2 }}>CTA Clicks</div>
+                <div style={{ color: '#e2e8f0', fontSize: 20, fontWeight: 600 }}>
+                  {formatNumber(data.ctaClicks)}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <>
+        {!hasEnoughData && (
+          <div style={{
+            background: 'rgba(251, 219, 101, 0.07)',
+            border: '1px solid rgba(251, 219, 101, 0.25)',
+            borderRadius: 8,
+            padding: '10px 16px',
+            color: '#FBDB65',
+            fontSize: 13,
+            marginBottom: 24,
+          }}>
+            ⚠ Not enough data yet — need at least {MIN_IMPRESSIONS} sessions per variant. Results so far are shown below.
+          </div>
+        )}
+        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginBottom: 24 }}>
+          {renderVariantCard('A', ab.variantA, ab.variantB.rate)}
+          {renderVariantCard('B', ab.variantB, ab.variantA.rate)}
+        </div>
+        <div style={{ ...adminStyles.section, fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>
+          <strong style={{ color: '#94a3b8' }}>How conversions are counted:</strong> a session that viewed
+          the homepage variant AND visited any <code>/shop</code> page within the same analytics session.
+          Variant B also tracks explicit &ldquo;Choose Mayhem&rdquo; CTA clicks separately.
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <div style={adminStyles.header}>
@@ -404,7 +543,8 @@ export default function AnalyticsView() {
             {[
               { id: 'overview', label: 'Overview', icon: <BarChart3 size={16} /> },
               { id: 'funnel', label: 'Funnel', icon: <Activity size={16} /> },
-              { id: 'products', label: 'Products', icon: <Package size={16} /> }
+              { id: 'products', label: 'Products', icon: <Package size={16} /> },
+              { id: 'ab', label: 'A/B Tests', icon: <FlaskConical size={16} /> },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -472,6 +612,7 @@ export default function AnalyticsView() {
               </p>
             </div>
           )}
+          {activeTab === 'ab' && renderABTest()}
         </>
       )}
 

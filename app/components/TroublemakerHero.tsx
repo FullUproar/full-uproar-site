@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from './Navigation';
 import { colors, hexToRgba } from '@/lib/colors';
+import { analytics, AnalyticsEvent } from '@/lib/analytics/analytics';
 
 // ─── Fonts (scoped to this component only) ──────────────────
 const oswald = Oswald({
@@ -350,6 +351,11 @@ export default function TroublemakerHero() {
               transform: showCta ? 'translateY(0)' : 'translateY(10px)',
               transition: 'opacity 0.6s ease, transform 0.6s ease',
             }}
+            onClick={() => analytics.track(AnalyticsEvent.AB_CTA_CLICK, {
+              experiment: 'homepage_v3',
+              variant: 'B',
+              cta: 'choose_mayhem',
+            })}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
               (e.currentTarget as HTMLElement).style.boxShadow = `0 0 50px ${t.accentGlow}, 0 0 100px ${hexToRgba('#FF8200', 0.2)}`;

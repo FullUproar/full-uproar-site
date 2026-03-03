@@ -6,7 +6,7 @@ import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import {
   Package, ShoppingBag, ShoppingCart, Settings,
   Plus, Eye, ArrowLeft, Menu, Home, Dices, Tag, X,
-  ChevronRight, Box, Loader2, QrCode, Key
+  ChevronRight, Box, Loader2, QrCode, Key, BarChart3
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -17,6 +17,7 @@ import MerchListView from './components/MerchListView';
 import MerchEditForm from './components/MerchEditForm';
 import DashboardView from './components/DashboardView';
 import SettingsView from './components/SettingsView';
+import AnalyticsView from './components/AnalyticsView';
 
 type ViewType =
   | 'dashboard'
@@ -31,6 +32,7 @@ type ViewType =
   | 'promo-codes'
   | 'packaging'
   | 'qr-codes'
+  | 'analytics'
   | 'settings';
 
 interface ViewState {
@@ -38,7 +40,6 @@ interface ViewState {
   data?: any;
 }
 
-// Streamlined menu - 6 core items
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, view: 'dashboard' as ViewType },
   { id: 'orders', label: 'Orders', icon: ShoppingCart, view: 'orders-list' as ViewType },
@@ -47,6 +48,7 @@ const menuItems = [
   { id: 'promo', label: 'Promos', icon: Tag, view: 'promo-codes' as ViewType },
   { id: 'packaging', label: 'Packaging', icon: Box, view: 'packaging' as ViewType },
   { id: 'qr-codes', label: 'QR Codes', icon: QrCode, view: 'qr-codes' as ViewType },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3, view: 'analytics' as ViewType },
 ];
 
 export default function AdminApp() {
@@ -108,7 +110,7 @@ export default function AdminApp() {
       const validViews: ViewType[] = [
         'dashboard', 'orders-list', 'orders-detail', 'games-list', 'games-edit',
         'games-new', 'merch-list', 'merch-edit', 'merch-new', 'promo-codes',
-        'packaging', 'qr-codes', 'settings'
+        'packaging', 'qr-codes', 'analytics', 'settings'
       ];
 
       if (validViews.includes(viewParam as ViewType)) {
@@ -210,6 +212,9 @@ export default function AdminApp() {
             style={{ width: '100%', height: 'calc(100vh - 120px)', border: 'none', background: '#0a0a0a' }}
           />
         );
+
+      case 'analytics':
+        return <AnalyticsView />;
 
       case 'settings':
         return <SettingsView />;

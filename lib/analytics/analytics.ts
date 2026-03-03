@@ -40,6 +40,10 @@ export enum AnalyticsEvent {
   // Navigation
   NAV_CLICK = 'nav_click',
   FILTER_APPLIED = 'filter_applied',
+
+  // A/B Testing
+  AB_IMPRESSION = 'ab_impression', // user was assigned and saw a variant
+  AB_CTA_CLICK  = 'ab_cta_click',  // user clicked a variant-specific CTA
 }
 
 export interface AnalyticsProperties {
