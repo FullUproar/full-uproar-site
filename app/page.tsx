@@ -1,6 +1,10 @@
+import { Suspense } from "react";
 import HomeWithGate from "./components/HomeWithGate";
 
-// Database fixes and health check endpoints added
 export default function Home() {
-  return <HomeWithGate />;
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0a0a0a' }} />}>
+      <HomeWithGate />
+    </Suspense>
+  );
 }
