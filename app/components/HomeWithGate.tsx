@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 // import ChaosWarningGate from './ChaosWarningGate'; // Temporarily disabled
 import FullUproarHomeStyled from './FullUproarHomeStyled';
@@ -18,6 +19,7 @@ const TroublemakerHero = dynamic(() => import('./TroublemakerHero'), {
 const BYPASS_GATE = true;
 
 export default function HomeWithGate() {
+  const searchParams = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState(BYPASS_GATE);
   const [games, setGames] = useState<any[]>([]);
   const [comics, setComics] = useState<any[]>([]);
@@ -26,13 +28,13 @@ export default function HomeWithGate() {
   const [loading, setLoading] = useState(true);
   const [abVariant, setAbVariant] = useState<ABVariant | null>(null);
 
-  // A/B variant assignment + auth check on mount
+  // A/B variant assignment + auth check on mount (re-runs when URL params change)
+  const urlAbParam = searchParams.get('ab');
   useEffect(() => {
     // Allow manual override via ?ab=A or ?ab=B (sets cookie too, so it persists)
-    const urlParam = new URLSearchParams(window.location.search).get('ab');
     let variant: ABVariant =
-      urlParam === 'A' || urlParam === 'B'
-        ? urlParam
+      urlAbParam === 'A' || urlAbParam === 'B'
+        ? urlAbParam
         : (getABVariant(AB_COOKIE_NAME) ?? assignVariant());
     setABVariant(AB_COOKIE_NAME, variant, AB_COOKIE_DAYS);
     setAbVariant(variant);
@@ -53,7 +55,7 @@ export default function HomeWithGate() {
       setIsAuthenticated(true);
     }
     setLoading(false);
-  }, []);
+  }, [urlAbParam]);
 
   // Load data only for variant A (variant B doesn't need it)
   useEffect(() => {
