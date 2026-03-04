@@ -12,6 +12,7 @@ export interface FMMGame {
   description: string;
   color: string;
   icon: string;
+  imageUrl?: string | null;
   playerCount: string;
   playTime: string;
   ageRating: string;

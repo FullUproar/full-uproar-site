@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
 import { FMM_SERIES } from '@/lib/games/fmm-data';
 import { getEnrichedFMMGames } from '@/lib/games/fmm-db';
@@ -140,9 +141,29 @@ export default async function SeriesPage({ params }: PageProps) {
                 display: 'flex',
                 flexDirection: 'column',
               }}>
-                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
-                  {game.icon}
-                </div>
+                {game.imageUrl ? (
+                  <div style={{
+                    width: '100%',
+                    aspectRatio: '1',
+                    position: 'relative',
+                    marginBottom: '1rem',
+                    borderRadius: '0.75rem',
+                    overflow: 'hidden',
+                  }}>
+                    <Image
+                      src={game.imageUrl}
+                      alt={game.name}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
+                    {game.icon}
+                  </div>
+                )}
                 <h2 style={{
                   fontSize: '1.5rem',
                   fontWeight: 900,

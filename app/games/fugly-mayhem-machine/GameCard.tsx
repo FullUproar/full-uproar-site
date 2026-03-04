@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { FMMGame } from '@/lib/games/fmm-data';
 
 export default function GameCard({ game }: { game: FMMGame }) {
@@ -29,10 +30,30 @@ export default function GameCard({ game }: { game: FMMGame }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Icon */}
-        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
-          {game.icon}
-        </div>
+        {/* Image or Icon */}
+        {game.imageUrl ? (
+          <div style={{
+            width: '100%',
+            aspectRatio: '1',
+            position: 'relative',
+            marginBottom: '1rem',
+            borderRadius: '0.75rem',
+            overflow: 'hidden',
+          }}>
+            <Image
+              src={game.imageUrl}
+              alt={game.name}
+              fill
+              style={{ objectFit: 'cover' }}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              unoptimized
+            />
+          </div>
+        ) : (
+          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
+            {game.icon}
+          </div>
+        )}
 
         {/* Name */}
         <h2 style={{

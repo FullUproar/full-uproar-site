@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
 import { FMM_SERIES, getAllGameSlugs } from '@/lib/games/fmm-data';
 import { getEnrichedFMMGames, getEnrichedFMMGame } from '@/lib/games/fmm-db';
@@ -76,7 +77,27 @@ export default async function GamePreviewPage({ params }: PageProps) {
           borderRadius: '1.5rem',
           border: `2px solid ${game.color}40`,
         }}>
-          <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>{game.icon}</div>
+          {game.imageUrl ? (
+            <div style={{
+              width: 200,
+              height: 200,
+              position: 'relative',
+              margin: '0 auto 1rem',
+              borderRadius: '0.75rem',
+              overflow: 'hidden',
+            }}>
+              <Image
+                src={game.imageUrl}
+                alt={game.name}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="200px"
+                unoptimized
+              />
+            </div>
+          ) : (
+            <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>{game.icon}</div>
+          )}
           <h1 style={{
             fontSize: 'clamp(2rem, 6vw, 3.5rem)',
             fontWeight: 900,
