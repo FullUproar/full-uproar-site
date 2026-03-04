@@ -131,7 +131,7 @@ export async function generateAuthenticationOpts(
     allowCredentials: credentials.map((cred) => ({
       id: Buffer.from(cred.credentialId, 'base64url'),
       type: 'public-key' as const,
-      transports: cred.transports as AuthenticatorTransportFuture[],
+      transports: (cred.transports.length > 0 ? cred.transports : ['usb']) as AuthenticatorTransportFuture[],
     })),
   });
 
