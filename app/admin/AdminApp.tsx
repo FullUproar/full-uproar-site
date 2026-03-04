@@ -6,9 +6,10 @@ import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import {
   Package, ShoppingBag, ShoppingCart, Settings,
   Plus, Eye, ArrowLeft, Menu, Home, Dices, Tag, X,
-  ChevronRight, Box, Loader2, QrCode, Key, BarChart3
+  ChevronRight, Box, Loader2, QrCode, Key, BarChart3, Lock
 } from 'lucide-react';
 import Link from 'next/link';
+import { useAdminElevation } from '@/app/components/admin/AdminElevationProvider';
 
 // Import components - Core only
 import GamesListView from './components/GamesListView';
@@ -64,6 +65,7 @@ export default function AdminApp() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [isVerifying, setIsVerifying] = useState(true);
   const [urlInitialized, setUrlInitialized] = useState(false);
+  const { deElevate, state: elevationState } = useAdminElevation();
 
   // Verify admin permissions
   useEffect(() => {
@@ -372,6 +374,23 @@ export default function AdminApp() {
               <ArrowLeft size={18} />
               <span>Back to Site</span>
             </a>
+            {elevationState.isElevated && (
+              <button
+                onClick={deElevate}
+                style={{
+                  ...styles.backToSite,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  width: '100%',
+                  color: '#6b7280',
+                  fontSize: '13px',
+                }}
+              >
+                <Lock size={16} />
+                <span>Lock Admin</span>
+              </button>
+            )}
           </div>
         </aside>
       )}
