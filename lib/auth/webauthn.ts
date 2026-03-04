@@ -9,6 +9,7 @@ import type {
   AuthenticationResponseJSON,
   AuthenticatorTransportFuture,
 } from '@simplewebauthn/types';
+import { prisma } from '@/lib/prisma';
 
 // ─── Config ──────────────────────────────────────────────────────
 
@@ -29,40 +30,32 @@ function getExpectedOrigins(): string[] {
 }
 const EXPECTED_ORIGINS = getExpectedOrigins();
 
-// ─── Challenge Store ─────────────────────────────────────────────
-// In-memory store keyed by userId. Each entry expires after 5 minutes.
-// Suitable for single-server Next.js deployments.
+// ─── Challenge Store (DB-backed for serverless) ─────────────────
+// Stored in PostgreSQL so challenges survive across serverless instances.
 
-interface StoredChallenge {
-  challenge: string;
-  expires: number;
-}
-
-const challengeStore = new Map<string, StoredChallenge>();
 const CHALLENGE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
-function cleanupChallenges() {
-  const now = Date.now();
-  for (const [key, value] of challengeStore) {
-    if (value.expires < now) {
-      challengeStore.delete(key);
-    }
-  }
-}
-
-export function storeChallenge(userId: string, challenge: string) {
-  cleanupChallenges();
-  challengeStore.set(userId, {
-    challenge,
-    expires: Date.now() + CHALLENGE_TTL_MS,
+export async function storeChallenge(userId: string, challenge: string) {
+  const expiresAt = new Date(Date.now() + CHALLENGE_TTL_MS);
+  await prisma.webAuthnChallenge.upsert({
+    where: { userId },
+    update: { challenge, expiresAt },
+    create: { userId, challenge, expiresAt },
   });
 }
 
-export function getAndDeleteChallenge(userId: string): string | null {
-  cleanupChallenges();
-  const entry = challengeStore.get(userId);
+export async function getAndDeleteChallenge(userId: string): Promise<string | null> {
+  const entry = await prisma.webAuthnChallenge.findUnique({
+    where: { userId },
+  });
   if (!entry) return null;
-  challengeStore.delete(userId);
+
+  // Delete it (one-time use)
+  await prisma.webAuthnChallenge.delete({ where: { userId } });
+
+  // Check expiry
+  if (entry.expiresAt < new Date()) return null;
+
   return entry.challenge;
 }
 
@@ -102,7 +95,7 @@ export async function generateRegistrationOpts(
     },
   });
 
-  storeChallenge(userId, options.challenge);
+  await storeChallenge(userId, options.challenge);
   return options;
 }
 
@@ -110,7 +103,7 @@ export async function verifyRegistrationResp(
   userId: string,
   response: RegistrationResponseJSON,
 ) {
-  const expectedChallenge = getAndDeleteChallenge(userId);
+  const expectedChallenge = await getAndDeleteChallenge(userId);
   if (!expectedChallenge) {
     throw new Error('Challenge expired or not found');
   }
@@ -142,7 +135,7 @@ export async function generateAuthenticationOpts(
     })),
   });
 
-  storeChallenge(userId, options.challenge);
+  await storeChallenge(userId, options.challenge);
   return options;
 }
 
@@ -151,7 +144,7 @@ export async function verifyAuthenticationResp(
   response: AuthenticationResponseJSON,
   credential: StoredCredential,
 ) {
-  const expectedChallenge = getAndDeleteChallenge(userId);
+  const expectedChallenge = await getAndDeleteChallenge(userId);
   if (!expectedChallenge) {
     throw new Error('Challenge expired or not found');
   }

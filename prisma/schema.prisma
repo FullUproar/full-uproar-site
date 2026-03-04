@@ -2417,3 +2417,14 @@ model WebAuthnCredential {
 
   @@index([userId])
 }
+
+// Serverless-safe challenge store for WebAuthn ceremonies
+model WebAuthnChallenge {
+  id        String   @id @default(cuid())
+  userId    String   @unique // one active challenge per user
+  challenge String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
