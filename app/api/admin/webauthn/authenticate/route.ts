@@ -57,7 +57,7 @@ export async function GET() {
       return NextResponse.json(body, { status: statusCode });
     }
     return NextResponse.json(
-      { error: 'WebAuthn authentication options failed', detail: error?.message || String(error) },
+      { error: `WebAuthn options failed: ${error?.message || String(error)}` },
       { status: 500 },
     );
   }
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(body, { status: statusCode });
     }
     return NextResponse.json(
-      { error: 'WebAuthn authentication failed', detail: error?.message || String(error) },
+      { error: `WebAuthn authentication failed: ${error?.message || String(error)}` },
       { status: 500 },
     );
   }
