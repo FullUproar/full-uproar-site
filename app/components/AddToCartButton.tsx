@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Check, AlertCircle } from 'lucide-react';
+import { ShoppingCart, Check, AlertCircle, Sparkles } from 'lucide-react';
 import { TestId, getTestId } from '@/lib/constants/test-ids';
+
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
 
 interface AddToCartButtonProps {
   onClick: () => void | Promise<void>;
@@ -80,6 +82,31 @@ export default function AddToCartButton({ onClick, disabled = false, size = 'med
   };
 
   const currentSize = sizeStyles[size];
+
+  if (!STORE_OPEN) {
+    return (
+      <button
+        disabled
+        style={{
+          background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+          color: '#FF8200',
+          padding: currentSize.padding,
+          fontSize: currentSize.fontSize,
+          borderRadius: '50px',
+          fontWeight: 900,
+          border: '2px solid #FF8200',
+          cursor: 'not-allowed',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          opacity: 0.8,
+        }}
+      >
+        <Sparkles size={currentSize.iconSize} />
+        Coming Soon
+      </button>
+    );
+  }
 
   return (
     <>

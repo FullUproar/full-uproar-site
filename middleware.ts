@@ -10,9 +10,23 @@ import { addSecurityHeaders } from '@/lib/middleware/security-headers';
 const protectedRoutes = [
   /^\/admin(.*)/,
   /^\/profile(.*)/,
+  /^\/account(.*)/,
   /^\/api\/admin(.*)/,
   /^\/api\/profile(.*)/,
   /^\/api\/users(.*)/,
+  // Community features — gated until ready for public
+  /^\/forum(.*)/,
+  /^\/game-nights(.*)/,
+  /^\/chaos(.*)/,
+  /^\/game-kit(.*)/,
+  /^\/play-online(.*)/,
+  /^\/connect(.*)/,
+  /^\/join(.*)/,
+  /^\/room(.*)/,
+  /^\/game-session(.*)/,
+  /^\/api\/forum(.*)/,
+  /^\/api\/rituals(.*)/,
+  /^\/api\/game-kit(.*)/,
 ];
 
 export default auth(async (req) => {

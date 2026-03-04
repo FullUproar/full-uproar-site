@@ -72,6 +72,12 @@ export default function CheckoutPage() {
   const { data: session } = useSession();
   const isSignedIn = !!session;
   const { items, getTotalPrice, clearCart } = useCartStore();
+
+  // Redirect to shop if store is closed
+  if (!STORE_STATUS.isOpen) {
+    if (typeof window !== 'undefined') router.replace('/shop');
+    return null;
+  }
   const [isProcessing, setIsProcessing] = useState(false);
   const [signInDismissed, setSignInDismissed] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(true);

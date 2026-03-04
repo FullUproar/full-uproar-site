@@ -17,6 +17,8 @@ import Tooltip from '@/app/components/Tooltip';
 import ReviewForm from '@/app/components/ReviewForm';
 import { formatPlayerCount, formatPlayTime, formatAgeRating } from '@/lib/utils/formatting';
 
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
+
 interface GameImage {
   id: number;
   imageUrl: string;
@@ -1048,7 +1050,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                 </div>
 
                 <div style={styles.actionButtons}>
-                  {game.stock === 0 ? (
+                  {!STORE_OPEN || game.stock === 0 ? (
                     <Tooltip text="Launching Spring 2026 - Join the chaos soon!" position="top">
                       <button
                         disabled={true}
@@ -1062,7 +1064,7 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                         }}
                       >
                         <Sparkles style={{ width: '20px', height: '20px' }} />
-                        Coming Spring 2026
+                        Launching Spring 2026
                       </button>
                     </Tooltip>
                   ) : (
@@ -1085,8 +1087,8 @@ export default function GameProductTabbed({ game, similarGames }: GameProductTab
                       )}
                     </button>
                   )}
-                  
-                  {game.stock > 0 && (
+
+                  {STORE_OPEN && game.stock > 0 && (
                     <button
                       onClick={handleBuyNow}
                       style={styles.buyNowButton}

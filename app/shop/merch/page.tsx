@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { Shirt, Tag, Filter, Package } from 'lucide-react';
+import { Shirt, Tag, Filter, Package, Rocket } from 'lucide-react';
+
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
 import { LoadingSection, SkeletonGrid } from '@/app/components/ui';
 import EmptyState from '@/app/components/ui/EmptyState';
 import EmailCapture from '@/app/components/EmailCapture';
@@ -74,6 +76,30 @@ export default function ShopMerchPage() {
             Wear your chaos with pride (and questionable fashion sense)
           </p>
         </div>
+
+        {/* Store Coming Soon Banner */}
+        {!STORE_OPEN && (
+          <div style={{
+            maxWidth: '48rem',
+            margin: '0 auto 2rem',
+            padding: '1.25rem 2rem',
+            background: 'linear-gradient(135deg, rgba(125, 85, 199, 0.15), rgba(251, 219, 101, 0.1))',
+            border: '2px solid #7D55C7',
+            borderRadius: '1rem',
+            textAlign: 'center',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+              <Rocket style={{ width: '1.25rem', height: '1.25rem', color: '#7D55C7' }} />
+              <span style={{ color: '#7D55C7', fontWeight: 900, fontSize: '1.125rem', textTransform: 'uppercase' }}>
+                Store Launching Spring 2026
+              </span>
+              <Rocket style={{ width: '1.25rem', height: '1.25rem', color: '#7D55C7', transform: 'scaleX(-1)' }} />
+            </div>
+            <p style={{ color: '#FBDB65', fontSize: '0.875rem', margin: 0 }}>
+              Browse our merch below — purchasing will be available soon!
+            </p>
+          </div>
+        )}
 
         {/* Filter Buttons */}
         <div style={{

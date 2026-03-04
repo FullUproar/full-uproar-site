@@ -10,6 +10,9 @@ import { analytics } from '@/lib/analytics/analytics';
 import { LoadingSection, SkeletonGrid } from '@/app/components/ui';
 import EmptyState from '@/app/components/ui/EmptyState';
 import EmailCapture from '@/app/components/EmailCapture';
+import { Rocket } from 'lucide-react';
+
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
 
 interface Game {
   id: number;
@@ -102,6 +105,30 @@ export default function ShopGamesPage() {
             Games, mods, and chaos generators
           </p>
         </div>
+
+        {/* Store Coming Soon Banner */}
+        {!STORE_OPEN && (
+          <div style={{
+            maxWidth: '48rem',
+            margin: '0 auto 2rem',
+            padding: '1.25rem 2rem',
+            background: 'linear-gradient(135deg, rgba(255, 130, 0, 0.15), rgba(251, 219, 101, 0.1))',
+            border: '2px solid #FF8200',
+            borderRadius: '1rem',
+            textAlign: 'center',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+              <Rocket style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200' }} />
+              <span style={{ color: '#FF8200', fontWeight: 900, fontSize: '1.125rem', textTransform: 'uppercase' }}>
+                Store Launching Spring 2026
+              </span>
+              <Rocket style={{ width: '1.25rem', height: '1.25rem', color: '#FF8200', transform: 'scaleX(-1)' }} />
+            </div>
+            <p style={{ color: '#FBDB65', fontSize: '0.875rem', margin: 0 }}>
+              Browse our catalog below — purchasing will be available soon!
+            </p>
+          </div>
+        )}
 
         {/* Featured Section - Mayhem Machine */}
         {selectedCategory === 'MOD' && (

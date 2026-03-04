@@ -10,6 +10,8 @@ import CartButton from './CartButton';
 import MobileCartButton from './MobileCartButton';
 import UserDropdown from './UserDropdown';
 
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
+
 interface NavItem {
   href: string;
   label: string;
@@ -72,21 +74,8 @@ export default function Navigation() {
       ]
     },
     {
-      href: '/connect',
-      label: 'CONNECT',
-      children: [
-        { href: '/connect/forum', label: 'Forum' },
-        { href: '/connect/contact', label: 'Contact Us' },
-      ]
-    },
-    {
-      href: '/game-nights',
-      label: 'PLAY',
-      children: [
-        { href: '/game-nights', label: 'My Game Nights' },
-        { href: '/play-online', label: 'Play Online' },
-        { href: '/game-kit', label: '✨ Game Kit' },
-      ]
+      href: '/contact',
+      label: 'CONTACT',
     },
   ];
 
@@ -288,7 +277,7 @@ export default function Navigation() {
                   <UserDropdown user={session.user} />
                 )}
                 
-                <CartButton />
+                {STORE_OPEN && <CartButton />}
               </div>
             )}
 
@@ -458,7 +447,7 @@ export default function Navigation() {
             </>
           )}
           
-          <MobileCartButton onClose={() => setIsMenuOpen(false)} />
+          {STORE_OPEN && <MobileCartButton onClose={() => setIsMenuOpen(false)} />}
         </div>
       )}
     </>

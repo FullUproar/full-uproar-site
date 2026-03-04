@@ -611,40 +611,17 @@ export default function GamesPage() {
             textAlign: 'center',
             border: `2px solid ${activeCategory?.color}`
           }}>
-            <h3 style={{ 
-              fontSize: '2rem', 
+            <h3 style={{
+              fontSize: '2rem',
               color: activeCategory?.color,
               marginBottom: '1rem',
               fontWeight: 900
             }}>
-              Coming Soon!
+              In Development
             </h3>
             <p style={{ color: '#FBDB65', fontSize: '1.125rem' }}>
-              We're cooking up some incredible {activeCategory?.name.toLowerCase()} for you.
+              More {activeCategory?.name.toLowerCase()} are on the way. Follow us for updates!
             </p>
-            <p style={{ color: '#FBDB65', marginTop: '0.5rem' }}>
-              Meanwhile, check out our revolutionary Mayhem Machine mods!
-            </p>
-          </div>
-        )}
-
-        {/* Suggestions for graphics */}
-        {selectedCategory === 'MOD' && (
-          <div style={{
-            marginTop: '4rem',
-            padding: '2rem',
-            background: 'rgba(255, 130, 0, 0.1)',
-            borderRadius: '1rem',
-            border: '2px dashed #FF8200'
-          }}>
-            <h3 style={{ color: '#FF8200', marginBottom: '1rem' }}>🎨 Suggested Graphics to Generate:</h3>
-            <ul style={{ color: '#FBDB65', lineHeight: '2' }}>
-              <li>A logo for "Fugly's Mayhem Machine" - mechanical gears with dice, cards, and game pieces integrated</li>
-              <li>Banner image showing game pieces being transformed by orange energy/chaos magic</li>
-              <li>Icon set for each mod showing how it transforms games (shuffle icon, timer, wildcards, etc.)</li>
-              <li>Background pattern with game elements (dice, cards, meeples) in a chaotic arrangement</li>
-              <li>Before/After comparison graphic showing a boring game vs. chaos-modified version</li>
-            </ul>
           </div>
         )}
       </div>

@@ -12,11 +12,19 @@ import { analytics, AnalyticsEvent, useAnalytics } from '@/lib/analytics/analyti
 import TrustBadges from '@/app/components/TrustBadges';
 import EmailCapture from '../components/EmailCapture';
 
+const STORE_OPEN = process.env.NEXT_PUBLIC_STORE_OPEN === 'true';
+
 export default function CartPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const isSignedIn = !!session;
   const { items, updateQuantity, removeFromCart, getTotalPrice, getTotalItems, clearCart } = useCartStore();
+
+  // Redirect to shop if store is closed
+  if (!STORE_OPEN) {
+    if (typeof window !== 'undefined') router.replace('/shop');
+    return null;
+  }
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
