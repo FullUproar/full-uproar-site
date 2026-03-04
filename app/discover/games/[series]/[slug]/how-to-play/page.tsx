@@ -2,21 +2,21 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { FMM_SERIES, getGameBySlug, getAllGameSlugs } from '@/lib/games/fmm-data';
+import { FMM_SERIES, getAllGameSlugs } from '@/lib/games/fmm-data';
+import { getEnrichedFMMGame } from '@/lib/games/fmm-db';
 
 interface PageProps {
   params: Promise<{ series: string; slug: string }>;
 }
 
-// Map series slugs to their data
-const seriesData: Record<string, { series: typeof FMM_SERIES; getGame: typeof getGameBySlug; getAllSlugs: typeof getAllGameSlugs }> = {
-  'fugly-mayhem-machine': { series: FMM_SERIES, getGame: getGameBySlug, getAllSlugs: getAllGameSlugs },
+const knownSeries: Record<string, { series: typeof FMM_SERIES }> = {
+  'fugly-mayhem-machine': { series: FMM_SERIES },
 };
 
 export async function generateStaticParams() {
   const params: { series: string; slug: string }[] = [];
-  for (const [seriesSlug, data] of Object.entries(seriesData)) {
-    const slugs = data.getAllSlugs();
+  for (const seriesSlug of Object.keys(knownSeries)) {
+    const slugs = getAllGameSlugs();
     slugs.forEach(slug => {
       params.push({ series: seriesSlug, slug });
     });
@@ -26,13 +26,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { series, slug } = await params;
-  const data = seriesData[series];
+  const data = knownSeries[series];
 
   if (!data) {
     return { title: 'Game Not Found | Full Uproar' };
   }
 
-  const game = data.getGame(slug);
+  const game = await getEnrichedFMMGame(slug);
   if (!game) {
     return { title: 'Game Not Found | Full Uproar' };
   }
@@ -50,13 +50,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function HowToPlayPage({ params }: PageProps) {
   const { series, slug } = await params;
-  const data = seriesData[series];
+  const data = knownSeries[series];
 
   if (!data) {
     notFound();
   }
 
-  const game = data.getGame(slug);
+  const game = await getEnrichedFMMGame(slug);
   if (!game) {
     notFound();
   }

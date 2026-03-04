@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { FMMGame } from './game-data';
+import type { FMMGame } from '@/lib/games/fmm-data';
 
 export default function GameCard({ game }: { game: FMMGame }) {
   const [isHovered, setIsHovered] = useState(false);

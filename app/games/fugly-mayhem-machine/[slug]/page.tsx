@@ -2,7 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { getGameBySlug, getAllGameSlugs, FMM_SERIES, FMM_GAMES } from '../game-data';
+import { FMM_SERIES, getAllGameSlugs } from '@/lib/games/fmm-data';
+import { getEnrichedFMMGames, getEnrichedFMMGame } from '@/lib/games/fmm-db';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const game = getGameBySlug(slug);
+  const game = await getEnrichedFMMGame(slug);
 
   if (!game) {
     return { title: 'Game Not Found | Full Uproar' };
@@ -33,16 +34,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function GamePreviewPage({ params }: PageProps) {
   const { slug } = await params;
-  const game = getGameBySlug(slug);
+  const game = await getEnrichedFMMGame(slug);
 
   if (!game) {
     notFound();
   }
 
   // Find adjacent games for navigation
-  const currentIndex = FMM_GAMES.findIndex(g => g.slug === slug);
-  const prevGame = currentIndex > 0 ? FMM_GAMES[currentIndex - 1] : null;
-  const nextGame = currentIndex < FMM_GAMES.length - 1 ? FMM_GAMES[currentIndex + 1] : null;
+  const allGames = await getEnrichedFMMGames();
+  const currentIndex = allGames.findIndex(g => g.slug === slug);
+  const prevGame = currentIndex > 0 ? allGames[currentIndex - 1] : null;
+  const nextGame = currentIndex < allGames.length - 1 ? allGames[currentIndex + 1] : null;
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)' }}>

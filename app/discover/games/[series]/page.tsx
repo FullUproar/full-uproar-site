@@ -2,25 +2,26 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { FMM_SERIES, FMM_GAMES } from '@/lib/games/fmm-data';
+import { FMM_SERIES } from '@/lib/games/fmm-data';
+import { getEnrichedFMMGames } from '@/lib/games/fmm-db';
 import { formatPlayerCount, formatAgeRating } from '@/lib/utils/formatting';
 
 interface PageProps {
   params: Promise<{ series: string }>;
 }
 
-// Map series slugs to their data
-const seriesData: Record<string, { series: typeof FMM_SERIES; games: typeof FMM_GAMES }> = {
-  'fugly-mayhem-machine': { series: FMM_SERIES, games: FMM_GAMES },
+// Known series slugs
+const knownSeries: Record<string, { series: typeof FMM_SERIES }> = {
+  'fugly-mayhem-machine': { series: FMM_SERIES },
 };
 
 export async function generateStaticParams() {
-  return Object.keys(seriesData).map((series) => ({ series }));
+  return Object.keys(knownSeries).map((series) => ({ series }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { series } = await params;
-  const data = seriesData[series];
+  const data = knownSeries[series];
 
   if (!data) {
     return { title: 'Series Not Found | Full Uproar' };
@@ -34,13 +35,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SeriesPage({ params }: PageProps) {
   const { series } = await params;
-  const data = seriesData[series];
+  const data = knownSeries[series];
 
   if (!data) {
     notFound();
   }
 
-  const { series: seriesInfo, games } = data;
+  const seriesInfo = data.series;
+  const games = await getEnrichedFMMGames();
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)' }}>

@@ -2,7 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
-import { getGameBySlug, getAllGameSlugs, FMM_SERIES } from '../../game-data';
+import { FMM_SERIES, getAllGameSlugs } from '@/lib/games/fmm-data';
+import { getEnrichedFMMGame } from '@/lib/games/fmm-db';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const game = getGameBySlug(slug);
+  const game = await getEnrichedFMMGame(slug);
 
   if (!game) {
     return { title: 'Game Not Found | Full Uproar' };
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function HowToPlayPage({ params }: PageProps) {
   const { slug } = await params;
-  const game = getGameBySlug(slug);
+  const game = await getEnrichedFMMGame(slug);
 
   if (!game) {
     notFound();
