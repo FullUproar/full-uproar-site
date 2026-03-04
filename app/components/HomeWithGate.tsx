@@ -29,11 +29,12 @@ export default function HomeWithGate() {
   const [abVariant, setAbVariant] = useState<ABVariant | null>(null);
 
   // A/B variant assignment + auth check on mount (re-runs when URL params change)
-  const urlAbParam = searchParams.get('ab');
+  const rawAbParam = searchParams.get('ab')?.toUpperCase();
+  const urlAbParam = rawAbParam === 'A' || rawAbParam === 'B' ? rawAbParam : null;
   useEffect(() => {
-    // Allow manual override via ?ab=A or ?ab=B (sets cookie too, so it persists)
+    // Allow manual override via ?ab=A or ?ab=B (case-insensitive, sets cookie too)
     let variant: ABVariant =
-      urlAbParam === 'A' || urlAbParam === 'B'
+      urlAbParam
         ? urlAbParam
         : (getABVariant(AB_COOKIE_NAME) ?? assignVariant());
     setABVariant(AB_COOKIE_NAME, variant, AB_COOKIE_DAYS);
